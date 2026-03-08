@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGI01 – Datenstrukturen und Algorithmen | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">TGI01 · 0723K09 · HfB</div>
+  <h1>Datenstrukturen und Algorithmen</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 6 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="kap6" onclick="showSection('kap6')">Kap 6</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════════════ ÜBERSICHT ════════════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header"><h2>Übersicht</h2><span>Alle Kapitel im Überblick</span></div>
+
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#0ea5e9" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Zeichen &amp; Bezeichner</h3>
+      <p>Mathematische Symbole, Datentypen-Übersicht, Algorithmen-Referenz</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#8b5cf6" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Algorithmen &amp; Darstellung</h3>
+      <p>Algorithmus-Definition, Lineare/Binäre Suche, Flussdiagramme, Collatz, ggT</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Mathematische Definitionen</h3>
+      <p>Mengen, Listen, Relationen, Operatoren, Algebren</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#14b8a6" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Klassifikation von Datentypen</h3>
+      <p>ADT, Stack, Queue, Array, Verbund, Verkettete Listen</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f59e0b" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Sortieren &amp; Suchen</h3>
+      <p>BubbleSort, SelectionSort, InsertionSort, Fibonacci-Suche, Interpolatorische Suche</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ef4444" onclick="showSection('kap6')">
+      <div class="ch-num">KAP 6</div>
+      <h3>Bäume &amp; Graphen</h3>
+      <p>Binärbäume, Suchbäume, gerichtete/ungerichtete Graphen, Adjazenzmatrizen</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">PRÜFUNGSRELEVANTE SCHWERPUNKTE</div>
+    <div class="two-col">
+      <ul class="content-list">
+        <li><strong>Algorithmus</strong> – Finitheit, Determinismus, Determiniertheit</li>
+        <li><strong>Lineare Suche</strong> – O(n), unsortierte Liste</li>
+        <li><strong>Binäre Suche</strong> – O(log n), sortierte Liste</li>
+        <li><strong>Mengen &amp; Listen</strong> – ungeordnet vs. geordnet, Potenzmenge</li>
+        <li><strong>Relationen</strong> – reflexiv, symmetrisch, transitiv, partielle Ordnung</li>
+        <li><strong>ADT</strong> – abstrakte vs. konkrete Algebra (Datenstruktur)</li>
+      </ul>
+      <ul class="content-list">
+        <li><strong>Stack</strong> – LIFO: push, pop, top, empty</li>
+        <li><strong>Queue</strong> – FIFO: Warteschlangenprinzip</li>
+        <li><strong>BubbleSort</strong> – Nachbarn vergleichen &amp; tauschen</li>
+        <li><strong>SelectionSort</strong> – Minimum suchen &amp; tauschen</li>
+        <li><strong>InsertionSort</strong> – an richtiger Stelle einfügen</li>
+        <li><strong>Bäume &amp; Graphen</strong> – Ordnung, Höhe, Adjazenzmatrix</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAP 1 ════════════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header"><h2>Kapitel 1</h2><span>Verwendete Zeichen und Bezeichner</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ZEICHENREFERENZ</div>
+    <p>Dieses Kapitel dient als <strong>Nachschlagewerk</strong> für die gesamte Heftreihe. Es listet alle mathematischen Zeichen, eingeführten Datenstrukturen und Algorithmen auf. Legen Sie eine Kopie davon neben sich, wenn Sie die anderen Kapitel durcharbeiten.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WICHTIGE MATHEMATISCHE ZEICHEN</div>
+    <table class="data-table">
+      <thead><tr><th>Zeichen</th><th>Bedeutung</th><th>Bemerkung</th></tr></thead>
+      <tbody>
+        <tr><td>M = {x | P(x)}</td><td>Menge</td><td>ungeordnet, keine Duplikate</td></tr>
+        <tr><td>x ∈ M</td><td>x ist in Menge M</td><td>Elementbeziehung</td></tr>
+        <tr><td>∅ oder {}</td><td>Leere Menge</td><td>enthält keine Elemente</td></tr>
+        <tr><td>T ⊆ M</td><td>T ist Teilmenge von M</td><td></td></tr>
+        <tr><td>P(M)</td><td>Potenzmenge</td><td>Menge aller Teilmengen, |P(M)| = 2<sup>|M|</sup></td></tr>
+        <tr><td>M₁ ∪ M₂</td><td>Vereinigung</td><td>alle Elemente aus M₁ oder M₂</td></tr>
+        <tr><td>M₁ ∩ M₂</td><td>Durchschnitt</td><td>nur Elemente in beiden Mengen</td></tr>
+        <tr><td>L = [x₁, x₂, …]</td><td>Liste</td><td>geordnet, Duplikate erlaubt</td></tr>
+        <tr><td>M₁ × M₂</td><td>Kartesisches Produkt</td><td>Menge aller Paare</td></tr>
+        <tr><td>R ⊆ M × M</td><td>Relation über M</td><td>Teilmenge des kartesischen Produkts</td></tr>
+        <tr><td>∀x</td><td>Für alle x</td><td>Allquantor</td></tr>
+        <tr><td>∃x</td><td>Es gibt ein x</td><td>Existenzquantor</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">EINGEFÜHRTE DATENTYPEN</div>
+    <table class="data-table">
+      <thead><tr><th>Datenstruktur</th><th>Realisierung</th><th>Bemerkung</th></tr></thead>
+      <tbody>
+        <tr><td>Ganze Zahlen</td><td>int, Integer</td><td>statisch</td></tr>
+        <tr><td>Reelle Zahlen</td><td>float, real</td><td>statisch</td></tr>
+        <tr><td>Logische Werte</td><td>boolean</td><td>wahr/falsch</td></tr>
+        <tr><td>Zeichen</td><td>String, Char, Char[]</td><td>statisch</td></tr>
+        <tr><td>Array, Verbund</td><td>int[], struct</td><td>statisch, aggregiert</td></tr>
+        <tr><td>Stack, Queue, verkettete Liste</td><td>Stack, Queue, LinkedList</td><td>dynamisch</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">EINGEFÜHRTE ALGORITHMEN</div>
+    <table class="data-table">
+      <thead><tr><th>Algorithmus</th><th>Prinzip</th></tr></thead>
+      <tbody>
+        <tr><td>Lineare Suche</td><td>Alle Elemente der Reihe nach durchgehen</td></tr>
+        <tr><td>Binäre Suche</td><td>Sortierte Liste immer in der Mitte teilen</td></tr>
+        <tr><td>n! (Fakultät)</td><td>Alle Zahlen von 1 bis n aufmultiplizieren</td></tr>
+        <tr><td>ggT(a, b)</td><td>Größter gemeinsamer Teiler mittels Subtraktion</td></tr>
+        <tr><td>BubbleSort</td><td>(n−1)-mal durchlaufen, Nachbarn vergleichen</td></tr>
+        <tr><td>SelectionSort</td><td>Minimum suchen, an richtige Stelle tauschen</td></tr>
+        <tr><td>InsertionSort</td><td>Element an richtige Stelle einfügen</td></tr>
+        <tr><td>Fibonacci-Suche</td><td>Liste gemäß Fibonacci-Folge teilen</td></tr>
+        <tr><td>Interpolatorische Suche</td><td>Pivot-Position nach Wert gewichten</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAP 2 ════════════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header"><h2>Kapitel 2</h2><span>Algorithmen und deren Darstellung</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ALGORITHMUS – DEFINITION</div>
+    <p>Ein <strong>Algorithmus</strong> ist eine Bearbeitungsvorschrift zur Lösung eines Problems mit folgenden <strong>Pflicht-Eigenschaften</strong>:</p>
+    <ul class="content-list">
+      <li><strong>Finitheit</strong> – Die Vorschrift ist mit endlichen Mitteln beschreibbar.</li>
+      <li><strong>Determinismus</strong> – Es ist immer eindeutig definiert, welche Regel als nächste anzuwenden ist.</li>
+      <li><strong>Determiniertheit</strong> – Die Ausgabe ist immer eindeutig bestimmt.</li>
+    </ul>
+    <p><strong>Zusatzforderungen</strong> (nicht immer garantierbar):</p>
+    <ul class="content-list">
+      <li><strong>Platzkomplexität</strong> – angemessener Speicherplatz</li>
+      <li><strong>Zeitkomplexität / Terminiertheit</strong> – angemessene Laufzeit</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">DREI KLASSEN VON PROBLEMEN</div>
+    <ul class="content-list">
+      <li><strong>Klasse 1:</strong> Praktisch umsetzbare Algorithmen existieren → Programm schreiben</li>
+      <li><strong>Klasse 2:</strong> Praktisch umsetzbare Algorithmen möglicherweise vorhanden → Forschung</li>
+      <li><strong>Klasse 3:</strong> Praktisch umsetzbare Algorithmen existieren nie → Näherungslösungen</li>
+    </ul>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">LINEARE SUCHE</div>
+    <p><strong>Problem:</strong> Ist ein Wert w in einer Liste L vorhanden?</p>
+    <p><strong>Prinzip:</strong> Von vorn jedes Element durchgehen, bis w gefunden oder das Ende erreicht ist.</p>
+    <p><strong>Laufzeit:</strong> Im Durchschnitt ~n/2 Vergleiche → <strong>O(n)</strong></p>
+    <p><strong>Voraussetzung:</strong> Keine – funktioniert auf unsortierten Listen.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">BINÄRE SUCHE</div>
+    <p><strong>Problem:</strong> Ist ein Wert w in einer <em>sortierten</em> Liste L vorhanden?</p>
+    <p><strong>Prinzip:</strong> Liste immer in der Mitte teilen. Ist w kleiner als das Mittelelement → linke Hälfte, sonst → rechte Hälfte.</p>
+    <p><strong>Laufzeit:</strong> log₂(n) Vergleiche → <strong>O(log n)</strong></p>
+    <p><strong>Beispiel:</strong> In 3,5 Mio. Berliner Namen: nur ~22 Vergleiche statt 1,75 Mio.!</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VERGLEICH: LINEARE VS. BINÄRE SUCHE</div>
+    <table class="data-table">
+      <thead><tr><th>Operation</th><th>Lineare Suche</th><th>Binäre Suche</th></tr></thead>
+      <tbody>
+        <tr><td>Name einfügen</td><td>schnell (ans Ende)</td><td>langsam (richtige Stelle finden)</td></tr>
+        <tr><td>Name suchen</td><td>langsam – O(n)</td><td>schnell – O(log n)</td></tr>
+        <tr><td>Voraussetzung</td><td>keine</td><td>sortierte Liste</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">COLLATZ-PROBLEM</div>
+    <p>Für eine natürliche Zahl n: Falls n = 1 → fertig. Falls n ungerade → 3n + 1. Dann n = n/2. Wiederhole.</p>
+    <p><strong>Beispiel:</strong> S(9) → S(28) → S(14) → S(7) → S(22) → S(11) → … → S(1) = 1</p>
+    <p><strong>Offenes Problem:</strong> Bis heute ist unklar, ob der Algorithmus für <em>alle</em> Eingaben terminiert!</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">FAKULTÄTSFUNKTION n!</div>
+    <p>0! = 1</p>
+    <p>n! = 1 · 2 · 3 · … · (n−1) · n</p>
+    <p><strong>Rekursiv:</strong> n! = n · (n−1)!</p>
+    <p><strong>Beispiel:</strong> 5! = 1 · 2 · 3 · 4 · 5 = 120</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">GGT – GRÖSSTER GEMEINSAMER TEILER</div>
+    <p><strong>Prinzip:</strong> ggT(a, b) = ggT(a, b−a) wenn b > a</p>
+    <p><strong>Beispiel:</strong> ggT(16, 12) → ggT(12, 4) → ggT(4, 8) → ggT(4, 4) = <strong>4</strong></p>
+    <p><strong>Terminierung:</strong> Die Summe a+b wird bei jedem Schritt kleiner → muss terminieren.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">DARSTELLUNGSFORMEN VON ALGORITHMEN</div>
+    <ul class="content-list">
+      <li><strong>Verbal</strong> – natürliche Sprache (z.B. „Nimm den linken Senkel…")</li>
+      <li><strong>Mathematisch</strong> – Funktionen (z.B. f(n) = f(3n+1))</li>
+      <li><strong>Programmiersprache</strong> – z.B. Groovy-Code (ausführbar!)</li>
+      <li><strong>Flussdiagramm</strong> – Pfeile (Ablauf), Rechtecke (Berechnungen), Rauten (Verzweigungen)</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">MATHEMATIK VS. INFORMATIK</div>
+    <ul class="content-list">
+      <li><strong>Variablen:</strong> Mathematik = feste Werte (a = 5). Informatik = Speicherzellen, überschreibbar (a := 2·a).</li>
+      <li><strong>Speicher:</strong> Mathematik = unbegrenzt. Informatik = begrenzt (int max ≈ 2,1 Mrd.).</li>
+      <li><strong>Genauigkeit:</strong> Mathematik = exakt (n/2). Informatik = begrenzte Genauigkeit bei Fließkommazahlen.</li>
+      <li><strong>Parallelität:</strong> Threads erfordern Locking, um Datenintegrität zu sichern.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAP 3 ════════════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header"><h2>Kapitel 3</h2><span>Grundlegende mathematische Definitionen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">MENGE (GEORG CANTOR, 1895)</div>
+    <p>Eine <strong>Menge</strong> ist jede Zusammenfassung M von bestimmten wohlunterschiedenen Objekten zu einem Ganzen.</p>
+    <p><strong>Intensionale Definition:</strong> M = {x | P(x)} – alle Objekte, für die Prädikat P gilt.</p>
+    <p><strong>Extensionale Definition:</strong> M = {blau, gelb, rot} – Aufzählung der Elemente.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">BEISPIELE FÜR MENGEN</div>
+    <ul class="content-list">
+      <li>M₁ = {1, 2, 3, 4, 5} – endliche Menge</li>
+      <li>M₂ = {0, 1, 2, 3, …} = ℕ – unendliche Menge der natürlichen Zahlen</li>
+      <li>M₃ = {2, 3, 5, 7, 11, …} – Primzahlen (auch unendlich!)</li>
+      <li>{a, b, c} = {a, c, b} – Reihenfolge egal bei Mengen</li>
+      <li>{a, b, a} = {a, b} – keine Duplikate in Mengen</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">MENGE VS. LISTE – WICHTIGE UNTERSCHIEDE</div>
+    <table class="data-table">
+      <thead><tr><th>Eigenschaft</th><th>Menge { }</th><th>Liste [ ]</th></tr></thead>
+      <tbody>
+        <tr><td>Reihenfolge</td><td>egal</td><td>relevant</td></tr>
+        <tr><td>Duplikate</td><td>nicht erlaubt</td><td>erlaubt</td></tr>
+        <tr><td>Beispiel</td><td>{a, b} = {b, a}</td><td>[a, b] ≠ [b, a]</td></tr>
+        <tr><td>Indizierung</td><td>keine</td><td>ab Index 0 (Informatik!)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">RELATIONEN UND IHRE EIGENSCHAFTEN</div>
+    <p>Eine <strong>Relation</strong> R über M ist eine Teilmenge R ⊆ M × M, die Elemente miteinander in Beziehung setzt.</p>
+    <table class="data-table">
+      <thead><tr><th>Eigenschaft</th><th>Definition</th><th>Beispiel</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Reflexiv</strong></td><td>∀x: xRx</td><td>„Gleiche Familie" (man gehört zur eigenen Familie)</td></tr>
+        <tr><td><strong>Symmetrisch</strong></td><td>xRy → yRx</td><td>„Verheiratet" (wenn A mit B, dann B mit A)</td></tr>
+        <tr><td><strong>Antisymmetrisch</strong></td><td>xRy ∧ x≠y → ¬(yRx)</td><td>„Kleiner gleich" (≤)</td></tr>
+        <tr><td><strong>Asymmetrisch</strong></td><td>xRy → ¬(yRx)</td><td>„Kleiner als" (&lt;)</td></tr>
+        <tr><td><strong>Transitiv</strong></td><td>xRy ∧ yRz → xRz</td><td>„Kleiner als" (a&lt;b ∧ b&lt;c → a&lt;c)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">WICHTIGE RELATIONSTYPEN</div>
+    <ul class="content-list">
+      <li><strong>Partielle Ordnung (Halbordnung)</strong> = reflexiv + antisymmetrisch + transitiv</li>
+      <li><strong>Äquivalenzrelation</strong> = reflexiv + symmetrisch + transitiv → teilt Menge in Klassen</li>
+      <li><strong>Totale Ordnung</strong> = partielle Ordnung + Vergleichbarkeit (∀x,y: xRy oder yRx)</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">OPERATOREN UND IHRE EIGENSCHAFTEN</div>
+    <p>Eine <strong>n-stellige Operation</strong> ordnet Eingabewerten aus M₁ × M₂ × … × Mₙ einen Ausgabewert aus M zu.</p>
+    <table class="data-table">
+      <thead><tr><th>Eigenschaft</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Total</strong></td><td>Für alle Eingaben ist ein Ergebnis definiert</td></tr>
+        <tr><td><strong>Injektiv</strong></td><td>Jedes Ergebnis wird höchstens einmal erreicht</td></tr>
+        <tr><td><strong>Surjektiv</strong></td><td>Jedes mögliche Ergebnis wird mindestens einmal erreicht</td></tr>
+        <tr><td><strong>Bijektiv</strong></td><td>Injektiv + surjektiv (jedes Ergebnis genau einmal)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ALGEBREN</div>
+    <p><strong>Mehrsortige Algebra:</strong> A = (M₁, …, Mₘ, Op₁, …, Opₙ)</p>
+    <p><strong>Algebra:</strong> A = (M, Op₁, …, Opₙ) – nur eine Trägermenge</p>
+    <p><strong>Universelle Algebra:</strong> Alle Operationen liefern nur Werte aus der Trägermenge M zurück.</p>
+    <p><strong>Beispiel:</strong> (ℕ, +) ist universell – Addition zweier natürlicher Zahlen ergibt immer eine natürliche Zahl.</p>
+    <p><strong>Zeichenkettenalgebra:</strong> A = (Σ*, ·) – Trägermenge = alle Wörter über Alphabet Σ, Operation = Verkettung.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAP 4 ════════════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header"><h2>Kapitel 4</h2><span>Klassifikation von Datentypen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ABSTRAKTER DATENTYP (ADT)</div>
+    <p>Ein <strong>ADT</strong> ist eine abstrakte Algebra A = (T, Σ, Q) mit:</p>
+    <ul class="content-list">
+      <li><strong>T</strong> – Menge aller korrekten Terme</li>
+      <li><strong>Σ</strong> – Signatur (Operationen/Schnittstelle)</li>
+      <li><strong>Q</strong> – Axiome (Regeln zur Überführung von Termen)</li>
+    </ul>
+    <p>Beschreibt nur die <strong>Schnittstelle</strong> (was), nicht die Implementierung (wie). Die <strong>konkrete Implementierung</strong> eines ADT heißt <strong>Datenstruktur</strong>.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">ADT STACK (KELLER) – BEISPIEL</div>
+    <p><strong>Operationen:</strong></p>
+    <ul class="content-list">
+      <li>createStack → erzeugt leeren Keller</li>
+      <li>push(k, t) → legt Element t auf Keller k</li>
+      <li>pop(k) → entfernt oberstes Element</li>
+      <li>top(k) → liest oberstes Element (ohne Entfernen)</li>
+      <li>empty(k) → prüft, ob Keller leer ist</li>
+    </ul>
+    <p><strong>Axiome:</strong></p>
+    <ul class="content-list">
+      <li>K1: empty(createStack) = wahr (neuer Keller ist leer)</li>
+      <li>K2: empty(push(k, t)) = falsch (nach push nie leer)</li>
+      <li>K3: pop(push(k, t)) = k (push rückgängig machen)</li>
+      <li>K4: top(push(k, t)) = t (oberstes Element zurückgeben)</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">KLASSIFIKATION DER DATENTYPEN</div>
+    <table class="data-table">
+      <thead><tr><th>Kategorie</th><th>Typ</th><th>Beispiele</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="3"><strong>Linear</strong></td><td>Statisch – Basis</td><td>int, float, boolean, char</td></tr>
+        <tr><td>Statisch – Aggregiert</td><td>Array, Verbund (Record)</td></tr>
+        <tr><td>Dynamisch</td><td>Stack, Queue, Verkettete Liste</td></tr>
+        <tr><td><strong>Nichtlinear</strong></td><td>Hierarchisch / Vernetzt</td><td>Baum, Graph</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">STATISCHE DATENTYPEN</div>
+    <p><strong>Basisdatentypen (atomar):</strong> Direkt in Hardware verankert, nicht weiter teilbar.</p>
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Operationen</th><th>Realisierung</th></tr></thead>
+      <tbody>
+        <tr><td>Ganze Zahlen</td><td>+, −, *, DIV</td><td>int, Integer, BigInt</td></tr>
+        <tr><td>Reelle Zahlen</td><td>+, −, *, /</td><td>real, float</td></tr>
+        <tr><td>Logische Werte</td><td>AND, OR, XOR, NEG</td><td>boolean</td></tr>
+        <tr><td>Zeichen</td><td>Verkettung (·)</td><td>String, Char[]</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Array:</strong> Speichert Objekte <em>eines</em> Typs mit Index-Zugriff. Deklaration: <code>int V[5]</code> → V[0]…V[4].</p>
+    <p><strong>Verbund (Record):</strong> Speichert Objekte <em>verschiedener</em> Typen. Zugriff per Name: <code>Peter.Nachname</code>.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">DYNAMISCHE DATENTYPEN</div>
+    <p><strong>Stack (Stapel) – Last In, First Out (LIFO):</strong> Nur das oberste Element ist zugänglich. Wie ein Tellerstapel: der zuletzt aufgelegte Teller wird zuerst genommen.</p>
+    <p><strong>Anwendung:</strong> Umwandlung Infix → inverse polnische Notation (Postfix).</p>
+    <p><strong>Queue (Schlange) – First In, First Out (FIFO):</strong> Nur das älteste Element ist zugänglich. Wie eine Warteschlange an der Supermarktkasse.</p>
+    <p><strong>Erweiterung:</strong> Priority Queue – Elemente mit höherer Priorität werden bevorzugt.</p>
+    <p><strong>Verkettete Liste:</strong> Jedes Element kennt die Adresse des nächsten Elements (wie bei einer Schnitzeljagd).</p>
+    <p><strong>Vorteil:</strong> Dynamische Größe, schnelles Einfügen/Löschen.</p>
+    <p><strong>Nachteil:</strong> Kein direkter Index-Zugriff, nur sequentielles Durchlaufen.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">INVERSE POLNISCHE NOTATION (POSTFIX)</div>
+    <p><strong>Infix:</strong> a · (b + c) − d</p>
+    <p><strong>Postfix:</strong> bc+a·d−</p>
+    <p><strong>Vorteil:</strong> Klammerfrei und eindeutig, leichter maschinell zu verarbeiten.</p>
+    <p><strong>Algorithmus:</strong> Verwendet einen Stack – Ziffern direkt ausgeben, Operatoren auf Stack legen, bei „)" vom Stack holen.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAP 5 ════════════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header"><h2>Kapitel 5</h2><span>Ausgewählte Algorithmen auf linearen Datenstrukturen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">SORTIEREN – GRUNDBEGRIFFE</div>
+    <p>Daten liegen als Schlüssel (keys) in einem Array A vor. Sortierung kann aufsteigend (<strong>Min-Sortierung</strong>) oder absteigend (<strong>Max-Sortierung</strong>) erfolgen. Alle hier vorgestellten Algorithmen arbeiten <strong>in situ</strong> (in place) – sie manipulieren die Eingabeliste direkt.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">BUBBLESORT</div>
+    <p><strong>Prinzip:</strong> (n−1)-mal die Liste von links nach rechts durchlaufen. Nachbarelemente vergleichen – ist das linke größer, tauschen.</p>
+    <p><strong>Effekt:</strong> Das größte Element „blubbert" bei jedem Durchlauf ans Ende.</p>
+    <p><strong>Verbesserung:</strong> Die zu sortierende Restliste wird pro Durchlauf um 1 kürzer (letzte Elemente sind bereits sortiert).</p>
+    <p><strong>Beispiel:</strong> [13, 25, 4, 15, 9, 16, 19]</p>
+    <p>Nach Durchlauf 1: [13, 4, 15, 9, 16, 19, <strong>25</strong>]</p>
+    <p>Nach Durchlauf 2: [4, 13, 9, 15, 16, <strong>19, 25</strong>]</p>
+    <p>… → [4, 9, 13, 15, 16, 19, 25] ✓</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">SELECTIONSORT</div>
+    <p><strong>Prinzip:</strong> In der unsortierten Restliste das <strong>Minimum</strong> suchen und an die nächste Position der sortierten Teilliste tauschen.</p>
+    <p><strong>Beispiel:</strong> [13, 25, 4, 15, 9, 16, 19]</p>
+    <p>Schritt 1: Min = 4 (Pos 2) → tausche mit Pos 0 → [<strong>4</strong>, 25, 13, 15, 9, 16, 19]</p>
+    <p>Schritt 2: Min = 9 (Pos 4) → tausche mit Pos 1 → [4, <strong>9</strong>, 13, 15, 25, 16, 19]</p>
+    <p>… → [4, 9, 13, 15, 16, 19, 25] ✓</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">INSERTIONSORT</div>
+    <p><strong>Prinzip:</strong> Elemente nacheinander aus der unsortierten Liste nehmen und an der <strong>richtigen Stelle</strong> in die sortierte Teilliste einfügen.</p>
+    <p><strong>Beispiel:</strong> [11, 28, 4, 15, 19, 16, 29]</p>
+    <p>Sortiert: [11] → [11, 28] → [<strong>4</strong>, 11, 28] → [4, 11, <strong>15</strong>, 28] → …</p>
+    <p>Die sortierte Teilliste wächst, die unsortierte schrumpft.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VERGLEICH DER SORTIERALGORITHMEN</div>
+    <table class="data-table">
+      <thead><tr><th>Algorithmus</th><th>Prinzip</th><th>Besonderheit</th></tr></thead>
+      <tbody>
+        <tr><td>BubbleSort</td><td>Nachbarn vergleichen &amp; tauschen</td><td>Einfach, aber viele Tauschoperationen</td></tr>
+        <tr><td>SelectionSort</td><td>Minimum suchen &amp; tauschen</td><td>Weniger Tauschoperationen als BubbleSort</td></tr>
+        <tr><td>InsertionSort</td><td>An richtiger Stelle einfügen</td><td>Gut bei fast sortierten Listen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">FIBONACCI-SUCHE</div>
+    <p><strong>Voraussetzung:</strong> Sortierte Liste, deren Länge einer Fibonacci-Zahl entspricht (ggf. auffüllen).</p>
+    <p><strong>Prinzip:</strong> Wie binäre Suche, aber die Liste wird nicht in der Mitte geteilt, sondern gemäß <strong>Fibonacci-Zahlen</strong>: F(n) = F(n−1) + F(n−2).</p>
+    <p><strong>Folge:</strong> 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, …</p>
+    <p><strong>Vorteil:</strong> Kann bei stark steigenden Werten effizienter sein als binäre Suche.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">INTERPOLATORISCHE SUCHE</div>
+    <p><strong>Idee:</strong> Bei der binären Suche ist das Pivot-Element immer in der Mitte. Bei der interpolatorischen Suche wird die <strong>Position anhand des Werts</strong> geschätzt – wie beim Aufschlagen eines Telefonbuchs.</p>
+    <p><strong>Formel:</strong> p = l + ⌊(s − A[l]) / (A[r] − A[l]) · (r − l)⌋ wobei s = gesuchter Wert, l = linke Grenze, r = rechte Grenze.</p>
+    <p><strong>Vorteil:</strong> Bei gleichverteilten Daten deutlich schneller als binäre Suche.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAP 6 ════════════════════════════════════════════ -->
+<div id="kap6" class="section">
+  <div class="section-header"><h2>Kapitel 6</h2><span>Bäume und Graphen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">BÄUME – GRUNDBEGRIFFE</div>
+    <p>Ein <strong>Baum</strong> ist eine nichtlineare Datenstruktur – eine verallgemeinerte Liste, bei der jedes Element mehrere Nachfolger haben kann.</p>
+    <table class="data-table">
+      <thead><tr><th>Begriff</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Wurzel</strong></td><td>Einziger Knoten ohne Vorgänger (oben!)</td></tr>
+        <tr><td><strong>Knoten</strong></td><td>Elemente des Baumes</td></tr>
+        <tr><td><strong>Blätter</strong></td><td>Knoten ohne Nachfolger (Endknoten)</td></tr>
+        <tr><td><strong>Innere Knoten</strong></td><td>Knoten, die keine Blätter sind</td></tr>
+        <tr><td><strong>Vater / Sohn</strong></td><td>Direkt durch Kante verbundene Knoten</td></tr>
+        <tr><td><strong>Pfad</strong></td><td>Folge von Knoten k₀, …, kₙ (kᵢ ist Sohn von kᵢ₋₁)</td></tr>
+        <tr><td><strong>Tiefe/Niveau</strong></td><td>Pfadlänge von der Wurzel zum Knoten</td></tr>
+        <tr><td><strong>Höhe</strong></td><td>Länge des längsten Pfades im Baum</td></tr>
+        <tr><td><strong>Ordnung</strong></td><td>Maximale Anzahl von Söhnen pro Knoten</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">GEORDNETE BÄUME &amp; VOLLSTÄNDIGE BÄUME</div>
+    <p><strong>Geordneter Baum:</strong> Die Knoten innerhalb jedes Niveaus sind angeordnet (strenge Ordnungsrelation).</p>
+    <p><strong>Vollständiger Baum:</strong> Jedes Niveau hat die maximale Knotenzahl und alle Blätter haben die gleiche Tiefe.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">BINÄRBAUM (ORDNUNG 2)</div>
+    <p>Jeder Knoten hat maximal <strong>2 Nachfolger</strong>: linker Sohn und rechter Sohn.</p>
+    <p><strong>Binärer Suchbaum:</strong> Schlüsselmenge aufteilen – kleinere Werte links, größere rechts (Divide-and-Conquer).</p>
+    <p><strong>Beispiel:</strong> Schlüssel {4, 9, 1, 14, 7, 15, 17, 12, 3, 21}, Wurzel = 12</p>
+    <p>Links: {1, 3, 4, 7, 9} → Teilbaum mit Wurzel 7</p>
+    <p>Rechts: {14, 15, 17, 21} → Teilbaum mit Wurzel 15</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">GRAPHEN</div>
+    <p><strong>Ungerichteter Graph:</strong> G = (V, E) mit V = Knoten (vertices) und E = Kanten (edges). Kanten sind symmetrisch.</p>
+    <p><strong>Gerichteter Graph (Digraph):</strong> Kanten haben eine Richtung (Pfeile). Kante von K nach Q ≠ Kante von Q nach K.</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">ZYKLEN IN GRAPHEN</div>
+    <p><strong>Zyklus:</strong> Ein Weg in einem gerichteten Graphen, der am Ausgangsknoten endet.</p>
+    <p><strong>Zyklischer Graph:</strong> Enthält mindestens einen Zyklus.</p>
+    <p><strong>Azyklischer Graph (DAG):</strong> Enthält keinen Zyklus.</p>
+    <p><strong>Wichtig:</strong> Ein Baum enthält <em>niemals</em> einen Zyklus – Bäume sind immer azyklisch!</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">ADJAZENZMATRIX</div>
+    <p>Speichert einen Graphen mit n Knoten als <strong>n × n Matrix</strong>:</p>
+    <ul class="content-list">
+      <li>c<sub>ij</sub> = 1, wenn Kante von V<sub>i</sub> nach V<sub>j</sub> existiert</li>
+      <li>c<sub>ij</sub> = 0, wenn keine Kante existiert</li>
+    </ul>
+    <p><strong>Speicherbedarf:</strong> O(n²) – unabhängig von der Kantenanzahl.</p>
+    <p><strong>Alternative:</strong> Adjazenzlisten – verkettete Listen pro Knoten → effizienter bei wenigen Kanten.</p>
+    <p><strong>Historisch:</strong> Das Königsberger Brückenproblem (Euler, 1736) gilt als Geburtsstunde der Graphentheorie. Euler bewies, dass ein Graph genau dann einen geschlossenen Weg über alle Kanten hat, wenn jeder Knoten eine gerade Anzahl von Nachbarn besitzt.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ FLASHCARDS ════════════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>Klick auf die Karte zum Umdrehen</span>
+  </div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ QUIZ ════════════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Prüfungsquiz</h2>
+    <span>20 Fragen mit Erklärungen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ CHEATSHEET ════════════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header"><h2>Cheatsheet</h2><span>Alle Formeln &amp; Schlüsselkonzepte</span></div>
+
+  <div class="cheat-grid">
+
+    <div class="cheat-block">
+      <h4>Algorithmus-Grundlagen</h4>
+      <div class="cheat-row"><span class="cheat-key">Finitheit</span><span class="cheat-val">Endlich beschreibbar</span></div>
+      <div class="cheat-row"><span class="cheat-key">Determinismus</span><span class="cheat-val">Nächster Schritt eindeutig</span></div>
+      <div class="cheat-row"><span class="cheat-key">Determiniertheit</span><span class="cheat-val">Ausgabe eindeutig</span></div>
+      <div class="cheat-row"><span class="cheat-key">Terminiertheit</span><span class="cheat-val">Zusatz: Endet in endlicher Zeit</span></div>
+      <div class="cheat-row"><span class="cheat-key">n!</span><span class="cheat-val">1 · 2 · 3 · … · n</span></div>
+      <div class="cheat-row"><span class="cheat-key">ggT(a,b)</span><span class="cheat-val">ggT(a, b−a) wenn b > a</span></div>
+      <div class="cheat-row"><span class="cheat-key">Flussdiagramm</span><span class="cheat-val">□ Berechnung, ◇ Verzweigung</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Mengen &amp; Relationen</h4>
+      <div class="cheat-row"><span class="cheat-key">Menge</span><span class="cheat-val">M = {x | P(x)}, ungeordnet</span></div>
+      <div class="cheat-row"><span class="cheat-key">Liste</span><span class="cheat-val">L = [x₁, x₂, …], geordnet</span></div>
+      <div class="cheat-row"><span class="cheat-key">Potenzmenge</span><span class="cheat-val">|P(M)| = 2^|M|</span></div>
+      <div class="cheat-row"><span class="cheat-key">Partielle Ordnung</span><span class="cheat-val">reflexiv + antisymmetrisch + transitiv</span></div>
+      <div class="cheat-row"><span class="cheat-key">Äquivalenzrelation</span><span class="cheat-val">reflexiv + symmetrisch + transitiv</span></div>
+      <div class="cheat-row"><span class="cheat-key">Bijektiv</span><span class="cheat-val">injektiv + surjektiv</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Datentypen</h4>
+      <div class="cheat-row"><span class="cheat-key">ADT</span><span class="cheat-val">Schnittstelle + Axiome</span></div>
+      <div class="cheat-row"><span class="cheat-key">Array</span><span class="cheat-val">Gleicher Typ, Index-Zugriff</span></div>
+      <div class="cheat-row"><span class="cheat-key">Verbund</span><span class="cheat-val">Verschiedene Typen, Name-Zugriff</span></div>
+      <div class="cheat-row"><span class="cheat-key">Stack</span><span class="cheat-val">LIFO: push, pop, top</span></div>
+      <div class="cheat-row"><span class="cheat-key">Queue</span><span class="cheat-val">FIFO: Warteschlange</span></div>
+      <div class="cheat-row"><span class="cheat-key">Verkettete Liste</span><span class="cheat-val">Zeiger auf nächstes Element</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Suchalgorithmen</h4>
+      <div class="cheat-row"><span class="cheat-key">Lineare Suche</span><span class="cheat-val">O(n), unsortiert</span></div>
+      <div class="cheat-row"><span class="cheat-key">Binäre Suche</span><span class="cheat-val">O(log n), sortiert, Mitte teilen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Fibonacci-Suche</span><span class="cheat-val">Sortiert, Fibonacci-Teilung</span></div>
+      <div class="cheat-row"><span class="cheat-key">Interpolatorische S.</span><span class="cheat-val">Sortiert, Wert-gewichtetes Pivot</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Sortieralgorithmen</h4>
+      <div class="cheat-row"><span class="cheat-key">BubbleSort</span><span class="cheat-val">Nachbarn vergleichen &amp; tauschen</span></div>
+      <div class="cheat-row"><span class="cheat-key">SelectionSort</span><span class="cheat-val">Minimum suchen &amp; vorne einfügen</span></div>
+      <div class="cheat-row"><span class="cheat-key">InsertionSort</span><span class="cheat-val">An richtige Stelle einfügen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Alle drei</span><span class="cheat-val">In situ (in place), elementar</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Bäume &amp; Graphen</h4>
+      <div class="cheat-row"><span class="cheat-key">Baum</span><span class="cheat-val">Wurzel, Knoten, Blätter, azyklisch</span></div>
+      <div class="cheat-row"><span class="cheat-key">Binärbaum</span><span class="cheat-val">Ordnung 2 (max. 2 Söhne)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Suchbaum</span><span class="cheat-val">Links kleiner, rechts größer</span></div>
+      <div class="cheat-row"><span class="cheat-key">Graph</span><span class="cheat-val">G = (V, E), Knoten + Kanten</span></div>
+      <div class="cheat-row"><span class="cheat-key">Digraph</span><span class="cheat-val">Gerichtete Kanten (Pfeile)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Adjazenzmatrix</span><span class="cheat-val">n×n, Speicher O(n²)</span></div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+const flashcardsData = [
+  // Kap 1
+  {q:"Was ist der Unterschied zwischen einer Menge und einer Liste?", a:"Eine Menge ist ungeordnet und enthält keine Duplikate ({a,b} = {b,a}). Eine Liste ist geordnet und kann Duplikate enthalten ([a,b] ≠ [b,a]).", cat:"Kap 1"},
+  {q:"Welche Basisdatentypen gibt es?", a:"Ganze Zahlen (int/Integer), reelle Zahlen (float/real), logische Werte (boolean) und Zeichen (String/Char).", cat:"Kap 1"},
+  {q:"Was bedeutet das Zeichen ∈?", a:"\"Ist Element von\" – zeigt an, dass ein Objekt x in einer Menge M enthalten ist: x ∈ M.", cat:"Kap 1"},
+  {q:"Was ist die Potenzmenge P(M)?", a:"Die Menge aller Teilmengen von M. Für |M| = n gilt: |P(M)| = 2^n. Beispiel: P({a,b}) = {∅, {a}, {b}, {a,b}}.", cat:"Kap 1"},
+  {q:"Was bedeutet das kartesische Produkt M₁ × M₂?", a:"Die Menge aller geordneten Paare (x₁, x₂) mit x₁ ∈ M₁ und x₂ ∈ M₂. Beispiel: {1,2} × {a,b} = {(1,a),(1,b),(2,a),(2,b)}.", cat:"Kap 1"},
+  // Kap 2
+  {q:"Welche drei Pflicht-Eigenschaften hat ein Algorithmus?", a:"Finitheit (endlich beschreibbar), Determinismus (nächster Schritt eindeutig), Determiniertheit (Ausgabe eindeutig).", cat:"Kap 2"},
+  {q:"Was ist der Unterschied zwischen linearer und binärer Suche?", a:"Linear: sequentiell alle Elemente durchgehen → O(n). Binär: sortierte Liste immer halbieren → O(log n). Für 3,5 Mio. Einträge: ~22 vs. ~1,75 Mio. Vergleiche.", cat:"Kap 2"},
+  {q:"Was ist das Collatz-Problem?", a:"Für n: wenn ungerade → 3n+1, dann n/2. Wiederhole bis n=1. Unklar ob der Algorithmus für alle n terminiert – eines der großen offenen Probleme!", cat:"Kap 2"},
+  {q:"Was zeigt ein Flussdiagramm?", a:"Den Ablauf eines Algorithmus: Pfeile = Ablauf, Rechtecke = Berechnungen/Zuweisungen, Rauten = Verzweigungen/Abfragen, Ovale = Start/Ende.", cat:"Kap 2"},
+  {q:"Was ist der fundamentale Unterschied zwischen Variablen in Mathematik und Informatik?", a:"Mathematik: Variablen sind feste, unveränderliche Werte (a = 5). Informatik: Variablen sind Speicherzellen, die überschrieben werden können (a := 2·a).", cat:"Kap 2"},
+  // Kap 3
+  {q:"Was ist eine Relation R über M?", a:"Eine Teilmenge des kartesischen Produkts: R ⊆ M × M. Sie setzt Elemente der Menge miteinander in Beziehung, z.B. \"kleiner als\" oder \"verheiratet mit\".", cat:"Kap 3"},
+  {q:"Was ist eine partielle Ordnung?", a:"Eine Relation, die reflexiv (xRx), antisymmetrisch (xRy ∧ x≠y → ¬yRx) und transitiv (xRy ∧ yRz → xRz) ist. Beispiel: ≤ auf natürlichen Zahlen.", cat:"Kap 3"},
+  {q:"Was ist eine Äquivalenzrelation?", a:"Eine Relation, die reflexiv, symmetrisch und transitiv ist. Sie teilt die Menge in Äquivalenzklassen. Beispiel: \"gleicher Rest bei Division durch 3\".", cat:"Kap 3"},
+  {q:"Was bedeutet 'bijektiv' bei einer Operation?", a:"Sowohl injektiv (jedes Ergebnis höchstens einmal) als auch surjektiv (jedes Ergebnis mindestens einmal) – also jedes Ergebnis genau einmal.", cat:"Kap 3"},
+  {q:"Was ist eine universelle Algebra?", a:"Eine Algebra A = (M, Op₁, ..., Opₙ), bei der alle Operationen nur Werte liefern, die wieder in der Trägermenge M liegen. Beispiel: (ℕ, +) ist universell.", cat:"Kap 3"},
+  // Kap 4
+  {q:"Was ist ein abstrakter Datentyp (ADT)?", a:"Eine mathematische Spezifikation mit Signatur (Operationen) und Axiomen (Regeln). Beschreibt nur die Schnittstelle (WAS), nicht die Implementierung (WIE).", cat:"Kap 4"},
+  {q:"Was ist das Prinzip eines Stacks?", a:"Last In, First Out (LIFO) – nur das zuletzt hinzugefügte Element ist zugänglich. Operationen: push (drauflegen), pop (wegnehmen), top (anschauen), empty (leer?).", cat:"Kap 4"},
+  {q:"Was ist der Unterschied zwischen Array und Verbund?", a:"Array: alle Komponenten gleichen Typs, Zugriff per Index (A[3]). Verbund: Komponenten verschiedenen Typs, Zugriff per Name (Peter.Nachname). Beide statisch.", cat:"Kap 4"},
+  {q:"Was ist eine Queue?", a:"First In, First Out (FIFO) – nur das älteste Element ist zugänglich. Wie eine Warteschlange: wer zuerst kommt, wird zuerst bedient.", cat:"Kap 4"},
+  {q:"Was ist der Vorteil einer verketteten Liste?", a:"Dynamische Größe: Einfügen/Löschen durch Zeiger-Umbiegen, kein Verschieben nötig. Nachteil: kein direkter Index-Zugriff, nur sequentielles Durchlaufen.", cat:"Kap 4"},
+  // Kap 5
+  {q:"Wie funktioniert BubbleSort?", a:"(n−1)-mal die Liste durchlaufen, Nachbarelemente vergleichen und bei falscher Reihenfolge tauschen. Das größte Element 'blubbert' nach jedem Durchlauf ans Ende.", cat:"Kap 5"},
+  {q:"Wie funktioniert SelectionSort?", a:"In der unsortierten Restliste das Minimum suchen und an die nächste Position der sortierten Teilliste tauschen. Weniger Tauschoperationen als BubbleSort.", cat:"Kap 5"},
+  {q:"Wie funktioniert InsertionSort?", a:"Elemente nacheinander aus der unsortierten Liste nehmen und an der richtigen Stelle in die sortierte Teilliste einfügen (wie Karten sortieren in der Hand).", cat:"Kap 5"},
+  {q:"Was ist die Fibonacci-Suche?", a:"Ähnlich binärer Suche, aber die Liste wird gemäß Fibonacci-Zahlen geteilt (5+8=13 statt Hälfte). Setzt sortierte Liste voraus. F(n) = F(n-1) + F(n-2).", cat:"Kap 5"},
+  {q:"Was ist die interpolatorische Suche?", a:"Verfeinerung der binären Suche: Pivot-Position wird anhand des gesuchten Werts gewichtet. Wie beim Telefonbuch – \"A\" sucht man vorne, \"Z\" hinten.", cat:"Kap 5"},
+  // Kap 6
+  {q:"Was ist ein Baum in der Informatik?", a:"Nichtlineare Datenstruktur: Wurzel (kein Vorgänger), innere Knoten und Blätter (keine Nachfolger). Jeder Knoten hat genau einen Pfad zur Wurzel. Immer azyklisch!", cat:"Kap 6"},
+  {q:"Was ist ein Binärbaum?", a:"Ein geordneter Baum der Ordnung 2: Jeder Knoten hat maximal 2 Nachfolger – linker Sohn und rechter Sohn. Wichtigste Baumart in der Informatik.", cat:"Kap 6"},
+  {q:"Was ist der Unterschied zwischen gerichtetem und ungerichtetem Graph?", a:"Ungerichtet: Kanten symmetrisch (A↔B). Gerichtet (Digraph): Kanten haben Richtung (A→B ≠ B→A). Bäume sind Spezialfälle gerichteter Graphen.", cat:"Kap 6"},
+  {q:"Was ist ein Zyklus in einem Graphen?", a:"Ein geschlossener Weg: Start = Ende. Graph mit Zyklus = zyklisch, ohne = azyklisch. Bäume sind immer azyklisch!", cat:"Kap 6"},
+  {q:"Was ist eine Adjazenzmatrix?", a:"n×n-Matrix für Graph mit n Knoten: c_ij = 1 wenn Kante Vi→Vj, sonst 0. Speicherbedarf O(n²). Alternative: Adjazenzlisten (effizienter bei wenigen Kanten).", cat:"Kap 6"}
+];
+
+const quizData = [
+  // Kap 2
+  {q:"Welche Eigenschaft gehört NICHT zu den Pflicht-Eigenschaften eines Algorithmus?",
+   opts:["Finitheit","Determinismus","Terminiertheit","Determiniertheit"], correct:2,
+   exp:"Terminiertheit ist nur eine Zusatzforderung. Die drei Pflicht-Eigenschaften sind Finitheit, Determinismus und Determiniertheit."},
+  {q:"Wie viele Vergleiche braucht die binäre Suche in einer sortierten Liste mit 1.000.000 Einträgen ungefähr?",
+   opts:["~500.000","~1.000","~20","~100"], correct:2,
+   exp:"log₂(1.000.000) ≈ 20. Die binäre Suche halbiert die Liste bei jedem Schritt, daher reichen ca. 20 Vergleiche."},
+  {q:"Was ist das Ergebnis von ggT(16, 12)?",
+   opts:["2","4","8","16"], correct:1,
+   exp:"ggT(16,12) → ggT(12,4) → ggT(4,8) → ggT(4,4) = 4. Die 4 ist die größte Zahl, die 16 und 12 ohne Rest teilt."},
+  {q:"Welches Darstellungsmittel wird für Verzweigungen in Flussdiagrammen verwendet?",
+   opts:["Rechteck","Raute","Kreis","Pfeil"], correct:1,
+   exp:"Rauten stellen Abfragen/Verzweigungen dar. Rechtecke stehen für Berechnungen und Zuweisungen."},
+  // Kap 3
+  {q:"Welche Eigenschaft hat die Relation 'Kleiner als' (<)?",
+   opts:["Reflexiv und symmetrisch","Reflexiv und transitiv","Asymmetrisch und transitiv","Symmetrisch und transitiv"], correct:2,
+   exp:"< ist asymmetrisch (wenn x<y, dann nie y<x) und transitiv (wenn x<y und y<z, dann x<z). Nicht reflexiv (nie x<x)."},
+  {q:"Was ist P({a, b})?",
+   opts:["{{a}, {b}}","{∅, {a}, {b}, {a,b}}","{{a,b}}","{a, b, {a,b}}"], correct:1,
+   exp:"Die Potenzmenge enthält alle Teilmengen: die leere Menge, die einelementigen Teilmengen und die Menge selbst. |P(M)| = 2² = 4."},
+  {q:"Wann ist eine Algebra universell?",
+   opts:["Wenn sie nur eine Trägermenge hat","Wenn sie unendlich viele Operationen hat","Wenn alle Operationen nur Werte aus der Trägermenge liefern","Wenn sie eine Äquivalenzrelation enthält"], correct:2,
+   exp:"Universell bedeutet, dass die Ergebnisse aller Operationen wieder in der Trägermenge liegen (abgeschlossen). Beispiel: (ℕ, +) ist universell."},
+  {q:"Welche Bedingungen muss eine Äquivalenzrelation erfüllen?",
+   opts:["Reflexiv und transitiv","Reflexiv, symmetrisch und transitiv","Reflexiv und antisymmetrisch","Symmetrisch und asymmetrisch"], correct:1,
+   exp:"Äquivalenzrelation = reflexiv (xRx) + symmetrisch (xRy → yRx) + transitiv (xRy ∧ yRz → xRz). Sie teilt die Menge in Klassen."},
+  // Kap 4
+  {q:"Was ist der Hauptunterschied zwischen statischen und dynamischen Datentypen?",
+   opts:["Statische sind immer schneller","Bei statischen ist die Größe fest, bei dynamischen veränderbar","Dynamische brauchen weniger Speicher","Statische können nur Zahlen speichern"], correct:1,
+   exp:"Statische Datentypen (Array, Verbund) haben eine feste Größe. Dynamische (Stack, Queue, verk. Liste) können zur Laufzeit wachsen und schrumpfen."},
+  {q:"Welches Prinzip verfolgt ein Stack?",
+   opts:["First In, First Out","Last In, First Out","Random Access","First Come, First Served"], correct:1,
+   exp:"Beim Stack (Stapel) ist nur das zuletzt hinzugefügte Element zugänglich – LIFO. Wie ein Tellerstapel."},
+  {q:"Was ergibt die inverse polnische Notation von (2+3)·4?",
+   opts:["·+234","23+4·","234+·","2+34·"], correct:1,
+   exp:"Zuerst Operanden 2 und 3, dann + (ergibt 5), dann 4, dann · (ergibt 20). Postfix: 23+4·. Klammerfrei und eindeutig!"},
+  {q:"Welcher dynamische Datentyp eignet sich am besten für eine Warteschlange?",
+   opts:["Stack","Verkettete Liste","Queue","Array"], correct:2,
+   exp:"Die Queue arbeitet nach dem FIFO-Prinzip (First In, First Out), genau wie eine reale Warteschlange an der Kasse."},
+  // Kap 5
+  {q:"Was passiert beim BubbleSort nach dem ersten Durchlauf?",
+   opts:["Die Liste ist vollständig sortiert","Das kleinste Element steht am Anfang","Das größte Element steht am Ende","Alle Elemente sind um eine Position verschoben"], correct:2,
+   exp:"Nach dem ersten Durchlauf 'blubbert' das größte Element an die letzte Position. Die Restliste wird pro Durchlauf um 1 kürzer."},
+  {q:"Wie funktioniert SelectionSort?",
+   opts:["Nachbarelemente vergleichen und tauschen","Minimum der Restliste suchen und an die richtige Position tauschen","Elemente an richtige Stelle einfügen","Liste in zwei Hälften teilen"], correct:1,
+   exp:"SelectionSort sucht in jedem Schritt das Minimum der unsortierten Restliste und tauscht es an die nächste Position."},
+  {q:"Welche Eigenschaft haben BubbleSort, SelectionSort und InsertionSort gemeinsam?",
+   opts:["Sie sind alle optimal","Sie brauchen zusätzlichen Speicher","Sie arbeiten alle in situ (in place)","Sie setzen sortierte Listen voraus"], correct:2,
+   exp:"Alle drei sind elementare Sortieralgorithmen, die in situ (in place) arbeiten – sie manipulieren die Eingabeliste direkt."},
+  {q:"Worauf basiert die interpolatorische Suche?",
+   opts:["Zufällige Pivot-Wahl","Fibonacci-Zahlen","Gewichtung der Pivot-Position nach dem Suchwert","Parallele Vergleiche"], correct:2,
+   exp:"Wie beim Telefonbuch: 'A' sucht man vorne, 'Z' hinten. Die Pivot-Position hängt vom Verhältnis des Suchwerts zu den Randwerten ab."},
+  // Kap 6
+  {q:"Was ist die Ordnung eines Baumes?",
+   opts:["Die Anzahl der Blätter","Die Höhe des Baumes","Die maximale Anzahl von Nachfolgern pro Knoten","Die Anzahl der Ebenen"], correct:2,
+   exp:"Die Ordnung gibt die maximale Anzahl von Söhnen an, die ein Vaterknoten haben kann. Ein Binärbaum hat Ordnung 2."},
+  {q:"Wann ist ein Baum vollständig?",
+   opts:["Wenn er nur Blätter hat","Wenn jedes Niveau die maximale Knotenzahl hat und alle Blätter gleiche Tiefe haben","Wenn er mindestens 10 Knoten hat","Wenn jeder Knoten genau 2 Söhne hat"], correct:1,
+   exp:"Ein vollständiger Baum nutzt alle Möglichkeiten der gegebenen Ordnung aus: maximale Knotenzahl pro Niveau, gleiche Blatttiefe."},
+  {q:"Was bedeutet 'azyklisch' bei einem gerichteten Graphen?",
+   opts:["Er hat keine Kanten","Er hat nur einen Knoten","Er enthält keinen geschlossenen Weg (Zyklus)","Er ist nicht zusammenhängend"], correct:2,
+   exp:"Azyklisch = kein Weg führt zum Ausgangsknoten zurück. Bäume sind immer azyklisch!"},
+  {q:"Was ist der Speicherbedarf einer Adjazenzmatrix für n Knoten?",
+   opts:["O(n)","O(n²)","O(n log n)","O(2^n)"], correct:1,
+   exp:"n Zeilen × n Spalten = n² Einträge, unabhängig von der Kantenanzahl. Alternative: Adjazenzlisten sind bei wenigen Kanten effizienter."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

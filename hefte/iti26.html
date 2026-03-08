@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITI26 – Anwendungsdienste &amp; Netzmanagement | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">ITI26 · 1022K05 · HfB</div>
+  <h1>Anwendungsdienste &amp; Netzmanagement</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 4 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header">
+    <h2>Lernübersicht</h2>
+    <span>4 Kapitel · Prüfungsvorbereitung</span>
+  </div>
+  <div class="card">
+    <div class="card-title">Lernpfad</div>
+    <p>Klicke auf ein Kapitel, um direkt zu den Lerninhalten zu springen. Nutze danach <strong>Flashcards</strong> zum Wiederholen und das <strong>Quiz</strong> zum Testen.</p>
+  </div>
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#4f9cff" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>P2P- &amp; Client-Server-Netze</h3>
+      <p>Peer-to-Peer vs. Client-Server, Server-Prozesse, Sockets, iterativer &amp; paralleler Server</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Anwendungen im Internet</h3>
+      <p>WWW/HTTP/HTML, Web 2.0, Social Media, E-Mail (SMTP/POP3/IMAP), Streaming, Blockchain, Web 3.0</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#eab308" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Management von Computernetzen</h3>
+      <p>ITSM/ITIL, Monitoring, OSI Management Framework, SNMP/MIB/OID, Nagios, PRTG</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f97316" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Informationssicherheit</h3>
+      <p>Grundbegriffe, IT-Grundschutz (BSI), Kryptografie (symmetrisch/asymmetrisch), RSA, Digitale Signatur, Angriffsarten</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAPITEL 1
+══════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header">
+    <h2>Kapitel 1 – P2P- &amp; Client-Server-Netze</h2>
+    <span>Netzwerkarchitekturen, Server-Prozesse &amp; Sockets</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Client-Server vs. Peer-to-Peer</div>
+    <p>Es gibt zwei grundlegende Architekturmodelle in der Netzwerkkommunikation:</p>
+    <table class="data-table">
+      <thead><tr><th>Merkmal</th><th>Client-Server</th><th>Peer-to-Peer (P2P)</th></tr></thead>
+      <tbody>
+        <tr><td>Struktur</td><td>Zentraler Server + Clients</td><td>Gleichberechtigte Knoten (Peers)</td></tr>
+        <tr><td>Dienste</td><td>Server bietet, Client nutzt</td><td>Jeder Peer bietet &amp; nutzt</td></tr>
+        <tr><td>Vorteil</td><td>Einfache Kontrolle, Sicherheit</td><td>Kein Single Point of Failure, skalierbar</td></tr>
+        <tr><td>Nachteil</td><td>Bottleneck, SPOF</td><td>Schwer kontrollierbar, Peers müssen sich finden</td></tr>
+        <tr><td>Beispiel</td><td>Webserver, E-Mail-Server, FTP</td><td>BitTorrent, Blockchain, SETI@home</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Server-Prozesse &amp; Sockets</div>
+    <p>Ein <strong>Server-Prozess</strong> ist ein permanent laufender Dienst (Daemon), der auf Anfragen wartet. Er wird beim Systemstart initiiert und läuft im Hintergrund.</p>
+    <div class="concept def">
+      <strong>Socket = IP-Adresse : Portnummer</strong><br>
+      Beispiel: 192.168.1.10:80 (HTTP-Server)
+    </div>
+    <p>Portnummern identifizieren den Dienst:</p>
+    <table class="data-table">
+      <thead><tr><th>Bereich</th><th>Portnummern</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>Well-Known</td><td>0 – 1023</td><td>Standarddienste (HTTP=80, FTP=21, SSH=22)</td></tr>
+        <tr><td>Registered</td><td>1024 – 49151</td><td>Registrierte Anwendungen</td></tr>
+        <tr><td>Dynamic</td><td>49152 – 65535</td><td>Dynamisch vom OS vergeben</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Server-Arbeitsweise: iterativ vs. parallel</div>
+    <table class="data-table">
+      <thead><tr><th>Merkmal</th><th>Iterativer Server</th><th>Paralleler Server</th></tr></thead>
+      <tbody>
+        <tr><td>Verarbeitung</td><td>Ein Client nach dem anderen</td><td>Mehrere Clients gleichzeitig</td></tr>
+        <tr><td>Mechanismus</td><td>Sequenziell, blockierend</td><td>Pro Client ein neuer Kindprozess/Thread</td></tr>
+        <tr><td>Vorteil</td><td>Einfach zu implementieren</td><td>Hohe Leistung, keine Wartezeiten</td></tr>
+        <tr><td>Nachteil</td><td>Wartezeit bei vielen Anfragen</td><td>Höherer Ressourcenverbrauch</td></tr>
+        <tr><td>Einsatz</td><td>Einfache Dienste (z.B. Uhrzeit)</td><td>Webserver, Datenbankserver</td></tr>
+      </tbody>
+    </table>
+    <p>Beim parallelen Server erstellt der <strong>Elternprozess</strong> für jede Anfrage einen <strong>Kindprozess</strong>, der die Anfrage unabhängig bearbeitet. Der Elternprozess kehrt sofort zum Lauschen zurück.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAPITEL 2
+══════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header">
+    <h2>Kapitel 2 – Anwendungen im Internet</h2>
+    <span>WWW, E-Mail, Social Media, Blockchain &amp; Web 3.0</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">World Wide Web (WWW)</div>
+    <p>Das WWW wurde 1989 von <strong>Tim Berners-Lee</strong> am CERN entwickelt. Grundlage: <strong>HTTP</strong> (Hypertext Transfer Protocol) als Client-Server-Dialog zwischen Browser und Webserver.</p>
+    <p>Webtechnologien im Überblick:</p>
+    <table class="data-table">
+      <thead><tr><th>Technologie</th><th>Funktion</th></tr></thead>
+      <tbody>
+        <tr><td>HTML/HTML5</td><td>Strukturierung von Webseiten, semantische Elemente (&lt;header&gt;, &lt;nav&gt;, &lt;article&gt;), SEO-Verbesserung</td></tr>
+        <tr><td>CSS/CSS3</td><td>Layout, Gestaltung, Animationen, responsive Design</td></tr>
+        <tr><td>JavaScript</td><td>Interaktivität, Formulare, dynamische Inhalte, Client-seitig</td></tr>
+        <tr><td>PHP</td><td>Server-seitige Skriptsprache, dynamische Webseiten (z.B. Datenbankinhalte)</td></tr>
+      </tbody>
+    </table>
+    <div class="concept def">
+      <strong>URL-Aufbau:</strong> Protokoll://Host:Port/Pfad/Datei?Parameter#Anker<br>
+      Beispiel: https://www.example.com:443/docs/page.html?id=5#section2
+    </div>
+    <p><strong>URI</strong> ist der Oberbegriff: URI = URL (Adresse) + URN (Name). Jede URL ist eine URI, aber nicht jede URI ist eine URL.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Web 2.0 &amp; Social Media</div>
+    <p><strong>Web 2.0</strong> (Tim O'Reilly, 2004): Wandel vom passiven Konsumenten zum aktiven Teilnehmer. Nutzer erstellen Inhalte (User Generated Content).</p>
+    <p>Schlüsseltechnologie: <strong>AJAX</strong> (Asynchronous JavaScript and XML) – asynchrone Kommunikation ohne komplette Seitenneuladen.</p>
+    <p>Beispiele: Wikipedia (kollaboratives Wissen), Blogs, Wikis, Social Networks.</p>
+    <p><strong>Social Media</strong> umfasst diverse Plattformen:</p>
+    <table class="data-table">
+      <thead><tr><th>Plattform</th><th>Typ</th><th>Protokoll/Besonderheit</th></tr></thead>
+      <tbody>
+        <tr><td>Facebook/LinkedIn</td><td>Soziale Netzwerke</td><td>B2C / B2B, Werbeplattform</td></tr>
+        <tr><td>WhatsApp</td><td>Messaging</td><td>Basiert auf XMPP (Jabber), E2E-Verschlüsselung</td></tr>
+        <tr><td>Instagram</td><td>Foto/Video-Sharing</td><td>Seit 2012 zu Facebook/Meta</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">E-Mail: MIME, SMTP, POP3 &amp; IMAP</div>
+    <p>E-Mail folgt dem Client-Server-Prinzip mit verschiedenen Protokollen für Senden und Empfangen:</p>
+    <table class="data-table">
+      <thead><tr><th>Protokoll</th><th>Funktion</th><th>Port</th></tr></thead>
+      <tbody>
+        <tr><td>SMTP</td><td>Versenden von E-Mails (MTA → MTA)</td><td>25 / 587</td></tr>
+        <tr><td>POP3</td><td>Empfang: Lädt E-Mails herunter &amp; löscht vom Server</td><td>110</td></tr>
+        <tr><td>IMAP</td><td>Empfang: E-Mails bleiben auf Server, Synchronisation</td><td>143</td></tr>
+      </tbody>
+    </table>
+    <div class="concept def">
+      <strong>IMAP-Vorteil:</strong> Geräteübergreifende Verfügbarkeit, keine Redundanzen. Löscht Client eine E-Mail, wird sie auch vom Server gelöscht.
+    </div>
+    <p><strong>MIME</strong> (Multipurpose Internet Mail Extension) erweitert E-Mails um Anhänge (Bilder, Dokumente) und verschiedene Zeichensätze. Codierung meist Base64.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Multimedia-Streaming</div>
+    <p>Streaming ermöglicht die Wiedergabe von Audio/Video während der Übertragung. Wichtige Protokolle:</p>
+    <table class="data-table">
+      <thead><tr><th>Protokoll</th><th>Aufgabe</th></tr></thead>
+      <tbody>
+        <tr><td>RTP</td><td>Real-Time Transport Protocol – Transport von Echtzeit-Daten (Audio/Video)</td></tr>
+        <tr><td>RTCP</td><td>RTP Control Protocol – Qualitätskontrolle &amp; Statistik (Paketverlust, Jitter)</td></tr>
+        <tr><td>RTSP</td><td>Real Time Streaming Protocol – Steuerung (Play, Pause, Stop)</td></tr>
+      </tbody>
+    </table>
+    <p>Streaming nutzt bevorzugt <strong>UDP</strong> statt TCP: Geschwindigkeit hat Vorrang vor Zuverlässigkeit. Kleine Paketverluste sind akzeptabel.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">P2P-Anwendungen &amp; Blockchain</div>
+    <p>P2P-Netze nutzen verteilte Ressourcen ohne zentrale Instanz. Bekanntestes Beispiel: <strong>BitTorrent</strong> (Filesharing).</p>
+    <p><strong>Blockchain</strong> ist ein <strong>Distributed Ledger</strong> (verteiltes Hauptbuch) – eine dezentrale, manipulationssichere Datenbank:</p>
+    <table class="data-table">
+      <thead><tr><th>Konzept</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>Block</td><td>Bündel von Transaktionen + Hashwert des vorherigen Blocks</td></tr>
+        <tr><td>Mining</td><td>Rechenintensive Validierung neuer Blöcke (Proof of Work)</td></tr>
+        <tr><td>Konsensverfahren</td><td>Demokratische Einigung aller Teilnehmer (z.B. Proof of Work/Stake)</td></tr>
+        <tr><td>Merkle-Tree</td><td>Baumstruktur aus Hashwerten zur effizienten Integritätsprüfung</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Vorteile:</strong> Dezentral, transparent, manipulationssicher, kein Mittelsmann nötig.</p>
+    <p><strong>Einsatzgebiete:</strong> Kryptowährungen (Bitcoin), Supply Chain, Energiewirtschaft, Smart Contracts, Gesundheitswesen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Web 3.0 – Semantisches Web</div>
+    <p><strong>Web 3.0</strong> ist die Vision eines semantischen Webs, in dem Maschinen Inhalte verstehen und verknüpfen können.</p>
+    <p>Schlüsseltechnologien:</p>
+    <table class="data-table">
+      <thead><tr><th>Technologie</th><th>Funktion</th></tr></thead>
+      <tbody>
+        <tr><td>RDF</td><td>Resource Description Framework – Beschreibung von Ressourcen als Tripel (Subjekt, Prädikat, Objekt)</td></tr>
+        <tr><td>OWL</td><td>Web Ontology Language – formale Ontologien zur Wissensbeschreibung</td></tr>
+        <tr><td>DBpedia</td><td>Strukturierte Daten aus Wikipedia, maschinenlesbar</td></tr>
+        <tr><td>Knowledge Graph</td><td>Googles Wissensdatenbank – verknüpft Entitäten und liefert direkte Antworten</td></tr>
+      </tbody>
+    </table>
+    <p>Ziel: Vom Dokumenten-Web (Links zwischen Dokumenten) zum <strong>Daten-Web</strong> (verknüpfte, maschinenlesbare Daten).</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAPITEL 3
+══════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header">
+    <h2>Kapitel 3 – Management von Computernetzen</h2>
+    <span>ITSM, Monitoring, SNMP &amp; Monitoring-Tools</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ITSM &amp; ITIL</div>
+    <p><strong>IT Service Management (ITSM)</strong> umfasst die Planung, Bereitstellung und Steuerung von IT-Dienstleistungen. <strong>ITIL</strong> (IT Infrastructure Library) ist das verbreitetste Framework dafür.</p>
+    <p>Generelle Anforderungen an Netzwerkmanagement:</p>
+    <ul class="content-list">
+      <li>Erkennung von Ausfällen und Fehlern (proaktiv &amp; reaktiv)</li>
+      <li>Überwachung der Performance und Verfügbarkeit</li>
+      <li>Sicherstellung der Dienstgüte (QoS / SLA)</li>
+      <li>Konfigurationsmanagement und Dokumentation</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Netzwerk-Monitoring</div>
+    <p>Monitoring kann <strong>passiv</strong> oder <strong>aktiv</strong> erfolgen:</p>
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Beschreibung</th><th>Beispiel</th></tr></thead>
+      <tbody>
+        <tr><td>Passiv (intern)</td><td>Monitoring direkt auf der Netzkomponente</td><td>SNMP-Agent, Syslog</td></tr>
+        <tr><td>Aktiv (extern)</td><td>Zusätzliche Geräte prüfen das Netz</td><td>Ping-Tests, Portscans</td></tr>
+      </tbody>
+    </table>
+    <p>Netzwerk-Monitoring-Befehle (CLI):</p>
+    <table class="data-table">
+      <thead><tr><th>Befehl</th><th>Funktion</th></tr></thead>
+      <tbody>
+        <tr><td>traceroute</td><td>UDP/ICMP-Pakete zur Auswertung aller Routing-Hops</td></tr>
+        <tr><td>netstat</td><td>Einfache Netzwerk-Statistik, offene Verbindungen</td></tr>
+        <tr><td>telnet/ssh</td><td>Fernbedienung von Konsolen-Applikationen</td></tr>
+        <tr><td>tcpdump/udpdump</td><td>Komplette Paketanalyse (TCP bzw. UDP)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">OSI Management Framework – FCAPS</div>
+    <p>Das OSI Management Framework definiert <strong>5 Funktionsklassen</strong> (FCAPS):</p>
+    <table class="data-table">
+      <thead><tr><th>Klasse</th><th>Name</th><th>Aufgabe</th></tr></thead>
+      <tbody>
+        <tr><td>F</td><td>Fault Management</td><td>Erkennung, Isolierung &amp; Behebung von Fehlern</td></tr>
+        <tr><td>C</td><td>Configuration Management</td><td>Netzwerk-Konfiguration, Inventar, Änderungsmanagement</td></tr>
+        <tr><td>A</td><td>Accounting Management</td><td>Erfassung der Ressourcennutzung, Abrechnung</td></tr>
+        <tr><td>P</td><td>Performance Management</td><td>Überwachung von Durchsatz, Antwortzeiten, Auslastung</td></tr>
+        <tr><td>S</td><td>Security Management</td><td>Zugriffskontrolle, Authentifizierung, Verschlüsselung</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SNMP – Simple Network Management Protocol</div>
+    <p>SNMP ist der Industriestandard für Netzwerkmanagement. Es basiert auf dem <strong>Manager-Agent-Prinzip</strong>:</p>
+    <div class="concept def">
+      <strong>SNMP Manager</strong> (NMS) – fragt Agenten ab, analysiert Daten<br>
+      <strong>SNMP Agent</strong> – läuft auf dem Managed Object (Router, Switch, Server), sammelt lokale Daten
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Komponente</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>MIB</td><td>Management Information Base – hierarchische Datenbank der verwalteten Objekte</td></tr>
+        <tr><td>OID</td><td>Object Identifier – eindeutige Kennzeichnung jedes MIB-Objekts (Baumstruktur)</td></tr>
+        <tr><td>SMI</td><td>Structure of Management Information – definiert Format &amp; Regeln für MIB-Einträge (ASN.1)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SNMP Messages</div>
+    <p>Die 5 Basis-Messages in SNMPv1:</p>
+    <table class="data-table">
+      <thead><tr><th>Message</th><th>Richtung</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td>Manager → Agent</td><td>Statusinfo vom Agenten anfordern</td></tr>
+        <tr><td>GET-NEXT</td><td>Manager → Agent</td><td>Nächstes Objekt in der MIB abfragen</td></tr>
+        <tr><td>GET-RESPONSE</td><td>Agent → Manager</td><td>Antwort auf GET/GET-NEXT/SET</td></tr>
+        <tr><td>SET</td><td>Manager → Agent</td><td>Wert beim Agenten setzen/ändern</td></tr>
+        <tr><td>TRAP</td><td>Agent → Manager</td><td>Ereignis-Meldung (z.B. CPU-Alarm), unaufgefordert</td></tr>
+      </tbody>
+    </table>
+    <div class="concept def">
+      <strong>SNMPv3-Paketstruktur:</strong> Version | Security Parameters | scoped PDU (Context Engine ID, Context Name, Request ID, Error State, Variable Bindings)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Monitoring-Tools in der Praxis</div>
+    <table class="data-table">
+      <thead><tr><th>Tool</th><th>Typ</th><th>Besonderheit</th></tr></thead>
+      <tbody>
+        <tr><td>WMI</td><td>Windows-basiert</td><td>Windows Management Instrumentation – flexibler als SNMP auf Windows-Systemen</td></tr>
+        <tr><td>Hyperic HQ</td><td>Open Source</td><td>Monitoring virtueller Maschinen &amp; Cloud, Auto-Discovery, Integration anderer Tools</td></tr>
+        <tr><td>Nagios</td><td>Open Source</td><td>Industriestandard, Baukastensystem, Web-Schnittstelle (UNIX-basiert), NSClient++ für Windows</td></tr>
+        <tr><td>PRTG</td><td>Kommerziell</td><td>Paessler AG (Nürnberg), automatische Sensorsuche, mobile App, Windows-Software</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Nagios</strong>: Core-Version (Basis) und XI (Enterprise). Hosts und Services werden überwacht. NSClient++ als Agent auf Windows-Hosts für aktive Prüfungen. Performance-Daten grafisch darstellbar.</p>
+    <p><strong>PRTG</strong>: Automatische Sensorsuche im Gegensatz zu Nagios (manuell). Sobald ein Host angelegt ist, werden alle verfügbaren Sensoren automatisch erkannt.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAPITEL 4
+══════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header">
+    <h2>Kapitel 4 – Informationssicherheit</h2>
+    <span>Grundbegriffe, Kryptografie, RSA &amp; Angriffsarten</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Grundlegende Sicherheitsbegriffe</div>
+    <p>Der Begriff „Sicherheit" umfasst vier verschiedene Aspekte:</p>
+    <table class="data-table">
+      <thead><tr><th>Begriff</th><th>Englisch</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td>Betriebssicherheit</td><td>Safety</td><td>Technische &amp; funktionale Sicherheit ohne Gefährdung</td></tr>
+        <tr><td>Informationsschutz</td><td>Security</td><td>Daten dürfen nicht unautorisiert abgezogen/verändert werden</td></tr>
+        <tr><td>Datensicherheit</td><td>Protection</td><td>Schutz vor Datenverlusten</td></tr>
+        <tr><td>Datenschutz</td><td>Privacy</td><td>Schutz personenbezogener Daten (BDSG, EU-DSGVO)</td></tr>
+      </tbody>
+    </table>
+    <p>Weitere wichtige Begriffe:</p>
+    <table class="data-table">
+      <thead><tr><th>Begriff</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td>Authentifizierung</td><td>Überprüfung der Echtheit einer Identität (z.B. Personalausweis, biometrische Verfahren)</td></tr>
+        <tr><td>Autorisierung</td><td>Recht/Erlaubnis zum Zugriff (z.B. Login + Passwort)</td></tr>
+        <tr><td>Integrität</td><td>Vollständigkeit &amp; Richtigkeit von Daten, Verhindern unautorisierter Änderungen</td></tr>
+        <tr><td>Vertraulichkeit</td><td>Schutz vor unautorisiertem Zugriff (durch Kryptografie)</td></tr>
+        <tr><td>Verfügbarkeit</td><td>System erbringt Dienst wie vereinbart (vgl. QoS/SLA)</td></tr>
+      </tbody>
+    </table>
+    <div class="concept def">
+      <strong>CIA-Triade der Informationssicherheit:</strong> Confidentiality (Vertraulichkeit) – Integrity (Integrität) – Availability (Verfügbarkeit)
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IT-Grundschutz (BSI)</div>
+    <p>Der <strong>IT-Grundschutz</strong> des BSI (Bundesamt für Sicherheit in der Informationstechnik) ist der Maßstab in Deutschland für Informationssicherheit.</p>
+    <p><strong>Bausteine des IT-Grundschutzes (Prozess- &amp; Systemebene):</strong></p>
+    <table class="data-table">
+      <thead><tr><th>Kürzel</th><th>Bereich</th></tr></thead>
+      <tbody>
+        <tr><td>ISMS</td><td>IT-Sicherheits-Managementsystem</td></tr>
+        <tr><td>ORP</td><td>Organisation und Personal</td></tr>
+        <tr><td>CON</td><td>Konzepte und Vorgehensweise</td></tr>
+        <tr><td>OPS</td><td>Betrieb</td></tr>
+        <tr><td>APP</td><td>Anwendungen</td></tr>
+        <tr><td>SYS</td><td>IT-Systeme</td></tr>
+        <tr><td>IND</td><td>Industrielle IT</td></tr>
+        <tr><td>NET</td><td>Netze und Kommunikation</td></tr>
+        <tr><td>INF</td><td>Infrastruktur</td></tr>
+        <tr><td>DER</td><td>Detektion und Reaktion</td></tr>
+      </tbody>
+    </table>
+    <p><strong>3 Anforderungskategorien</strong> (aufsteigend): Basis-Anforderungen (Minimum, verpflichtend) → Standard-Anforderungen → Anforderungen bei erhöhtem Schutzbedarf. Für <strong>ISO 27001-Zertifizierung</strong> auf Basis von IT-Grundschutz: Basis + Standard erforderlich.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kryptografie – Grundlagen</div>
+    <p><strong>Kryptografie</strong> = Methode zur Absicherung von Nachrichten/Daten mithilfe von Verschlüsselung.</p>
+    <div class="concept def">
+      <strong>Kerckhoff-Prinzip:</strong> Die Sicherheit eines Verfahrens soll auf der Geheimhaltung des <em>Schlüssels</em> basieren, nicht auf der Geheimhaltung des Verfahrens selbst.
+    </div>
+    <p>Grundbegriffe:</p>
+    <table class="data-table">
+      <thead><tr><th>Begriff</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td>Plaintext (P)</td><td>Klartext – unverschlüsselter Datensatz</td></tr>
+        <tr><td>Cipher-Text (C)</td><td>Verschlüsselter Text</td></tr>
+        <tr><td>Encryption Key (EK)</td><td>Schlüssel zur Verschlüsselung: C = E<sub>K</sub>(P)</td></tr>
+        <tr><td>Decryption Key (DK)</td><td>Schlüssel zur Entschlüsselung: P = D<sub>K</sub>(C)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Symmetrische vs. Asymmetrische Verschlüsselung</div>
+    <table class="data-table">
+      <thead><tr><th>Merkmal</th><th>Symmetrisch</th><th>Asymmetrisch</th></tr></thead>
+      <tbody>
+        <tr><td>Schlüssel</td><td>Ein identischer Schlüssel (EK = DK)</td><td>Schlüsselpaar: Public Key + Private Key</td></tr>
+        <tr><td>Schlüsselaustausch</td><td>Kritisch – Schlüssel muss sicher übertragen werden</td><td>Unproblematisch – Public Key frei verteilbar</td></tr>
+        <tr><td>Anzahl Schlüssel (n Personen)</td><td>n(n−1)/2 Paare</td><td>n Schlüsselpaare</td></tr>
+        <tr><td>Rechenaufwand</td><td>Gering, schnell</td><td>Hoch, rechenintensiv</td></tr>
+        <tr><td>Bekannte Verfahren</td><td>DES, IDEA, AES</td><td>RSA</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Analogie (asymmetrisch):</strong> Alice gibt Bob eine Schachtel mit Vorhängeschloss (= Public Key). Bob legt Brief hinein und drückt Schloss zu. Nur Alice hat den Schlüssel (= Private Key) zum Öffnen.</p>
+    <p><strong>Vorteil asymmetrisch:</strong> Ab 5 Teilnehmern effizienter (weniger Schlüsselpaare). <strong>Nachteil:</strong> Enormer Rechenaufwand.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">RSA-Verschlüsselung</div>
+    <p><strong>RSA</strong> (Rivest, Shamir, Adleman, 1977) – basiert auf der Schwierigkeit der <strong>Primzahlfaktorzerlegung</strong> sehr großer Zahlen.</p>
+    <p><strong>Verfahrensschritte:</strong></p>
+    <ol>
+      <li>Wahl zweier großer Primzahlen p und q</li>
+      <li>Berechnung: N = p · q</li>
+      <li>Eulersche Phi-Funktion: φ(N) = (p−1) · (q−1)</li>
+      <li>Wahl e (teilerfremd zu φ(N), e &lt; φ(N)) → <strong>Public Key: (e, N)</strong></li>
+      <li>Berechnung d (Modulo-Inverses): e · d mod φ(N) = 1 → <strong>Private Key: (d, N)</strong></li>
+    </ol>
+    <div class="concept def">
+      <strong>Verschlüsselung:</strong> C = M<sup>e</sup> mod N (mit Public Key)<br>
+      <strong>Entschlüsselung:</strong> M = C<sup>d</sup> mod N (mit Private Key)<br>
+      <strong>BSI-Empfehlung:</strong> Schlüssellänge N ≥ 2000 Bit (ab 2023: ≥ 3000 Bit)
+    </div>
+    <p>Sicherheit: Brute-Force-Attacken scheitern an der Rechenzeit für die Primzahlfaktorzerlegung bei großen Schlüssellängen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hybride Verschlüsselung &amp; Digitale Signatur</div>
+    <p><strong>Hybride Verschlüsselung</strong> vereint beide Vorteile:</p>
+    <ul class="content-list">
+      <li>Asymmetrisch für den <strong>Schlüsseltausch</strong> (sicher)</li>
+      <li>Symmetrisch für die <strong>Datenverschlüsselung</strong> (schnell)</li>
+    </ul>
+    <p><strong>Digitale Signatur:</strong> Gewährleistet Datenintegrität + Urheberidentität.</p>
+    <p>Ablauf:</p>
+    <ol>
+      <li>Sender berechnet <strong>Hashwert</strong> der Nachricht (Hashfunktion)</li>
+      <li>Hashwert wird mit <strong>privatem Schlüssel des Senders</strong> (S<sub>s</sub>) verschlüsselt → Signatur</li>
+      <li>Nachricht + Signatur werden versendet (Nachricht bleibt im Klartext!)</li>
+      <li>Empfänger entschlüsselt Signatur mit <strong>öffentlichem Schlüssel des Senders</strong> (S<sub>p</sub>)</li>
+      <li>Empfänger berechnet eigenen Hashwert → Vergleich = <strong>Verifikation</strong></li>
+    </ol>
+    <div class="concept def">
+      <strong>Hashfunktion:</strong> Einweg-Funktion (kein Rückschluss möglich) + Kollisionssicherheit (1:1-Beziehung). Beliebige Eingabelänge → feste Ausgabelänge.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Sicherheitsangriffe</div>
+    <p>Grundunterscheidung:</p>
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>Passiv</td><td>Informationen sammeln (Sniffing, Protokollanalyse) – Vorbereitung für aktiven Angriff</td></tr>
+        <tr><td>Aktiv</td><td>Gezielte Manipulation (Man-in-the-Middle, DoS, Spoofing)</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Klassifikation aktiver Angriffe:</strong> Ungezielt (Massenmails, Viren) → Gezielt (DDoS auf bestimmte Institutionen) → Skalpellartig (gezielte Sabotage kritischer Infrastrukturen)</p>
+    <p><strong>Häufige Angriffsarten:</strong></p>
+    <table class="data-table">
+      <thead><tr><th>Angriff</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td>Malware</td><td>Viren (Wirt nötig), Würmer (selbstständig), Trojaner (versteckt), Backdoor, Spyware, Scareware</td></tr>
+        <tr><td>Brute-Force</td><td>Systematisches Durchprobieren aller Zeichenkombinationen</td></tr>
+        <tr><td>Phishing</td><td>Gefälschte Webseiten/E-Mails zum Abfangen von Zugangsdaten</td></tr>
+        <tr><td>Man-in-the-Middle</td><td>Angreifer zwischen Kommunikationspartnern – abhören &amp; manipulieren</td></tr>
+        <tr><td>Spoofing</td><td>Vortäuschung falscher Identität (IP-, DNS-, Mail-, Call-ID-Spoofing)</td></tr>
+        <tr><td>DoS/DDoS</td><td>Denial of Service – Überlastung eines Systems durch Massenanfragen</td></tr>
+        <tr><td>Social Engineering</td><td>Psychologische Manipulation der Schwachstelle „Mensch"</td></tr>
+        <tr><td>Botnet</td><td>Netz infizierter Geräte für koordinierte Massenangriffe (→ DDoS)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLASHCARDS
+══════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>30 Karten zum Wiederholen</span>
+  </div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Prüfungsquiz</h2>
+    <span>20 Fragen mit Erklärungen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEET
+══════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header">
+    <h2>Cheatsheet</h2>
+    <span>Alle Formeln &amp; Schlüsselkonzepte</span>
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-block">
+      <h4>Client-Server &amp; P2P</h4>
+      <div class="cheat-row"><span class="cheat-key">Client-Server</span><span class="cheat-val">Zentraler Server + Clients</span></div>
+      <div class="cheat-row"><span class="cheat-key">P2P</span><span class="cheat-val">Gleichberechtigte Peers</span></div>
+      <div class="cheat-row"><span class="cheat-key">Socket</span><span class="cheat-val">IP-Adresse : Port</span></div>
+      <div class="cheat-row"><span class="cheat-key">Well-Known</span><span class="cheat-val">Ports 0–1023</span></div>
+      <div class="cheat-row"><span class="cheat-key">Iterativer Server</span><span class="cheat-val">Ein Client nach dem anderen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Paralleler Server</span><span class="cheat-val">Kindprozess pro Client</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Internet-Anwendungen</h4>
+      <div class="cheat-row"><span class="cheat-key">HTTP/HTTPS</span><span class="cheat-val">Port 80 / 443</span></div>
+      <div class="cheat-row"><span class="cheat-key">SMTP</span><span class="cheat-val">E-Mail senden, Port 25/587</span></div>
+      <div class="cheat-row"><span class="cheat-key">POP3</span><span class="cheat-val">E-Mail empfangen, Port 110</span></div>
+      <div class="cheat-row"><span class="cheat-key">IMAP</span><span class="cheat-val">E-Mail sync, Port 143</span></div>
+      <div class="cheat-row"><span class="cheat-key">RTP</span><span class="cheat-val">Echtzeit-Transport (UDP)</span></div>
+      <div class="cheat-row"><span class="cheat-key">URI = URL + URN</span><span class="cheat-val">Jede URL ist eine URI</span></div>
+      <div class="cheat-row"><span class="cheat-key">AJAX</span><span class="cheat-val">Asynchrones JS + XML</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Blockchain &amp; Web 3.0</h4>
+      <div class="cheat-row"><span class="cheat-key">Blockchain</span><span class="cheat-val">Distributed Ledger</span></div>
+      <div class="cheat-row"><span class="cheat-key">Mining</span><span class="cheat-val">Proof of Work/Stake</span></div>
+      <div class="cheat-row"><span class="cheat-key">Merkle-Tree</span><span class="cheat-val">Hash-Baum für Integrität</span></div>
+      <div class="cheat-row"><span class="cheat-key">RDF</span><span class="cheat-val">Tripel: Subjekt-Prädikat-Objekt</span></div>
+      <div class="cheat-row"><span class="cheat-key">OWL</span><span class="cheat-val">Ontologie-Sprache</span></div>
+      <div class="cheat-row"><span class="cheat-key">Knowledge Graph</span><span class="cheat-val">Google: verknüpfte Entitäten</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>SNMP &amp; Monitoring</h4>
+      <div class="cheat-row"><span class="cheat-key">FCAPS</span><span class="cheat-val">Fault, Config, Account, Perf, Sec</span></div>
+      <div class="cheat-row"><span class="cheat-key">SNMP GET</span><span class="cheat-val">Manager fragt Agent</span></div>
+      <div class="cheat-row"><span class="cheat-key">SNMP TRAP</span><span class="cheat-val">Agent meldet Ereignis</span></div>
+      <div class="cheat-row"><span class="cheat-key">MIB</span><span class="cheat-val">Hierarchische Objektdatenbank</span></div>
+      <div class="cheat-row"><span class="cheat-key">OID</span><span class="cheat-val">Eindeutige Objekt-ID (Baum)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Nagios</span><span class="cheat-val">Open Source, Baukasten</span></div>
+      <div class="cheat-row"><span class="cheat-key">PRTG</span><span class="cheat-val">Auto-Sensorsuche (Paessler)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Kryptografie</h4>
+      <div class="cheat-row"><span class="cheat-key">Symmetrisch</span><span class="cheat-val">EK = DK (DES, AES)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Asymmetrisch</span><span class="cheat-val">Public + Private Key (RSA)</span></div>
+      <div class="cheat-row"><span class="cheat-key">RSA-Basis</span><span class="cheat-val">Primzahlfaktorzerlegung</span></div>
+      <div class="cheat-row"><span class="cheat-key">C = M^e mod N</span><span class="cheat-val">Verschlüsselung (Public)</span></div>
+      <div class="cheat-row"><span class="cheat-key">M = C^d mod N</span><span class="cheat-val">Entschlüsselung (Private)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kerckhoff</span><span class="cheat-val">Schlüssel geheim, nicht Verfahren</span></div>
+      <div class="cheat-row"><span class="cheat-key">Schlüssel (n Pers.)</span><span class="cheat-val">Sym: n(n−1)/2 · Asym: n</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Sicherheit &amp; Angriffe</h4>
+      <div class="cheat-row"><span class="cheat-key">CIA-Triade</span><span class="cheat-val">Confidentiality, Integrity, Avail.</span></div>
+      <div class="cheat-row"><span class="cheat-key">BSI Grundschutz</span><span class="cheat-val">Basis → Standard → Erhöht</span></div>
+      <div class="cheat-row"><span class="cheat-key">Hashfunktion</span><span class="cheat-val">Einweg + kollisionssicher</span></div>
+      <div class="cheat-row"><span class="cheat-key">Digitale Signatur</span><span class="cheat-val">Hash + Private Key d. Senders</span></div>
+      <div class="cheat-row"><span class="cheat-key">Spoofing</span><span class="cheat-val">IP/DNS/Mail/Call-ID fälschen</span></div>
+      <div class="cheat-row"><span class="cheat-key">DoS/DDoS</span><span class="cheat-val">Überlastung durch Massen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Social Engineering</span><span class="cheat-val">Schwachstelle Mensch</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+// ── FLASHCARDS DATA ──
+const flashcardsData = [
+  {cat:"Kap 1", q:"Was ist der Unterschied zwischen Client-Server- und P2P-Netzwerken?", a:"Client-Server: Zentraler Server bietet Dienste, Clients nutzen diese. P2P: Alle Knoten sind gleichberechtigt, jeder bietet und nutzt Dienste. C/S hat einfache Kontrolle aber SPOF; P2P ist ausfallsicher aber schwer kontrollierbar."},
+  {cat:"Kap 1", q:"Was ist ein Socket und wie ist er aufgebaut?", a:"Ein Socket ist die Kombination aus IP-Adresse und Portnummer (z.B. 192.168.1.10:80). Er identifiziert einen bestimmten Dienst auf einem bestimmten Host eindeutig."},
+  {cat:"Kap 1", q:"Was ist der Unterschied zwischen iterativem und parallelem Server?", a:"Iterativ: Bearbeitet einen Client nach dem anderen (sequenziell). Parallel: Erstellt für jede Anfrage einen Kindprozess/Thread, der unabhängig arbeitet. Der Elternprozess lauscht sofort wieder auf neue Anfragen."},
+  {cat:"Kap 1", q:"Welche drei Portbereiche gibt es und wie heißen sie?", a:"Well-Known (0–1023): Standarddienste. Registered (1024–49151): registrierte Anwendungen. Dynamic (49152–65535): vom OS dynamisch vergeben."},
+  {cat:"Kap 2", q:"Wer hat das WWW erfunden und was sind die technischen Grundlagen?", a:"Tim Berners-Lee am CERN (1989). Grundlagen: HTTP als Kommunikationsprotokoll, HTML als Seitenbeschreibungssprache, URLs als Adressierung. Browser stellt Anfrage, Webserver antwortet."},
+  {cat:"Kap 2", q:"Was ist der Unterschied zwischen URI, URL und URN?", a:"URI (Uniform Resource Identifier) ist der Oberbegriff. URL (Locator) gibt die Adresse an, URN (Name) gibt den Namen an. Jede URL ist eine URI, aber nicht jede URI ist eine URL."},
+  {cat:"Kap 2", q:"Was ist AJAX und warum ist es wichtig für Web 2.0?", a:"AJAX = Asynchronous JavaScript and XML. Ermöglicht asynchrone Kommunikation mit dem Server, ohne die gesamte Seite neu zu laden. Grundlage für interaktive Webanwendungen wie Google Maps."},
+  {cat:"Kap 2", q:"Welche Protokolle werden für E-Mail verwendet?", a:"SMTP (Port 25/587): Versenden von E-Mails. POP3 (Port 110): Empfang, lädt E-Mails herunter und löscht vom Server. IMAP (Port 143): Empfang, E-Mails bleiben auf dem Server, geräteübergreifende Synchronisation."},
+  {cat:"Kap 2", q:"Was ist der Vorteil von IMAP gegenüber POP3?", a:"IMAP behält E-Mails auf dem Server und synchronisiert alle Geräte. Es gibt stets nur eine Instanz einer E-Mail. POP3 lädt E-Mails herunter und löscht sie vom Server, keine geräteübergreifende Verfügbarkeit."},
+  {cat:"Kap 2", q:"Was ist MIME und wozu dient es?", a:"MIME (Multipurpose Internet Mail Extension) erweitert E-Mails um Anhänge (Bilder, Dokumente) und verschiedene Zeichensätze. Codierung meist Base64. Definiert Content-Type und Content-Transfer-Encoding."},
+  {cat:"Kap 2", q:"Welche Protokolle werden für Multimedia-Streaming genutzt?", a:"RTP (Real-Time Transport Protocol): Transport der Echtzeit-Daten. RTCP (RTP Control Protocol): Qualitätskontrolle. RTSP (Real Time Streaming Protocol): Steuerung (Play, Pause, Stop). Bevorzugt über UDP (Geschwindigkeit vor Zuverlässigkeit)."},
+  {cat:"Kap 2", q:"Was ist eine Blockchain und wie funktioniert sie?", a:"Ein Distributed Ledger (verteiltes Hauptbuch): dezentrale, manipulationssichere Datenbank. Blöcke enthalten Transaktionen + Hash des Vorgängers. Mining validiert neue Blöcke (Proof of Work). Konsensverfahren sichert Einigkeit aller Teilnehmer."},
+  {cat:"Kap 2", q:"Was ist ein Merkle-Tree in der Blockchain?", a:"Eine Baumstruktur aus Hashwerten zur effizienten Integritätsprüfung. Jedes Blatt enthält den Hash einer Transaktion. Übergeordnete Knoten sind Hashes der Kindknoten. Die Wurzel (Root Hash) repräsentiert alle Transaktionen eines Blocks."},
+  {cat:"Kap 2", q:"Was ist die Vision von Web 3.0?", a:"Das semantische Web: Maschinen verstehen Inhalte und verknüpfen sie. Technologien: RDF (Tripel), OWL (Ontologien), DBpedia (strukturierte Wikipedia-Daten). Wandel vom Dokumenten-Web zum Daten-Web mit maschinenlesbaren, verknüpften Daten."},
+  {cat:"Kap 3", q:"Was sind die 5 FCAPS-Funktionsklassen des OSI Management Framework?", a:"Fault Management (Fehlererkennung), Configuration Management (Konfiguration), Accounting Management (Nutzungserfassung), Performance Management (Leistungsüberwachung), Security Management (Zugriffskontrolle)."},
+  {cat:"Kap 3", q:"Wie funktioniert SNMP (Manager-Agent-Prinzip)?", a:"SNMP Manager (NMS) fragt Agenten auf Netzkomponenten ab. Agent sammelt lokale Daten und antwortet. Daten werden in der MIB gespeichert, Objekte über OIDs identifiziert. Format durch SMI definiert."},
+  {cat:"Kap 3", q:"Was sind die 5 SNMP-Basis-Messages?", a:"GET (Manager → Agent: Status abfragen), GET-NEXT (nächstes MIB-Objekt), GET-RESPONSE (Agent → Manager: Antwort), SET (Manager → Agent: Wert setzen), TRAP (Agent → Manager: unaufgefordertes Ereignis, z.B. Alarm)."},
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen MIB, OID und SMI?", a:"MIB (Management Information Base): hierarchische Datenbank der verwalteten Objekte. OID (Object Identifier): eindeutige Baumadresse eines Objekts. SMI (Structure of Management Information): definiert Format und Regeln für MIB-Einträge (ASN.1)."},
+  {cat:"Kap 3", q:"Was unterscheidet Nagios von PRTG?", a:"Nagios: Open Source, UNIX-basiert, Baukastensystem (Funktionen manuell hinzufügen), Hosts manuell eintragen, NSClient++ für Windows. PRTG: Kommerziell (Paessler AG), Windows-basiert, automatische Sensorsuche, mobile App."},
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen passivem und aktivem Monitoring?", a:"Passiv (intern): Monitoring direkt auf der Netzkomponente (z.B. SNMP-Agent, Syslog). Aktiv (extern): Zusätzliche Geräte prüfen das Netz von außen (z.B. Ping-Tests, Portscans)."},
+  {cat:"Kap 4", q:"Nenne die vier Sicherheitsbegriffe Safety, Security, Protection, Privacy.", a:"Safety: Betriebssicherheit (technisch/funktional). Security: Informationsschutz (kein unautorisierter Zugriff). Protection: Datensicherheit (Schutz vor Datenverlust). Privacy: Datenschutz (personenbezogene Daten, DSGVO)."},
+  {cat:"Kap 4", q:"Was ist das Kerckhoff-Prinzip?", a:"Die Sicherheit eines kryptografischen Verfahrens soll auf der Geheimhaltung des Schlüssels basieren, nicht auf der Geheimhaltung des Verfahrens selbst. Das Verfahren soll öffentlich prüfbar und verbesserbar sein."},
+  {cat:"Kap 4", q:"Wie funktioniert symmetrische Verschlüsselung?", a:"Sender und Empfänger nutzen den gleichen Schlüssel (EK = DK). Vorteil: Schnell, geringer Rechenaufwand. Nachteil: Schlüsselaustausch ist kritisch. Bei n Personen: n(n−1)/2 Schlüsselpaare. Beispiele: DES, IDEA, AES."},
+  {cat:"Kap 4", q:"Wie funktioniert asymmetrische Verschlüsselung?", a:"Jeder besitzt ein Schlüsselpaar: Public Key (frei verteilbar, zum Verschlüsseln) + Private Key (geheim, zum Entschlüsseln). Vorteil: Sicherer Schlüsseltausch, nur n Paare für n Personen. Nachteil: Hoher Rechenaufwand."},
+  {cat:"Kap 4", q:"Beschreibe die RSA-Verfahrensschritte.", a:"1) Zwei Primzahlen p,q wählen. 2) N=p·q. 3) φ(N)=(p−1)(q−1). 4) e wählen (teilerfremd zu φ(N)) → Public Key (e,N). 5) d berechnen: e·d mod φ(N)=1 → Private Key (d,N). Verschlüsselung: C=M^e mod N. Entschlüsselung: M=C^d mod N."},
+  {cat:"Kap 4", q:"Wie funktioniert eine digitale Signatur?", a:"1) Sender berechnet Hashwert der Nachricht. 2) Hashwert wird mit privatem Schlüssel des Senders verschlüsselt (=Signatur). 3) Nachricht + Signatur werden versendet. 4) Empfänger entschlüsselt Signatur mit öffentlichem Schlüssel des Senders und vergleicht Hashwerte (Verifikation)."},
+  {cat:"Kap 4", q:"Was ist eine Hashfunktion und welche Eigenschaften muss sie haben?", a:"Eine Hashfunktion wandelt Eingaben beliebiger Länge in feste Ausgabelänge um. Zwei Eigenschaften: 1) Einweg-Funktion (kein Rückschluss möglich). 2) Kollisionssicherheit (1:1-Beziehung, keine zwei verschiedenen Eingaben dürfen gleichen Hash erzeugen)."},
+  {cat:"Kap 4", q:"Welche Arten von Malware gibt es?", a:"Viren (brauchen Wirt, vermehren sich lokal), Würmer (selbstständig, kein Wirt nötig), Trojaner (versteckt in nützlichen Programmen), Backdoor (versteckte Hintertür), Spyware (Nutzeraktivitäten ausspähen), Scareware (gefakte Warnmeldungen)."},
+  {cat:"Kap 4", q:"Was ist Social Engineering in der IT-Sicherheit?", a:"Die Schwachstelle 'Mensch': Psychologische Tricks und gefälschte Tatsachen werden genutzt, um Mitarbeiter zu manipulieren. Angreifer erarbeiten sich über Social Media 'Insider-Wissen' über Organisationen. Bereitet IT-Administratoren die größten Probleme."},
+  {cat:"Kap 4", q:"Was sind die drei Anforderungskategorien des BSI IT-Grundschutzes?", a:"1) Basis-Anforderungen (Minimum, verpflichtend). 2) Standard-Anforderungen. 3) Anforderungen bei erhöhtem Schutzbedarf. Aufsteigend im Sicherheitsniveau. Für ISO 27001 auf Basis IT-Grundschutz: Basis + Standard müssen erfüllt sein."}
+];
+
+// ── QUIZ DATA ──
+const quizData = [
+  {q:"Welches Architekturmodell hat keinen Single Point of Failure?", opts:["Client-Server","Peer-to-Peer","Master-Slave","Hub-and-Spoke"], correct:1, exp:"In P2P-Netzen sind alle Knoten gleichberechtigt. Fällt ein Peer aus, arbeitet das Netz weiter. Bei Client-Server ist der Server ein SPOF."},
+  {q:"Wie ist ein Socket aufgebaut?", opts:["MAC-Adresse : Portnummer","IP-Adresse : Portnummer","Hostname : Protokoll","IP-Adresse : MAC-Adresse"], correct:1, exp:"Ein Socket besteht aus IP-Adresse und Portnummer (z.B. 192.168.1.10:80) und identifiziert einen Dienst auf einem Host eindeutig."},
+  {q:"Welches Protokoll wird zum Versenden von E-Mails verwendet?", opts:["POP3","IMAP","SMTP","HTTP"], correct:2, exp:"SMTP (Simple Mail Transfer Protocol) wird zum Versenden von E-Mails verwendet (Port 25/587). POP3 und IMAP dienen dem Empfang."},
+  {q:"Was ist der Hauptvorteil von IMAP gegenüber POP3?", opts:["Schnellere Übertragung","Geräteübergreifende Synchronisation","Größere Anhänge möglich","Bessere Verschlüsselung"], correct:1, exp:"IMAP belässt E-Mails auf dem Server und synchronisiert alle Geräte. POP3 lädt herunter und löscht vom Server – keine geräteübergreifende Verfügbarkeit."},
+  {q:"Welches Transportprotokoll bevorzugt Multimedia-Streaming?", opts:["TCP","UDP","SCTP","DCCP"], correct:1, exp:"Streaming nutzt bevorzugt UDP, weil Geschwindigkeit Vorrang vor Zuverlässigkeit hat. Kleine Paketverluste sind bei Audio/Video akzeptabel."},
+  {q:"Was bedeutet AJAX?", opts:["Advanced JavaScript And XML","Asynchronous JavaScript and XML","Automatic JSON API Exchange","Asynchronous Java and XHTML"], correct:1, exp:"AJAX = Asynchronous JavaScript and XML. Ermöglicht asynchrone Server-Kommunikation ohne komplettes Neuladen der Seite."},
+  {q:"Was ist ein Distributed Ledger?", opts:["Ein zentraler Datenbankserver","Ein verteiltes, dezentrales Hauptbuch","Ein verschlüsseltes Dateisystem","Ein Cloud-Speicherdienst"], correct:1, exp:"Ein Distributed Ledger (verteiltes Hauptbuch) ist eine dezentrale Datenbank, die von allen Teilnehmern gemeinsam verwaltet wird – Grundlage der Blockchain."},
+  {q:"Wofür steht FCAPS?", opts:["File, Control, Access, Protocol, Security","Fault, Configuration, Accounting, Performance, Security","Firewall, Cache, Authentication, Proxy, Switch","Framework, Compliance, Audit, Policy, Standard"], correct:1, exp:"FCAPS sind die 5 Funktionsklassen des OSI Management Framework: Fault, Configuration, Accounting, Performance und Security Management."},
+  {q:"Welche SNMP-Message wird vom Agenten unaufgefordert gesendet?", opts:["GET","SET","GET-RESPONSE","TRAP"], correct:3, exp:"TRAP-Messages werden vom SNMP-Agenten eigenständig bei Ereignissen (z.B. CPU-Alarm) an den Manager gesendet – ohne vorherige Anfrage."},
+  {q:"Was ist eine MIB?", opts:["Ein Monitoring-Interface-Board","Eine Management Information Base","Ein Managed Internet Browser","Ein Message Interchange Buffer"], correct:1, exp:"MIB (Management Information Base) ist die hierarchische Datenbank, in der alle verwalteten Objekte eines SNMP-Agenten gespeichert sind."},
+  {q:"Welches Tool nutzt automatische Sensorsuche?", opts:["Nagios","Hyperic HQ","PRTG","WMI"], correct:2, exp:"PRTG (Paessler AG) erkennt automatisch alle verfügbaren Sensoren, sobald ein Host angelegt wird. Bei Nagios müssen Hosts manuell eingetragen werden."},
+  {q:"Welcher Sicherheitsbegriff beschreibt den Schutz personenbezogener Daten?", opts:["Safety","Security","Protection","Privacy"], correct:3, exp:"Privacy = Datenschutz, betrifft den Umgang mit personenbezogenen Daten (geregelt in BDSG und EU-DSGVO)."},
+  {q:"Was besagt das Kerckhoff-Prinzip?", opts:["Das Verfahren muss geheim bleiben","Der Schlüssel muss geheim bleiben, nicht das Verfahren","Beide müssen geheim bleiben","Keines muss geheim bleiben"], correct:1, exp:"Kerckhoff-Prinzip: Die Sicherheit soll auf der Geheimhaltung des Schlüssels basieren, nicht auf der Geheimhaltung des Verfahrens. Das Verfahren soll öffentlich prüfbar sein."},
+  {q:"Wie viele Schlüsselpaare brauchen 20 Personen bei symmetrischer Verschlüsselung?", opts:["20","40","190","380"], correct:2, exp:"Formel: n(n−1)/2 = 20·19/2 = 190 Schlüsselpaare. Bei asymmetrischer Verschlüsselung wären es nur 20 Paare (je ein Public+Private Key pro Person)."},
+  {q:"Worauf basiert die Sicherheit von RSA?", opts:["Diskreter Logarithmus","Primzahlfaktorzerlegung großer Zahlen","Elliptische Kurven","Hashfunktionen"], correct:1, exp:"RSA basiert darauf, dass die Primzahlfaktorzerlegung sehr großer Zahlen extrem rechenintensiv ist. BSI empfiehlt Schlüssellänge ≥ 2000 Bit."},
+  {q:"Wie wird bei der digitalen Signatur die Nachricht geschützt?", opts:["Nachricht wird mit Public Key verschlüsselt","Hashwert wird mit privatem Schlüssel des Senders verschlüsselt","Nachricht wird symmetrisch verschlüsselt","Nachricht wird mit Passwort geschützt"], correct:1, exp:"Bei der digitalen Signatur wird der Hashwert der Nachricht mit dem privaten Schlüssel des Senders verschlüsselt. Die Nachricht selbst bleibt im Klartext."},
+  {q:"Welche Eigenschaft muss eine Hashfunktion NICHT haben?", opts:["Einweg-Funktion","Kollisionssicherheit","Umkehrbarkeit","Feste Ausgabelänge"], correct:2, exp:"Hashfunktionen müssen Einweg-Funktionen sein (kein Rückschluss möglich) und kollisionssicher. Umkehrbarkeit wäre ein Sicherheitsrisiko."},
+  {q:"Was unterscheidet einen Wurm von einem Virus?", opts:["Würmer brauchen einen Wirt, Viren nicht","Würmer kopieren sich selbstständig ohne Wirt","Würmer sind weniger gefährlich","Viren verbreiten sich über das Netzwerk, Würmer nicht"], correct:1, exp:"Würmer benötigen keinen Wirt und können sich selbstständig von Rechner zu Rechner kopieren (z.B. per E-Mail). Viren brauchen ein Wirtsprogramm und werden erst aktiv, wenn dieses ausgeführt wird."},
+  {q:"Was ist ein DDoS-Angriff?", opts:["Verschlüsselung von Nutzerdaten gegen Lösegeld","Überlastung eines Systems durch verteilte Massenanfragen","Diebstahl von Zugangsdaten über gefälschte Webseiten","Einschleusen einer Hintertür in ein System"], correct:1, exp:"DDoS (Distributed Denial of Service): Koordinierter Angriff von vielen Rechnern (oft Botnet) mit dem Ziel, ein System durch Überlastung lahmzulegen."},
+  {q:"Was beschreibt hybride Verschlüsselung?", opts:["Nur symmetrische Verschlüsselung mit zwei Schlüsseln","Asymmetrisch für Schlüsseltausch + symmetrisch für Datenverschlüsselung","Nur asymmetrische Verschlüsselung mit langen Schlüsseln","Verschlüsselung mit Hashfunktionen"], correct:1, exp:"Hybride Verschlüsselung kombiniert: asymmetrisch für den sicheren Schlüsseltausch (Vorteil: kein Risiko) + symmetrisch für die eigentliche Datenverschlüsselung (Vorteil: schnell)."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

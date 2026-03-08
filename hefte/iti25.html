@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITI25 – Internetworking und Netzdesign | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">ITI25 · 1022K06 · HfB</div>
+  <h1>Internetworking und Netzdesign</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 6 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="kap6" onclick="showSection('kap6')">Kap 6</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header">
+    <h2>Lernübersicht</h2>
+    <span>6 Kapitel · Prüfungsvorbereitung</span>
+  </div>
+  <div class="card">
+    <div class="card-title">Lernpfad</div>
+    <p>Klicke auf ein Kapitel, um direkt zu den Lerninhalten zu springen. Nutze danach <strong>Flashcards</strong> zum Wiederholen und das <strong>Quiz</strong> zum Testen.</p>
+  </div>
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#4f9cff" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Überblick Internetworking</h3>
+      <p>Segmentierung, hierarchisches Internetworking-Modell (Kern-/Verteilungs-/Zugriffsschicht)</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Netzkomponenten</h3>
+      <p>Repeater, Hub, Bridge, Switch (STP, Link Aggregation), Router, Gateway, Firewall</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#eab308" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Subnetze</h3>
+      <p>Subnetzbildung, Berechnung, VLSM, Supernetting, CIDR, IPv6-Subnetze</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f97316" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>VLAN</h3>
+      <p>Port-basiert, 802.1Q-Tagging, Inter-VLAN Routing, VLAN-Hopping, VPN</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#a78bfa" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Planung &amp; Design von Netzen</h3>
+      <p>Strukturierte Verkabelung, Bottom-Up-Planung, WLAN, BSI IT-Grundschutz, Szenarien</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('kap6')">
+      <div class="ch-num">KAP 6</div>
+      <h3>Netzarchitektur &amp; Zugangsnetze</h3>
+      <p>Kernnetz, Zugangsnetz, xDSL, FTTH, Kabelnetz (DOCSIS), LTE, 5G</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Prüfungsrelevante Schwerpunkte</div>
+    <div class="two-col" style="margin-top:0.5rem">
+      <ul class="content-list">
+        <li>Hierarchisches Internetworking-Modell (3 Schichten)</li>
+        <li>Switch: Lernprozess, Switching-Verfahren, MAC-Tabelle</li>
+        <li>STP: Root-Bridge, Portzustände, BPDU</li>
+        <li>Link Aggregation (LACP)</li>
+        <li>Firewall-Typen: Paketfilter, ALG, P-A-P, UTM</li>
+        <li>Subnetzberechnung mit VLSM</li>
+        <li>CIDR und Supernetting</li>
+      </ul>
+      <ul class="content-list">
+        <li>VLAN-Typen: portbasiert, dynamisch, 802.1Q</li>
+        <li>Inter-VLAN Routing (Router-on-a-stick)</li>
+        <li>VLAN-Sicherheit: Switch-Spoofing, Double-Tagging</li>
+        <li>Strukturierte Verkabelung (Primär/Sekundär/Tertiär)</li>
+        <li>BSI IT-Grundschutz NET.1.1</li>
+        <li>Zugangsnetze: xDSL, FTTH, DOCSIS, LTE/5G</li>
+        <li>VPN: Abgrenzung zu VLAN</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 1 – Überblick Internetworking
+══════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header">
+    <h2>Kapitel 1</h2>
+    <span>Überblick Internetworking</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Internetworking – Definition</div>
+    <p><strong>Internetworking</strong> bezeichnet die Verbindung einer beliebigen Anzahl unterschiedlicher (auch heterogener) Netze zu einem übergeordneten Netz. Das Internet ist das prominenteste Beispiel für Internetworking.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Segmentierung</div>
+    <ul class="content-list">
+      <li><strong>Segment:</strong> Ein physisch oder logisch vom Rest getrennter Teil eines größeren Netzes</li>
+      <li><strong>Physische Segmentierung:</strong> Repeater (Schicht 1), Bridge/Switch (Schicht 2), Router (Schicht 3)</li>
+      <li><strong>Logische Segmentierung:</strong> VLANs (Schicht 2) und Subnetze (Schicht 3)</li>
+      <li><strong>Ziele:</strong> Leistungssteigerung, Begrenzung von Broadcast-Domänen, Erhöhung der Sicherheit</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hierarchisches Internetworking-Modell</div>
+    <p>Netzdesign-Modell, das Unternehmensnetze in <strong>drei Schichten</strong> unterteilt:</p>
+    <table class="data-table">
+      <tr><th>Schicht</th><th>Bezeichnung</th><th>Aufgabe</th><th>Geräte</th></tr>
+      <tr><td>1</td><td><strong>Zugriffsschicht</strong> (Access Layer)</td><td>Direkter Anschluss der Endgeräte, Authentifizierung</td><td>Access-Switches, WLAN-APs</td></tr>
+      <tr><td>2</td><td><strong>Verteilungsschicht</strong> (Distribution Layer)</td><td>Routing zwischen VLANs, Filterung, Redundanz</td><td>Layer-3-Switches, Router</td></tr>
+      <tr><td>3</td><td><strong>Kernschicht</strong> (Core Layer)</td><td>Schnelle Weiterleitung großer Datenmengen, Backbone</td><td>High-End-Router, Core-Switches</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Designziele der Kernschicht</div>
+    <p>Hohe Verfügbarkeit, Redundanz, schnelle Konvergenz, hohe Bandbreite. Keine Paketmanipulation, kein Filtern – nur schnelles Forwarding.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kollisionsdomäne vs. Broadcast-Domäne</div>
+    <table class="data-table">
+      <tr><th>Konzept</th><th>Beschreibung</th><th>Begrenzt durch</th></tr>
+      <tr><td><strong>Kollisionsdomäne</strong></td><td>Bereich, in dem gleichzeitige Übertragungen kollidieren können</td><td>Bridge, Switch, Router</td></tr>
+      <tr><td><strong>Broadcast-Domäne</strong></td><td>Bereich, in dem ein Broadcast alle Hosts erreicht</td><td>Router (Schicht 3)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 2 – Netzkomponenten
+══════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header">
+    <h2>Kapitel 2</h2>
+    <span>Netzkomponenten</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Passive vs. aktive Komponenten</div>
+    <table class="data-table">
+      <tr><th>Typ</th><th>Beispiele</th><th>Merkmal</th></tr>
+      <tr><td><strong>Passiv</strong></td><td>Kabel, Stecker, Patchfelder, Dosen</td><td>Keine eigene Stromversorgung, keine Signalverarbeitung</td></tr>
+      <tr><td><strong>Aktiv</strong></td><td>Repeater, Hub, Bridge, Switch, Router</td><td>Eigene Stromversorgung, verarbeiten/regenerieren Signale</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Repeater &amp; Hub</div>
+    <ul class="content-list">
+      <li><strong>Repeater (Schicht 1):</strong> Regeneriert und verstärkt Signale, verlängert maximale Kabellänge</li>
+      <li><strong>Hub (Schicht 1):</strong> Multiport-Repeater, leitet Signale an alle Ports weiter (Shared Medium)</li>
+      <li>Repeater/Hub <strong>vergrößern</strong> sowohl Kollisions- als auch Broadcast-Domäne</li>
+      <li>Keine Adressenauswertung, kein Filtern des Datenverkehrs</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Bridge (Schicht 2)</div>
+    <ul class="content-list">
+      <li><strong>Aufgabe:</strong> Verbindet Segmente, leitet Frames anhand der MAC-Adresse weiter</li>
+      <li><strong>Lernprozess:</strong> Quell-MAC und Empfangsport werden in die Adresstabelle eingetragen</li>
+      <li><strong>Filterung:</strong> Frames an bekannte Ziele nur an den richtigen Port → reduziert unnötigen Verkehr</li>
+      <li><strong>Transparent Bridge:</strong> Standard-Bridge, arbeitet unsichtbar für die Hosts</li>
+      <li><strong>Verkleinert</strong> Kollisionsdomänen, aber alle Segmente bleiben in <strong>einer</strong> Broadcast-Domäne</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Switch – Arbeitsweise &amp; Lernprozess</div>
+    <ul class="content-list">
+      <li><strong>Multiport-Bridge (Schicht 2):</strong> Jeder Port = eigene Kollisionsdomäne</li>
+      <li><strong>Lernprozess:</strong> Quell-MAC-Adresse + Eingangsport → MAC-Adresstabelle (CAM)</li>
+      <li><strong>Aging:</strong> Einträge mit Timer versehen, bei erneutem Empfang zurückgesetzt, bei Ablauf gelöscht</li>
+      <li><strong>Unbekanntes Ziel:</strong> Frame wird an alle Ports geflutet (außer Empfangsport)</li>
+      <li><strong>Broadcast:</strong> An alle Ports weitergeleitet (FF:FF:FF:FF:FF:FF)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Switching-Verfahren</div>
+    <table class="data-table">
+      <tr><th>Verfahren</th><th>Prinzip</th><th>Latenz</th><th>Fehlerprüfung</th></tr>
+      <tr><td><strong>Cut-Through</strong></td><td>Weiterleitung nach Lesen der Ziel-MAC (6 Byte)</td><td>Sehr niedrig</td><td>Keine</td></tr>
+      <tr><td><strong>Store-and-Forward</strong></td><td>Gesamtes Frame empfangen, CRC prüfen, dann weiterleiten</td><td>Höher</td><td>Vollständig (CRC)</td></tr>
+      <tr><td><strong>Fragment-Free</strong></td><td>Erste 64 Byte lesen (Kollisionsfenster), dann weiterleiten</td><td>Mittel</td><td>Teilweise</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Switch-Architektur &amp; Backplane</div>
+    <ul class="content-list">
+      <li><strong>Interne Bandbreite (Backplane):</strong> Anzahl Ports × Linkgeschwindigkeit × 2 (Vollduplex)</li>
+      <li><strong>Beispiel:</strong> 48 Ports à 1 Gbit/s → Backplane = 48 × 1 × 2 = 96 Gbit/s</li>
+      <li><strong>Stackable Switches:</strong> Mehrere Switches logisch zu einem Switch zusammenfassen</li>
+      <li><strong>Modulare Switches:</strong> Chassis mit austauschbaren Modulen (Ports, Management, Netzteil)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Switch-Sicherheit</div>
+    <ul class="content-list">
+      <li><strong>MAC-Flooding:</strong> Angreifer flutet Switch mit gefälschten MAC-Adressen → CAM-Tabelle voll → Switch flutet alle Frames (wie Hub) → Sniffing möglich</li>
+      <li><strong>MAC-Spoofing:</strong> Angreifer fälscht MAC-Adresse → Switch leitet Frames an falsches Ziel</li>
+      <li><strong>Gegenmaßnahmen:</strong> Port Security (max. MAC pro Port), 802.1X-Authentifizierung, DHCP Snooping</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Link Aggregation (LACP)</div>
+    <p>Bündelung mehrerer physischer Links zu einem logischen Link → <strong>Bandbreitenerhöhung</strong> und <strong>Redundanz</strong>. Protokoll: LACP (IEEE 802.3ad). Arbeitet in Schicht 2, transparent für höhere Schichten. Bei Server-Anbindung: NIC-Teaming erforderlich.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Spanning Tree Protocol (STP / RSTP)</div>
+    <ul class="content-list">
+      <li><strong>Problem:</strong> Redundante Pfade in geswitchten Netzen → Schleifen → Broadcast-Stürme</li>
+      <li><strong>Lösung:</strong> STP (IEEE 802.1D) überführt Topologie in schleifenfreien Spannbaum</li>
+      <li><strong>BPDU:</strong> Bridge Protocol Data Units – Switches tauschen diese aus, um Topologie zu ermitteln</li>
+      <li><strong>Root-Bridge:</strong> Switch mit niedrigster Bridge-ID wird Wurzel des Spannbaums</li>
+      <li><strong>Portzustände (STP):</strong> Blocking → Listening → Learning → Forwarding (Konvergenz ~30–50 s)</li>
+      <li><strong>RSTP (802.1w):</strong> Schnellere Konvergenz (< 6 s), Zustände: Discarding, Learning, Forwarding</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Layer-3- &amp; Layer-4-Switches</div>
+    <ul class="content-list">
+      <li><strong>Layer-3-Switch:</strong> Switch mit Routing-Funktionalität → kann zwischen VLANs routen (Schicht 2 + 3)</li>
+      <li><strong>Vorteil:</strong> Hardware-basiertes Routing → schneller als klassischer Router für Inter-VLAN-Verkehr</li>
+      <li><strong>Layer-4-Switch:</strong> Berücksichtigt zusätzlich Transportschicht-Informationen (Portnummern)</li>
+      <li>Einsatz für Lastverteilung, QoS und Priorisierung nach Anwendungstyp</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Router (Schicht 3)</div>
+    <ul class="content-list">
+      <li><strong>Aufgabe:</strong> Weiterleitung von Paketen zwischen verschiedenen Netzen anhand der IP-Adresse</li>
+      <li><strong>Routingtabelle:</strong> Enthält Zielnetz → Next Hop → Interface. Statisch oder dynamisch (RIP, OSPF, BGP)</li>
+      <li><strong>Separiert</strong> Broadcast-Domänen und Kollisionsdomänen vollständig</li>
+      <li><strong>Heimrouter:</strong> Kombiniert Router, Switch, WLAN-AP, Modem, NAT, DHCP-Server, Firewall</li>
+      <li><strong>NAT:</strong> Übersetzt private Adressen in öffentliche (am Router/Heimrouter)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Gateway &amp; Firewall</div>
+    <table class="data-table">
+      <tr><th>Komponente</th><th>Funktion</th></tr>
+      <tr><td><strong>Gateway</strong></td><td>Verbindet heterogene Netze mit unterschiedlichen Protokollen (Schicht 7), z. B. E-Mail-Gateway</td></tr>
+      <tr><td><strong>Paketfilter</strong></td><td>Filtert nach IP-Adressen, Ports, Protokollen (Schicht 3/4). Einfach, aber begrenzt</td></tr>
+      <tr><td><strong>ALG</strong></td><td>Application Level Gateway – prüft Daten auf Anwendungsebene (Schicht 7), Proxy-Funktion</td></tr>
+      <tr><td><strong>P-A-P</strong></td><td>Paketfilter – ALG – Paketfilter: Gestaffeltes Konzept mit DMZ dazwischen</td></tr>
+      <tr><td><strong>UTM</strong></td><td>Unified Threat Management: All-in-One (Firewall + IDS + Antivirus + VPN + …)</td></tr>
+      <tr><td><strong>DMZ</strong></td><td>Demilitarisierte Zone: Pufferzone zwischen internem und externem Netz für öffentliche Dienste</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Komponentenvergleich – Adressenauswertung</div>
+    <p><strong>Repeater/Hub:</strong> keine Adresse · <strong>Bridge/Switch:</strong> MAC-Adresse (Schicht 2) · <strong>Router:</strong> IP-Adresse (Schicht 3) · <strong>Gateway:</strong> Anwendungsprotokoll (Schicht 7)</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 3 – Subnetze
+══════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header">
+    <h2>Kapitel 3</h2>
+    <span>Subnetze</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Subnetzbildung</div>
+    <p>Ein Netz wird durch die Aufteilung des Hostadressteils in <strong>Subnetzteil</strong> und <strong>Hostteil</strong> in mehrere kleinere Netze untergliedert. Die <strong>Subnetzmaske</strong> definiert, welche Bits zum Netz- und welche zum Hostteil gehören.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Subnetzberechnung – Schritte</div>
+    <ul class="content-list">
+      <li><strong>1.</strong> Wie viele Subnetze werden benötigt? → Anzahl Bits für Subnetzteil</li>
+      <li><strong>2.</strong> Wie viele Hosts pro Subnetz? → Hosts = 2<sup>h</sup> − 2 (h = Hostbits)</li>
+      <li><strong>3.</strong> Netzadresse = IP AND Subnetzmaske</li>
+      <li><strong>4.</strong> Broadcastadresse = Netzadresse OR invertierte Maske (Hostbits auf 1)</li>
+      <li><strong>5.</strong> Gültige Hostadressen: Netzadresse + 1 bis Broadcast − 1</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Beispiel: /26 Subnetz</div>
+    <table class="data-table">
+      <tr><th>Parameter</th><th>Wert</th></tr>
+      <tr><td>Präfix</td><td>/26 → Maske 255.255.255.192</td></tr>
+      <tr><td>Hostbits</td><td>32 − 26 = 6</td></tr>
+      <tr><td>Hosts pro Subnetz</td><td>2⁶ − 2 = 62</td></tr>
+      <tr><td>Subnetze in /24</td><td>2² = 4 Subnetze</td></tr>
+      <tr><td>Schrittweite</td><td>256 − 192 = 64</td></tr>
+      <tr><td>Subnetze</td><td>.0, .64, .128, .192</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">VLSM – Variable Length Subnet Masks</div>
+    <p>Verschiedene Subnetzmasken innerhalb eines Netzes → unterschiedlich große Subnetze möglich. <strong>Vorteil:</strong> Effizientere Nutzung des Adressraums. Größte Subnetze zuerst zuweisen, dann kleinere in den verbleibenden Bereichen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VLSM-Beispiel</div>
+    <table class="data-table">
+      <tr><th>Abteilung</th><th>Hosts benötigt</th><th>Präfix</th><th>Hosts verfügbar</th></tr>
+      <tr><td>Produktion</td><td>120</td><td>/25</td><td>126</td></tr>
+      <tr><td>Verkauf</td><td>50</td><td>/26</td><td>62</td></tr>
+      <tr><td>Verwaltung</td><td>25</td><td>/27</td><td>30</td></tr>
+      <tr><td>WAN-Links</td><td>2</td><td>/30</td><td>2</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Supernetting &amp; CIDR</div>
+    <ul class="content-list">
+      <li><strong>Supernetting:</strong> Zusammenfassung mehrerer Subnetze zu einer aggregierten Route</li>
+      <li><strong>CIDR:</strong> Classless Inter-Domain Routing – flexible Präfixlängen ohne Klassenbindung</li>
+      <li><strong>Routenaggregation:</strong> Reduziert die Größe der Routingtabellen</li>
+      <li><strong>Beispiel:</strong> 10.5.240.0/24 bis 10.5.255.0/24 → aggregiert zu 10.5.240.0/20</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IPv6-Subnetze</div>
+    <ul class="content-list">
+      <li><strong>Standardpräfix für Endkunden:</strong> /48 oder /56 vom ISP</li>
+      <li><strong>Subnetz-ID:</strong> Bits zwischen Netzpräfix und Interface-ID (letzte 64 Bit)</li>
+      <li>/48 → 16 Bit für Subnetze = 65.536 Subnetze möglich</li>
+      <li>/56 → 8 Bit für Subnetze = 256 Subnetze möglich</li>
+      <li><strong>Interface-ID:</strong> Immer 64 Bit (EUI-64 oder zufällig generiert)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 4 – VLAN
+══════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header">
+    <h2>Kapitel 4</h2>
+    <span>VLAN</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">VLAN – Definition</div>
+    <p>Ein <strong>Virtual Local Area Network</strong> ist ein logisches Teilnetz innerhalb eines physischen Netzes. Hosts können nur innerhalb ihres VLANs kommunizieren. Jedes VLAN bildet eine eigene <strong>Broadcast-Domäne</strong>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VLAN-Typen</div>
+    <table class="data-table">
+      <tr><th>Typ</th><th>Zuordnung</th><th>Merkmal</th></tr>
+      <tr><td><strong>Port-basiert</strong></td><td>Switchport → VLAN</td><td>Einfach, statisch, am weitesten verbreitet</td></tr>
+      <tr><td><strong>Dynamisch (MAC)</strong></td><td>MAC-Adresse → VLAN</td><td>VMPS-Server, flexibel bei Standortwechsel</td></tr>
+      <tr><td><strong>Dynamisch (Protokoll)</strong></td><td>Protokolltyp → VLAN</td><td>Trennung nach IP, IPX etc.</td></tr>
+      <tr><td><strong>802.1Q (Tagged)</strong></td><td>VLAN-Tag im Frame</td><td>Standard für Trunk-Verbindungen, 12-Bit VLAN-ID</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IEEE 802.1Q – Tagging</div>
+    <ul class="content-list">
+      <li><strong>VLAN-Tag:</strong> 4 Byte werden in den Ethernet-Frame eingefügt (nach Quell-MAC)</li>
+      <li><strong>TPID:</strong> Tag Protocol Identifier (0x8100) – kennzeichnet getaggtes Frame</li>
+      <li><strong>TCI:</strong> Tag Control Information mit PCP (3 Bit Priorität), DEI (1 Bit) und <strong>VID</strong> (12 Bit VLAN-ID)</li>
+      <li><strong>12 Bit VID:</strong> 4.094 VLANs möglich (0 und 4095 reserviert)</li>
+      <li><strong>Trunk-Port:</strong> Überträgt getaggte Frames mehrerer VLANs zwischen Switches</li>
+      <li><strong>Access-Port:</strong> Gehört zu einem VLAN, Tag wird beim Senden an Host entfernt</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Inter-VLAN Routing</div>
+    <ul class="content-list">
+      <li>Switches leiten <strong>nicht</strong> zwischen VLANs weiter → Router erforderlich</li>
+      <li><strong>Dedizierte Verbindungen:</strong> Jedes VLAN ein eigenes Router-Interface → skaliert schlecht</li>
+      <li><strong>Router-on-a-stick:</strong> Ein Router-Interface, unterteilt in logische Sub-Interfaces über Trunk</li>
+      <li><strong>Layer-3-Switch:</strong> Switch mit Routing-Funktion → effizienteste Lösung für Inter-VLAN Routing</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VLAN-Sicherheit – Angriffe</div>
+    <table class="data-table">
+      <tr><th>Angriff</th><th>Methode</th><th>Voraussetzung</th></tr>
+      <tr><td><strong>Switch-Spoofing</strong></td><td>Angreifer gibt sich als Switch aus, sendet 802.1Q-Frames mit fremder VLAN-ID</td><td>Switchport im Autotrunking-Modus</td></tr>
+      <tr><td><strong>Double-Tagging</strong></td><td>Zwei VLAN-Tags: 1. Tag = eigenes VLAN (wird entfernt), 2. Tag = Ziel-VLAN</td><td>Opfer mindestens einen Switch entfernt</td></tr>
+    </table>
+    <ul class="content-list" style="margin-top:0.75rem">
+      <li><strong>Gegenmaßnahmen:</strong> Trunk-Ports manuell konfigurieren, kein Autotrunking, Native VLAN ändern</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">MVRP &amp; MSTP</div>
+    <p><strong>MVRP:</strong> Multiple VLAN Registration Protocol – dynamische VLAN-Aushandlung zwischen Switches. <strong>MSTP:</strong> Multiple Spanning Tree Protocol (IEEE 802.1s) – unabhängige Spannbäume für verschiedene VLANs.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VPN vs. VLAN</div>
+    <table class="data-table">
+      <tr><th>Merkmal</th><th>VLAN</th><th>VPN</th></tr>
+      <tr><td><strong>Bereich</strong></td><td>Lokal (LAN)</td><td>Weltweit (über Internet)</td></tr>
+      <tr><td><strong>Schicht</strong></td><td>Schicht 2</td><td>Schicht 3+</td></tr>
+      <tr><td><strong>Zweck</strong></td><td>Logische Segmentierung im LAN</td><td>Sicherer Tunnel über öffentliches Netz</td></tr>
+      <tr><td><strong>Verschlüsselung</strong></td><td>Nein</td><td>Ja (IPsec, SSL/TLS etc.)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 5 – Planung und Design von Netzen
+══════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header">
+    <h2>Kapitel 5</h2>
+    <span>Planung &amp; Design von Netzen</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Anforderungen an Netze</div>
+    <div class="two-col" style="margin-top:0.5rem">
+      <ul class="content-list">
+        <li>Leistungsfähigkeit</li>
+        <li>Skalierbarkeit</li>
+        <li>Robustheit &amp; Fehlertoleranz</li>
+        <li>Redundanz</li>
+      </ul>
+      <ul class="content-list">
+        <li>Sicherheit</li>
+        <li>Überwachbarkeit</li>
+        <li>Einfache Administration</li>
+        <li>Netz-Konvergenz (Daten, Sprache, Video)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Vorgehensweise Netzplanung</div>
+    <ul class="content-list">
+      <li><strong>1.</strong> Anforderungsanalyse / IST-Zustand erfassen</li>
+      <li><strong>2.</strong> Auswahl geeigneter Übertragungstechnologien</li>
+      <li><strong>3.</strong> Projektierung der Gebäudeverkabelung &amp; WLAN-AP-Positionierung</li>
+      <li><strong>4.</strong> Auswahl aktiver Komponenten (Switches, Router, Firewalls)</li>
+      <li><strong>5.</strong> Planung der Adressen (Subnetze, VLANs, DHCP)</li>
+      <li><strong>6.</strong> Sicherheitskonzept (Zonierung, Firewall, BSI-Grundschutz)</li>
+      <li><strong>7.</strong> Einhaltung von Kosten- und Zeitgrenzen</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Strukturierte Verkabelung (DIN EN 50173)</div>
+    <table class="data-table">
+      <tr><th>Bereich</th><th>Bezeichnung</th><th>Kabeltyp</th><th>Max. Länge</th></tr>
+      <tr><td><strong>Primär</strong></td><td>Geländeverkabelung (zwischen Gebäuden)</td><td>Glasfaser</td><td>1.500 m</td></tr>
+      <tr><td><strong>Sekundär</strong></td><td>Gebäudeverkabelung (zwischen Etagen)</td><td>Glasfaser / Kupfer</td><td>500 m</td></tr>
+      <tr><td><strong>Tertiär</strong></td><td>Etagenverkabelung (bis zur Datendose)</td><td>Twisted-Pair (Kupfer)</td><td>90 m + 2×5 m Patch</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">UGV – Universelle Gebäudeverkabelung</div>
+    <p>Einheitlicher, anwendungsneutraler Aufbauplan für zukunftsorientierte Netzinfrastruktur. Unterstützt heutige und zukünftige Kommunikationssysteme, bietet Kapazitätsreserven und flexible Erweiterbarkeit.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Bottom-Up-Planung</div>
+    <ul class="content-list">
+      <li><strong>Tertiär:</strong> Bedarf pro Arbeitsplatz ermitteln, Kabeltyp wählen (ab Cat 6), Datendosen → Patchfeld</li>
+      <li><strong>Sekundär:</strong> Etagenverteiler mit Switches, Vertikalverkabelung (Glasfaser)</li>
+      <li><strong>Primär:</strong> Gebäudeübergreifende Vernetzung, redundante Glasfasertrassen</li>
+      <li><strong>WLAN ergänzend:</strong> Simulation + Site-Survey (Heatmap), AP-Positionierung, Standard wählen</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TCP/IP-Netz planen</div>
+    <ul class="content-list">
+      <li><strong>Adressierung:</strong> IPv4 und/oder IPv6, Subnetzplanung, VLSM, DHCP</li>
+      <li><strong>Private Adressen + NAT</strong> für internen Bereich, öffentliche IP vom ISP</li>
+      <li><strong>Segmentierung:</strong> VLANs und/oder Subnetze basierend auf Abteilungen/Sicherheitszonen</li>
+      <li><strong>Namensservice:</strong> DNS, Namenskonventionen für Hosts, Router, Server</li>
+      <li><strong>Router planen:</strong> Segmentierung nur bei Bedarf (Last, Sicherheit, Topologie)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BSI IT-Grundschutz – NET.1.1</div>
+    <ul class="content-list">
+      <li><strong>Ziel:</strong> Informationssicherheit als integraler Bestandteil des Netzdesigns</li>
+      <li><strong>Basisanforderungen:</strong> Sicherheitsrichtlinie, Dokumentation, Netztrennung in Sicherheitszonen</li>
+      <li><strong>Sicherheitszonen (min.):</strong> Internes Netz, DMZ, Außenanbindung</li>
+      <li><strong>Client-Server-Segmentierung:</strong> Clients und Server in getrennten Segmenten</li>
+      <li><strong>Standard-/Erhöhte Anforderungen:</strong> Netzvirtualisierung, Redundanzverfahren, L2/L3-Konzepte</li>
+      <li><strong>NET.1.1.A13:</strong> Netzplanung muss vollständig, nachvollziehbar und regelmäßig überprüft werden</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Szenarien – Netzdesign nach Größe</div>
+    <table class="data-table">
+      <tr><th>Szenario</th><th>Typische Merkmale</th></tr>
+      <tr><td><strong>Heimnetz</strong></td><td>Heimrouter (NAT, DHCP, WLAN), Switch, einfache Verkabelung, Powerline als Alternative</td></tr>
+      <tr><td><strong>Kleinfirmen</strong></td><td>Strukturierte Verkabelung Tertiär, Switches, VLANs, Firewall, DMZ für Server</td></tr>
+      <tr><td><strong>Mittlere/Große Firmen</strong></td><td>Volle strukturierte Verkabelung (3 Bereiche), BSI-Grundschutz, Redundanz, professionelle WLAN-Planung</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 6 – Netzarchitektur & Zugangsnetze
+══════════════════════════════════════ -->
+<div id="kap6" class="section">
+  <div class="section-header">
+    <h2>Kapitel 6</h2>
+    <span>Netzarchitektur &amp; Zugangsnetze</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Netzarchitektur des Netzbetreibers</div>
+    <table class="data-table">
+      <tr><th>Schicht</th><th>Bezeichnung</th><th>Funktion</th></tr>
+      <tr><td>1</td><td><strong>Kernnetz</strong> (Core Network)</td><td>Hochgeschwindigkeits-Backbone (Glasfaser), Daten durchleiten, Übergänge zu anderen Netzen</td></tr>
+      <tr><td>2</td><td><strong>Zugangsnetz</strong> (Access Network)</td><td>Anbindung der Kunden an das Kernnetz, „letzte Meile"</td></tr>
+      <tr><td>3</td><td><strong>Kundennetz</strong> (Customer Network)</td><td>Netz des Endkunden (LAN) in eigener Verantwortung</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Next Generation Network (NGN)</div>
+    <p>Einheitliche IP-basierte Plattform des Kernnetzes für Daten, Sprache und Video. IP löst traditionelle Technologien wie ATM und SDH ab. Herausforderung: QoS und Kapazitätsmanagement.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Zugangstechniken – Überblick</div>
+    <table class="data-table">
+      <tr><th>Kategorie</th><th>Technologien</th></tr>
+      <tr><td><strong>Drahtgebunden</strong></td><td>xDSL (ADSL, VDSL), Powerline, Kabelmodem (DOCSIS)</td></tr>
+      <tr><td><strong>Optisch</strong></td><td>PON, FTTB, FTTH, FTTC</td></tr>
+      <tr><td><strong>Drahtlos</strong></td><td>LTE (4G), LTE Advanced (4.5G), 5G, WiMax</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">xDSL-Varianten &amp; Glasfaser</div>
+    <table class="data-table">
+      <tr><th>Technologie</th><th>Max. Download</th><th>Besonderheit</th></tr>
+      <tr><td><strong>ADSL</strong></td><td>16 Mbit/s</td><td>Reine Kupferleitung</td></tr>
+      <tr><td><strong>VDSL2 + Vectoring</strong></td><td>100 Mbit/s</td><td>FTTC (Glasfaser bis DSLAM)</td></tr>
+      <tr><td><strong>Supervectoring</strong></td><td>250 Mbit/s</td><td>Erweiterte Störungskompensation</td></tr>
+      <tr><td><strong>G.Fast</strong></td><td>1 Gbit/s</td><td>Nur kurze Distanzen (≤ 250 m)</td></tr>
+      <tr><td><strong>FTTH / FTTB</strong></td><td>1 Gbit/s+</td><td>Glasfaser bis zum Teilnehmer / Gebäude</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kabelnetz (DOCSIS)</div>
+    <ul class="content-list">
+      <li>Ursprünglich nur TV/Radio → Erweiterung um Rückkanal und Glasfaser</li>
+      <li><strong>DOCSIS 3.0:</strong> Bis zu 1 Gbit/s Download über Koaxialkabel</li>
+      <li><strong>DOCSIS 3.1:</strong> Bis 10 Gbit/s Download, 1 Gbit/s Upload</li>
+      <li><strong>DOCSIS 4.0:</strong> Bis 10 Gbit/s Download, 6 Gbit/s Upload</li>
+      <li>Medium wird unter Nutzern einer Straße <strong>geteilt</strong> (shared medium)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Drahtloser Zugang – Mobilfunk</div>
+    <table class="data-table">
+      <tr><th>Standard</th><th>Generation</th><th>Max. Übertragungsrate</th></tr>
+      <tr><td><strong>LTE</strong></td><td>4G</td><td>bis 500 Mbit/s (praktisch)</td></tr>
+      <tr><td><strong>LTE Advanced</strong></td><td>4.5G</td><td>bis 1 Gbit/s (theoretisch)</td></tr>
+      <tr><td><strong>5G</strong></td><td>5G</td><td>bis 10 Gbit/s (theoretisch)</td></tr>
+    </table>
+    <ul class="content-list" style="margin-top:0.75rem">
+      <li><strong>5G-Vorteile:</strong> Sehr kurze Latenzzeiten, geringer Energieverbrauch, Massive MIMO</li>
+      <li>Übertragungsrate abhängig von Standort, Umgebung und Anzahl aktiver Nutzer in der Funkzelle</li>
+      <li><strong>Zugang asymmetrisch:</strong> Download meist deutlich schneller als Upload</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FTTx – Fiber to the …</div>
+    <table class="data-table">
+      <tr><th>Abk.</th><th>Bedeutung</th><th>Glasfaser bis</th></tr>
+      <tr><td><strong>FTTH</strong></td><td>Fiber to the Home</td><td>Wohnung/Haus</td></tr>
+      <tr><td><strong>FTTB</strong></td><td>Fiber to the Building</td><td>Gebäudekeller</td></tr>
+      <tr><td><strong>FTTC</strong></td><td>Fiber to the Curb</td><td>Straßenverteiler (DSLAM)</td></tr>
+      <tr><td><strong>FTTD</strong></td><td>Fiber to the Desk</td><td>Arbeitsplatz</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLASHCARDS
+══════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>Klick auf die Karte zum Umdrehen</span>
+  </div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Prüfungsquiz</h2>
+    <span>20 Fragen mit Erklärungen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEET
+══════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header">
+    <h2>Cheatsheet</h2>
+    <span>Alle Formeln &amp; Schlüsselkonzepte</span>
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-block">
+      <h4>Netzkomponenten</h4>
+      <div class="cheat-row"><span class="cheat-key">Repeater/Hub</span><span class="cheat-val">Schicht 1, keine Adresse</span></div>
+      <div class="cheat-row"><span class="cheat-key">Bridge/Switch</span><span class="cheat-val">Schicht 2, MAC-Adresse</span></div>
+      <div class="cheat-row"><span class="cheat-key">Router</span><span class="cheat-val">Schicht 3, IP-Adresse</span></div>
+      <div class="cheat-row"><span class="cheat-key">Gateway</span><span class="cheat-val">Schicht 7, Protokoll</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kollisionsdomäne</span><span class="cheat-val">Begrenzt ab Switch</span></div>
+      <div class="cheat-row"><span class="cheat-key">Broadcastdomäne</span><span class="cheat-val">Begrenzt ab Router</span></div>
+      <div class="cheat-row"><span class="cheat-key">Backplane</span><span class="cheat-val">Ports × Speed × 2</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Switch &amp; STP</h4>
+      <div class="cheat-row"><span class="cheat-key">Cut-Through</span><span class="cheat-val">6 Byte → sofort weiter</span></div>
+      <div class="cheat-row"><span class="cheat-key">Store-and-Forward</span><span class="cheat-val">Ganzes Frame + CRC</span></div>
+      <div class="cheat-row"><span class="cheat-key">Fragment-Free</span><span class="cheat-val">64 Byte → weiter</span></div>
+      <div class="cheat-row"><span class="cheat-key">STP</span><span class="cheat-val">IEEE 802.1D, ~30–50 s</span></div>
+      <div class="cheat-row"><span class="cheat-key">RSTP</span><span class="cheat-val">IEEE 802.1w, < 6 s</span></div>
+      <div class="cheat-row"><span class="cheat-key">Root-Bridge</span><span class="cheat-val">Niedrigste Bridge-ID</span></div>
+      <div class="cheat-row"><span class="cheat-key">LACP</span><span class="cheat-val">IEEE 802.3ad, Bündelung</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Firewall-Typen</h4>
+      <div class="cheat-row"><span class="cheat-key">Paketfilter</span><span class="cheat-val">L3/L4, IP + Ports</span></div>
+      <div class="cheat-row"><span class="cheat-key">ALG</span><span class="cheat-val">L7, Proxy, Inhaltsprüfung</span></div>
+      <div class="cheat-row"><span class="cheat-key">P-A-P</span><span class="cheat-val">Paketfilter-ALG-Paketfilter</span></div>
+      <div class="cheat-row"><span class="cheat-key">UTM</span><span class="cheat-val">All-in-One Security</span></div>
+      <div class="cheat-row"><span class="cheat-key">DMZ</span><span class="cheat-val">Pufferzone int. ↔ ext.</span></div>
+      <div class="cheat-row"><span class="cheat-key">MAC-Flooding</span><span class="cheat-val">CAM-Tabelle füllen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Port Security</span><span class="cheat-val">Max. MAC pro Port</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Subnetze &amp; VLSM</h4>
+      <div class="cheat-row"><span class="cheat-key">Hosts</span><span class="cheat-val">2^h − 2 (h = Hostbits)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Netzadresse</span><span class="cheat-val">IP AND Maske</span></div>
+      <div class="cheat-row"><span class="cheat-key">Broadcast</span><span class="cheat-val">Netz OR inv. Maske</span></div>
+      <div class="cheat-row"><span class="cheat-key">VLSM</span><span class="cheat-val">Versch. Masken im Netz</span></div>
+      <div class="cheat-row"><span class="cheat-key">CIDR</span><span class="cheat-val">Classless, /Präfix-Notation</span></div>
+      <div class="cheat-row"><span class="cheat-key">Supernetting</span><span class="cheat-val">Routen zusammenfassen</span></div>
+      <div class="cheat-row"><span class="cheat-key">IPv6 Subnet</span><span class="cheat-val">/48 → 65.536, /56 → 256</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>VLAN</h4>
+      <div class="cheat-row"><span class="cheat-key">Port-basiert</span><span class="cheat-val">Statisch, Port → VLAN</span></div>
+      <div class="cheat-row"><span class="cheat-key">802.1Q Tag</span><span class="cheat-val">4 Byte, 12-Bit VID</span></div>
+      <div class="cheat-row"><span class="cheat-key">Max. VLANs</span><span class="cheat-val">4.094 (0 + 4095 reserv.)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Trunk</span><span class="cheat-val">Getaggte Frames, multi-VLAN</span></div>
+      <div class="cheat-row"><span class="cheat-key">Inter-VLAN</span><span class="cheat-val">Router oder L3-Switch</span></div>
+      <div class="cheat-row"><span class="cheat-key">Double-Tagging</span><span class="cheat-val">2 VLAN-Tags → Hopping</span></div>
+      <div class="cheat-row"><span class="cheat-key">VPN ≠ VLAN</span><span class="cheat-val">VPN = global, verschlüsselt</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Zugangsnetze</h4>
+      <div class="cheat-row"><span class="cheat-key">ADSL</span><span class="cheat-val">16 Mbit/s, Kupfer</span></div>
+      <div class="cheat-row"><span class="cheat-key">VDSL + Vect.</span><span class="cheat-val">100 Mbit/s, FTTC</span></div>
+      <div class="cheat-row"><span class="cheat-key">Supervect.</span><span class="cheat-val">250 Mbit/s</span></div>
+      <div class="cheat-row"><span class="cheat-key">FTTH</span><span class="cheat-val">1 Gbit/s+, Glasfaser</span></div>
+      <div class="cheat-row"><span class="cheat-key">DOCSIS 3.1</span><span class="cheat-val">10 Gbit/s DL, 1 Gbit/s UL</span></div>
+      <div class="cheat-row"><span class="cheat-key">LTE (4G)</span><span class="cheat-val">bis 500 Mbit/s</span></div>
+      <div class="cheat-row"><span class="cheat-key">5G</span><span class="cheat-val">bis 10 Gbit/s (theor.)</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+// ── FLASHCARDS DATA ──
+const flashcardsData = [
+  {cat:"Kap 1", q:"Was versteht man unter Internetworking?", a:"Die Verbindung einer beliebigen Anzahl unterschiedlicher (auch heterogener) Netze zu einem übergeordneten Netz. Das Internet ist das prominenteste Beispiel."},
+  {cat:"Kap 1", q:"Welche drei Schichten hat das hierarchische Internetworking-Modell?", a:"1) Zugriffsschicht (Access Layer) – Endgeräte-Anbindung. 2) Verteilungsschicht (Distribution Layer) – Routing/Filterung. 3) Kernschicht (Core Layer) – schnelle Weiterleitung, Backbone."},
+  {cat:"Kap 1", q:"Was ist eine Broadcast-Domäne und welche Komponente begrenzt sie?", a:"Bereich, in dem ein Broadcast alle Hosts erreicht. Nur ein Router (Schicht 3) begrenzt Broadcast-Domänen. Switches/Bridges leiten Broadcasts weiter."},
+  {cat:"Kap 2", q:"Was ist der Unterschied zwischen einem Hub und einem Switch?", a:"Hub (Schicht 1): sendet an alle Ports (Shared Medium), vergrößert Kollisionsdomäne. Switch (Schicht 2): lernt MAC-Adressen, sendet gezielt an richtigen Port, jeder Port = eigene Kollisionsdomäne."},
+  {cat:"Kap 2", q:"Wie lernt ein Switch die Zuordnung MAC-Adresse → Port?", a:"Switch liest die Quell-MAC-Adresse jedes eingehenden Frames und speichert sie mit dem Eingangsport in der MAC-Adresstabelle (CAM). Bei erneutem Empfang wird der Aging-Timer zurückgesetzt."},
+  {cat:"Kap 2", q:"Welche drei Switching-Verfahren gibt es?", a:"Cut-Through: Nach 6 Byte (Ziel-MAC) sofort weiterleiten. Store-and-Forward: Ganzes Frame empfangen + CRC prüfen. Fragment-Free: Erste 64 Byte lesen (Kollisionsfenster), dann weiterleiten."},
+  {cat:"Kap 2", q:"Wie berechnet man die Backplane-Bandbreite eines Switches?", a:"Backplane = Anzahl Ports × Linkgeschwindigkeit × 2 (Vollduplex). Beispiel: 48 × 1 Gbit/s × 2 = 96 Gbit/s."},
+  {cat:"Kap 2", q:"Was ist MAC-Flooding und wie schützt man sich?", a:"Angreifer flutet Switch mit gefälschten MAC-Adressen → CAM-Tabelle voll → Switch flutet alle Frames wie ein Hub → Sniffing möglich. Schutz: Port Security (max. MAC pro Port), 802.1X."},
+  {cat:"Kap 2", q:"Was ist Link Aggregation (LACP)?", a:"Bündelung mehrerer physischer Links zu einem logischen Link (IEEE 802.3ad). Vorteile: Bandbreitenerhöhung und Redundanz. Arbeitet in Schicht 2, transparent für höhere Schichten."},
+  {cat:"Kap 2", q:"Wozu dient das Spanning Tree Protocol (STP)?", a:"Verhindert Schleifen in redundanten Netzen. Überführt Topologie in schleifenfreien Spannbaum. Root-Bridge = Switch mit niedrigster Bridge-ID. Portzustände: Blocking → Listening → Learning → Forwarding."},
+  {cat:"Kap 2", q:"Was unterscheidet STP von RSTP?", a:"STP (802.1D): Konvergenz ~30–50 Sekunden, 4 Portzustände. RSTP (802.1w): Konvergenz < 6 Sekunden, 3 Zustände (Discarding, Learning, Forwarding), schnellere Reaktion auf Topologieänderungen."},
+  {cat:"Kap 2", q:"Was ist ein Layer-3-Switch und wann wird er eingesetzt?", a:"Switch mit Routing-Funktionalität (Schicht 2 + 3). Hardware-basiertes Routing = schneller als klassischer Router. Ideal für Inter-VLAN Routing in Unternehmensnetzen."},
+  {cat:"Kap 2", q:"Welche Firewall-Architektur bietet die höchste Sicherheit?", a:"P-A-P (Paketfilter-ALG-Paketfilter): Zwei Paketfilter mit Application Level Gateway dazwischen, DMZ zwischen den Filtern. Gestaffelte Verteidigung auf Schicht 3/4 und 7."},
+  {cat:"Kap 2", q:"Was ist eine DMZ?", a:"Demilitarisierte Zone: Pufferzone zwischen internem und externem Netz. Enthält öffentlich erreichbare Dienste (Webserver, Mailserver). Durch Firewalls von beiden Seiten abgeschirmt."},
+  {cat:"Kap 3", q:"Wie berechnet man die Anzahl adressierbarer Hosts pro Subnetz?", a:"Hosts = 2^h − 2 (h = Anzahl Hostbits). Minus 2 für Netzadresse (alle Hostbits = 0) und Broadcastadresse (alle Hostbits = 1)."},
+  {cat:"Kap 3", q:"Was ist VLSM und welchen Vorteil bietet es?", a:"Variable Length Subnet Masks: Verschiedene Subnetzmasken innerhalb eines Netzes. Ermöglicht unterschiedlich große Subnetze → effizientere Nutzung des Adressraums. Größte Subnetze zuerst zuweisen."},
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen Subnetting und Supernetting?", a:"Subnetting: Aufteilung eines Netzes in kleinere Subnetze (mehr Netzbits). Supernetting/CIDR: Zusammenfassung mehrerer Subnetze zu einer aggregierten Route (weniger Netzbits) → kleinere Routingtabellen."},
+  {cat:"Kap 3", q:"Wie funktioniert die IPv6-Subnetzbildung mit einem /48-Präfix?", a:"Bei /48 stehen 16 Bit für Subnetz-ID zur Verfügung (Bits 49–64) → bis zu 65.536 Subnetze. Die Interface-ID ist immer 64 Bit lang."},
+  {cat:"Kap 4", q:"Was ist ein VLAN und welche Vorteile bietet es?", a:"Logisches Teilnetz innerhalb eines physischen Netzes. Vorteile: logische Strukturierung, erhöhte Sicherheit, größere Flexibilität, bessere Performance durch Aufteilung in Broadcast-Domänen."},
+  {cat:"Kap 4", q:"Was ist der Unterschied zwischen einem Trunk-Port und einem Access-Port?", a:"Trunk-Port: überträgt getaggte Frames mehrerer VLANs (802.1Q). Access-Port: gehört zu genau einem VLAN, Tag wird beim Senden an den Host entfernt."},
+  {cat:"Kap 4", q:"Was ist VLAN-Hopping per Double-Tagging?", a:"Angreifer setzt zwei VLAN-Tags: 1. Tag = eigenes VLAN (wird vom Switch entfernt), 2. Tag = Ziel-VLAN → Frame wird an Ziel-VLAN weitergeleitet. Funktioniert nur, wenn Opfer mindestens einen Switch entfernt ist."},
+  {cat:"Kap 4", q:"Wie funktioniert Router-on-a-stick?", a:"Ein physisches Router-Interface wird in mehrere logische Sub-Interfaces unterteilt, verbunden über Trunk. Jedes Sub-Interface gehört zu einem VLAN → ermöglicht Inter-VLAN Routing mit nur einem Link."},
+  {cat:"Kap 4", q:"Was ist der Unterschied zwischen VPN und VLAN?", a:"VLAN: lokale logische Segmentierung im LAN, Schicht 2, keine Verschlüsselung. VPN: globaler sicherer Tunnel über öffentliches Netz (Internet), Schicht 3+, verschlüsselt."},
+  {cat:"Kap 5", q:"In welche drei Bereiche gliedert sich die strukturierte Verkabelung?", a:"Primärbereich: Geländeverkabelung (Glasfaser, max. 1500 m). Sekundärbereich: Gebäudeverkabelung (Glasfaser/Kupfer, max. 500 m). Tertiärbereich: Etagenverkabelung (TP-Kupfer, max. 90 m + 2×5 m Patch)."},
+  {cat:"Kap 5", q:"Was verlangt der BSI IT-Grundschutz (NET.1.1) als Basisanforderung für die Netztrennung?", a:"Mindestens drei Sicherheitszonen: internes Netz, DMZ und Außenanbindung. Physisch voneinander getrennt. Client-Server-Segmentierung und Endgeräte-Segmentierung im internen Netz."},
+  {cat:"Kap 5", q:"Was versteht man unter einer WLAN-Site-Survey?", a:"Ortsbegehung mit Mess-AP zur Messung der Signalstärke an verschiedenen Positionen. Ergebnis: WLAN-Heatmap. Alternativ/ergänzend: softwarebasierte Simulation auf Basis von Grundrissplänen."},
+  {cat:"Kap 6", q:"Aus welchen drei Schichten besteht die Netzarchitektur eines Netzbetreibers?", a:"Kernnetz (Core): Backbone, Glasfaser, Daten durchleiten. Zugangsnetz (Access): 'letzte Meile' zum Kunden. Kundennetz: LAN des Endkunden in eigener Verantwortung."},
+  {cat:"Kap 6", q:"Was ist der Unterschied zwischen FTTC, FTTB und FTTH?", a:"FTTC (Fiber to the Curb): Glasfaser bis Straßenverteiler, letztes Stück Kupfer. FTTB (Fiber to the Building): Glasfaser bis Gebäude. FTTH (Fiber to the Home): Glasfaser bis in die Wohnung."},
+  {cat:"Kap 6", q:"Welche Übertragungsraten erreicht DOCSIS 3.1?", a:"Bis zu 10 Gbit/s im Download und 1 Gbit/s im Upload über TV-Kabelnetze (Koaxialkabel mit Glasfaser-Backbone). DOCSIS 4.0 soll 10/6 Gbit/s (DL/UL) erreichen."},
+  {cat:"Kap 6", q:"Was ist 5G und welche Vorteile bietet es gegenüber LTE?", a:"5. Generation Mobilfunk: bis zu 10 Gbit/s (theoretisch), sehr kurze Latenzzeiten, geringer Energieverbrauch. LTE (4G): bis ~500 Mbit/s (praktisch). 5G ermöglicht IoT und Echtzeitanwendungen."}
+];
+
+// ── QUIZ DATA ──
+const quizData = [
+  {q:"Welche Schicht im hierarchischen Internetworking-Modell ist für die schnelle Weiterleitung im Backbone zuständig?", opts:["Zugriffsschicht","Verteilungsschicht","Kernschicht","Transportschicht"], correct:2, exp:"Die Kernschicht (Core Layer) ist für die schnelle Weiterleitung großer Datenmengen im Backbone zuständig – kein Filtern, nur schnelles Forwarding."},
+  {q:"Welche Komponente begrenzt eine Broadcast-Domäne?", opts:["Hub","Switch","Bridge","Router"], correct:3, exp:"Nur Router (Schicht 3) begrenzen Broadcast-Domänen. Switches und Bridges leiten Broadcasts an alle Ports weiter."},
+  {q:"Welches Switching-Verfahren prüft die CRC-Prüfsumme vor dem Weiterleiten?", opts:["Cut-Through","Fragment-Free","Store-and-Forward","Adaptive Switching"], correct:2, exp:"Store-and-Forward: Das gesamte Frame wird empfangen, die CRC-Prüfsumme wird geprüft, erst dann wird weitergeleitet."},
+  {q:"Wie viele Bytes liest Fragment-Free-Switching vor dem Weiterleiten?", opts:["6 Byte","14 Byte","64 Byte","1518 Byte"], correct:2, exp:"Fragment-Free liest die ersten 64 Byte (= Kollisionsfenster). Beschädigte Runt-Frames werden so erkannt, ohne das ganze Frame abzuwarten."},
+  {q:"Was ist die Aufgabe einer BPDU beim Spanning Tree Protocol?", opts:["MAC-Adressen lernen","Schleifen erkennen und Root-Bridge wählen","VLANs zuordnen","Frames verschlüsseln"], correct:1, exp:"BPDUs (Bridge Protocol Data Units) werden zwischen Switches ausgetauscht, um die Topologie zu ermitteln, die Root-Bridge zu wählen und Schleifen zu vermeiden."},
+  {q:"Wie lange dauert die STP-Konvergenz ungefähr?", opts:["< 1 Sekunde","< 6 Sekunden","30–50 Sekunden","5–10 Minuten"], correct:2, exp:"STP (IEEE 802.1D) benötigt ca. 30–50 Sekunden für die Konvergenz. RSTP (802.1w) ist mit < 6 Sekunden deutlich schneller."},
+  {q:"Was passiert bei einem MAC-Flooding-Angriff?", opts:["Der Switch schaltet sich ab","Die CAM-Tabelle wird voll und der Switch flutet alle Frames","Die Firewall blockiert den Angreifer","Der Router ändert seine Routingtabelle"], correct:1, exp:"MAC-Flooding füllt die CAM-Tabelle → Switch verhält sich wie ein Hub und flutet alle Frames an alle Ports → Angreifer kann mitlesen (Sniffing)."},
+  {q:"Welches IEEE-Protokoll definiert Link Aggregation?", opts:["802.1D","802.1Q","802.3ad","802.1w"], correct:2, exp:"IEEE 802.3ad definiert LACP (Link Aggregation Control Protocol) zur Bündelung mehrerer physischer Links zu einem logischen Link."},
+  {q:"Welche Firewall-Architektur nutzt die Reihenfolge Paketfilter → ALG → Paketfilter?", opts:["UTM","DMZ","P-A-P","Stateful Inspection"], correct:2, exp:"P-A-P (Paketfilter-ALG-Paketfilter): Gestaffelte Sicherheit mit Application Level Gateway zwischen zwei Paketfiltern, DMZ dazwischen."},
+  {q:"Wie viele Hosts kann ein /26-Subnetz adressieren?", opts:["30","62","64","126"], correct:1, exp:"Hostbits = 32 − 26 = 6 → Hosts = 2⁶ − 2 = 62. Minus 2 für Netz- und Broadcastadresse."},
+  {q:"Was ist der Hauptvorteil von VLSM?", opts:["Schnelleres Routing","Effizientere Nutzung des Adressraums","Einfachere Konfiguration","Höhere Bandbreite"], correct:1, exp:"VLSM erlaubt verschiedene Subnetzmasken → unterschiedlich große Subnetze → Adressraum wird optimal genutzt, weniger Verschwendung."},
+  {q:"Wie viele Bit hat die VLAN-ID im 802.1Q-Tag?", opts:["4 Bit","8 Bit","12 Bit","16 Bit"], correct:2, exp:"Die VID (VLAN Identifier) im 802.1Q-Tag ist 12 Bit lang → 4.094 VLANs möglich (0 und 4095 sind reserviert)."},
+  {q:"Was ist Router-on-a-stick?", opts:["Router mit nur einem Interface und logischen Sub-Interfaces für Inter-VLAN Routing","Router, der auf einem Stock montiert ist","Router mit einem einzigen VLAN","WLAN-Router mit externer Antenne"], correct:0, exp:"Router-on-a-stick: Ein physisches Router-Interface wird in logische Sub-Interfaces unterteilt (über Trunk), jedes für ein VLAN → Inter-VLAN Routing mit nur einem Link."},
+  {q:"Welcher VLAN-Angriff nutzt zwei VLAN-Tags im Frame?", opts:["MAC-Flooding","Switch-Spoofing","Double-Tagging","ARP-Poisoning"], correct:2, exp:"Double-Tagging: 1. Tag = eigenes VLAN (wird entfernt), 2. Tag = Ziel-VLAN → Frame gelangt in fremdes VLAN. Funktioniert nur über mindestens zwei Switches."},
+  {q:"Welche maximale Kabellänge gilt im Tertiärbereich der strukturierten Verkabelung?", opts:["30 m","90 m","500 m","1500 m"], correct:1, exp:"Tertiärbereich (Etagenverkabelung): max. 90 m Festkabel + 2 × 5 m Patchkabel = 100 m gesamt. Twisted-Pair-Kupferkabel (ab Cat 6)."},
+  {q:"Was ist die Mindest-Zonierung laut BSI IT-Grundschutz NET.1.1?", opts:["Nur DMZ","Internes Netz + DMZ","Internes Netz + DMZ + Außenanbindung","Keine Vorgabe"], correct:2, exp:"BSI NET.1.1 fordert mindestens 3 Sicherheitszonen: internes Netz, DMZ und Außenanbindung – physisch voneinander getrennt."},
+  {q:"Welche Übertragungsrate erreicht VDSL2 mit Vectoring?", opts:["16 Mbit/s","50 Mbit/s","100 Mbit/s","250 Mbit/s"], correct:2, exp:"VDSL2 mit Vectoring: bis 100 Mbit/s. Supervectoring erreicht bis 250 Mbit/s. Voraussetzung: FTTC (Glasfaser bis zum DSLAM)."},
+  {q:"Was bedeutet FTTH?", opts:["Fiber to the Hub","Fiber to the Home","Fast Transfer to Host","Fiber Trunk Topology High-speed"], correct:1, exp:"FTTH = Fiber to the Home: Glasfaser bis in die Wohnung/das Haus. Ermöglicht Übertragungsraten von 1 Gbit/s und mehr."},
+  {q:"Welche maximale Übertragungsrate verspricht 5G theoretisch?", opts:["500 Mbit/s","1 Gbit/s","5 Gbit/s","10 Gbit/s"], correct:3, exp:"5G verspricht theoretisch bis zu 10 Gbit/s, sehr kurze Latenzzeiten und geringen Energieverbrauch – ideal für IoT und Echtzeitanwendungen."},
+  {q:"Welcher Standard definiert die Datenübertragung über TV-Kabelnetze?", opts:["xDSL","DOCSIS","PON","G.Fast"], correct:1, exp:"DOCSIS (Data Over Cable Service Infrastructure System) definiert die Datenübertragung über TV-Kabelnetze. DOCSIS 3.1 erreicht bis 10 Gbit/s im Download."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

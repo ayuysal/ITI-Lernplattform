@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlashMind · Karteikarten-Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0d;
+    --surface: #13131a;
+    --surface2: #1a1a24;
+    --surface3: #21212e;
+    --border: #252535;
+    --border2: #2e2e42;
+    --accent: #c8f135;
+    --accent2: #7c5cfc;
+    --text: #e8e8f0;
+    --muted: #5a5a72;
+    --muted2: #8080a0;
+    --danger: #ff4d6d;
+    --hard: #ffa940;
+    --good: #06d6a0;
+    --easy: #c8f135;
+    --glow: rgba(200,241,53,0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 700px 500px at 70% -10%, rgba(124,92,252,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 400px at -10% 90%, rgba(200,241,53,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── DECK SELECT VIEW ─────────────────────────────────────────── */
+  #deckSelect {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+    position: relative;
+    z-index: 1;
+  }
+  .ds-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .ds-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted2);
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 20px;
+    transition: color 0.15s;
+  }
+  .ds-back:hover { color: var(--accent); }
+  .ds-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .ds-logo-dot {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 14px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.8); }
+  }
+  .ds-sub {
+    color: var(--muted2);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  /* Deck Section */
+  .ds-section-title {
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    padding-left: 4px;
+  }
+  .ds-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .deck-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+  }
+  .deck-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--deck-color, var(--accent2));
+    border-radius: 12px 12px 0 0;
+  }
+  .deck-card:hover {
+    border-color: var(--deck-color, var(--accent2));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+  .deck-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(200,241,53,0.3), 0 6px 20px rgba(0,0,0,0.3);
+  }
+  .deck-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 10px; right: 12px;
+    background: var(--accent);
+    color: #0a0a0d;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .deck-icon { font-size: 22px; margin-bottom: 8px; }
+  .deck-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .deck-sub {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted2);
+    margin-bottom: 8px;
+  }
+  .deck-count {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+  }
+
+  /* Start Button */
+  .ds-start-area {
+    text-align: center;
+    padding: 20px 0;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(transparent, var(--bg) 30%);
+    z-index: 10;
+  }
+  .ds-count-label {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted2);
+    margin-bottom: 10px;
+  }
+  .btn-start {
+    background: var(--accent);
+    color: #0a0a0d;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-start:hover { background: #d4f24d; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,241,53,0.3); }
+  .btn-start:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ─── SESSION VIEW ─────────────────────────────────────────────── */
+  #sessionView {
+    display: none;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 16px 60px;
+    position: relative;
+    z-index: 1;
+  }
+  .wrapper { display: flex; flex-direction: column; gap: 20px; }
+
+  /* TOPBAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .logo:hover { opacity: 0.8; }
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  .session-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+  }
+  .session-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* PROGRESS */
+  .progress-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+    gap: 2px;
+  }
+  .progress-seg { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+  .seg-again { background: var(--danger); }
+  .seg-hard  { background: var(--hard); }
+  .seg-good  { background: var(--good); }
+  .seg-easy  { background: var(--easy); }
+  .rating-counts {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+  }
+  .count-item { display: flex; align-items: center; gap: 5px; }
+  .count-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* CARD ZONE */
+  .card-zone {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .card-tag {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+  }
+  .card-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+  }
+  .nav-btn {
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    color: var(--muted2);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .question-area {
+    padding: 32px 28px 24px;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .question-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  /* ANSWER ZONE */
+  .answer-zone {
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  /* SYMBOL KEYBOARD */
+  .symbol-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+  }
+  .symbol-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .sym-tab {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    color: var(--muted2);
+    background: none;
+    transition: all 0.15s;
+  }
+  .sym-tab:hover { color: var(--text); background: var(--surface3); }
+  .sym-tab.active { background: rgba(200,241,53,0.1); border-color: rgba(200,241,53,0.3); color: var(--accent); }
+  .symbol-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .sym-btn {
+    min-width: 34px;
+    height: 34px;
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+    font-family: 'DM Mono', monospace;
+    padding: 0 6px;
+  }
+  .sym-btn:hover {
+    background: rgba(200,241,53,0.1);
+    border-color: rgba(200,241,53,0.4);
+    color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  }
+  .sym-btn:active { transform: scale(0.9); }
+  /* TEXTAREA */
+  .answer-input-wrap {
+    position: relative;
+    padding: 16px 20px;
+  }
+  .answer-textarea {
+    width: 100%;
+    min-height: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    padding: 14px 16px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.6;
+  }
+  .answer-textarea:focus {
+    border-color: rgba(200,241,53,0.4);
+    box-shadow: 0 0 0 3px rgba(200,241,53,0.07);
+  }
+  .answer-textarea::placeholder { color: var(--muted); }
+  .input-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hint-kbd {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  kbd {
+    background: var(--surface3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted2);
+  }
+  .action-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .btn-primary { background: var(--accent); color: #0a0a0d; }
+  .btn-primary:hover { background: #d4f24d; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(200,241,53,0.25); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-ghost { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  /* ANSWER REVEAL */
+  .answer-reveal {
+    display: none;
+    padding: 0 20px 16px;
+    animation: slideDown 0.3s ease;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal-box {
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .reveal-header {
+    background: var(--surface2);
+    padding: 10px 16px;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .reveal-content {
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  /* COMPARISON */
+  .comparison {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 20px 16px;
+    animation: slideDown 0.3s ease 0.1s both;
+  }
+  .compare-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .compare-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .compare-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+  }
+  .compare-text .match { color: var(--good); background: rgba(6,214,160,0.1); border-radius: 2px; padding: 0 2px; }
+  .compare-text .miss  { color: var(--danger); background: rgba(255,77,109,0.1); border-radius: 2px; padding: 0 2px; }
+
+  /* AI VERDICT */
+  .ai-verdict {
+    display: none;
+    margin: 0 20px 16px;
+    padding: 16px;
+    border-radius: 12px;
+    animation: slideDown 0.35s ease 0.15s both;
+    position: relative;
+    overflow: hidden;
+  }
+  .ai-verdict::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background: radial-gradient(circle at 20% 50%, white, transparent 70%);
+  }
+  .ai-verdict.verdict-again  { background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3); }
+  .ai-verdict.verdict-hard   { background: rgba(255,169,64,0.1); border: 1px solid rgba(255,169,64,0.3); }
+  .ai-verdict.verdict-good   { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); }
+  .ai-verdict.verdict-easy   { background: rgba(200,241,53,0.1); border: 1px solid rgba(200,241,53,0.3); }
+  .verdict-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .verdict-icon { font-size: 22px; }
+  .verdict-title { font-size: 16px; font-weight: 600; }
+  .verdict-score { margin-left: auto; font-family: 'Playfair Display', serif; font-size: 26px; }
+  .verdict-reason { font-size: 13px; color: var(--muted2); line-height: 1.55; position: relative; }
+  .verdict-reason strong { color: var(--text); }
+  .verdict-again .verdict-title, .verdict-again .verdict-score { color: var(--danger); }
+  .verdict-hard  .verdict-title, .verdict-hard  .verdict-score { color: var(--hard); }
+  .verdict-good  .verdict-title, .verdict-good  .verdict-score { color: var(--good); }
+  .verdict-easy  .verdict-title, .verdict-easy  .verdict-score { color: var(--easy); }
+
+  /* RATING OVERRIDE */
+  .rating-override {
+    display: none;
+    padding: 12px 20px 20px;
+    animation: slideDown 0.3s ease 0.2s both;
+  }
+  .override-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .rating-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .rating-btn {
+    padding: 12px 8px;
+    border-radius: 9px;
+    border: 1px solid;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+  }
+  .rating-btn .r-emoji { font-size: 18px; }
+  .rating-btn .r-label { font-size: 11px; letter-spacing: 0.5px; }
+  .rating-btn .r-interval { font-size: 10px; opacity: 0.7; }
+  .r-again { border-color: rgba(255,77,109,0.3); color: var(--danger); }
+  .r-again:hover { background: rgba(255,77,109,0.18); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,77,109,0.2); }
+  .r-hard  { border-color: rgba(255,169,64,0.3); color: var(--hard); }
+  .r-hard:hover  { background: rgba(255,169,64,0.18); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,169,64,0.2); }
+  .r-good  { border-color: rgba(6,214,160,0.3); color: var(--good); }
+  .r-good:hover  { background: rgba(6,214,160,0.18); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(6,214,160,0.2); }
+  .r-easy  { border-color: rgba(200,241,53,0.3); color: var(--easy); }
+  .r-easy:hover  { background: rgba(200,241,53,0.18); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(200,241,53,0.2); }
+  .rating-btn.selected { transform: scale(0.95); opacity: 0.7; }
+  .rating-btn.ai-pick { box-shadow: 0 0 0 2px currentColor; }
+
+  /* AI LOADING */
+  .ai-loading {
+    display: none;
+    margin: 0 20px 16px;
+    padding: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    align-items: center;
+    gap: 12px;
+  }
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent2);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-size: 13px;
+    color: var(--muted2);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* NEXT CARD */
+  .next-area {
+    display: none;
+    padding: 0 20px 20px;
+    animation: slideDown 0.3s ease 0.25s both;
+  }
+  .btn-next {
+    width: 100%;
+    background: var(--accent);
+    color: #0a0a0d;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-next:hover { background: #d4f24d; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,241,53,0.3); }
+
+  /* SESSION END */
+  .session-end {
+    display: none;
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    animation: fadeIn 0.5s ease;
+  }
+  .end-emoji { font-size: 56px; margin-bottom: 16px; }
+  .end-title { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 8px; }
+  .end-sub { color: var(--muted2); font-size: 14px; margin-bottom: 28px; }
+  .end-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .end-stat {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .end-stat-val { font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 4px; }
+  .end-stat-label { font-size: 11px; color: var(--muted2); font-family: 'DM Mono', monospace; }
+  .end-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media(max-width: 600px) {
+    .ds-grid { grid-template-columns: 1fr; }
+    .comparison { grid-template-columns: 1fr; }
+    .end-stats { grid-template-columns: repeat(2, 1fr); }
+    .question-text { font-size: 18px; }
+    .rating-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ DECK SELECTION ═══════════════ -->
+<div id="deckSelect">
+  <div class="ds-header">
+    <a href="index.html" class="ds-back">&larr; Zur&uuml;ck zur Lernplattform</a>
+    <div class="ds-logo">
+      <div class="ds-logo-dot"></div>
+      FlashMind
+    </div>
+    <div class="ds-sub">Karteikarten-Training mit Spaced Repetition</div>
+  </div>
+
+  <div class="ds-section-title">Informationstechnologie</div>
+  <div class="ds-grid" id="deckGridITI"></div>
+
+  <div class="ds-section-title">Theoretische Grundlagen der Informatik</div>
+  <div class="ds-grid" id="deckGridTGI"></div>
+
+  <div class="ds-start-area">
+    <div class="ds-count-label" id="selLabel">W&auml;hle mindestens ein Deck</div>
+    <button class="btn-start" id="btnStart" disabled onclick="startSession()">
+      Session starten &nbsp;&rarr;
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════ SESSION VIEW ═══════════════ -->
+<div id="sessionView">
+  <div class="wrapper">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="logo" onclick="backToDecks()" title="Zur&uuml;ck zur Deck-Auswahl">
+        <div class="logo-dot"></div>
+        FlashMind
+      </div>
+      <div class="session-meta">
+        <span class="session-chip" id="sessionChip"></span>
+        <span id="timeDisplay">00:00</span>
+      </div>
+    </div>
+    <!-- PROGRESS -->
+    <div class="progress-container">
+      <div class="progress-header">
+        <span id="progressLabel">Karte 1 von 6</span>
+        <span id="progressPct">0% abgeschlossen</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-seg seg-again" id="segAgain" style="width:0%"></div>
+        <div class="progress-seg seg-hard"  id="segHard"  style="width:0%"></div>
+        <div class="progress-seg seg-good"  id="segGood"  style="width:0%"></div>
+        <div class="progress-seg seg-easy"  id="segEasy"  style="width:0%"></div>
+      </div>
+      <div class="rating-counts">
+        <div class="count-item"><div class="count-dot" style="background:var(--danger)"></div><span id="cntAgain">0</span> Nochmal</div>
+        <div class="count-item"><div class="count-dot" style="background:var(--hard)"></div><span id="cntHard">0</span> Schwer</div>
+        <div class="count-item"><div class="count-dot" style="background:var(--good)"></div><span id="cntGood">0</span> Gut</div>
+        <div class="count-item"><div class="count-dot" style="background:var(--easy)"></div><span id="cntEasy">0</span> Leicht</div>
+      </div>
+    </div>
+    <!-- CARD ZONE -->
+    <div class="card-zone" id="cardZone">
+      <div class="card-header">
+        <div class="card-tag" id="cardTag"></div>
+        <div class="card-nav">
+          <button class="nav-btn" onclick="skipCard()" title="&Uuml;berspringen">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="question-area">
+        <div class="question-label">Frage</div>
+        <div class="question-text" id="questionText"></div>
+      </div>
+      <div class="answer-zone">
+        <div class="symbol-bar">
+          <div class="symbol-tabs" id="symTabs"></div>
+          <div class="symbol-grid" id="symGrid"></div>
+        </div>
+        <div class="answer-input-wrap">
+          <textarea
+            id="answerInput"
+            class="answer-textarea"
+            placeholder="Schreibe deine Antwort hier &hellip; (Symbole oben einf&uuml;gen)"
+            rows="3"
+            oninput="onInputChange()"
+          ></textarea>
+          <div class="input-actions">
+            <div class="hint-kbd">
+              <kbd>Ctrl+Enter</kbd> pr&uuml;fen
+              &nbsp;&middot;&nbsp;
+              <kbd>Ctrl+R</kbd> Antwort zeigen
+            </div>
+            <div class="action-row">
+              <button class="btn btn-ghost" style="font-size:13px; padding:8px 14px;" onclick="revealAnswer()">&#128065; Zeigen</button>
+              <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" disabled>
+                &#129302; KI pr&uuml;ft
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ai-loading" id="aiLoading">
+        <div class="spinner"></div>
+        <div class="loading-text">Antwort wird analysiert &hellip;</div>
+      </div>
+      <div class="answer-reveal" id="answerReveal">
+        <div class="reveal-box">
+          <div class="reveal-header">&#10003; Musterl&ouml;sung</div>
+          <div class="reveal-content" id="revealContent"></div>
+        </div>
+      </div>
+      <div class="comparison" id="comparisonArea">
+        <div class="compare-box">
+          <div class="compare-label">Deine Antwort</div>
+          <div class="compare-text" id="yourAnswer"></div>
+        </div>
+        <div class="compare-box">
+          <div class="compare-label">Kernbegriffe</div>
+          <div class="compare-text" id="keyTerms"></div>
+        </div>
+      </div>
+      <div class="ai-verdict" id="aiVerdict">
+        <div class="verdict-header">
+          <div class="verdict-icon" id="verdictIcon"></div>
+          <div class="verdict-title" id="verdictTitle"></div>
+          <div class="verdict-score" id="verdictScore"></div>
+        </div>
+        <div class="verdict-reason" id="verdictReason"></div>
+      </div>
+      <div class="rating-override" id="ratingOverride">
+        <div class="override-label">Bewertung &middot; Eigene Einsch&auml;tzung &uuml;berschreiben?</div>
+        <div class="rating-row">
+          <button class="rating-btn r-again" onclick="applyRating('again', this)">
+            <span class="r-emoji">&#10060;</span>
+            <span class="r-label">NOCHMAL</span>
+            <span class="r-interval">&lt; 1 Min</span>
+          </button>
+          <button class="rating-btn r-hard" onclick="applyRating('hard', this)">
+            <span class="r-emoji">&#128560;</span>
+            <span class="r-label">SCHWER</span>
+            <span class="r-interval">~1 Tag</span>
+          </button>
+          <button class="rating-btn r-good" onclick="applyRating('good', this)">
+            <span class="r-emoji">&#9989;</span>
+            <span class="r-label">GUT</span>
+            <span class="r-interval">~3 Tage</span>
+          </button>
+          <button class="rating-btn r-easy" onclick="applyRating('easy', this)">
+            <span class="r-emoji">&#9889;</span>
+            <span class="r-label">LEICHT</span>
+            <span class="r-interval">~7 Tage</span>
+          </button>
+        </div>
+      </div>
+      <div class="next-area" id="nextArea">
+        <button class="btn-next" onclick="nextCard()">
+          N&auml;chste Karte &nbsp;&rarr;
+        </button>
+      </div>
+    </div>
+    <!-- SESSION END -->
+    <div class="session-end" id="sessionEnd">
+      <div class="end-emoji">&#127881;</div>
+      <div class="end-title">Session abgeschlossen!</div>
+      <div class="end-sub" id="endSub"></div>
+      <div class="end-stats">
+        <div class="end-stat">
+          <div class="end-stat-val" style="color:var(--danger)" id="endAgain">0</div>
+          <div class="end-stat-label">Nochmal</div>
+        </div>
+        <div class="end-stat">
+          <div class="end-stat-val" style="color:var(--hard)" id="endHard">0</div>
+          <div class="end-stat-label">Schwer</div>
+        </div>
+        <div class="end-stat">
+          <div class="end-stat-val" style="color:var(--good)" id="endGood">0</div>
+          <div class="end-stat-label">Gut</div>
+        </div>
+        <div class="end-stat">
+          <div class="end-stat-val" style="color:var(--easy)" id="endEasy">0</div>
+          <div class="end-stat-label">Leicht</div>
+        </div>
+      </div>
+      <div class="end-btns">
+        <button class="btn btn-primary" onclick="restartSession()">&#128260; Nochmal starten</button>
+        <button class="btn btn-ghost" onclick="backToDecks()">&#128218; Andere Decks</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DATA & LOGIC ═══════════════ -->
+<script src="js/flashmind-data.js"></script>
+<script>
+// ─── SYMBOL KEYBOARD DATA ───────────────────────────────────
+const symbolSets = {
+  'Griechisch': ['α','β','γ','δ','ε','ζ','η','θ','ι','κ','λ','μ','ν','ξ','π','ρ','σ','τ','υ','φ','χ','ψ','ω','Γ','Δ','Θ','Λ','Ξ','Π','Σ','Φ','Ψ','Ω'],
+  'Logik': ['∧','∨','¬','→','←','↔','⇒','⇐','⟹','⟺','∀','∃','∄','⊨','⊢','⊥','⊤','≡'],
+  'Mengen': ['∈','∉','⊂','⊃','⊆','⊇','∩','∪','∅','ℕ','ℤ','ℚ','ℝ','ℂ','𝒫','∖','×','△'],
+  'Relationen': ['≤','≥','≠','≈','≅','∼','≺','≻','≼','≽','⊏','⊐','⊑','⊒','⋮','⋯','⋱'],
+  'Operatoren': ['+','−','·','×','÷','√','∛','∑','∏','∫','∬','∂','∇','±','∞','⊕','⊗','⊖'],
+  'Pfeile': ['←','→','↑','↓','↔','↕','⇐','⇒','⇑','⇓','⟵','⟶','⟷','↗','↘','↙','↖','↺','↻'],
+  'Indizes': ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉','₊','₋','₌','₍','₎','⁰','¹','²','³','⁴','⁵','ⁿ'],
+};
+let activeSymTab = 'Griechisch';
+
+// ─── STATE ──────────────────────────────────────────────────
+let selectedDeckIds = [];
+let sessionCards = [];
+let currentIdx = 0;
+let phase = 'input';
+let stats = { again: 0, hard: 0, good: 0, easy: 0 };
+let currentRating = null;
+let sessionStart = 0;
+let timerInterval = null;
+
+// ─── DECK SELECTION ─────────────────────────────────────────
+function buildDeckGrid() {
+  if (typeof FLASHMIND_DECKS === 'undefined') return;
+  const itiGrid = document.getElementById('deckGridITI');
+  const tgiGrid = document.getElementById('deckGridTGI');
+  FLASHMIND_DECKS.forEach(deck => {
+    const isITI = deck.id.startsWith('iti');
+    const el = document.createElement('div');
+    el.className = 'deck-card';
+    el.style.setProperty('--deck-color', deck.color);
+    el.dataset.deckId = deck.id;
+    el.onclick = () => toggleDeck(deck.id, el);
+    el.innerHTML = `
+      <div class="deck-icon">${deck.icon}</div>
+      <div class="deck-title">${deck.title}</div>
+      <div class="deck-sub">${deck.subtitle}</div>
+      <div class="deck-count">${deck.cards.length} Karten</div>
+    `;
+    (isITI ? itiGrid : tgiGrid).appendChild(el);
+  });
+}
+
+function toggleDeck(id, el) {
+  const idx = selectedDeckIds.indexOf(id);
+  if (idx === -1) {
+    selectedDeckIds.push(id);
+    el.classList.add('selected');
+  } else {
+    selectedDeckIds.splice(idx, 1);
+    el.classList.remove('selected');
+  }
+  updateStartBtn();
+}
+
+function updateStartBtn() {
+  const totalCards = selectedDeckIds.reduce((sum, id) => {
+    const deck = FLASHMIND_DECKS.find(d => d.id === id);
+    return sum + (deck ? deck.cards.length : 0);
+  }, 0);
+  const label = document.getElementById('selLabel');
+  const btn = document.getElementById('btnStart');
+  if (selectedDeckIds.length === 0) {
+    label.textContent = 'Wähle mindestens ein Deck';
+    btn.disabled = true;
+  } else {
+    label.textContent = `${selectedDeckIds.length} Deck${selectedDeckIds.length > 1 ? 's' : ''} · ${totalCards} Karten`;
+    btn.disabled = false;
+  }
+}
+
+// ─── SESSION START ──────────────────────────────────────────
+function startSession() {
+  if (selectedDeckIds.length === 0) return;
+  // Collect and shuffle cards
+  sessionCards = [];
+  selectedDeckIds.forEach(id => {
+    const deck = FLASHMIND_DECKS.find(d => d.id === id);
+    if (deck) {
+      deck.cards.forEach(c => {
+        sessionCards.push({ ...c, deckId: id, deckTitle: deck.title, deckColor: deck.color });
+      });
+    }
+  });
+  shuffleArray(sessionCards);
+  currentIdx = 0;
+  phase = 'input';
+  stats = { again: 0, hard: 0, good: 0, easy: 0 };
+  currentRating = null;
+  sessionStart = Date.now();
+  // Set chip label
+  const chipLabel = selectedDeckIds.length === 1
+    ? FLASHMIND_DECKS.find(d => d.id === selectedDeckIds[0])?.subtitle || ''
+    : `${selectedDeckIds.length} Decks gemischt`;
+  document.getElementById('sessionChip').textContent = '📚 ' + chipLabel;
+  // Switch views
+  document.getElementById('deckSelect').style.display = 'none';
+  document.getElementById('sessionView').style.display = 'block';
+  document.getElementById('cardZone').style.display = 'block';
+  document.getElementById('sessionEnd').style.display = 'none';
+  // Build symbol bar
+  buildSymbolBar();
+  // Start timer
+  startTimer();
+  // Load first card
+  updateCounts();
+  loadCard(0);
+}
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+function backToDecks() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('sessionView').style.display = 'none';
+  document.getElementById('deckSelect').style.display = 'block';
+}
+
+// ─── TIMER ──────────────────────────────────────────────────
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const s = Math.floor((Date.now() - sessionStart) / 1000);
+    const m = Math.floor(s / 60).toString().padStart(2, '0');
+    const sec = (s % 60).toString().padStart(2, '0');
+    document.getElementById('timeDisplay').textContent = `${m}:${sec}`;
+  }, 1000);
+}
+
+// ─── CARD LOADING ───────────────────────────────────────────
+function loadCard(idx) {
+  if (idx >= sessionCards.length) { showSessionEnd(); return; }
+  const card = sessionCards[idx];
+  phase = 'input';
+  currentRating = null;
+  document.getElementById('cardTag').textContent = card.cat + ' · ' + card.deckTitle;
+  document.getElementById('questionText').textContent = card.q;
+  document.getElementById('answerInput').value = '';
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').innerHTML = '🤖 KI prüft';
+  document.getElementById('answerReveal').style.display = 'none';
+  document.getElementById('comparisonArea').style.display = 'none';
+  document.getElementById('aiVerdict').style.display = 'none';
+  document.getElementById('ratingOverride').style.display = 'none';
+  document.getElementById('nextArea').style.display = 'none';
+  document.getElementById('aiLoading').style.display = 'none';
+  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('ai-pick', 'selected'));
+  updateProgress();
+}
+
+function updateProgress() {
+  document.getElementById('progressLabel').textContent = `Karte ${currentIdx + 1} von ${sessionCards.length}`;
+  const pct = Math.round(currentIdx / sessionCards.length * 100);
+  document.getElementById('progressPct').textContent = pct + '% abgeschlossen';
+}
+
+// ─── INPUT ──────────────────────────────────────────────────
+function onInputChange() {
+  const val = document.getElementById('answerInput').value.trim();
+  document.getElementById('submitBtn').disabled = val.length < 3;
+}
+
+// ─── SYMBOL KEYBOARD ────────────────────────────────────────
+function buildSymbolBar() {
+  const tabs = document.getElementById('symTabs');
+  const grid = document.getElementById('symGrid');
+  tabs.innerHTML = '';
+  Object.keys(symbolSets).forEach(name => {
+    const t = document.createElement('button');
+    t.className = 'sym-tab' + (name === activeSymTab ? ' active' : '');
+    t.textContent = name;
+    t.onclick = () => { activeSymTab = name; buildSymbolBar(); };
+    tabs.appendChild(t);
+  });
+  grid.innerHTML = '';
+  symbolSets[activeSymTab].forEach(sym => {
+    const b = document.createElement('button');
+    b.className = 'sym-btn';
+    b.textContent = sym;
+    b.title = sym + ' einfügen';
+    b.onclick = () => insertSymbol(sym);
+    grid.appendChild(b);
+  });
+}
+function insertSymbol(sym) {
+  const ta = document.getElementById('answerInput');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  ta.value = ta.value.slice(0, start) + sym + ta.value.slice(end);
+  ta.selectionStart = ta.selectionEnd = start + sym.length;
+  ta.focus();
+  onInputChange();
+}
+
+// ─── SUBMIT (KEYWORD MATCHING) ──────────────────────────────
+function submitAnswer() {
+  if (phase === 'rated') return;
+  const userAnswer = document.getElementById('answerInput').value.trim();
+  if (!userAnswer) return;
+  const card = sessionCards[currentIdx];
+
+  // Show loading briefly
+  document.getElementById('aiLoading').style.display = 'flex';
+  document.getElementById('submitBtn').disabled = true;
+
+  // Show model answer
+  document.getElementById('revealContent').textContent = card.a;
+  document.getElementById('answerReveal').style.display = 'block';
+
+  // Simulate small delay for UX
+  setTimeout(() => {
+    document.getElementById('aiLoading').style.display = 'none';
+    const verdict = evaluateAnswer(userAnswer, card);
+
+    // Show comparison
+    document.getElementById('yourAnswer').textContent = userAnswer;
+    document.getElementById('keyTerms').innerHTML = (card.keyTerms || []).map(t => {
+      const found = userAnswer.toLowerCase().includes(t.toLowerCase());
+      return '<span class="' + (found ? 'match' : 'miss') + '">' + t + '</span> ';
+    }).join('');
+    document.getElementById('comparisonArea').style.display = 'grid';
+
+    // Show verdict
+    showVerdict(verdict);
+
+    // Show rating override
+    document.getElementById('ratingOverride').style.display = 'block';
+    highlightAIPick(verdict.rating);
+    document.getElementById('nextArea').style.display = 'block';
+    phase = 'rated';
+    currentRating = verdict.rating;
+    stats[verdict.rating]++;
+    updateCounts();
+  }, 400);
+}
+
+function evaluateAnswer(userAnswer, card) {
+  const terms = card.keyTerms || extractKeyTerms(card.a);
+  const found = terms.filter(t => userAnswer.toLowerCase().includes(t.toLowerCase()));
+  const pct = terms.length > 0 ? Math.round((found.length / terms.length) * 100) : 50;
+  const missing = terms.filter(t => !userAnswer.toLowerCase().includes(t.toLowerCase()));
+
+  let rating, title;
+  if (pct >= 85) { rating = 'easy'; title = 'Sehr gut!'; }
+  else if (pct >= 60) { rating = 'good'; title = 'Gut gemacht'; }
+  else if (pct >= 35) { rating = 'hard'; title = 'Teilweise richtig'; }
+  else { rating = 'again'; title = 'Nochmal üben'; }
+
+  return { score: pct, rating, title, reason: found.length + ' von ' + terms.length + ' Kernbegriffen gefunden.', missing };
+}
+
+function extractKeyTerms(answer) {
+  // Fallback: extract key terms from answer
+  const words = answer.split(/[,;.:()\-–]/)
+    .map(s => s.trim())
+    .filter(s => s.length > 3 && s.length < 40);
+  return words.slice(0, 6);
+}
+
+function showVerdict(v) {
+  const el = document.getElementById('aiVerdict');
+  const icons = { again: '❌', hard: '😰', good: '✅', easy: '⚡' };
+  el.className = 'ai-verdict verdict-' + v.rating;
+  document.getElementById('verdictIcon').textContent = icons[v.rating];
+  document.getElementById('verdictTitle').textContent = v.title;
+  document.getElementById('verdictScore').textContent = v.score + '%';
+  let reason = v.reason;
+  if (v.missing && v.missing.length > 0) {
+    reason += '<br><br>Fehlte: <strong>' + v.missing.join(', ') + '</strong>';
+  }
+  document.getElementById('verdictReason').innerHTML = reason;
+  el.style.display = 'block';
+}
+
+function highlightAIPick(rating) {
+  const map = { again: '.r-again', hard: '.r-hard', good: '.r-good', easy: '.r-easy' };
+  const btn = document.querySelector(map[rating]);
+  if (btn) btn.classList.add('ai-pick');
+}
+
+function applyRating(rating, btnEl) {
+  // Remove old rating from stats, add new
+  if (currentRating) {
+    stats[currentRating]--;
+  }
+  currentRating = rating;
+  stats[rating]++;
+  updateCounts();
+  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  if (btnEl) btnEl.classList.add('selected');
+}
+
+function updateCounts() {
+  const total = stats.again + stats.hard + stats.good + stats.easy;
+  ['again','hard','good','easy'].forEach(r => {
+    document.getElementById('cnt' + r.charAt(0).toUpperCase() + r.slice(1)).textContent = stats[r];
+    const pct = total > 0 ? (stats[r] / total * 100) + '%' : '0%';
+    document.getElementById('seg' + r.charAt(0).toUpperCase() + r.slice(1)).style.width = pct;
+  });
+}
+
+// ─── REVEAL ─────────────────────────────────────────────────
+function revealAnswer() {
+  const card = sessionCards[currentIdx];
+  document.getElementById('revealContent').textContent = card.a;
+  document.getElementById('answerReveal').style.display = 'block';
+  document.getElementById('ratingOverride').style.display = 'block';
+  document.getElementById('nextArea').style.display = 'block';
+  if (phase === 'input') {
+    phase = 'rated';
+    currentRating = 'again';
+    stats.again++;
+    updateCounts();
+  }
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────────
+function nextCard() {
+  currentIdx++;
+  if (currentIdx >= sessionCards.length) { showSessionEnd(); return; }
+  loadCard(currentIdx);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function skipCard() {
+  if (phase === 'input') {
+    currentRating = 'again';
+    stats.again++;
+    updateCounts();
+  }
+  nextCard();
+}
+
+// ─── SESSION END ────────────────────────────────────────────
+function showSessionEnd() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('cardZone').style.display = 'none';
+  const el = document.getElementById('sessionEnd');
+  el.style.display = 'block';
+  const total = stats.again + stats.hard + stats.good + stats.easy;
+  const retention = total > 0 ? Math.round((stats.good + stats.easy) / total * 100) : 0;
+  document.getElementById('endSub').textContent = total + ' Karten bewertet · ' + retention + '% Retention · ' + document.getElementById('timeDisplay').textContent + ' Zeit';
+  ['Again','Hard','Good','Easy'].forEach(r => {
+    document.getElementById('end' + r).textContent = stats[r.toLowerCase()];
+  });
+}
+
+function restartSession() {
+  shuffleArray(sessionCards);
+  currentIdx = 0;
+  stats = { again: 0, hard: 0, good: 0, easy: 0 };
+  currentRating = null;
+  sessionStart = Date.now();
+  document.getElementById('sessionEnd').style.display = 'none';
+  document.getElementById('cardZone').style.display = 'block';
+  updateCounts();
+  startTimer();
+  loadCard(0);
+}
+
+// ─── KEYBOARD SHORTCUTS ─────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (document.getElementById('sessionView').style.display === 'none') return;
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    if (phase === 'input') submitAnswer();
+    else if (phase === 'rated') nextCard();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r') {
+    e.preventDefault();
+    revealAnswer();
+  }
+});
+
+// ─── INIT ───────────────────────────────────────────────────
+buildDeckGrid();
+</script>
+</body>
+</html>

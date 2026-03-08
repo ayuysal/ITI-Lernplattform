@@ -1,0 +1,4 @@
+node_modules/
+*_extract.txt
+*_raw.txt
+.claude/

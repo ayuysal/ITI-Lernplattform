@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITI22 – Informationstheorie &amp; Übertragung | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">ITI22 · 0825K07 · HfB</div>
+  <h1>Informationstheorie &amp; Übertragung</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 5 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header">
+    <h2>Lernübersicht</h2>
+    <span>5 Kapitel · Prüfungsvorbereitung</span>
+  </div>
+  <div class="card">
+    <div class="card-title">Lernpfad</div>
+    <p>Klicke auf ein Kapitel, um direkt zu den Lerninhalten zu springen. Nutze danach <strong>Flashcards</strong> zum Wiederholen und das <strong>Quiz</strong> zum Testen.</p>
+  </div>
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#4f9cff" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Grundlagen Informationstheorie</h3>
+      <p>Shannon, Informationsbegriff, Informationsgehalt, Entropie, Redundanz</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Grundlagen Informationsübertragung</h3>
+      <p>Shannon-Modell, diskrete Quellen, Markow, Verbundquellen, Transinformation</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#eab308" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Signale &amp; Signalübertragung</h3>
+      <p>Signalklassifikation, analog/digital, Abtasttheorem, Fourier-Reihe, Frequenzbereich</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f97316" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Übertragungskapazität von Kanälen</h3>
+      <p>Hartley, Shannon-Hartley, Kanalkapazität, Multiplexverfahren</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#a78bfa" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Einführung in die Codierung</h3>
+      <p>Quellencodierung, Huffman, Kanalcodierung, Hamming, Parität, Leitungscodierung</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('flashcards')">
+      <div class="ch-num">TOOLS</div>
+      <h3>Flashcards &amp; Quiz</h3>
+      <p>Lernkarten mit Definitionen &amp; Konzepten. Multiple-Choice-Fragen mit Erklärungen.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Prüfungsrelevante Schwerpunkte</div>
+    <div class="two-col" style="margin-top:0.5rem">
+      <ul class="content-list">
+        <li>Entscheidungsgehalt H0 = log2(m)</li>
+        <li>Entropie H = -&Sigma; P(xi) · log2 P(xi)</li>
+        <li>Redundanz RQ = H0 - H</li>
+        <li>Shannon-Hartley: C = B · log2(1 + PS/PN)</li>
+        <li>Abtasttheorem: fA &ge; 2 · fG</li>
+      </ul>
+      <ul class="content-list">
+        <li>Transinformation &amp; Kanalkapazität</li>
+        <li>Quellencodierung (Huffman, RLE)</li>
+        <li>Hamming-Distanz &amp; Fehlerkorrektur</li>
+        <li>Leitungscodes: NRZ, Manchester, 4B/5B</li>
+        <li>Multiplexverfahren: FDM, TDM, CDM, WDM</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 1 – Grundlagen Informationstheorie
+══════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header">
+    <h2>Kapitel 1</h2>
+    <span>Grundlagen Informationstheorie</span>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Information nach Shannon</div>
+    <p><strong>Information</strong> ist die Beseitigung von Ungewissheit. Der statistische Aspekt der Information betrachtet nicht die Bedeutung (Semantik), sondern die Wahrscheinlichkeit des Auftretens von Zeichen.</p>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Bit</div>
+    <p><strong>Bit</strong> (binary digit) ist die Maßeinheit für den Informationsgehalt. <strong>1 bit</strong> ist der Informationsgehalt, der aus der Auswahl aus zwei gleich wahrscheinlichen Möglichkeiten resultiert (Ja-Nein-Entscheidung).</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Entscheidungsgehalt H0</div>
+    <p>Bei <strong>m gleich wahrscheinlichen</strong> Zuständen:</p>
+    <div class="formula-box">H0 = log2(m) = ld(m)&emsp;[bit]</div>
+    <p style="margin-top:0.5rem;">Jede Erhöhung um 1 bit verdoppelt die Entscheidungsmöglichkeiten. H0 entspricht der benötigten Stellenanzahl bei binärer Codierung.</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Würfeln</div>
+    <p>Beim Würfeln existieren 6 gleich wahrscheinliche Zustände:<br>
+    <strong>H0 = log2(6) = 2,58 bit</strong><br>
+    Münzwurf: m = 2 → H0 = log2(2) = 1 bit</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Entropie H (mittlerer Informationsgehalt)</div>
+    <p>Bei <strong>unterschiedlichen Wahrscheinlichkeiten</strong>:</p>
+    <div class="formula-box">H = -&Sigma; P(xi) · log2(P(xi))&emsp;[bit/Zeichen]</div>
+    <p style="margin-top:0.5rem;">Die Entropie ist ein Maß für den <strong>mittleren Informationsgehalt</strong> einer Nachricht. Sie gibt die durchschnittliche Anzahl von Binärentscheidungen an, die zur Kennzeichnung eines Zustands benötigt werden.</p>
+  </div>
+
+  <div class="concept warn">
+    <div class="concept-label">Wichtig – Eigenschaften der Entropie</div>
+    <p><strong>Maximum:</strong> Die Entropie erreicht ihr Maximum H0 bei gleichen Wahrscheinlichkeiten.<br>
+    <strong>Sicheres Ereignis:</strong> P(x) = 1 → H = 0 (keine Information).<br>
+    <strong>Binärquelle:</strong> Maximum bei P(x1) = P(x2) = 0,5.</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Entropie berechnen</div>
+    <p>Quelle mit 5 Zeichen: P(x1)=1/2, P(x2)=1/4, P(x3)=1/8, P(x4)=1/16, P(x5)=1/16<br>
+    H = 0,5·ld2 + 0,25·ld4 + 0,125·ld8 + 1/16·ld16 + 1/16·ld16<br>
+    <strong>H = 0,5 + 0,5 + 0,375 + 0,25 + 0,25 = 1,875 bit/Zeichen</strong></p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Redundanz</div>
+    <div class="formula-box">RQ = H0 - H&emsp;[bit/Zeichen]</div>
+    <div class="formula-box" style="margin-top:0.3rem">r = (H0 - H) / H0&emsp;(relative Redundanz)</div>
+    <p style="margin-top:0.5rem;">Redundanz ist der Anteil einer Nachricht, der <strong>keine Information</strong> übermittelt. Deutsche Sprache: ca. 2/3 aller Buchstaben sind redundant!</p>
+  </div>
+
+  <div class="concept warn">
+    <div class="concept-label">Wichtig – Redundanz dual nutzen</div>
+    <p><strong>Vermindern:</strong> Quellencodierung → Speicher-/Übertragungskapazität sparen.<br>
+    <strong>Erhöhen:</strong> Kanalcodierung → Störfestigkeit der Übertragung verbessern.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Begriffe: Information – Daten – Nachricht – Signal</div>
+    <table class="data-table">
+      <thead><tr><th>Begriff</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Information</strong></td><td>Beseitigung von Ungewissheit (abstrakt)</td></tr>
+        <tr><td><strong>Daten</strong></td><td>Zeichen/Zeichenfolgen zur Darstellung von Information</td></tr>
+        <tr><td><strong>Nachricht</strong></td><td>Zeichenfolgen zum Zweck der Weitergabe von Information</td></tr>
+        <tr><td><strong>Signal</strong></td><td>Physikalische Darstellung von Daten (elektrisch, optisch, akustisch)</td></tr>
+        <tr><td><strong>Zeichen</strong></td><td>Elementares Informationselement (z.B. Buchstabe, Ziffer)</td></tr>
+        <tr><td><strong>Alphabet</strong></td><td>Endlicher Zeichenvorrat M</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:0.75rem;">Bei Zeichenvorrat <strong>k</strong> und Wortlänge <strong>n</strong>: m = k<sup>n</sup> mögliche Wörter.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 2 – Grundlagen Informationsübertragung
+══════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header">
+    <h2>Kapitel 2</h2>
+    <span>Grundlagen Informationsübertragung</span>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Shannon-Modell der Informationsübertragung</div>
+    <p>Das Grundmodell umfasst: <strong>Quelle → Sender → Kanal (+ Störungen) → Empfänger → Ziel</strong>.<br>
+    Der Sender passt die Nachricht an den Kanal an. Der Empfänger führt die inverse Operation durch.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Komponenten des Shannon-Modells</div>
+    <table class="data-table">
+      <thead><tr><th>Komponente</th><th>Funktion</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Quelle (Source)</strong></td><td>Erzeugt Nachricht – wählt zufällig aus Zustandsmenge</td></tr>
+        <tr><td><strong>Sender (Transmitter)</strong></td><td>Passt Nachricht an physikalische Kanaleigenschaften an</td></tr>
+        <tr><td><strong>Kanal (Channel)</strong></td><td>Medium zur Signalübertragung (Kupfer, Glasfaser, Funk)</td></tr>
+        <tr><td><strong>Störungen (Noise)</strong></td><td>Rauschen, Verzerrung – beeinflussen Übertragung</td></tr>
+        <tr><td><strong>Empfänger (Receiver)</strong></td><td>Wandelt Signal zurück in Nachricht (invers zum Sender)</td></tr>
+        <tr><td><strong>Ziel (Destination)</strong></td><td>Bestimmungsort der Nachricht</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Informationsquellen</div>
+    <p><strong>Diskrete Quelle:</strong> Endliches Alphabet X = {x1, x2, ... xn} mit Wahrscheinlichkeiten P(xi).<br>
+    <strong>Stationäre Quelle:</strong> Wahrscheinlichkeiten sind zeitunabhängig.<br>
+    <strong>Quelle ohne Gedächtnis:</strong> Aufeinanderfolgende Zeichen sind unabhängig (z.B. Würfel).<br>
+    <strong>Quelle mit Gedächtnis:</strong> Abhängige Ereignisse – z.B. Ampel, deutsche Sprache ("q" → "u").</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Markow-Quelle</div>
+    <p>Bei einer <strong>Markow-Quelle</strong> (Quelle mit Gedächtnis) hängt die Wahrscheinlichkeit des nächsten Zeichens vom vorherigen ab:</p>
+    <div class="formula-box">P(xj | xi) = bedingte Wahrscheinlichkeit</div>
+    <p style="margin-top:0.5rem;">Übergangswahrscheinlichkeiten werden in einer <strong>Übergangsmatrix</strong> dargestellt. Die <strong>bedingte Entropie</strong> (Markow-Entropie) ist stets &le; der unbedingten Entropie.</p>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Verbundquelle &amp; Transinformation</div>
+    <p><strong>Verbundquelle (X,Y):</strong> Modelliert Quelle X und Ziel Y gemeinsam über einen gestörten Kanal.<br>
+    <strong>Verbundentropie:</strong> H(X,Y) – mittlerer Informationsgehalt der Verbundquelle.<br>
+    <strong>Äquivokation:</strong> H(X|Y) – Restungewissheit über X nach Empfang von Y.<br>
+    <strong>Irrelevanz:</strong> H(Y|X) – im Kanal hinzukommende Störinformation.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Transinformation</div>
+    <div class="formula-box">T(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X)</div>
+    <p style="margin-top:0.5rem;">Die Transinformation ist die <strong>tatsächlich übertragene Nutzinformation</strong>. Ziel: T(X;Y) maximieren!</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Kanalkapazität (theoretisch)</div>
+    <div class="formula-box">C = max T(X;Y)&emsp;[bit/Zeichen]</div>
+    <p style="margin-top:0.5rem;">Die Kanalkapazität C ist der <strong>größtmögliche Informationsfluss</strong> über einen gestörten Kanal. Bei einem symmetrisch gestörten Binärkanal mit Fehlerwahrscheinlichkeit p:</p>
+    <div class="formula-box" style="margin-top:0.3rem">C = 1 + p · log2(p) + (1-p) · log2(1-p)</div>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Symmetrisch gestörter Binärkanal</div>
+    <p>Bei Fehlerwahrscheinlichkeit p = 0,1:<br>
+    Übergangswahrscheinlichkeiten: P(y1|x1) = P(y2|x2) = 0,9 und P(y1|x2) = P(y2|x1) = 0,1<br>
+    → Die Transinformation gibt an, wie viel Nutzinformation trotz Störung übertragen wird.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Informationsfluss</div>
+    <div class="formula-box">F = vs · T(X;Y)&emsp;[bit/s]</div>
+    <p style="margin-top:0.5rem;">vs = Symbolrate (Schrittgeschwindigkeit). Der Informationsfluss erreicht sein Maximum bei C · vs.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 3 – Signale und Signalübertragung
+══════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header">
+    <h2>Kapitel 3</h2>
+    <span>Signale &amp; Signalübertragung</span>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Signal</div>
+    <p>Ein <strong>Signal</strong> ist die physikalische Darstellung von Nachrichten oder Daten. Signale dienen als Träger von Information über einen Übertragungskanal.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Signalklassifikation</div>
+    <table class="data-table">
+      <thead><tr><th>Kriterium</th><th>Kategorie</th><th>Beschreibung</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2"><strong>Wert</strong></td><td>Wertkontinuierlich (analog)</td><td>Alle Werte im Wertebereich möglich</td></tr>
+        <tr><td>Wertdiskret (digital)</td><td>Nur bestimmte Werte erlaubt</td></tr>
+        <tr><td rowspan="2"><strong>Zeit</strong></td><td>Zeitkontinuierlich</td><td>Zu jedem Zeitpunkt definiert</td></tr>
+        <tr><td>Zeitdiskret</td><td>Nur zu bestimmten Zeitpunkten definiert</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:0.75rem;"><strong>Analoges Signal:</strong> wertkontinuierlich + zeitkontinuierlich.<br>
+    <strong>Digitales Signal:</strong> wertdiskret + zeitdiskret.</p>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Nachrichtenquader</div>
+    <p>Signale werden durch drei Eigenschaften charakterisiert: <strong>Bandbreite</strong> (Frequenzbereich), <strong>Dynamik</strong> (Amplitudenbereich) und <strong>Dauer</strong> (Zeitbereich). Deren Produkt ist konstant – die Größen sind gegeneinander austauschbar.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Abtasttheorem (Nyquist-Shannon)</div>
+    <div class="formula-box">fA &ge; 2 · fG</div>
+    <p style="margin-top:0.5rem;">Die Abtastfrequenz fA muss mindestens doppelt so groß sein wie die höchste im Signal vorkommende Frequenz fG (Grenzfrequenz). Nur dann kann das Signal verlustfrei rekonstruiert werden.</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Abtastung</div>
+    <p>Sprachsignal mit fG = 4000 Hz:<br>
+    → fA &ge; 2 · 4000 = <strong>8000 Hz</strong> (Abtastrate)<br>
+    Bei Musik-CD: fG = 22.050 Hz → fA = 44.100 Hz</p>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Digitalisierung: Abtastung → Quantisierung → Codierung</div>
+    <p><strong>1. Abtastung:</strong> Zeitkontinuierliches Signal wird zu diskreten Zeitpunkten gemessen (Abtasttheorem beachten!).<br>
+    <strong>2. Quantisierung:</strong> Abtastwerte werden auf n diskrete Stufen gerundet.<br>
+    <strong>3. Codierung:</strong> Quantisierte Werte werden binär codiert (log2(n) Bit pro Abtastwert).</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Fourier-Reihe</div>
+    <p>Jedes periodische Signal lässt sich als Überlagerung von Sinus-/Cosinusschwingungen darstellen:</p>
+    <div class="formula-box">f(t) = a0/2 + &Sigma; [an · cos(n&omega;0t) + bn · sin(n&omega;0t)]</div>
+    <p style="margin-top:0.5rem;">Grundfrequenz &omega;0 = 2&pi;/T0. Ein Rechtecksignal enthält nur <strong>ungerade Oberschwingungen</strong> (1f, 3f, 5f, ...). Je mehr Oberschwingungen berücksichtigt werden, desto besser die Annäherung.</p>
+  </div>
+
+  <div class="concept warn">
+    <div class="concept-label">Wichtig – Bandbreite &amp; Grenzfrequenz</div>
+    <p>Die <strong>Grenzfrequenz fG</strong> bestimmt die notwendige Bandbreite des Kanals. Bei einem periodischen Signal mit Periodendauer T0 und Impulsdauer &tau;:<br>
+    <strong>fG = 1/&tau;</strong> (erste Nullstelle im Spektrum).<br>
+    Je kürzer die Impulsdauer, desto größer die benötigte Bandbreite!</p>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Tastverhältnis (Duty Cycle)</div>
+    <p><strong>D = &tau; / T0</strong> – Verhältnis von Impulsdauer &tau; zur Periodendauer T0.<br>
+    Bestimmt die Form des Spektrums und die Position der Nullstellen im Frequenzbereich.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 4 – Übertragungskapazität von Kanälen
+══════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header">
+    <h2>Kapitel 4</h2>
+    <span>Übertragungskapazität von Kanälen</span>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Kanalkapazität</div>
+    <p>Die <strong>Kanalkapazität C</strong> ist ein Maß für die maximale Bitrate, die über einen Kanal fehlerfrei übertragen werden kann. Sie ist eine den Kanal charakterisierende Kenngröße.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Gesetz von Hartley (ungestörter Kanal)</div>
+    <div class="formula-box">C = 2 · B · log2(n)&emsp;[bit/s]</div>
+    <p style="margin-top:0.5rem;">B = Bandbreite (Grenzfrequenz fG), n = Anzahl unterscheidbarer Amplitudenstufen.<br>
+    Binärkanal (n=2): C = 2 · B · 1 = 2B bit/s.</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Hartley</div>
+    <p>Binärkanal mit Bandbreite B = 4000 Hz:<br>
+    <strong>C = 2 · 4000 · log2(2) = 8000 bit/s</strong></p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Shannon-Hartley-Gesetz (gestörter Kanal)</div>
+    <div class="formula-box">C = B · log2(1 + PS/PN)&emsp;[bit/s]</div>
+    <p style="margin-top:0.5rem;"><strong>PS</strong> = mittlere Signalleistung, <strong>PN</strong> = mittlere Rauschleistung.<br>
+    Das Shannon-Hartley-Gesetz stellt den Zusammenhang zwischen Kanalkapazität, Bandbreite und <strong>Signal-Rausch-Verhältnis (SNR)</strong> her.</p>
+  </div>
+
+  <div class="concept warn">
+    <div class="concept-label">Wichtig – SNR in dB umrechnen</div>
+    <p><strong>SNR [dB] = 10 · lg(PS/PN)</strong><br>
+    Beispiel: SNR = 50 dB → PS/PN = 10<sup>5</sup> = 100.000<br>
+    Total gestörter Kanal: PN &gt;&gt; PS → C = 0 (keine Übertragung möglich).</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Shannon-Hartley</div>
+    <p>Kanal mit B = 100 MHz, SNR = 50 dB:<br>
+    PS/PN = 10<sup>5</sup><br>
+    <strong>C = 100 · 10<sup>6</sup> · log2(1 + 10<sup>5</sup>) &asymp; 1,66 Gbit/s</strong></p>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Nachrichtenquader &amp; Kanalfenster</div>
+    <p>Bandbreite, Dynamik und Zeit eines Signals (Nachrichtenquader) müssen durch das <strong>Kanalfenster</strong> (Bandbreite × Dynamik des Kanals) passen. Falls nicht → Codierung zur Anpassung nötig. Ist der Quader kleiner → <strong>Multiplex</strong> möglich.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Übertragungsverfahren &amp; Multiplexverfahren</div>
+    <table class="data-table">
+      <thead><tr><th>Verfahren</th><th>Abkürzung</th><th>Prinzip</th><th>Beispiel</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Raummultiplex</strong></td><td>SDM</td><td>Für jedes Signal ein separater Übertragungsweg</td><td>Gigabit-Ethernet (4 Adernpaare)</td></tr>
+        <tr><td><strong>Frequenzmultiplex</strong></td><td>FDM</td><td>Gleichzeitig verschiedene Frequenzbänder nutzen</td><td>DSL/VDSL, Radio</td></tr>
+        <tr><td><strong>Zeitmultiplex</strong></td><td>TDM</td><td>Signale zeitlich verschachtelt übertragen</td><td>GSM</td></tr>
+        <tr><td><strong>Codemultiplex</strong></td><td>CDM</td><td>Orthogonale Spreiz-Codes für gleichzeitige Übertragung</td><td>UMTS</td></tr>
+        <tr><td><strong>Wellenlängenmultiplex</strong></td><td>WDM</td><td>Optisches Frequenzmultiplex über Glasfaser</td><td>Glasfaser-Backbone</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Basisband vs. Breitband</div>
+    <p><strong>Basisbandübertragung:</strong> Signal wird im Original-Frequenzbereich übertragen. Für jede Übertragung ein separater Kanal nötig. Mehrfachnutzung nur durch Zeitmultiplex (z.B. Ethernet).<br>
+    <strong>Breitbandübertragung:</strong> Signal wird durch Modulation in anderes Frequenzband verschoben. Bessere Ausnutzung des Mediums (z.B. DSL, VDSL).</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Analoge Signale über digitale Kanäle</div>
+    <div class="formula-box">bK max &ge; fA · log2(n) &ge; 2 · fS max · log2(n)</div>
+    <p style="margin-top:0.5rem;">Die Mindest-Bitrate des Kanals muss die Abtastrate mal den Informationsgehalt pro Abtastwert erreichen.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 5 – Einführung in die Codierung
+══════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header">
+    <h2>Kapitel 5</h2>
+    <span>Einführung in die Codierung</span>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Definition – Code</div>
+    <p>Ein <strong>Code</strong> entsteht durch die Abbildung eines Quellenalphabets in ein Codealphabet. Man unterscheidet: <strong>Quellencodierung</strong> (Kompression), <strong>Kanalcodierung</strong> (Fehlerschutz) und <strong>Leitungscodierung</strong> (Anpassung an Medium).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Drei Arten der Codierung im Shannon-Modell</div>
+    <table class="data-table">
+      <thead><tr><th>Art</th><th>Ziel</th><th>Redundanz</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Quellencodierung</strong></td><td>Kompakte Darstellung (Kompression)</td><td>Redundanz <strong>entfernen</strong></td></tr>
+        <tr><td><strong>Kanalcodierung</strong></td><td>Fehler erkennen/korrigieren</td><td>Redundanz <strong>hinzufügen</strong></td></tr>
+        <tr><td><strong>Leitungscodierung</strong></td><td>Anpassung an physisches Medium</td><td>Takt, Gleichspannungsfreiheit</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Quellencodierung -->
+  <div class="section-header" style="margin-top:2rem">
+    <h2 style="font-size:1.15rem">5.1 Quellencodierung</h2>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Ziel der Quellencodierung</div>
+    <p>Die „reine" Information extrahieren – redundante und irrelevante Anteile entfernen → möglichst kurze Darstellung. Shannon: Die Entropie ist die untere Grenze für verlustfreie Codierung.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Mittlere Codewortlänge &amp; Coderedundanz</div>
+    <div class="formula-box">L = &Sigma; pi · li&emsp;(mittlere Codewortlänge)</div>
+    <div class="formula-box" style="margin-top:0.3rem">H &le; L &lt; H + 1&emsp;(Shannon-Quellencodierungstheorem)</div>
+    <div class="formula-box" style="margin-top:0.3rem">RCode = L - H&emsp;(Coderedundanz)</div>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Verfahren der Quellencodierung</div>
+    <p><strong>Huffman-Code:</strong> Häufige Zeichen → kurze Codewörter. Seltene → lange. Ist ein Präfix-Code (kein Codewort ist Anfang eines anderen).<br>
+    <strong>Lauflängencodierung (RLE):</strong> Wiederholungsfolgen komprimieren. Bsp: AAAABBBB → 4A4B.<br>
+    <strong>Wörterbuchverfahren (LZx):</strong> String-Ersetzung, z.B. ZIP.<br>
+    <strong>Verlustbehaftet:</strong> Auch Irrelevanz entfernen – z.B. MP3 (psychoakustisches Modell), JPEG.</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Quellencodierung</div>
+    <p>Deutsche Sprache: H(27 Zeichen, gleich wahrscheinlich) = ld(27) = 4,75 bit/Zeichen<br>
+    Tatsächliche Entropie (ungleiche Häufigkeiten): ca. 4,1 bit/Zeichen<br>
+    Mit Abhängigkeiten (Markow): ca. <strong>1,6 bit/Zeichen</strong><br>
+    → Quellenredundanz: RQ = 4,75 - 1,6 = 3,15 bit/Zeichen (ca. 66% redundant!)</p>
+  </div>
+
+  <!-- Kanalcodierung -->
+  <div class="section-header" style="margin-top:2rem">
+    <h2 style="font-size:1.15rem">5.2 Kanalcodierung</h2>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Ziel der Kanalcodierung</div>
+    <p>Gezielt Redundanz ergänzen, um Fehler bei Übertragung/Speicherung erkennen oder korrigieren zu können. <strong>Kanalcodierungstheorem:</strong> Zu jedem Kanal mit C &gt; 0 existiert ein Code, dessen Fehlerwahrscheinlichkeit gegen 0 geht, solange die Coderate RC &lt; C.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Hamming-Distanz &amp; Fehlererkennung</div>
+    <div class="formula-box">dmin = minimaler Abstand zwischen allen Codewörtern</div>
+    <div class="formula-box" style="margin-top:0.3rem">Fehlererkennung: dmin &ge; e + 1</div>
+    <div class="formula-box" style="margin-top:0.3rem">Fehlerkorrektur: dmin &ge; 2t + 1</div>
+    <p style="margin-top:0.5rem;">e = erkennbares Fehlergewicht, t = korrigierbares Fehlergewicht. <strong>Coderate RC = k/n</strong> (k Infostellen, n Codestellen).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kanalcodierverfahren im Vergleich</div>
+    <table class="data-table">
+      <thead><tr><th>Verfahren</th><th>dmin</th><th>Fähigkeit</th><th>Prinzip</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Paritätscode</strong></td><td>2</td><td>1 Fehler erkennen</td><td>Prüfbit ergänzt zu gerader/ungerader Anzahl Einsen</td></tr>
+        <tr><td><strong>Hamming-Code (7,4)</strong></td><td>3</td><td>1 Fehler korrigieren</td><td>Prüfbits an Zweierpotenz-Stellen, Prüfgruppen</td></tr>
+        <tr><td><strong>CRC (zyklisch)</strong></td><td>variabel</td><td>Mehrfachfehler erkennen</td><td>Division durch Generatorpolynom G(x)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept warn">
+    <div class="concept-label">Wichtig – ARQ vs. FEC</div>
+    <p><strong>ARQ</strong> (Automatic Repeat Request): Fehlererkennung + Wiederholung. Einsatz: Computernetze, DSL.<br>
+    <strong>FEC</strong> (Forward Error Correction): Fehlerkorrektur ohne Wiederholung. Einsatz: Weltraumkommunikation, CD/DVD.</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Hamming-Code (7,4)</div>
+    <p>4 Infostellen + 3 Prüfstellen. Prüfbits an Positionen 1, 2, 4 (Zweierpotenzen).<br>
+    Bei Fehler: Prüfzahl CBA als Dualzahl gibt die gestörte Stelle an.<br>
+    <strong>2<sup>r</sup> &ge; n + 1</strong> (r Prüfstellen, n Gesamtstellen)</p>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – CRC</div>
+    <p>Generatorpolynom G(x) = x³ + x + 1 (1011). Nachricht N(x) = x³ + x (1010).<br>
+    1. N(x) um 3 Nullen erweitern: 1010<strong>000</strong><br>
+    2. Division durch G(x) → Rest R(x) = x + 1 (011)<br>
+    3. Senden: 1010<strong>011</strong><br>
+    Empfänger dividiert durch G(x) – Rest = 0 → kein Fehler.</p>
+  </div>
+
+  <!-- Leitungscodierung -->
+  <div class="section-header" style="margin-top:2rem">
+    <h2 style="font-size:1.15rem">5.3 Leitungscodierung</h2>
+  </div>
+
+  <div class="concept def">
+    <div class="concept-label">Ziele der Leitungscodierung</div>
+    <p><strong>Taktrückgewinnung:</strong> Ausreichend Flanken (Pegelwechsel) für Synchronisation.<br>
+    <strong>Gleichspannungsfreiheit:</strong> Positive und negative Signale gleich oft → Mittelwert = 0.<br>
+    <strong>Geringe Bandbreite:</strong> Optimale Anpassung an Übertragungsmedium.<br>
+    <strong>Codetransparenz:</strong> Auch bei langen 0- oder 1-Folgen korrekte Taktrückgewinnung.</p>
+  </div>
+
+  <div class="concept formula">
+    <div class="concept-label">Formel – Symbolrate &amp; Bitrate</div>
+    <div class="formula-box">b = vs · log2(n)&emsp;[bit/s]</div>
+    <p style="margin-top:0.5rem;">vs = Symbolrate [Baud], n = Anzahl Quantisierungsstufen. Symbol- und Bitrate sind nur identisch bei n = 2 (binär).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Leitungscodes im Vergleich</div>
+    <table class="data-table">
+      <thead><tr><th>Code</th><th>Pegel</th><th>Takt</th><th>DC-frei</th><th>Bandbreite</th><th>Einsatz</th></tr></thead>
+      <tbody>
+        <tr><td><strong>NRZ-L</strong></td><td>2</td><td>Schlecht bei gleichen Folgen</td><td>Nein</td><td>Niedrig</td><td>Seriell</td></tr>
+        <tr><td><strong>NRZ-I</strong></td><td>2</td><td>Besser (Wechsel bei 1)</td><td>Nein</td><td>Niedrig</td><td>USB</td></tr>
+        <tr><td><strong>RZ</strong></td><td>2</td><td>Schlecht bei 0-Folgen</td><td>Nein</td><td>Hoch (2×)</td><td>Selten</td></tr>
+        <tr><td><strong>Manchester</strong></td><td>2</td><td>Sehr gut (Flanke pro Bit)</td><td>Ja</td><td>Hoch (2×)</td><td>10 Mbit Ethernet</td></tr>
+        <tr><td><strong>MLT-3</strong></td><td>3</td><td>Schlecht bei 0-Folgen</td><td>Ja</td><td>Niedrig</td><td>100BASE-TX</td></tr>
+        <tr><td><strong>4B/5B</strong></td><td>2</td><td>Gut (max. 3 gleiche)</td><td>Bedingt</td><td>+25%</td><td>100 Mbit Ethernet</td></tr>
+        <tr><td><strong>8B/10B</strong></td><td>2</td><td>Sehr gut (min. 3 Wechsel)</td><td>Ja</td><td>+25%</td><td>Gigabit Ethernet</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept example">
+    <div class="concept-label">Beispiel – Gigabit-Ethernet</div>
+    <p>1000BASE-T: Symbolrate 125 MBd, 5-PAM (2 Bit/Symbol), 4 Leitungspaare gleichzeitig:<br>
+    <strong>125 · 2 · 4 = 1000 Mbit/s = 1 Gbit/s</strong></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLASHCARDS
+══════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>Klicke auf die Karte zum Umdrehen</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="fc-progress" style="width:0%"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Quiz</h2>
+    <span>Teste dein Wissen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEET
+══════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header">
+    <h2>Cheatsheet</h2>
+    <span>Alle wichtigen Formeln &amp; Konzepte</span>
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-block">
+      <h4>Informationstheorie</h4>
+      <div class="cheat-row"><span class="cheat-key">Entscheidungsgehalt</span><span class="cheat-val">H0 = log2(m)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Entropie</span><span class="cheat-val">H = -&Sigma; P(xi)·log2(P(xi))</span></div>
+      <div class="cheat-row"><span class="cheat-key">Redundanz</span><span class="cheat-val">RQ = H0 - H</span></div>
+      <div class="cheat-row"><span class="cheat-key">Relative Redundanz</span><span class="cheat-val">r = (H0 - H) / H0</span></div>
+      <div class="cheat-row"><span class="cheat-key">1 bit</span><span class="cheat-val">Auswahl aus 2 gleich wahrsch. Mgl.</span></div>
+      <div class="cheat-row"><span class="cheat-key">Wortanzahl</span><span class="cheat-val">m = k^n (k Zeichen, n Stellen)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Informationsübertragung</h4>
+      <div class="cheat-row"><span class="cheat-key">Transinformation</span><span class="cheat-val">T(X;Y) = H(X) - H(X|Y)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Verbundentropie</span><span class="cheat-val">H(X,Y) = H(X) + H(Y|X)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kanalkapazität</span><span class="cheat-val">C = max T(X;Y)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Informationsfluss</span><span class="cheat-val">F = vs · T(X;Y) [bit/s]</span></div>
+      <div class="cheat-row"><span class="cheat-key">Binärkanal (symm.)</span><span class="cheat-val">C = 1+p·ld(p)+(1-p)·ld(1-p)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Signale</h4>
+      <div class="cheat-row"><span class="cheat-key">Abtasttheorem</span><span class="cheat-val">fA &ge; 2·fG</span></div>
+      <div class="cheat-row"><span class="cheat-key">Tastverhältnis</span><span class="cheat-val">D = &tau;/T0</span></div>
+      <div class="cheat-row"><span class="cheat-key">Grenzfrequenz</span><span class="cheat-val">fG = 1/&tau;</span></div>
+      <div class="cheat-row"><span class="cheat-key">Fourier</span><span class="cheat-val">Rechteck: nur ungerade Oberschw.</span></div>
+      <div class="cheat-row"><span class="cheat-key">Analog</span><span class="cheat-val">wertkontinuierlich + zeitkont.</span></div>
+      <div class="cheat-row"><span class="cheat-key">Digital</span><span class="cheat-val">wertdiskret + zeitdiskret</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Kanalkapazität</h4>
+      <div class="cheat-row"><span class="cheat-key">Hartley (ungestört)</span><span class="cheat-val">C = 2·B·log2(n)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Shannon-Hartley</span><span class="cheat-val">C = B·log2(1+PS/PN)</span></div>
+      <div class="cheat-row"><span class="cheat-key">SNR [dB]</span><span class="cheat-val">10·lg(PS/PN)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Nyquist-Bandbreite</span><span class="cheat-val">B = vs/2</span></div>
+      <div class="cheat-row"><span class="cheat-key">Bitrate (digital)</span><span class="cheat-val">bK &ge; 2·fSmax·log2(n)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Quellencodierung</h4>
+      <div class="cheat-row"><span class="cheat-key">Mittlere Codewortlänge</span><span class="cheat-val">L = &Sigma; pi·li</span></div>
+      <div class="cheat-row"><span class="cheat-key">Coderedundanz</span><span class="cheat-val">RCode = L - H</span></div>
+      <div class="cheat-row"><span class="cheat-key">Shannon-Theorem</span><span class="cheat-val">H &le; L &lt; H + 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">Huffman</span><span class="cheat-val">Häufig → kurz, selten → lang</span></div>
+      <div class="cheat-row"><span class="cheat-key">RLE</span><span class="cheat-val">AAAA → 4A</span></div>
+      <div class="cheat-row"><span class="cheat-key">Verlustbehaftet</span><span class="cheat-val">MP3, JPEG (Irrelevanz entf.)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Kanalcodierung &amp; Leitungscodes</h4>
+      <div class="cheat-row"><span class="cheat-key">Hamming-Distanz</span><span class="cheat-val">dmin = min. Abstand aller CW</span></div>
+      <div class="cheat-row"><span class="cheat-key">Fehlererkennung</span><span class="cheat-val">dmin &ge; e + 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">Fehlerkorrektur</span><span class="cheat-val">dmin &ge; 2t + 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">Coderate</span><span class="cheat-val">RC = k/n</span></div>
+      <div class="cheat-row"><span class="cheat-key">Hamming (7,4)</span><span class="cheat-val">4 Info + 3 Prüf, 1 Fehler korr.</span></div>
+      <div class="cheat-row"><span class="cheat-key">Symbolrate</span><span class="cheat-val">b = vs · log2(n) [bit/s]</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+const flashcardsData = [
+  // Kap 1 – Informationstheorie
+  { cat:'Kap 1', q:'Was ist Information nach Shannon?', a:'Beseitigung von Ungewissheit – statistischer Aspekt, nicht Semantik. Je unwahrscheinlicher ein Ereignis, desto größer der Informationsgehalt.' },
+  { cat:'Kap 1', q:'Was ist 1 bit?', a:'Der Informationsgehalt, der aus der Auswahl aus zwei gleich wahrscheinlichen Möglichkeiten resultiert (Ja-Nein-Entscheidung). Maßeinheit: bit/Zeichen oder Shannon (Sh).' },
+  { cat:'Kap 1', q:'Wie berechnet man den Entscheidungsgehalt H0?', a:'H0 = log2(m) = ld(m), wobei m die Anzahl gleich wahrscheinlicher Zustände ist. Beispiel: Würfel (m=6) → H0 = 2,58 bit.' },
+  { cat:'Kap 1', q:'Was ist die Entropie H?', a:'Der mittlere Informationsgehalt: H = -Σ P(xi) · log2(P(xi)). Maximum bei gleichen Wahrscheinlichkeiten (= H0). Ein sicheres Ereignis hat H = 0.' },
+  { cat:'Kap 1', q:'Was ist Redundanz?', a:'RQ = H0 - H. Der Anteil einer Nachricht, der keine Information übermittelt. Relative Redundanz: r = (H0 - H)/H0. Deutsche Sprache: ca. 66% redundant.' },
+  { cat:'Kap 1', q:'Wie hängen Information, Daten, Nachricht und Signal zusammen?', a:'Information → als Daten dargestellt → als Nachricht übertragen → mittels Signalen physisch transportiert. Zeichen bilden Alphabet, Wörter aus k Zeichen und n Stellen: m = k^n.' },
+  // Kap 2 – Informationsübertragung
+  { cat:'Kap 2', q:'Was sind die Komponenten des Shannon-Modells?', a:'Quelle → Sender → Kanal (+ Störungen) → Empfänger → Ziel. Der Sender passt die Nachricht an den Kanal an, der Empfänger führt die inverse Operation durch.' },
+  { cat:'Kap 2', q:'Was ist eine Markow-Quelle?', a:'Eine Quelle mit Gedächtnis – die Wahrscheinlichkeit eines Zeichens hängt vom vorherigen ab. Beispiel: Deutsche Sprache (q → u, sch). Bedingte Entropie ≤ unbedingte Entropie.' },
+  { cat:'Kap 2', q:'Was ist Transinformation?', a:'T(X;Y) = H(X) - H(X|Y) = die tatsächlich übertragene Nutzinformation. H(X|Y) ist die Äquivokation (Restungewissheit), H(Y|X) die Irrelevanz (Störinformation).' },
+  { cat:'Kap 2', q:'Was ist die Kanalkapazität C (theoretisch)?', a:'C = max T(X;Y) – der größtmögliche Informationsfluss über einen gestörten Kanal. Für symmetrisch gestörten Binärkanal: C = 1 + p·ld(p) + (1-p)·ld(1-p).' },
+  { cat:'Kap 2', q:'Was ist der Informationsfluss?', a:'F = vs · T(X;Y) [bit/s]. vs ist die Symbolrate. Maximum bei C · vs. Transinformation × Zeichenrate ergibt den Fluss in bit/s.' },
+  // Kap 3 – Signale
+  { cat:'Kap 3', q:'Wie werden Signale klassifiziert?', a:'Nach Wert: wertkontinuierlich (analog) vs. wertdiskret (digital). Nach Zeit: zeitkontinuierlich vs. zeitdiskret. Analoges Signal: wertkont. + zeitkont. Digitales Signal: wertdiskret + zeitdiskret.' },
+  { cat:'Kap 3', q:'Was besagt das Abtasttheorem?', a:'fA ≥ 2·fG (Nyquist-Shannon). Die Abtastfrequenz muss mindestens doppelt so groß wie die Grenzfrequenz sein, um das Signal verlustfrei rekonstruieren zu können.' },
+  { cat:'Kap 3', q:'Was ist der Nachrichtenquader?', a:'Grafische Darstellung der drei Signaleigenschaften: Bandbreite × Dynamik × Dauer = konstant. Die Größen sind gegeneinander austauschbar. Muss durch das Kanalfenster passen.' },
+  { cat:'Kap 3', q:'Was sagt die Fourier-Reihe aus?', a:'Jedes periodische Signal ist eine Überlagerung von Sinus-/Cosinusschwingungen. Rechtecksignal enthält nur ungerade Oberschwingungen (1f, 3f, 5f...). Mehr Oberschwingungen = bessere Annäherung.' },
+  { cat:'Kap 3', q:'Was ist das Tastverhältnis?', a:'D = τ/T0 (Impulsdauer/Periodendauer). Bestimmt Form des Spektrums. Grenzfrequenz fG = 1/τ. Je kürzer der Impuls, desto größer die benötigte Bandbreite.' },
+  // Kap 4 – Kanalkapazität
+  { cat:'Kap 4', q:'Wie lautet das Gesetz von Hartley?', a:'C = 2·B·log2(n) [bit/s]. Für ungestörten Kanal: B = Bandbreite, n = Amplitudenstufen. Binärkanal (n=2): C = 2B.' },
+  { cat:'Kap 4', q:'Wie lautet das Shannon-Hartley-Gesetz?', a:'C = B · log2(1 + PS/PN) [bit/s]. Für gestörten Kanal: PS = Signalleistung, PN = Rauschleistung. Total gestört (PN >> PS): C = 0.' },
+  { cat:'Kap 4', q:'Wie rechnet man SNR in dB um?', a:'SNR [dB] = 10 · lg(PS/PN). Beispiel: 50 dB → PS/PN = 10^5 = 100.000. 30 dB → PS/PN = 1000.' },
+  { cat:'Kap 4', q:'Welche Multiplexverfahren gibt es?', a:'SDM (Raum), FDM (Frequenz), TDM (Zeit), CDM (Code), WDM (Wellenlänge/optisch). Auch Kombinationen möglich, z.B. GSM nutzt SDM + FDM + TDM.' },
+  { cat:'Kap 4', q:'Was ist der Unterschied zwischen Basisband und Breitband?', a:'Basisband: Signal im Original-Frequenzbereich (z.B. Ethernet). Breitband: Signal wird durch Modulation in anderes Band verschoben (z.B. DSL/VDSL). Breitband = bessere Ausnutzung.' },
+  // Kap 5 – Codierung
+  { cat:'Kap 5', q:'Was sind die drei Codierungsarten?', a:'1. Quellencodierung: Redundanz entfernen (Kompression). 2. Kanalcodierung: Redundanz hinzufügen (Fehlerschutz). 3. Leitungscodierung: Anpassung ans physische Medium.' },
+  { cat:'Kap 5', q:'Was ist die Hamming-Distanz?', a:'Der minimale Abstand (unterschiedliche Bitstellen) zwischen allen gültigen Codewörtern. Fehlererkennung: dmin ≥ e+1. Fehlerkorrektur: dmin ≥ 2t+1.' },
+  { cat:'Kap 5', q:'Wie funktioniert der Hamming-Code (7,4)?', a:'4 Infostellen + 3 Prüfstellen (an Pos. 1,2,4). Gerade Parität in Prüfgruppen. Prüfzahl CBA als Dualzahl zeigt gestörte Stelle. dmin = 3 → Einfachfehler korrigierbar.' },
+  { cat:'Kap 5', q:'Was ist CRC?', a:'Cyclic Redundancy Check: Nachricht wird mit Generatorpolynom G(x) geteilt. Rest wird angehängt. Empfänger prüft Teilbarkeit. Sehr leistungsfähig, z.B. CRC-32 bei Ethernet.' },
+  { cat:'Kap 5', q:'Was ist der Manchestercode?', a:'Biphase-Leitungscode: Jedes Bit hat einen Pegelwechsel in der Mitte. Gleichspannungsfrei, gute Taktrückgewinnung. Nachteil: doppelte Bandbreite (Baudrate = 2 × Bitrate). Einsatz: 10 Mbit Ethernet.' },
+  { cat:'Kap 5', q:'Was ist der 4B/5B-Code?', a:'Blockcode: 4 Bit → 5 Bit. Max. eine führende 0, max. 2 abschließende 0 → keine langen Nullfolgen → Taktrückgewinnung. Einsatz: 100 Mbit Ethernet (+ NRZI).' },
+  { cat:'Kap 5', q:'Was ist ARQ vs. FEC?', a:'ARQ: Fehlererkennung + Wiederholung (Computernetze). FEC: Fehlerkorrektur ohne Wiederholung (Weltraum, CD/DVD). Hybridverfahren kombinieren beide.' },
+  { cat:'Kap 5', q:'Was ist der Huffman-Code?', a:'Optimale Quellencodierung: Häufige Zeichen → kurze Codewörter, seltene → lange. Ist ein Präfix-Code. Minimiert mittlere Codewortlänge L nahe an Entropie H.' },
+];
+
+const quizData = [
+  { q:'Was ist der Entscheidungsgehalt H0 beim Würfeln (6 Seiten)?', opts:['1 bit','2 bit','2,58 bit','3 bit'], correct:2, exp:'H0 = log2(6) = 2,58 bit. Bei 6 gleich wahrscheinlichen Zuständen werden ca. 2,58 Binärentscheidungen benötigt.' },
+  { q:'Wie groß ist die Entropie eines sicheren Ereignisses (P=1)?', opts:['1 bit','0 bit','unendlich','0,5 bit'], correct:1, exp:'Ein sicheres Ereignis liefert keine Information → H = 0 bit. Es gibt keine Ungewissheit zu beseitigen.' },
+  { q:'Was besagt das Abtasttheorem?', opts:['fA = fG','fA ≥ 2·fG','fA ≤ fG','fA = fG/2'], correct:1, exp:'Nyquist-Shannon: Die Abtastfrequenz muss mindestens doppelt so groß wie die Grenzfrequenz sein.' },
+  { q:'Wie lautet das Shannon-Hartley-Gesetz?', opts:['C = 2·B·log2(n)','C = B·log2(1+PS/PN)','C = B/log2(PS/PN)','C = 2·B·PS/PN'], correct:1, exp:'C = B·log2(1+PS/PN) für den gestörten Kanal. Das ist die theoretische Obergrenze der Bitrate.' },
+  { q:'Welche Codierungsart ENTFERNT Redundanz?', opts:['Kanalcodierung','Leitungscodierung','Quellencodierung','Verschlüsselung'], correct:2, exp:'Quellencodierung entfernt Redundanz (und ggf. Irrelevanz) für kompakte Darstellung. Kanalcodierung FÜGT Redundanz hinzu.' },
+  { q:'Was ist die Hamming-Distanz?', opts:['Die Anzahl der Bits in einem Codewort','Der minimale Abstand zwischen allen gültigen Codewörtern','Die Fehlerrate des Kanals','Die Coderate'], correct:1, exp:'Die Hamming-Distanz dmin ist der kleinste Abstand (unterschiedliche Bitstellen) zwischen allen gültigen Codewörtern eines Codes.' },
+  { q:'Wie viele Fehler kann ein Code mit dmin=3 KORRIGIEREN?', opts:['0','1','2','3'], correct:1, exp:'Fehlerkorrektur: dmin ≥ 2t+1. Bei dmin=3: 3 ≥ 2t+1 → t ≤ 1. Also 1 Fehler korrigierbar (und 2 Fehler erkennbar).' },
+  { q:'Was ist KEIN Multiplexverfahren?', opts:['FDM (Frequenzmultiplex)','TDM (Zeitmultiplex)','QAM (Quadraturamplitudenmodulation)','CDM (Codemultiplex)'], correct:2, exp:'QAM ist ein Modulationsverfahren, kein Multiplexverfahren. Die Multiplexverfahren sind: SDM, FDM, TDM, CDM, WDM.' },
+  { q:'Welcher Leitungscode ist gleichspannungsfrei und hat gute Taktrückgewinnung?', opts:['NRZ-L','RZ','Manchester','MLT-3'], correct:2, exp:'Manchester: Pegelwechsel in jeder Bitmitte → gleichspannungsfrei + hervorragende Taktrückgewinnung. Nachteil: doppelte Bandbreite.' },
+  { q:'Was ist der Zweck der Kanalcodierung?', opts:['Datenkompression','Fehlererkennung und -korrektur','Signalmodulation','Frequenzteilung'], correct:1, exp:'Kanalcodierung fügt gezielt Redundanz hinzu, um Übertragungsfehler erkennen (ARQ) oder korrigieren (FEC) zu können.' },
+  { q:'Ein Kanal hat B=100 MHz und SNR=30 dB. Wie groß ist die Kanalkapazität?', opts:['ca. 100 Mbit/s','ca. 500 Mbit/s','ca. 1 Gbit/s','ca. 3 Gbit/s'], correct:2, exp:'SNR=30dB → PS/PN=1000. C = 100·10^6 · log2(1001) ≈ 100·10^6 · 9,97 ≈ 997 Mbit/s ≈ 1 Gbit/s.' },
+  { q:'Was bedeutet Transinformation?', opts:['Die Gesamtinformation der Quelle','Die im Kanal verlorene Information','Die tatsächlich übertragene Nutzinformation','Die Redundanz der Codierung'], correct:2, exp:'T(X;Y) = H(X) - H(X|Y). Die Transinformation ist die tatsächlich über den gestörten Kanal übertragene Nutzinformation.' },
+  { q:'Wie viele Prüfstellen hat ein (7,4)-Hamming-Code?', opts:['2','3','4','7'], correct:1, exp:'(7,4) bedeutet: 7 Gesamtstellen, 4 Infostellen → 3 Prüfstellen (an Positionen 1, 2 und 4 = Zweierpotenzen).' },
+  { q:'Was beschreibt der Nachrichtenquader?', opts:['Die Form eines digitalen Signals','Die drei Signaleigenschaften Bandbreite × Dynamik × Dauer','Die Kanalkapazität','Den Frequenzgang eines Filters'], correct:1, exp:'Bandbreite, Dynamik und Dauer bilden den Nachrichtenquader. Ihr Produkt ist konstant – die Größen sind gegeneinander austauschbar.' },
+  { q:'Welches Codierverfahren nutzt der Huffman-Code?', opts:['Kanalcodierung','Leitungscodierung','Quellencodierung','Verschlüsselung'], correct:2, exp:'Huffman ist eine Quellencodierung (Entropiecodierung): Häufige Zeichen bekommen kurze, seltene Zeichen lange Codewörter → minimale mittlere Codewortlänge.' },
+  { q:'Was gilt für die Entropie einer Binärquelle?', opts:['Maximum bei P(x1)=1','Maximum bei P(x1)=0,5','Immer gleich 1 bit','Immer gleich 0 bit'], correct:1, exp:'Die Entropie einer Binärquelle erreicht ihr Maximum von 1 bit bei P(x1) = P(x2) = 0,5 (maximale Ungewissheit).' },
+  { q:'Was ist 4B/5B?', opts:['Ein Kanalcodierverfahren','Ein Blockcode der Leitungscodierung','Ein Modulationsverfahren','Eine Art Quellencodierung'], correct:1, exp:'4B/5B ist ein Leitungscode (Blockcode): 4 Bit werden zu 5 Bit codiert, um lange Nullfolgen zu vermeiden → Taktrückgewinnung. Einsatz: 100 Mbit Ethernet.' },
+  { q:'Wie berechnet sich die Coderate?', opts:['RC = n/k','RC = k/n','RC = k+n','RC = k-n'], correct:1, exp:'RC = k/n (Infostellen / Gesamtstellen). Je kleiner die Coderate, desto mehr Redundanz enthält der Code.' },
+  { q:'Was passiert bei einem total gestörten Kanal (PN >> PS)?', opts:['C wird maximal','C = B','C = 0','C = 1 bit/s'], correct:2, exp:'Bei PN >> PS: PS/PN → 0, also log2(1+0) = 0 → C = 0. Über einen total gestörten Kanal ist keine Informationsübertragung möglich.' },
+  { q:'Welche Aussage zur Redundanz ist korrekt?', opts:['Redundanz ist immer unerwünscht','Redundanz wird bei Quellencodierung erhöht','Redundanz kann gezielt zur Fehlererkennung genutzt werden','Redundanz erhöht den Informationsgehalt'], correct:2, exp:'Redundanz hat zwei Seiten: Quellencodierung ENTFERNT sie (Kompression), Kanalcodierung FÜGT sie gezielt HINZU (Fehlerschutz). Beides ist wichtig!' },
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

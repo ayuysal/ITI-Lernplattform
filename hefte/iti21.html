@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITI21 - Grundlagen moderner Computernetze | Pruefungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurueck zur Uebersicht</a>
+  <div class="badge">ITI21 · 1022K03 · HfB</div>
+  <h1>Grundlagen moderner Computernetze</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 6 Kapitel</p>
+</header>
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1-2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="kap6" onclick="showSection('kap6')">Kap 6 · OSI/TCP-IP</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+<main>
+<!-- ══════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header">
+    <h2>Lernübersicht</h2>
+    <span>6 Kapitel · Prüfungsvorbereitung</span>
+  </div>
+  <div class="card">
+    <div class="card-title">Lernpfad</div>
+    <p>Klicke auf ein Kapitel, um direkt zu den Lerninhalten zu springen. Nutze danach <strong>Flashcards</strong> zum Wiederholen und das <strong>Quiz</strong> zum Testen.</p>
+  </div>
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#4f9cff" data-target="kap1" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1–2</div>
+      <h3>Einführung & Internet</h3>
+      <p>IuK-Gesellschaft, Netz vs. Netzwerk, Aufbau des Internets, ISPs, Organisation (IANA, IETF)</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" data-target="kap3" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Einordnung & Ziele</h3>
+      <p>Definition Computernetz, Verteilte Systeme, Verbundeffekte, Anforderungen (Nutzer, Admin, Betreiber)</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#eab308" data-target="kap4" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Bausteine & Klassifikationen</h3>
+      <p>Topologien, LAN/MAN/WAN, Vermittlung (Leitung/Paket), Unicast/Broadcast, Simplex/Duplex</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f97316" data-target="kap5" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Kenngrößen</h3>
+      <p>Übertragungsrate, Latenz, Jitter, RTT, Paketverlust, Durchsatz, QoS – mit Formeln & Berechnungen</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#a78bfa" data-target="kap6" onclick="showSection('kap6')">
+      <div class="ch-num">KAP 6</div>
+      <h3>OSI & TCP/IP</h3>
+      <p>7-Schichten-OSI-Modell, TCP/IP-Stack, Protokolle, Kapselung/Entkapselung, Vergleich</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" data-target="flashcards" onclick="showSection('flashcards')">
+      <div class="ch-num">TOOLS</div>
+      <h3>🃏 Flashcards & ⚡ Quiz</h3>
+      <p>45+ Lernkarten mit Definitionen & Konzepten. 20 Multiple-Choice-Fragen mit Erklärungen.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Prüfungsrelevante Schwerpunkte</div>
+    <div class="two-col" style="margin-top:0.5rem">
+      <ul class="content-list">
+        <li>Definition Computernetz vs. Verteiltes System</li>
+        <li>Alle 9 Verbundeffekte auswendig</li>
+        <li>OSI-Schichten: Nummerierung + Funktion</li>
+        <li>Formeln: Latenz, Übertragungszeit, Kanalvolumen</li>
+      </ul>
+      <ul class="content-list">
+        <li>Leitungsvermittlung vs. Paketvermittlung (Vor-/Nachteile)</li>
+        <li>Topologien: Bus, Ring, Stern, vermascht</li>
+        <li>TCP/IP vs. OSI Vergleich</li>
+        <li>Unicast / Multicast / Broadcast / Anycast</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     KAP 1–2
+══════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header">
+    <h2>Kapitel 1–2</h2>
+    <span>Einführung & Internet – das Netz der Netze</span>
+  </div>
+  <div class="concept def">
+    <div class="concept-label">Definition</div>
+    <p><strong>Informations- & Kommunikationstechnologien (IuK/IKT):</strong> Technologien zur Verarbeitung, Speicherung und Übertragung von Informationen in elektronischer Form.</p>
+  </div>
+  <div class="concept def">
+    <div class="concept-label">Definition</div>
+    <p><strong>Internet (FNC 1995):</strong> Globales Informationssystem, das auf einem weltweit einheitlichen IP-Adressraum basiert, die TCP/IP-Protokollfamilie nutzt und öffentliche und private Dienste bereitstellt.</p>
+  </div>
+  <div class="concept warn">
+    <div class="concept-label">Wichtig: Netz ≠ Netzwerk</div>
+    <p><strong>„Netzwerk"</strong> ist ein Anglizismus (Übersetzungsfehler von „network"). Korrekt: <strong>Computernetz</strong>. In den Studienheften wird „Netz" verwendet. Ausnahme: wenn sich „Netzwerk" in einem Kontext fest etabliert hat (z. B. Netzwerkkabel).</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Elemente des Internets</div>
+    <table class="data-table">
+      <thead><tr><th>Begriff</th><th>Bedeutung</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Host / Endsystem</strong></td><td>Computer oder Gerät am Rand des Netzes (PC, Smartphone, Server, IoT-Gerät)</td></tr>
+        <tr><td><strong>Link</strong></td><td>Kommunikationsverbindung zwischen Hosts (Kupfer, Glasfaser, Funk)</td></tr>
+        <tr><td><strong>Router/Switch</strong></td><td>Aktive Netzkomponenten zur Kopplung von Hosts und Netzen</td></tr>
+        <tr><td><strong>ISP</strong></td><td>Internet Service Provider – stellt Internetzugang bereit (Tier-1/2/3)</td></tr>
+        <tr><td><strong>RFC</strong></td><td>Request for Comments – „Quasi-Standards" des Internets, erstellt von IETF</td></tr>
+        <tr><td><strong>IANA</strong></td><td>Vergibt IP-Adressblöcke; für Europa zuständig: RIPE NCC</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">ISP-Hierarchie</div>
+    <div class="concept example">
+      <div class="concept-label">Tier-1 ISPs</div>
+      <p>„Internet-Backbone" – großen autonomen Systemen, die kein Transit kaufen müssen. Peering-Verbindungen ohne gegenseitige Kosten. <strong>Beispiele:</strong> Deutsche Telekom, AT&T, Orange.</p>
+    </div>
+    <div class="concept example">
+      <div class="concept-label">DE-CIX Frankfurt</div>
+      <p>Weltgrößter Commercial Internet Exchange (CIX) – hier tauschen kommerzielle ISPs Daten aus.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Internet-Organisationen (Prüfungsrelevant!)</div>
+    <table class="data-table">
+      <thead><tr><th>Organisation</th><th>Aufgabe</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">ISOC</span> Internet Society</td><td>Dachorganisation, gegründet 1992, zuständig für Pflege & Weiterentwicklung</td></tr>
+        <tr><td><span class="tag">IETF</span></td><td>Entwickelt herstellerunabhängige Standards (RFCs) – keine formalen Mitglieder</td></tr>
+        <tr><td><span class="tag">IANA</span></td><td>Unterorganisation der ICANN – vergibt IP-Adressblöcke</td></tr>
+        <tr><td><span class="tag">ICANN</span></td><td>Internet Corporation for Assigned Names and Numbers – autorisiert Domain-Vergabe</td></tr>
+        <tr><td><span class="tag">RIPE NCC</span></td><td>Regionale Internet Registry für Europa</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="accordion-item">
+    <button class="accordion-toggle" onclick="toggleAcc(this)">🔑 Aufgaben zur Selbstüberprüfung (Kap 1–2) <span class="accordion-arrow">▾</span></button>
+    <div class="accordion-content">
+      <p><strong>2.1</strong> Warum heißt das Internet „Netz der Netze"? → Es ist ein dezentrales globales Netz, das aus einer Vielzahl miteinander verbundener Teilnetze besteht.</p><br>
+      <p><strong>2.2</strong> Wie ist das Internet organisiert? → Dachorganisation ISOC; IETF entwickelt Standards (RFCs); IANA/ICANN vergibt Adressen und Domainnamen; RIPE NCC für Europa.</p><br>
+      <p><strong>2.3</strong> Host = Gerät am Rand des Netzes. Dienst = technische Funktionskomponente (z. B. WWW). Protokoll = Regelwerk für Kommunikation (z. B. TCP/IP, HTTP).</p>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     KAP 3
+══════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header">
+    <h2>Kapitel 3</h2>
+    <span>Einordnung, Ziele & Anforderungen</span>
+  </div>
+  <div class="concept def">
+    <div class="concept-label">Definition 3.1 – Computernetz</div>
+    <p>Ein Computernetz ist ein <strong>Verbund von zwei oder mehr autonomen Computern und anderen Systemen (Hosts)</strong>, der die Kommunikation und den gemeinsamen Zugriff auf Ressourcen und Dienste ermöglicht.</p>
+  </div>
+  <div class="concept def">
+    <div class="concept-label">Definition 3.2 – Verteiltes System</div>
+    <p>Eine Sammlung unabhängiger Computer, die dem Benutzer wie ein <strong>einziges kohärentes System</strong> erscheint (Tanenbaum). Basiert auf einem Computernetz + zusätzliche Software.</p>
+  </div>
+  <div class="concept warn">
+    <div class="concept-label">Abgrenzung: Computernetz ↔ Verteiltes System ↔ Multiprozessorsystem</div>
+    <p><strong>Computernetz:</strong> Autonome Computer, größere Latenz.<br>
+    <strong>Verteiltes System:</strong> Erscheint als ein System (z. B. WWW).<br>
+    <strong>Multiprozessorsystem:</strong> Enge Kopplung, gemeinsamer Speicher, sehr geringe Latenz.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">9 Verbundeffekte (ALLE LERNEN!)</div>
+    <table class="data-table">
+      <thead><tr><th>Verbund</th><th>Bedeutung</th><th>Beispiel</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">Kommunikation</span></td><td>Mensch-Mensch-Kommunikation</td><td>E-Mail, WhatsApp</td></tr>
+        <tr><td><span class="tag">Ressourcen</span></td><td>Nichtlokale Hardware & Software nutzen</td><td>Netzwerkdrucker, Cloud</td></tr>
+        <tr><td><span class="tag">Information</span></td><td>Zugriff auf digitale Bibliotheken/WWW</td><td>Wikipedia, WWW</td></tr>
+        <tr><td><span class="tag">Daten</span></td><td>Zugriff auf entfernte Datenbanken</td><td>Datenbankserver</td></tr>
+        <tr><td><span class="tag">Leistung</span></td><td>Mehrere Computer gemeinsam nutzen</td><td>Cluster, HPC</td></tr>
+        <tr><td><span class="tag">Last</span></td><td>Aufgaben bei Überlast verlagern</td><td>Load Balancing</td></tr>
+        <tr><td><span class="tag">Verfügbarkeit</span></td><td>Ausfall-Übernahme durch andere Computer</td><td>Failover, Redundanz</td></tr>
+        <tr><td><span class="tag">Funktion</span></td><td>Spezielle Aufgaben auf spez. Computern</td><td>Client/Server</td></tr>
+        <tr><td><span class="tag">Steuerung/Wartung</span></td><td>Fernsteuerung/Wartung technischer Systeme</td><td>Autonomes Fahren</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Anforderungen an Computernetze</div>
+    <div class="two-col">
+      <div>
+        <p style="font-size:0.85rem; color:var(--accent); margin-bottom:0.5rem; font-family:var(--mono)">NUTZER</p>
+        <ul class="content-list">
+          <li>Hohe Übertragungsgeschwindigkeit</li>
+          <li>Echtzeit-Übertragung großer Daten</li>
+          <li>Zuverlässigkeit & hohe Qualität</li>
+          <li>Kurze Antwortzeit</li>
+          <li>Sicherheit der Information</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-size:0.85rem; color:var(--green); margin-bottom:0.5rem; font-family:var(--mono)">ADMIN / BETREIBER</p>
+        <ul class="content-list">
+          <li>Stabiler, zuverlässiger Betrieb</li>
+          <li>Einfaches Management</li>
+          <li>Geringe Anschaffungskosten</li>
+          <li>Zukunftssicherheit</li>
+          <li>Sicherheit & Zugangskontrolle</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept def">
+    <div class="concept-label">Definition 3.4 – Netzdienst</div>
+    <p>Ein Netzdienst stellt Anwendern bzw. Geräten eine <strong>in sich geschlossene Funktionskomponente</strong> zur Kommunikation oder gemeinsamen Nutzung von Ressourcen zur Verfügung. Technisch realisiert über Protokolle. Beispiel: WWW → HTTP/HTTPS.</p>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     KAP 4
+══════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header">
+    <h2>Kapitel 4</h2>
+    <span>Grundlegende Bausteine & Klassifikationen</span>
+  </div>
+  <div class="card">
+    <div class="card-title">3 Grundbausteine eines Computernetzes</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;text-align:center;border:1px solid var(--border)">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem">🖥️</div>
+        <strong style="color:#fff;font-size:0.9rem">Hosts/Knoten</strong>
+        <p style="color:var(--text2);font-size:0.8rem;margin-top:0.3rem">Sender & Empfänger mit Netzinterface</p>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;text-align:center;border:1px solid var(--border)">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem">🔗</div>
+        <strong style="color:#fff;font-size:0.9rem">Links / Verbindungen</strong>
+        <p style="color:var(--text2);font-size:0.8rem;margin-top:0.3rem">Übertragungsmedium (Kabel, Funk)</p>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;text-align:center;border:1px solid var(--border)">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem">📜</div>
+        <strong style="color:#fff;font-size:0.9rem">Protokolle</strong>
+        <p style="color:var(--text2);font-size:0.8rem;margin-top:0.3rem">Regeln der Datenkommunikation</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Topologien im Vergleich</div>
+    <table class="data-table">
+      <thead><tr><th>Topologie</th><th>Merkmal</th><th>Vor-/Nachteil</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bus</strong></td><td>Alle Hosts an einem Kabel; Broadcastmedium</td><td>➕ günstig ➖ Ausfall des Busses = ganzes Netz weg</td></tr>
+        <tr><td><strong>Ring</strong></td><td>Jeder Host mit 2 Nachbarn verbunden</td><td>➕ gleichmäßige Last ➖ Ringunterbrechung = Ausfall</td></tr>
+        <tr><td><strong>Stern</strong></td><td>Alle Hosts an zentralem Switch/Hub</td><td>➕ Ausfall eines Hosts isoliert ➖ zentrale Abhängigkeit</td></tr>
+        <tr><td><strong>Vermascht</strong></td><td>Mehrere Wege möglich; Routing nötig</td><td>➕ hohe Redundanz ➖ teuer, komplex</td></tr>
+        <tr><td><strong>Baum</strong></td><td>Hierarchische Sterntopologie</td><td>➕ skalierbar ➖ Ausfallkaskaden möglich</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Räumliche Ausdehnung</div>
+    <table class="data-table">
+      <thead><tr><th>Kürzel</th><th>Name</th><th>Bereich</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">PAN</span></td><td>Personal Area Network</td><td>wenige Meter (Bluetooth)</td></tr>
+        <tr><td><span class="tag green">LAN</span></td><td>Local Area Network</td><td>Gebäude / Campus</td></tr>
+        <tr><td><span class="tag yellow">MAN</span></td><td>Metropolitan Area Network</td><td>Stadt / Region</td></tr>
+        <tr><td><span class="tag purple">WAN</span></td><td>Wide Area Network</td><td>Land / Kontinent</td></tr>
+        <tr><td><span class="tag">GAN</span></td><td>Global Area Network</td><td>Weltweit (Internet)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Vermittlungsprinzipien (PRÜFUNGSRELEVANT)</div>
+    <div class="two-col">
+      <div class="concept def">
+        <div class="concept-label">Leitungsvermittlung (Circuit Switching)</div>
+        <p>Dedizierte physikalische Verbindung für die gesamte Sitzung. Ressourcen exklusiv reserviert.<br><strong>✅ Garantierte Bandbreite, geringe Latenz</strong><br><strong>❌ Schlechte Leitungsauslastung (z. B. Sprachpausen)</strong><br>Beispiel: Traditionelles Telefonnetz</p>
+      </div>
+      <div class="concept def">
+        <div class="concept-label">Paketvermittlung (Packet Switching)</div>
+        <p>Nachricht wird in Pakete zerlegt, jedes Paket einzeln vermittelt. Keine Reservierung.<br><strong>✅ Bessere Leitungsauslastung, Fehlertoleranz</strong><br><strong>❌ Keine garantierte Bandbreite, Reihenfolge-Overhead</strong><br>Beispiel: Internet (TCP/IP)</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Kommunikationsarten</div>
+    <table class="data-table">
+      <thead><tr><th>Typ</th><th>Empfänger</th><th>Beispiel</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">Unicast</span></td><td>Genau 1 Empfänger</td><td>Normaler Datentransfer</td></tr>
+        <tr><td><span class="tag">Anycast</span></td><td>Nächster Host einer Gruppe</td><td>DNS-Routing</td></tr>
+        <tr><td><span class="tag green">Multicast</span></td><td>Ausgewählte Gruppe</td><td>Video-Streaming, IPTV</td></tr>
+        <tr><td><span class="tag yellow">Broadcast</span></td><td>Alle Hosts im Netz</td><td>ARP-Anfragen</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Übertragungsarten (Richtung)</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;border:1px solid var(--border)">
+        <strong style="color:var(--accent)">Simplex</strong>
+        <p style="color:var(--text2);font-size:0.82rem;margin-top:0.3rem">Nur eine Richtung möglich. Keine Rückmeldung. Beispiel: Radio, TV</p>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;border:1px solid var(--border)">
+        <strong style="color:var(--yellow)">Halbduplex</strong>
+        <p style="color:var(--text2);font-size:0.82rem;margin-top:0.3rem">Beide Richtungen, aber nicht gleichzeitig. Beispiel: Walkie-Talkie, Wechselsprechanlage</p>
+      </div>
+      <div style="background:var(--surface2);border-radius:8px;padding:1rem;border:1px solid var(--border)">
+        <strong style="color:var(--green)">Vollduplex</strong>
+        <p style="color:var(--text2);font-size:0.82rem;margin-top:0.3rem">Gleichzeitig in beide Richtungen. Beispiel: Telefon, Ethernet</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     KAP 5
+══════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header">
+    <h2>Kapitel 5</h2>
+    <span>Kenngrößen in Netzen</span>
+  </div>
+  <div class="concept warn">
+    <div class="concept-label">⚠ Wichtig bei Berechnungen</div>
+    <p>Bei <strong>Übertragungsraten</strong>: Basis 10 (nicht 2!). Also: 1 kbit/s = 1000 bit/s.<br>
+    Bei <strong>Speicher/Datenmengen</strong>: Basis 2. 1 KiB = 1024 Byte. 1 MiB = 1 048 576 Byte. <strong>Einheit immer prüfen!</strong></p>
+  </div>
+  <div class="card">
+    <div class="card-title">Formeln (alle auswendig lernen)</div>
+    <p style="color:var(--text2);font-size:0.88rem;margin-bottom:0.75rem">Übertragungsrate:</p>
+    <div class="formula-box">b = D / t &nbsp;&nbsp;|&nbsp;&nbsp; t = D / b</div>
+    <p style="color:var(--text2);font-size:0.88rem;margin:0.75rem 0">Übertragungsverzögerung:</p>
+    <div class="formula-box">t_Ü = D / b &nbsp;&nbsp;&nbsp; (Datenmenge / Übertragungsrate)</div>
+    <p style="color:var(--text2);font-size:0.88rem;margin:0.75rem 0">Signalausbreitungszeit:</p>
+    <div class="formula-box">t_a = d / v &nbsp;&nbsp;&nbsp; (Entfernung / Ausbreitungsgeschwindigkeit)</div>
+    <p style="color:var(--text2);font-size:0.88rem;margin:0.75rem 0">Gesamtlatenz (vereinfacht):</p>
+    <div class="formula-box">t_L = t_Ü + t_a &nbsp;&nbsp;&nbsp; (+ Verarbeitungs- & Wartezeit)</div>
+    <p style="color:var(--text2);font-size:0.88rem;margin:0.75rem 0">Kanalvolumen:</p>
+    <div class="formula-box">V = Latenz × Übertragungsrate &nbsp;&nbsp;&nbsp; [in bit]</div>
+    <p style="color:var(--text2);font-size:0.88rem;margin:0.75rem 0">Bitzeit:</p>
+    <div class="formula-box">t_bit = 1 / b</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Kenngrößen im Überblick</div>
+    <table class="data-table">
+      <thead><tr><th>Kenngröße</th><th>Definition</th><th>Einheit</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Übertragungsrate b</strong></td><td>Digitale Datenmenge pro Zeiteinheit; Übertragungskapazität des Kanals</td><td>bit/s, kbit/s, Mbit/s</td></tr>
+        <tr><td><strong>Latenz t_L</strong></td><td>Zeit zwischen Absenden und Empfang einer Übertragungseinheit</td><td>ms, s</td></tr>
+        <tr><td><strong>Antwortzeit (RTT)</strong></td><td>Zeit zwischen Anfrage und Empfang der Antwort (Round Trip Time)</td><td>ms</td></tr>
+        <tr><td><strong>Jitter</strong></td><td>Latenzschwankungen; Variabilität der Verzögerung zwischen Paketen</td><td>ms</td></tr>
+        <tr><td><strong>Paketverlustrate</strong></td><td>% der Pakete, die wegen fehlender Kapazität nicht weitergeleitet werden</td><td>%</td></tr>
+        <tr><td><strong>Durchsatz</strong></td><td>Rate der Nutzdaten (Payload) zwischen Sender & Empfänger (ohne Overhead)</td><td>bit/s</td></tr>
+        <tr><td><strong>Kanalvolumen</strong></td><td>Bits im Kanal, bevor erstes Bit beim Empfänger ankommt</td><td>bit</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Latenz-Komponenten (paketvermittelte Netze)</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem">
+      <div class="concept">
+        <div class="concept-label">Processing Delay (t_v)</div>
+        <p>Verarbeitungszeit im Knoten: Entscheidung, auf welche Ausgangsleitung die Daten kommen</p>
+      </div>
+      <div class="concept">
+        <div class="concept-label">Queuing Delay (t_w)</div>
+        <p>Wartezeit in der Warteschlange der ausgehenden Leitung</p>
+      </div>
+      <div class="concept">
+        <div class="concept-label">Transmission Delay (t_Ü)</div>
+        <p>Zeit, bis das letzte Bit auf den Link gelegt ist: <strong>D / b</strong></p>
+      </div>
+      <div class="concept">
+        <div class="concept-label">Propagation Delay (t_a)</div>
+        <p>Signalausbreitungszeit durch das Medium: <strong>d / v</strong> ≈ ⅔ Lichtgeschwindigkeit</p>
+      </div>
+    </div>
+  </div>
+  <div class="concept example">
+    <div class="concept-label">Latenz & Sprachqualität (ITU-T G.114)</div>
+    <p>≤ 150 ms → gute Sprachqualität | ≤ 400 ms → akzeptabel | > 600 ms → keine Kommunikation möglich.<br>Paketverlustrate sollte &lt; 5 % betragen.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Serielle Übertragung</div>
+    <div class="two-col">
+      <div>
+        <p style="color:var(--accent);font-size:0.85rem;font-family:var(--mono);margin-bottom:0.5rem">ASYNCHRON</p>
+        <ul class="content-list">
+          <li>Synchronisation je Zeichen neu</li>
+          <li>Start- und Stoppbits notwendig → Overhead</li>
+          <li>Langsamer als synchron</li>
+        </ul>
+      </div>
+      <div>
+        <p style="color:var(--green);font-size:0.85rem;font-family:var(--mono);margin-bottom:0.5rem">SYNCHRON (in Netzen Standard)</p>
+        <ul class="content-list">
+          <li>Synchronisation während gesamter Übertragung</li>
+          <li>Sendetakt wird mit Daten übertragen</li>
+          <li>Frame mit Flag begrenzt (HDLC: 01111110)</li>
+          <li>Bit Stuffing nach 5 aufeinanderfolgenden 1-Bits</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Rechner -->
+  <div class="card">
+    <div class="card-title">🔢 Interaktiver Latenz-Rechner</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.75rem;margin-bottom:1rem">
+      <div>
+        <label style="font-size:0.82rem;color:var(--text2);display:block;margin-bottom:0.3rem">Datenmenge D (MB)</label>
+        <input id="calc-d" type="number" value="100" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;color:var(--text);font-family:var(--mono);font-size:0.9rem">
+      </div>
+      <div>
+        <label style="font-size:0.82rem;color:var(--text2);display:block;margin-bottom:0.3rem">Übertragungsrate b (Mbit/s)</label>
+        <input id="calc-b" type="number" value="1000" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;color:var(--text);font-family:var(--mono);font-size:0.9rem">
+      </div>
+      <div>
+        <label style="font-size:0.82rem;color:var(--text2);display:block;margin-bottom:0.3rem">Entfernung d (km)</label>
+        <input id="calc-dist" type="number" value="500" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;color:var(--text);font-family:var(--mono);font-size:0.9rem">
+      </div>
+      <div>
+        <label style="font-size:0.82rem;color:var(--text2);display:block;margin-bottom:0.3rem">v (Anteil Lichtgeschw., z. B. 0.67)</label>
+        <input id="calc-v" type="number" value="0.67" step="0.01" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.75rem;color:var(--text);font-family:var(--mono);font-size:0.9rem">
+      </div>
+    </div>
+    <button class="btn" onclick="calcLatency()">Berechnen</button>
+    <div id="calc-result" style="margin-top:1rem;display:none">
+      <div class="formula-box" id="calc-out"></div>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     KAP 6 – OSI / TCP-IP
+══════════════════════════════════════ -->
+<div id="kap6" class="section">
+  <div class="section-header">
+    <h2>Kapitel 6</h2>
+    <span>Schichtenmodelle & Protokolle – OSI & TCP/IP</span>
+  </div>
+  <div class="concept def">
+    <div class="concept-label">Warum Schichtenmodelle?</div>
+    <p>Komplexe Kommunikationsaufgaben werden in <strong>hierarchisch geordnete Teilaufgaben</strong> zerlegt. Jede Schicht erbringt Dienste für die darüber liegende und nutzt Dienste der darunterliegenden. → Modularität, Interoperabilität, einfachere Entwicklung.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">OSI-Schichtenmodell (ISO) – 7 Schichten</div>
+    <p style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem">Merksatz: <em style="color:var(--accent)">"Please Do Not Throw Sausage Pizza Away"</em> (von unten: Physical, Data Link, Network, Transport, Session, Presentation, Application)</p>
+    <div class="osi-layer" style="background:rgba(239,68,68,0.08)">
+      <div class="osi-num" style="color:#ef4444">7</div>
+      <div class="osi-info"><strong>Anwendungsschicht (Application)</strong><span>Anwendungsprotokolle für den Nutzer</span></div>
+      <div class="osi-proto">HTTP, FTP, SMTP, DNS</div>
+    </div>
+    <div class="osi-layer" style="background:rgba(249,115,22,0.08)">
+      <div class="osi-num" style="color:#f97316">6</div>
+      <div class="osi-info"><strong>Darstellungsschicht (Presentation)</strong><span>Datendarstellung, Verschlüsselung, Komprimierung</span></div>
+      <div class="osi-proto">SSL/TLS, ASCII</div>
+    </div>
+    <div class="osi-layer" style="background:rgba(234,179,8,0.08)">
+      <div class="osi-num" style="color:#eab308">5</div>
+      <div class="osi-info"><strong>Sitzungsschicht (Session)</strong><span>Auf-/Abbau und Verwaltung von Sitzungen</span></div>
+      <div class="osi-proto">NetBIOS, RPC</div>
+    </div>
+    <div class="osi-layer" style="background:rgba(34,197,94,0.08)">
+      <div class="osi-num" style="color:#22c55e">4</div>
+      <div class="osi-info"><strong>Transportschicht (Transport)</strong><span>Ende-zu-Ende-Kommunikation, Segmentierung, Flusskontrolle</span></div>
+      <div class="osi-proto">TCP, UDP</div>
+    </div>
+    <div class="osi-layer" style="background:rgba(20,184,166,0.08)">
+      <div class="osi-num" style="color:#14b8a6">3</div>
+      <div class="osi-info"><strong>Vermittlungsschicht (Network)</strong><span>Logische Adressierung, Routing, Wegewahl</span></div>
+      <div class="osi-proto">IP, ICMP, ARP</div>
+    </div>
+    <div class="osi-layer" style="background:rgba(79,156,255,0.08)">
+      <div class="osi-num" style="color:#4f9cff">2</div>
+      <div class="osi-info"><strong>Sicherungsschicht (Data Link)</strong><span>Rahmen, MAC-Adressierung, Fehlererkennung</span></div>
+      <div class="osi-proto">Ethernet, WLAN (802.11)</div>
+    </div>
+    <div class="osi-layer" style="background:rgba(124,58,237,0.08)">
+      <div class="osi-num" style="color:#a78bfa">1</div>
+      <div class="osi-info"><strong>Bitübertragungsschicht (Physical)</strong><span>Physikalische Signalübertragung, Bits auf Medium</span></div>
+      <div class="osi-proto">DSL, Ethernet PHY, WLAN PHY</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">TCP/IP-Modell (DoD-Modell) – 4 Schichten</div>
+    <table class="data-table">
+      <thead><tr><th>TCP/IP Schicht</th><th>Entspricht OSI</th><th>Protokolle</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Anwendungsschicht</strong></td><td>OSI 5–7 (Session, Presentation, Application)</td><td>HTTP, FTP, SMTP, DNS, SSH</td></tr>
+        <tr><td><strong>Transportschicht</strong></td><td>OSI 4 (Transport)</td><td>TCP (verbindungsorientiert), UDP (verbindungslos)</td></tr>
+        <tr><td><strong>Internetschicht</strong></td><td>OSI 3 (Network)</td><td>IP (v4/v6), ICMP, ARP, OSPF, BGP</td></tr>
+        <tr><td><strong>Netzzugangsschicht</strong></td><td>OSI 1–2 (Physical + Data Link)</td><td>Ethernet, WLAN, DSL, PPP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Kapselung & Entkapselung</div>
+    <div class="concept example">
+      <div class="concept-label">Kapselung (Sender, von oben nach unten)</div>
+      <p>Jede Schicht fügt dem Datenpaket einen <strong>eigenen Header</strong> hinzu (ggf. auch Trailer). Die Anwendungsdaten werden sukzessive in Protokolleinheiten der tieferen Schichten verpackt.</p>
+      <p style="margin-top:0.5rem;font-family:var(--mono);font-size:0.85rem;color:var(--accent)">Daten → Segment (TCP) → Paket (IP) → Frame (Ethernet) → Bits</p>
+    </div>
+    <div class="concept example">
+      <div class="concept-label">Entkapselung (Empfänger, von unten nach oben)</div>
+      <p>Jede Schicht liest und entfernt ihren Header und reicht die Daten an die nächsthöhere Schicht weiter.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">OSI vs. TCP/IP Vergleich</div>
+    <table class="data-table">
+      <thead><tr><th>Merkmal</th><th>OSI</th><th>TCP/IP</th></tr></thead>
+      <tbody>
+        <tr><td>Anzahl Schichten</td><td>7</td><td>4</td></tr>
+        <tr><td>Entstehung</td><td>ISO, als Standard definiert</td><td>Aus der Praxis (ARPANET)</td></tr>
+        <tr><td>Verwendung</td><td>Referenzmodell, Lehrmodell</td><td>Tatsächlich im Internet verwendet</td></tr>
+        <tr><td>Sitzungs-/Darstellungsschicht</td><td>Explizit vorhanden</td><td>Teil der Anwendungsschicht</td></tr>
+        <tr><td>Protokollunabhängigkeit</td><td>Modell ist protokollunabhängig</td><td>Auf TCP/IP-Familie zugeschnitten</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="concept warn">
+    <div class="concept-label">Merke: Zwischensysteme im OSI</div>
+    <p><strong>Repeater/Hub:</strong> Schicht 1 | <strong>Bridge/Switch:</strong> Schicht 2 | <strong>Router:</strong> Schicht 3 | <strong>Gateway:</strong> Schicht 4–7</p>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     FLASHCARDS
+══════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>Klick auf die Karte zum Umdrehen</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="fc-progress" style="width:0%"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FRAGE <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question">Laden...</h3>
+        <div class="fc-hint">Klicken zum Umdrehen ↓</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">← Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter →</button>
+  </div>
+  <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
+    <button class="btn ghost" onclick="shuffleCards()">🔀 Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">↺ Neu starten</button>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Prüfungsquiz</h2>
+    <span>20 Fragen mit Erklärungen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <br>
+    <button class="btn" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+  <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:1.5rem" id="quiz-submit-area">
+    <button class="btn" onclick="submitQuiz()">Auswerten</button>
+    <button class="btn ghost" onclick="resetQuiz()">Neu starten</button>
+  </div>
+</div>
+<!-- ══════════════════════════════════════
+     CHEATSHEET
+══════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header">
+    <h2>Cheatsheet</h2>
+    <span>Alle wichtigen Begriffe & Formeln auf einen Blick</span>
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-block">
+      <h4>Formeln</h4>
+      <div class="cheat-row"><span class="cheat-key">Übertragungsrate</span><span class="cheat-val">b = D / t</span></div>
+      <div class="cheat-row"><span class="cheat-key">Übertr.-verzögerung</span><span class="cheat-val">t_Ü = D / b</span></div>
+      <div class="cheat-row"><span class="cheat-key">Ausbreitungsverzög.</span><span class="cheat-val">t_a = d / v</span></div>
+      <div class="cheat-row"><span class="cheat-key">Latenz (gesamt)</span><span class="cheat-val">t_L = t_v+t_w+t_Ü+t_a</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kanalvolumen</span><span class="cheat-val">V = Latenz × b</span></div>
+      <div class="cheat-row"><span class="cheat-key">Bitzeit</span><span class="cheat-val">t_bit = 1 / b</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Einheiten</h4>
+      <div class="cheat-row"><span class="cheat-key">1 kbit/s</span><span class="cheat-val">= 1.000 bit/s</span></div>
+      <div class="cheat-row"><span class="cheat-key">1 Mbit/s</span><span class="cheat-val">= 1.000.000 bit/s</span></div>
+      <div class="cheat-row"><span class="cheat-key">1 KiB</span><span class="cheat-val">= 1.024 Byte</span></div>
+      <div class="cheat-row"><span class="cheat-key">1 MiB</span><span class="cheat-val">= 1.048.576 Byte</span></div>
+      <div class="cheat-row"><span class="cheat-key">Lichtgeschw. Vakuum</span><span class="cheat-val">≈ 300.000 km/s</span></div>
+      <div class="cheat-row"><span class="cheat-key">v im Kabel/Glasfaser</span><span class="cheat-val">≈ 200.000 km/s (⅔c)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>OSI-Schichten</h4>
+      <div class="cheat-row"><span class="cheat-key">7 – Application</span><span class="cheat-val">HTTP, FTP, DNS</span></div>
+      <div class="cheat-row"><span class="cheat-key">6 – Presentation</span><span class="cheat-val">SSL/TLS, ASCII</span></div>
+      <div class="cheat-row"><span class="cheat-key">5 – Session</span><span class="cheat-val">NetBIOS, RPC</span></div>
+      <div class="cheat-row"><span class="cheat-key">4 – Transport</span><span class="cheat-val">TCP, UDP</span></div>
+      <div class="cheat-row"><span class="cheat-key">3 – Network</span><span class="cheat-val">IP, ICMP, ARP</span></div>
+      <div class="cheat-row"><span class="cheat-key">2 – Data Link</span><span class="cheat-val">Ethernet, WLAN</span></div>
+      <div class="cheat-row"><span class="cheat-key">1 – Physical</span><span class="cheat-val">DSL, Kabel</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>9 Verbundeffekte</h4>
+      <div class="cheat-row"><span class="cheat-key">Kommunikation</span><span class="cheat-val">E-Mail, Chat</span></div>
+      <div class="cheat-row"><span class="cheat-key">Ressourcen</span><span class="cheat-val">Drucker, Cloud</span></div>
+      <div class="cheat-row"><span class="cheat-key">Information</span><span class="cheat-val">WWW</span></div>
+      <div class="cheat-row"><span class="cheat-key">Daten</span><span class="cheat-val">DB-Zugriff</span></div>
+      <div class="cheat-row"><span class="cheat-key">Leistung</span><span class="cheat-val">Cluster, HPC</span></div>
+      <div class="cheat-row"><span class="cheat-key">Last</span><span class="cheat-val">Load Balancing</span></div>
+      <div class="cheat-row"><span class="cheat-key">Verfügbarkeit</span><span class="cheat-val">Failover</span></div>
+      <div class="cheat-row"><span class="cheat-key">Funktion</span><span class="cheat-val">Client/Server</span></div>
+      <div class="cheat-row"><span class="cheat-key">Steuerung/Wartung</span><span class="cheat-val">Remote Control</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Netz-Organisationen</h4>
+      <div class="cheat-row"><span class="cheat-key">ISOC</span><span class="cheat-val">Dachorganisation</span></div>
+      <div class="cheat-row"><span class="cheat-key">IETF</span><span class="cheat-val">Standards (RFCs)</span></div>
+      <div class="cheat-row"><span class="cheat-key">IANA</span><span class="cheat-val">IP-Adressvergabe</span></div>
+      <div class="cheat-row"><span class="cheat-key">ICANN</span><span class="cheat-val">Domainnamen</span></div>
+      <div class="cheat-row"><span class="cheat-key">RIPE NCC</span><span class="cheat-val">RIR für Europa</span></div>
+      <div class="cheat-row"><span class="cheat-key">DE-CIX</span><span class="cheat-val">Größter CIX (Frankfurt)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Vermittlungsarten</h4>
+      <div class="cheat-row"><span class="cheat-key">Leitungsvermittlung</span><span class="cheat-val">Telefon (dediziert)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Paketvermittlung</span><span class="cheat-val">Internet (flexibel)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Unicast</span><span class="cheat-val">1 Sender → 1 Empf.</span></div>
+      <div class="cheat-row"><span class="cheat-key">Multicast</span><span class="cheat-val">1 Sender → Gruppe</span></div>
+      <div class="cheat-row"><span class="cheat-key">Broadcast</span><span class="cheat-val">1 Sender → alle</span></div>
+      <div class="cheat-row"><span class="cheat-key">Anycast</span><span class="cheat-val">→ nächster der Gruppe</span></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+const flashcardsData = [
+  { cat: 'KAP 1', q: 'Was versteht man unter IuK-Technologien?', a: 'Informations- und Kommunikationstechnologien – Technologien zur Verarbeitung, Speicherung und Übertragung von Informationen in elektronischer Form.' },
+  { cat: 'KAP 1', q: 'Warum ist der Begriff „Netzwerk" eigentlich falsch?', a: '„Netzwerk" ist ein Anglizismus – ein Übersetzungsfehler von englisch „network". Korrekt deutsch: „Netz" (vgl. Eisenbahnnetz, nicht Eisenbahnnetzwerk).' },
+  { cat: 'KAP 2', q: 'Was ist ein Host?', a: 'Ein Host ist ein Computer oder ein anderes Gerät, das mit einem Computernetz verbunden ist. Hosts sind die Endsysteme am Rand des Netzes.' },
+  { cat: 'KAP 2', q: 'Was sind Tier-1-ISPs?', a: 'Tier-1-ISPs sind der „Internet-Backbone" – große autonome Systeme, die keinen Transit kaufen, sondern nur Peering-Verbindungen mit anderen Tier-1-ISPs betreiben (gegenseitig kostenlos). Beispiel: Deutsche Telekom, AT&T.' },
+  { cat: 'KAP 2', q: 'Was ist ein RFC?', a: 'Request for Comments – technische und organisatorische Festlegungen zum Internet, entwickelt von IETF-Arbeitsgruppen. Quasi-Standards des Internets.' },
+  { cat: 'KAP 2', q: 'Was ist der DE-CIX?', a: 'Der weltgrößte Commercial Internet Exchange (CIX) in Frankfurt am Main – hier tauschen kommerzielle Internetanbieter Daten aus.' },
+  { cat: 'KAP 3', q: 'Definition Computernetz (Def. 3.1)?', a: 'Ein Verbund von zwei oder mehr autonomen Computern und anderen Systemen (Hosts), der die Kommunikation und den gemeinsamen Zugriff auf Ressourcen und Dienste ermöglicht.' },
+  { cat: 'KAP 3', q: 'Was ist der Unterschied zwischen Computernetz und verteiltem System?', a: 'Ein verteiltes System basiert auf einem Computernetz, erscheint dem Nutzer aber wie ein einziges autonomes System (z. B. WWW). Das Netz ist das Transportsystem.' },
+  { cat: 'KAP 3', q: 'Nenne alle 9 Verbundeffekte!', a: '1. Kommunikation, 2. Ressourcen, 3. Information, 4. Daten, 5. Leistung, 6. Last, 7. Verfügbarkeit, 8. Funktion, 9. Steuerung/Wartung' },
+  { cat: 'KAP 3', q: 'Was ist ein Intranet?', a: 'Ein Computernetz, das unabhängig vom öffentlichen Netz verwendet werden kann und in einem Unternehmen zur Unterstützung interner Prozesse dient. Basiert wie das Internet auf TCP/IP.' },
+  { cat: 'KAP 3', q: 'Was ist ein Netzdienst?', a: 'Eine in sich geschlossene Funktionskomponente, die Anwendern Kommunikation oder gemeinsame Ressourcennutzung ermöglicht. Technisch über Protokolle realisiert. Beispiel: WWW via HTTP.' },
+  { cat: 'KAP 4', q: 'Welche 3 grundlegenden Bausteine braucht man für ein Computernetz?', a: '1. Hosts/Knoten (Sender & Empfänger mit Netzinterface), 2. Links/Verbindungen (Übertragungsmedium), 3. Protokolle (Regelwerk für Kommunikation).' },
+  { cat: 'KAP 4', q: 'Was unterscheidet Leitungsvermittlung von Paketvermittlung?', a: 'Leitungsvermittlung: dedizierte physikalische Verbindung, Ressourcen exklusiv reserviert, garantierte Bandbreite, schlechte Auslastung. Paketvermittlung: Nachricht in Pakete aufgeteilt, keine Reservierung, bessere Auslastung, keine Garantie.' },
+  { cat: 'KAP 4', q: 'Was ist ein Broadcastnetz?', a: 'Ein Netz mit nur einem Übertragungskanal, den alle Hosts gemeinsam nutzen. Jede gesendete Nachricht wird von allen Hosts empfangen. Beispiel: Bus-Topologie.' },
+  { cat: 'KAP 4', q: 'Was ist der Unterschied zwischen Unicast, Multicast und Broadcast?', a: 'Unicast: genau 1 Empfänger. Multicast: ausgewählte Gruppe. Broadcast: alle Hosts im Netz. Anycast: nächster Host einer Gruppe.' },
+  { cat: 'KAP 4', q: 'Was ist Vollduplex?', a: 'Gleichzeitige Informationsübertragung in beide Richtungen. Endgerät kann gleichzeitig senden und empfangen. Beispiel: Telefon, Ethernet. Gegensatz: Simplex (nur eine Richtung), Halbduplex (wechselweise).' },
+  { cat: 'KAP 5', q: 'Wie berechnet sich die Übertragungsrate b?', a: 'b = D / t, wobei D die Datenmenge und t die Übertragungszeit ist. Einheit: bit/s. WICHTIG: Basis 10 bei Übertragungsraten (1 kbit/s = 1.000 bit/s).' },
+  { cat: 'KAP 5', q: 'Aus welchen 4 Komponenten besteht die Latenz in paketvermittelten Netzen?', a: '1. Verarbeitungszeit t_v (processing delay), 2. Wartezeit t_w (queuing delay), 3. Übertragungsverzögerung t_Ü = D/b, 4. Ausbreitungsverzögerung t_a = d/v.' },
+  { cat: 'KAP 5', q: 'Was ist Jitter?', a: 'Latenzschwankungen – die Variabilität der Übertragungsverzögerung zwischen einzelnen Paketen. Ursache: Staus, Überlastung, Routenänderungen. Problem für Echtzeit-Anwendungen (VoIP, Video). Lösung: Jitter-Buffer.' },
+  { cat: 'KAP 5', q: 'Was ist der Durchsatz und was ist der Unterschied zur Übertragungsrate?', a: 'Durchsatz = Rate der Nutzdaten (Payload) zwischen Sender und Empfänger. Overhead (Steuerungsdaten) wird nicht einbezogen. Übertragungsrate = gesamte Daten pro Zeit.' },
+  { cat: 'KAP 5', q: 'Wie berechnet sich das Kanalvolumen?', a: 'V = Latenz × Übertragungsrate. Es gibt die Anzahl der Bits an, die ein Sender senden kann, bevor das erste Bit beim Empfänger ankommt.' },
+  { cat: 'KAP 5', q: 'Was besagt die ITU-T G.114 Empfehlung zu Latenz und Sprachqualität?', a: '≤ 150 ms: gute Sprachqualität. ≤ 400 ms: akzeptabel. > 600 ms: keine Kommunikation möglich. Paketverlustrate < 5 %.' },
+  { cat: 'KAP 6', q: 'Nenne die 7 OSI-Schichten mit Nummer (von unten nach oben)!', a: '1 Physical, 2 Data Link, 3 Network, 4 Transport, 5 Session, 6 Presentation, 7 Application. Merksatz: "Please Do Not Throw Sausage Pizza Away".' },
+  { cat: 'KAP 6', q: 'Was ist der Unterschied zwischen OSI und TCP/IP-Modell?', a: 'OSI: 7 Schichten, Referenzmodell. TCP/IP: 4 Schichten (Anwendung, Transport, Internet, Netzzugang), tatsächlich im Internet verwendet. TCP/IP fasst OSI-Schichten 5–7 zusammen und 1–2 zusammen.' },
+  { cat: 'KAP 6', q: 'Was ist Kapselung im OSI-Modell?', a: 'Jede Schicht fügt beim Senden einen eigenen Header (und ggf. Trailer) hinzu. Daten → Segment (TCP) → Paket (IP) → Frame (Ethernet) → Bits. Beim Empfänger läuft Entkapselung rückwärts.' },
+  { cat: 'KAP 6', q: 'Welche Protokolle arbeiten auf welcher OSI-Schicht?', a: 'Schicht 7: HTTP, FTP, SMTP, DNS. Schicht 4: TCP, UDP. Schicht 3: IP, ICMP, ARP. Schicht 2: Ethernet, WLAN. Schicht 1: DSL, Kabelnetze.' },
+];
+
+const quizData = [
+  { q: 'Was ist laut Definition 3.1 ein Computernetz?', opts: ['Ein Verbund autonomer Computer, der Kommunikation und Ressourcenteilung ermöglicht', 'Ein System mit mehreren Prozessoren und gemeinsamem Speicher', 'Ein Programm zur Dateiübertragung', 'Eine Verbindung zwischen zwei Betriebssystemen'], correct: 0, exp: 'Definition 3.1: Verbund von 2+ autonomen Computern, der Kommunikation und Ressourcenzugriff ermöglicht. Nicht zu verwechseln mit Multiprozessorsystem (gemeinsamer Speicher).' },
+  { q: 'Welche Organisation entwickelt die Standards des Internets (RFCs)?', opts: ['ISOC', 'IANA', 'IETF', 'ICANN'], correct: 2, exp: 'Die IETF (Internet Engineering Task Force) entwickelt herstellerunabhängige Standards als RFCs. ISOC ist die Dachorganisation, IANA vergibt IP-Adressen, ICANN verwaltet Domainnamen.' },
+  { q: 'Was ist der Unterschied zwischen Leitungsvermittlung und Paketvermittlung?', opts: ['Bei Leitungsvermittlung werden Pakete aufgeteilt, bei Paketvermittlung nicht', 'Bei Leitungsvermittlung wird eine dedizierte Leitung reserviert; bei Paketvermittlung teilen sich alle Pakete die Ressourcen', 'Leitungsvermittlung ist schneller als Paketvermittlung', 'Paketvermittlung garantiert die Bandbreite'], correct: 1, exp: 'Leitungsvermittlung = exklusive Reservierung für die gesamte Verbindungsdauer (Telefon). Paketvermittlung = Pakete teilen sich Ressourcen, flexibel, aber keine Bandbreitegarantie (Internet).' },
+  { q: 'Wie viele Schichten hat das OSI-Modell?', opts: ['4', '5', '6', '7'], correct: 3, exp: '7 Schichten: 1 Physical, 2 Data Link, 3 Network, 4 Transport, 5 Session, 6 Presentation, 7 Application. TCP/IP hat dagegen nur 4 Schichten.' },
+  { q: 'Ein Paket von 100 MB wird mit 1 Gbit/s übertragen. Wie lange dauert die Übertragung (nur t_Ü)?', opts: ['0,8 s', '0,08 s', '8 s', '80 ms'], correct: 0, exp: 'D = 100 MB = 100 × 8 × 10⁶ bit = 800.000.000 bit. t_Ü = D/b = 800.000.000 / 1.000.000.000 = 0,8 s.' },
+  { q: 'Was ist Jitter?', opts: ['Die maximale Übertragungsrate eines Kanals', 'Latenzschwankungen zwischen aufeinanderfolgenden Paketen', 'Der prozentuale Anteil verlorener Pakete', 'Die Entfernung zwischen Sender und Empfänger'], correct: 1, exp: 'Jitter = Variabilität der Latenz zwischen Paketen. Kritisch für Echtzeit-Anwendungen (VoIP, Video-Streaming). Lösung: Jitter-Buffer.' },
+  { q: 'Welches Protokoll arbeitet auf Schicht 3 (Network) des OSI-Modells?', opts: ['TCP', 'HTTP', 'IP', 'Ethernet'], correct: 2, exp: 'IP (Internet Protocol) arbeitet auf Schicht 3 (Network/Vermittlungsschicht). TCP ist Schicht 4, HTTP ist Schicht 7, Ethernet ist Schicht 2.' },
+  { q: 'Was versteht man unter dem Ressourcenverbund?', opts: ['Mensch-Mensch-Kommunikation über das Netz', 'Nutzung nichtlokaler Hardware und Software (Drucker, Cloud, Speicher)', 'Verlagerung von Aufgaben bei Überlast', 'Verbindung von Menschen über soziale Netzwerke'], correct: 1, exp: 'Ressourcenverbund = Nutzung nichtlokaler gerätetechnischer Ressourcen und Software, z. B. Netzwerkdrucker, Cloud-Speicher, entfernte Software.' },
+  { q: 'Was ist die Ausbreitungsgeschwindigkeit im Kupferkabel/Glasfaser typischerweise?', opts: ['Lichtgeschwindigkeit (c)', '⅔ der Lichtgeschwindigkeit ≈ 200.000 km/s', '¼ der Lichtgeschwindigkeit', '1.000 km/s'], correct: 1, exp: 'In üblichen Medien (Twisted-Pair, Glasfaser) rechnet man mit ca. ⅔ der Lichtgeschwindigkeit im Vakuum ≈ 200.000 km/s.' },
+  { q: 'Was ist Kapselung (Encapsulation) im OSI-Modell?', opts: ['Das Entfernen der Header beim Empfänger', 'Das schrittweise Hinzufügen von Headern jeder Schicht beim Sender', 'Die Übertragung von Daten in Echtzeit', 'Das Zusammenfassen mehrerer Pakete zu einem'], correct: 1, exp: 'Beim Senden fügt jede Schicht einen eigenen Header hinzu: Daten → Segment → Paket → Frame → Bits. Beim Empfänger erfolgt die Entkapselung umgekehrt.' },
+  { q: 'Welcher Verbundeffekt beschreibt die Übernahme von Aufgaben bei Ausfall eines Computers?', opts: ['Lastverbund', 'Leistungsverbund', 'Verfügbarkeitsverbund', 'Funktionsverbund'], correct: 2, exp: 'Verfügbarkeitsverbund: Bei Ausfall eines Computers werden dessen Aufgaben auf andere Computer übertragen (Failover, Redundanz).' },
+  { q: 'Was ist das Kanalvolumen?', opts: ['Die maximale Anzahl Hosts in einem Netz', 'Die Anzahl der Bits, die ein Sender senden kann, bevor das erste Bit beim Empfänger ankommt', 'Die Kapazität eines Routers', 'Der Overhead bei der Übertragung'], correct: 1, exp: 'Kanalvolumen = Latenz × Übertragungsrate. Es zeigt, wie viele Bits „unterwegs" sein können, bevor die Bestätigung eintrifft.' },
+  { q: 'Was ist der Unterschied zwischen Computernetz und verteiltem System?', opts: ['Beide sind identisch', 'Ein verteiltes System erscheint dem Nutzer als ein einziges System; ein Computernetz nicht notwendigerweise', 'Ein verteiltes System hat keine Netzkomponenten', 'Computernetze sind größer als verteilte Systeme'], correct: 1, exp: 'Ein verteiltes System basiert auf einem Computernetz + zusätzliche Software, die für den Nutzer die Komplexität verbirgt (erscheint als ein System, z. B. WWW).' },
+  { q: '1 MiB entspricht wie vielen Byte?', opts: ['1.000.000 Byte', '1.024.000 Byte', '1.048.576 Byte', '1.000.024 Byte'], correct: 2, exp: '1 MiB (Mebibyte) = 2²⁰ Byte = 1.048.576 Byte. ISO 80000: Binäre Einheiten haben das Präfix "bi" (kibi, mebi, gibi). Bei Übertragungsraten gilt Basis 10!' },
+  { q: 'Was ist QoS (Quality of Service)?', opts: ['Ein Verschlüsselungsprotokoll', 'Die Qualitätsparameter einer Übertragung (Rate, Latenz, Jitter, Verlust)', 'Ein Routing-Protokoll', 'Eine Art von Firewall'], correct: 1, exp: 'QoS = Dienstgüte. Beschreibt die Qualitätsparameter: Übertragungsrate, Latenz, Jitter, Durchsatz, Paketverlustrate. Durch Priorisierung (Schicht-2-Standard IEEE 802.1Q) können bestimmte Pakete bevorzugt werden.' },
+  { q: 'Welche Topologie bietet die höchste Redundanz?', opts: ['Bus', 'Ring', 'Stern', 'Vermascht (Mesh)'], correct: 3, exp: 'Die vermaschte Topologie bietet mehrere Wege vom Sender zum Empfänger → hohe Redundanz und Fehlertoleranz. Nachteil: teuer und komplex.' },
+  { q: 'Was ist Bit Stuffing (Bitstopfen)?', opts: ['Das Komprimieren von Datenbits', 'Das Einfügen einer 0 nach fünf aufeinanderfolgenden 1-Bits, um Flag-Sequenzen im Datenstrom zu vermeiden', 'Das Hinzufügen von Prüfbits', 'Ein Verfahren zur Fehlerbehebung'], correct: 1, exp: 'Beim HDLC-Protokoll wird das Frame durch die Bitkombination 01111110 begrenzt. Um diese Sequenz in den Nutzdaten zu vermeiden, wird nach jeder Folge von 5 Einsen automatisch eine 0 eingefügt.' },
+  { q: 'Was ist eine RTT (Round Trip Time)?', opts: ['Die Übertragungszeit in eine Richtung', 'Die Zeit zwischen Absenden einer Anfrage und Empfang der Antwort (Hin + Zurück)', 'Die maximale Latenz in einem Netz', 'Die Dauer eines Bits auf dem Kanal'], correct: 1, exp: 'RTT = Round Trip Time = Antwortzeit. Wird z. B. mit dem Befehl "ping" gemessen. Enthält Hinweg + Verarbeitung beim Empfänger + Rückweg.' },
+  { q: 'Auf welcher Schicht arbeiten Router im OSI-Modell?', opts: ['Schicht 1 (Physical)', 'Schicht 2 (Data Link)', 'Schicht 3 (Network)', 'Schicht 4 (Transport)'], correct: 2, exp: 'Router arbeiten auf Schicht 3 (Network/Vermittlungsschicht) – sie lesen IP-Adressen und treffen Routing-Entscheidungen. Switch: Schicht 2. Hub: Schicht 1. Gateway: Schicht 4-7.' },
+  { q: 'Was ist der Unterschied zwischen Simplex und Halbduplex?', opts: ['Simplex ist schneller', 'Simplex erlaubt nur eine Übertragungsrichtung; Halbduplex erlaubt beide Richtungen, aber nicht gleichzeitig', 'Simplex verwendet TCP, Halbduplex UDP', 'Kein Unterschied'], correct: 1, exp: 'Simplex: nur eine Richtung (z. B. Radio, TV). Halbduplex: beide Richtungen wechselweise (z. B. Walkie-Talkie). Vollduplex: beide Richtungen gleichzeitig (z. B. Telefon, Ethernet).' },
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GDI01 – Einführung in die Informatik | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">GDI01 · 0723K15 · HfB</div>
+  <h1>Einführung in die Informatik</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 5 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════════════════ ÜBERSICHT ════════════════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header"><h2>Übersicht</h2><span>Alle Kapitel im Überblick</span></div>
+
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#06b6d4" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Informatik &amp; Algorithmen</h3>
+      <p>EVA-Prinzip, Algorithmus-Definition, Programmiersprachen, Software &amp; Hardware</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#8b5cf6" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Umsetzung von Algorithmen</h3>
+      <p>Kontrollstrukturen, Struktogramme, OOP, Komplexität &amp; Big-O-Notation</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Rechner</h3>
+      <p>Analytische Maschine, Turing-Maschine, Von-Neumann-Architektur, Betriebssysteme</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#14b8a6" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Dualzahlen</h3>
+      <p>Zahlensysteme, Umrechnung, Addition/Subtraktion, Zweierkomplement, Hex/Oktal, ASCII</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#a855f7" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Logische Schaltungen &amp; Addierer</h3>
+      <p>UND/ODER/NICHT-Gatter, XOR, Wahrheitstabellen, Halbaddierer, Volladdierer</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">PRÜFUNGSRELEVANTE SCHWERPUNKTE</div>
+    <div class="two-col">
+      <ul class="content-list">
+        <li><strong>EVA-Prinzip</strong> – Eingabe → Verarbeitung → Ausgabe</li>
+        <li><strong>Algorithmus</strong> – endliche Menge eindeutiger Verfahrensvorschriften</li>
+        <li><strong>Kontrollstrukturen</strong> – Sequenz, Auswahl, Wiederholung</li>
+        <li><strong>Struktogramme</strong> – Nassi-Shneiderman-Diagramme</li>
+        <li><strong>OOP</strong> – Klassen, Objekte, Attribute, Methoden, Kapselung</li>
+        <li><strong>Big-O-Notation</strong> – O(1), O(n), O(n²), O(√n), O(log n)</li>
+      </ul>
+      <ul class="content-list">
+        <li><strong>Turing-Maschine</strong> – Band, Lese-/Schreibkopf, Zustände</li>
+        <li><strong>Von-Neumann</strong> – CPU (ALU + Steuerwerk), Speicher, I/O, Bus</li>
+        <li><strong>Zahlensysteme</strong> – Dual (Basis 2), Oktal (8), Hexadezimal (16)</li>
+        <li><strong>Zweierkomplement</strong> – Einserkomplement + 1</li>
+        <li><strong>ASCII</strong> – 7 Bit = 128 Zeichen, erweitert 8 Bit = 256</li>
+        <li><strong>Logikgatter</strong> – AND, OR, NOT, XOR → Halbaddierer, Volladdierer</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ KAPITEL 1 ════════════════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header"><h2>Kapitel 1</h2><span>Informatik &amp; Algorithmen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Informatik</div>
+    <p>Informatik ist die <strong>Wissenschaft</strong>, die sich mit den theoretischen Grundlagen, den Mitteln und Methoden sowie mit der <strong>Anwendung der elektronischen Datenverarbeitung</strong> beschäftigt, also mit der Informationsverarbeitung unter Einsatz von Computern.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">EVA-Prinzip (Eingabe – Verarbeitung – Ausgabe)</div>
+    <p>Die Datenverarbeitung verläuft nach dem <strong>EVA-Prinzip</strong>: Zuerst werden Daten <strong>eingegeben</strong> (Input), dann nach bestimmten Regeln <strong>verarbeitet</strong> (Process), und schließlich werden die Ergebnisse <strong>ausgegeben</strong> (Output). Englisch: <strong>IPO-Prinzip</strong> (Input – Process – Output).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">GRUNDAUFGABEN EINES COMPUTERS</div>
+    <table class="data-table">
+      <tr><th>Aufgabe</th><th>Beschreibung</th><th>Beispiel</th></tr>
+      <tr><td>Berechnung</td><td>Ausführung arithmetischer/logischer Operationen</td><td>Lohnberechnung, Physik-Simulation</td></tr>
+      <tr><td>Datenspeicherung</td><td>Langfristige oder kurzfristige Ablage von Daten</td><td>Archivierung, Datenbanken</td></tr>
+      <tr><td>Kommunikation</td><td>Verbindung und Datenaustausch mit anderen Rechnern</td><td>Internet, Netzwerke</td></tr>
+      <tr><td>Steuerung</td><td>Kontrolle und Regelung externer Geräte</td><td>Waschmaschine, Autopilot, Roboter</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Vorteile der automatisierten Datenverarbeitung</div>
+    <p>Im Vergleich zur manuellen Datenverarbeitung bietet die automatisierte Verarbeitung: <strong>höhere Geschwindigkeit</strong> (v.a. bei Routineaufgaben), <strong>höhere Zuverlässigkeit</strong> (keine Ermüdung, keine Flüchtigkeitsfehler) und <strong>geringere Kosten</strong> (auf mittlere Sicht).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Algorithmus</div>
+    <p>Ein Algorithmus ist eine <strong>endliche Menge</strong> von <strong>eindeutig festgelegten Verfahrensvorschriften</strong> zur Lösung eines Problems durch eine in der Regel <strong>endliche Menge von Einzelschritten</strong>. Der Begriff leitet sich vom arabischen Mathematiker <em>al-Hwarizmi</em> (9. Jh.) ab.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">VOM PROBLEM ZUM PROGRAMM – 3 SCHRITTE</div>
+    <ol>
+      <li><strong>Problemdefinition</strong> – Problem so genau wie möglich beschreiben</li>
+      <li><strong>Programmentwurf</strong> – Algorithmus zur Lösung des Problems entwerfen</li>
+      <li><strong>Programmierung</strong> – Algorithmus in einer Programmiersprache umsetzen</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SOFTWARE-KATEGORIEN</div>
+    <table class="data-table">
+      <tr><th>Kategorie</th><th>Beschreibung</th><th>Beispiele</th></tr>
+      <tr><td>Systemsoftware</td><td>Verwaltung der Ressourcen, Grundlage für alle Programme</td><td>Betriebssystem, Treiber, Dienstprogramme</td></tr>
+      <tr><td>Anwendungssoftware</td><td>Lösung konkreter Anwendungsprobleme</td><td>Textverarbeitung, Buchhaltung, Spiele</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Strukturierte Programmierung</div>
+    <p>Ein Programm entspricht den Regeln der strukturierten Programmierung, wenn es <strong>keinerlei Sprunganweisungen</strong> enthält und die Steuerung des Programmablaufs mithilfe der drei Kontrollstrukturen <strong>Sequenz</strong>, <strong>Auswahl</strong> und <strong>Wiederholung</strong> erfolgt. (Grundlage: Dijkstra, späte 1960er-Jahre)</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ KAPITEL 2 ════════════════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header"><h2>Kapitel 2</h2><span>Umsetzung von Algorithmen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Kontrollstrukturen</div>
+    <p>Es gibt drei grundlegende Kontrollstrukturen in der strukturierten Programmierung: <strong>Sequenz</strong> (Anweisungen nacheinander), <strong>Auswahl/Selektion</strong> (Verzweigung je nach Bedingung) und <strong>Wiederholung/Iteration</strong> (Schleife mit Bedingung).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DIE DREI KONTROLLSTRUKTUREN</div>
+    <table class="data-table">
+      <tr><th>Kontrollstruktur</th><th>Prinzip</th><th>Struktogramm</th><th>C-Syntax</th></tr>
+      <tr><td>Sequenz</td><td>Anweisungen werden nacheinander ausgeführt, jede genau einmal</td><td>Rechteckige Kästen untereinander</td><td>Anweisung1; Anweisung2;</td></tr>
+      <tr><td>Auswahl (Selektion)</td><td>Bedingung prüfen → wahr/falsch-Zweig</td><td>Dreieck mit wahr/falsch-Zweig</td><td>if (Bedingung) { ... } else { ... }</td></tr>
+      <tr><td>Wiederholung (Iteration)</td><td>Anweisungsblock wiederholt ausführen, solange Bedingung gilt</td><td>Kasten mit Durchführungsbedingung am Fuß</td><td>do { ... } while(Bedingung);</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">Struktogramme (Nassi-Shneiderman-Diagramme)</div>
+    <p>Seit 1973 als Methode zur Strukturierung von Algorithmen etabliert. Jeder Verarbeitungsschritt wird in einem <strong>rechteckigen Kasten</strong> dargestellt. Vorteile: <strong>Sprachunabhängig</strong>, leicht lesbar, erzwingen strukturierte Programmierung (keine Sprünge möglich).</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">do-Schleife (nicht abweisende/fußgesteuerte Schleife)</div>
+    <p>Die Anweisungen im Schleifenrumpf werden <strong>mindestens einmal</strong> ausgeführt. Erst am Ende (am „Fuß") wird die Durchführungsbedingung geprüft. Schema in C: <code>do { Anweisungen } while(Bedingung);</code></p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Objektorientierte Programmierung (OOP)</div>
+    <p>Bei der OOP wird jede Aktivität einem <strong>Objekt</strong> zugeordnet. Objekte gleicher Art werden in <strong>Klassen</strong> zusammengefasst. Eine Klasse definiert <strong>Attribute</strong> (Daten/Eigenschaften) und <strong>Methoden</strong> (Operationen). Die Zusammenfassung von Daten und Operationen in einer Einheit heißt <strong>Kapselung</strong>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">OOP-GRUNDBEGRIFFE</div>
+    <table class="data-table">
+      <tr><th>Begriff</th><th>Beschreibung</th><th>Beispiel (Klasse Auto)</th></tr>
+      <tr><td>Klasse</td><td>Abstrakte Beschreibung (Bauplan) für Objekte</td><td><code>class Auto { ... }</code></td></tr>
+      <tr><td>Objekt / Instanz</td><td>Konkretes Exemplar einer Klasse</td><td><code>Auto meinAuto = new Auto();</code></td></tr>
+      <tr><td>Attribut</td><td>Eigenschaft/Datenelement eines Objekts</td><td>marke, farbe, gewicht</td></tr>
+      <tr><td>Methode</td><td>Funktion, die für ein Objekt ausgeführt wird</td><td>beschreiben(), farbAendern()</td></tr>
+      <tr><td>Kapselung</td><td>Zugriff auf Daten nur über definierte Methoden</td><td>meinAuto.beschreiben()</td></tr>
+      <tr><td>Punktnotation</td><td>Zugriff auf Attribute/Methoden eines Objekts</td><td><code>meinAuto.farbe = "blau"</code></td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Zeitkomplexität &amp; Landau-Symbole (Big-O)</div>
+    <p>Die <strong>Zeitkomplexität</strong> T(n) beschreibt, wie viele Operationen ein Algorithmus in Abhängigkeit von der Eingabegröße n benötigt. Ist T(n) ≤ c · g(n) für eine Konstante c und alle hinreichend großen n, schreibt man <strong>T(n) = O(g(n))</strong>.</p>
+    <p style="text-align:center; font-size:1.05em; margin:0.5rem 0;">T(n) = O(g(n)) ⇔ ∃ c &gt; 0 : T(n) ≤ c · g(n) für alle großen n</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WICHTIGE KOMPLEXITÄTSKLASSEN</div>
+    <table class="data-table">
+      <tr><th>Klasse</th><th>Bezeichnung</th><th>Beispiel</th><th>Wachstum</th></tr>
+      <tr><td>O(1)</td><td>Konstant</td><td>Array-Zugriff über Index</td><td>gleichbleibend</td></tr>
+      <tr><td>O(log n)</td><td>Logarithmisch</td><td>Binäre Suche</td><td>sehr langsam</td></tr>
+      <tr><td>O(√n)</td><td>Wurzel</td><td>Verbesserter Primzahltest</td><td>langsam</td></tr>
+      <tr><td>O(n)</td><td>Linear</td><td>Einfacher Primzahltest, lineare Suche</td><td>proportional</td></tr>
+      <tr><td>O(n log n)</td><td>Linearithmisch</td><td>Effiziente Sortierverfahren</td><td>leicht überproportional</td></tr>
+      <tr><td>O(n²)</td><td>Quadratisch</td><td>Bubble Sort, verschachtelte Schleifen</td><td>stark wachsend</td></tr>
+      <tr><td>O(2ⁿ)</td><td>Exponentiell</td><td>Travelling-Salesman (brute force)</td><td>extrem schnell</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ KAPITEL 3 ════════════════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header"><h2>Kapitel 3</h2><span>Rechner</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Analytische Maschine (Charles Babbage, 19. Jh.)</div>
+    <p>Obwohl sie nie gebaut wurde, war die Analytische Maschine ein <strong>Vorläufer moderner Computer</strong>. Ihr Plan sah vor: ein <strong>Rechenwerk</strong> (Zahnräder, dezimal), einen <strong>Zahlenspeicher</strong> (1000 Zahlen à 50 Stellen), <strong>Ein-/Ausgabegeräte</strong> (Lochkarten) und ein <strong>Steuerwerk</strong> zur Programmsteuerung – inklusive Verzweigungen.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Turing-Maschine (Alan Turing, 1936)</div>
+    <p>Ein <strong>theoretisches Modell</strong> für einen programmierbaren Computer. Bestandteile: ein <strong>beliebig langes Band</strong> mit Speicherzellen, ein <strong>Lese-/Schreibkopf</strong> (liest, schreibt, bewegt sich L/R), ein endliches <strong>Alphabet</strong> (inkl. Blank □) und endlich viele <strong>Zustände</strong>. Programmzeilen haben die Form: (Zustand, gelesenes Zeichen) → (neuer Zustand, zu schreibendes Zeichen, Bewegung).</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Bedeutung der Turing-Maschine</div>
+    <p>Alles, was <strong>überhaupt berechenbar</strong> ist, kann mithilfe einer Turing-Maschine berechnet werden. Eine <strong>universelle Turing-Maschine</strong> kann jede spezielle Turing-Maschine simulieren – das einfachste Modell eines Universalcomputers.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Von-Neumann-Architektur (John von Neumann, 1940er)</div>
+    <p>Grundprinzip: <strong>Gespeichertes Programm</strong> – Befehle und Daten liegen im <strong>gleichen Arbeitsspeicher</strong>. Befehle werden <strong>sequenziell</strong> abgearbeitet. Die Architektur bildet die Grundlage der meisten heutigen Computer.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">KOMPONENTEN DER VON-NEUMANN-ARCHITEKTUR</div>
+    <table class="data-table">
+      <tr><th>Komponente</th><th>Englisch</th><th>Funktion</th></tr>
+      <tr><td>Rechenwerk (ALU)</td><td>Arithmetical Logical Unit</td><td>Führt arithmetische und logische Operationen aus</td></tr>
+      <tr><td>Steuerwerk</td><td>Control Unit</td><td>Organisiert Programmablauf, holt Befehle/Daten aus dem Speicher</td></tr>
+      <tr><td>Arbeitsspeicher (RAM)</td><td>Random Access Memory</td><td>Speichert Daten und Programme (flüchtig, wahlfrei adressierbar)</td></tr>
+      <tr><td>Eingabe-/Ausgabewerk</td><td>I/O Unit</td><td>Verbindung zum Benutzer (Tastatur, Bildschirm) und anderen Systemen</td></tr>
+      <tr><td>Bussystem</td><td>Bus System</td><td>Transportiert Daten und Befehle zwischen den Komponenten</td></tr>
+    </table>
+    <p style="margin-top:0.75rem"><strong>CPU = Prozessor = Rechenwerk + Steuerwerk</strong></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">SPEICHERHIERARCHIE</div>
+    <table class="data-table">
+      <tr><th>Speicherart</th><th>Eigenschaft</th><th>Flüchtig?</th></tr>
+      <tr><td>Arbeitsspeicher (RAM)</td><td>Schnell, direkt von CPU adressierbar, byteweise</td><td>Ja (Stromausfall = Datenverlust)</td></tr>
+      <tr><td>Externer Speicher (Festplatte)</td><td>Große Kapazität, langfristige Speicherung</td><td>Nein (magnetisch/elektronisch)</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Bit</strong> = kleinste Einheit (0 oder 1) · <strong>Byte</strong> = 8 Bit · Jedes Byte hat eine eigene Adresse im RAM.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">PROGRAMMIERSPRACHEN IM ÜBERBLICK</div>
+    <table class="data-table">
+      <tr><th>Sprache</th><th>Paradigma</th><th>Besonderheit</th></tr>
+      <tr><td>C</td><td>Strukturiert, maschinennah</td><td>Effizient, Speicherzugriff über Zeiger, System- &amp; Anwendungsprog.</td></tr>
+      <tr><td>C++</td><td>Strukturiert + OOP</td><td>Erweiterung von C um Klassen, Vererbung, Polymorphie</td></tr>
+      <tr><td>C#</td><td>Streng OOP</td><td>Microsoft, .NET-Umgebung, ähnlich C++/Java</td></tr>
+      <tr><td>Java</td><td>Vollständig OOP</td><td>Plattformunabhängig (JVM), Anwendungsprogrammierung</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BETRIEBSSYSTEME</div>
+    <table class="data-table">
+      <tr><th>System</th><th>Typ</th><th>Merkmale</th></tr>
+      <tr><td>Windows</td><td>PC (Einbenutzer)</td><td>Grafische Oberfläche, Multitasking, seit 1983</td></tr>
+      <tr><td>Linux (Unix)</td><td>PC bis Großrechner</td><td>Open Source, Mehrbenutzer, „mündiger Benutzer"</td></tr>
+      <tr><td>Android</td><td>Mobil (Smartphones)</td><td>Google, offenes System, verschiedene Hersteller</td></tr>
+      <tr><td>iOS</td><td>Mobil (Apple)</td><td>Geschlossenes System, nur Apple-Geräte/-Apps</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ KAPITEL 4 ════════════════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header"><h2>Kapitel 4</h2><span>Dualzahlen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Stellenwertsystem</div>
+    <p>In einem Stellenwertsystem bestimmt die <strong>Position</strong> einer Ziffer ihren Wert. Jede Stelle wird mit der entsprechenden <strong>Potenz der Basis</strong> multipliziert. Dezimalsystem: Basis 10; Dualsystem: Basis 2.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ZAHLENSYSTEME IM VERGLEICH</div>
+    <table class="data-table">
+      <tr><th>System</th><th>Basis</th><th>Ziffern</th><th>Beispiel</th><th>Dezimalwert</th></tr>
+      <tr><td>Dezimal</td><td>10</td><td>0–9</td><td>247</td><td>247</td></tr>
+      <tr><td>Dual/Binär</td><td>2</td><td>0, 1</td><td>10111₂</td><td>23</td></tr>
+      <tr><td>Oktal</td><td>8</td><td>0–7</td><td>423₈</td><td>275</td></tr>
+      <tr><td>Hexadezimal</td><td>16</td><td>0–9, A–F</td><td>3FF₁₆</td><td>1023</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Dual → Dezimal Umrechnung</div>
+    <p>Jede Dualziffer wird mit der zugehörigen Zweierpotenz multipliziert und die Ergebnisse werden addiert:</p>
+    <p style="text-align:center; font-size:1.05em; margin:0.5rem 0;">a<sub>n</sub>·2<sup>n</sup> + a<sub>n-1</sub>·2<sup>n-1</sup> + … + a<sub>1</sub>·2 + a<sub>0</sub></p>
+    <p><strong>Beispiel:</strong> 10111₂ = 1·16 + 0·8 + 1·4 + 1·2 + 1·1 = 23</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Dezimal → Dual Umrechnung (Divisionsmethode)</div>
+    <p><strong>Verfahren:</strong> Die Dezimalzahl fortlaufend durch 2 teilen, jeweils den <strong>Rest notieren</strong>. Abbruch wenn Ergebnis = 0. Reste von <strong>unten nach oben</strong> gelesen ergeben die Dualzahl.</p>
+    <p><strong>Beispiel:</strong> 13 : 2 = 6 R<strong>1</strong> → 6 : 2 = 3 R<strong>0</strong> → 3 : 2 = 1 R<strong>1</strong> → 1 : 2 = 0 R<strong>1</strong> → Ergebnis: <strong>1101₂</strong></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DUALE ADDITION</div>
+    <table class="data-table">
+      <tr><th>Regel</th><th>Ergebnis</th><th>Übertrag</th></tr>
+      <tr><td>0 + 0</td><td>0</td><td>0</td></tr>
+      <tr><td>0 + 1</td><td>1</td><td>0</td></tr>
+      <tr><td>1 + 0</td><td>1</td><td>0</td></tr>
+      <tr><td>1 + 1</td><td>0</td><td>1</td></tr>
+      <tr><td>1 + 1 + 1</td><td>1</td><td>1</td></tr>
+    </table>
+    <p style="margin-top:0.5rem">Man addiert dual <strong>genauso wie dezimal</strong>, nur eben zur Basis 2. Übertrag entsteht, wenn die Basiszahl (2) erreicht wird.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Einserkomplement &amp; Zweierkomplement</div>
+    <p><strong>Einserkomplement:</strong> Alle Nullen durch Einsen ersetzen und umgekehrt. <strong>Zweierkomplement:</strong> Einserkomplement + 1₂ addieren. Damit kann man Subtraktion auf Addition zurückführen: a − b = a + Zweierkomplement(b), danach die führende 1 streichen.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">Beispiel: 11001₂ − 01010₂ mit Zweierkomplement</div>
+    <p>Einserkomplement von 01010: <strong>10101</strong> → +1 = Zweierkomplement: <strong>10110</strong><br>
+    11001 + 10110 = <strong>1</strong>01111 → führende 1 streichen → Ergebnis: <strong>01111₂</strong> = 15</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">HEXADEZIMAL ↔ DUAL UMRECHNUNG</div>
+    <p>Dual → Hex: Von rechts nach links in <strong>Vierergruppen</strong> teilen, jede Gruppe in Hex-Ziffer umwandeln.</p>
+    <p>Hex → Dual: Jede Hex-Ziffer in <strong>4-Bit-Dualzahl</strong> auflösen.</p>
+    <table class="data-table">
+      <tr><th>Hex</th><th>Dezimal</th><th>Dual</th><th>Hex</th><th>Dezimal</th><th>Dual</th></tr>
+      <tr><td>0</td><td>0</td><td>0000</td><td>8</td><td>8</td><td>1000</td></tr>
+      <tr><td>1</td><td>1</td><td>0001</td><td>9</td><td>9</td><td>1001</td></tr>
+      <tr><td>2</td><td>2</td><td>0010</td><td>A</td><td>10</td><td>1010</td></tr>
+      <tr><td>3</td><td>3</td><td>0011</td><td>B</td><td>11</td><td>1011</td></tr>
+      <tr><td>4</td><td>4</td><td>0100</td><td>C</td><td>12</td><td>1100</td></tr>
+      <tr><td>5</td><td>5</td><td>0101</td><td>D</td><td>13</td><td>1101</td></tr>
+      <tr><td>6</td><td>6</td><td>0110</td><td>E</td><td>14</td><td>1110</td></tr>
+      <tr><td>7</td><td>7</td><td>0111</td><td>F</td><td>15</td><td>1111</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Oktal:</strong> Gleiches Prinzip, aber mit <strong>Dreiergruppen</strong> (Ziffern 0–7).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ASCII-Code &amp; Unicode</div>
+    <p><strong>ASCII</strong> (American Standard Code for Information Interchange): Ursprünglich <strong>7 Bit = 128 Zeichen</strong>, erweitert auf 8 Bit = 256 Zeichen. Buchstaben A–Z = 41₁₆–5A₁₆, a–z = 61₁₆–7A₁₆.<br>
+    <strong>Unicode:</strong> Verwendet mehrere Bytes (2 Byte = 65.536 Zeichen, 4 Byte = über 4 Mrd.) für alle Schriftsysteme weltweit.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ KAPITEL 5 ════════════════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header"><h2>Kapitel 5</h2><span>Logische Schaltungen &amp; Addierer</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Logische Grundschaltungen (Gatter)</div>
+    <p>Alle Rechenoperationen eines Computers werden auf drei <strong>logische Grundschaltungen</strong> zurückgeführt. Diese arbeiten mit dualen Inputs (0/1) und liefern einen dualen Output. Aus diesen Grundgattern lassen sich beliebig komplexe Schaltungen aufbauen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DIE DREI GRUNDGATTER</div>
+    <table class="data-table">
+      <tr><th>Gatter</th><th>Symbol</th><th>Regel</th><th>Physikalisch</th></tr>
+      <tr><td>UND (AND)</td><td>A ∧ B</td><td>Output = 1 nur wenn <strong>alle</strong> Inputs = 1</td><td>Reihenschaltung</td></tr>
+      <tr><td>ODER (OR)</td><td>A ∨ B</td><td>Output = 1 wenn <strong>mindestens ein</strong> Input = 1</td><td>Parallelschaltung</td></tr>
+      <tr><td>NICHT (NOT)</td><td>¬A</td><td>Output = <strong>Gegenteil</strong> des Inputs (0→1, 1→0)</td><td>Inverter</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WAHRHEITSTABELLEN DER GRUNDGATTER</div>
+    <div class="two-col">
+      <div>
+        <p><strong>AND (A ∧ B)</strong></p>
+        <table class="data-table">
+          <tr><th>A</th><th>B</th><th>A∧B</th></tr>
+          <tr><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>1</td><td>1</td></tr>
+        </table>
+      </div>
+      <div>
+        <p><strong>OR (A ∨ B)</strong></p>
+        <table class="data-table">
+          <tr><th>A</th><th>B</th><th>A∨B</th></tr>
+          <tr><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>1</td></tr>
+          <tr><td>1</td><td>0</td><td>1</td></tr>
+          <tr><td>1</td><td>1</td><td>1</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="margin-top:0.75rem"><strong>NOT:</strong> ¬0 = 1, ¬1 = 0</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">XOR – Exklusives ODER (Entweder-Oder)</div>
+    <p>Die XOR-Schaltung liefert Output <strong>1 genau dann, wenn genau ein Input = 1</strong>. Symbol: A ⊕ B. Formel aus Grundgattern: <strong>A ⊕ B = (¬A ∧ B) ∨ (A ∧ ¬B)</strong></p>
+    <table class="data-table" style="margin-top:0.5rem">
+      <tr><th>A</th><th>B</th><th>A⊕B</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Halbaddierer (HA)</div>
+    <p>Addiert <strong>zwei Dualziffern</strong> x und y. Liefert eine <strong>Ergebnisziffer r</strong> und einen <strong>Übertrag u</strong>.</p>
+    <p><strong>Formeln:</strong> r = x ⊕ y (XOR) und u = x ∧ y (AND)</p>
+    <table class="data-table" style="margin-top:0.5rem">
+      <tr><th>x</th><th>y</th><th>r (Ergebnis)</th><th>u (Übertrag)</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Volladdierer (VA)</div>
+    <p>Addiert <strong>drei Dualziffern</strong>: x, y und einen alten Übertrag u₁. Liefert eine <strong>Ergebnisziffer r</strong> und einen <strong>neuen Übertrag u₂</strong>.</p>
+    <p><strong>Formeln:</strong><br>
+    r = (x∧y∧u₁) ∨ (¬x∧¬y∧u₁) ∨ (¬x∧y∧¬u₁) ∨ (x∧¬y∧¬u₁)<br>
+    u₂ = (x∧y) ∨ (x∧u₁) ∨ (y∧u₁)</p>
+    <table class="data-table" style="margin-top:0.5rem">
+      <tr><th>x</th><th>y</th><th>u₁</th><th>r</th><th>u₂</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td></tr>
+      <tr><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Addierwerk (mehrstellige Addition)</div>
+    <p>Ein Addierwerk für n-stellige Dualzahlen besteht aus <strong>1 Halbaddierer</strong> (für die niedrigste Stelle) und <strong>(n−1) Volladdierern</strong> (für alle weiteren Stellen, die jeweils den Übertrag der vorherigen Stelle mitverarbeiten). Der letzte Übertrag ist die (n+1)-te Stelle des Ergebnisses.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ FLASHCARDS ════════════════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header"><h2>Flashcards</h2><span>Klick auf die Karte zum Umdrehen</span></div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ QUIZ ════════════════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header"><h2>Prüfungsquiz</h2><span>20 Fragen mit Erklärungen</span></div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════ CHEATSHEET ════════════════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header"><h2>Cheatsheet</h2><span>Alle Formeln &amp; Schlüsselkonzepte</span></div>
+
+  <div class="cheat-grid">
+
+    <div class="cheat-block">
+      <h4>Informatik-Grundlagen</h4>
+      <div class="cheat-row"><span class="cheat-key">EVA-Prinzip</span><span class="cheat-val">Eingabe → Verarbeitung → Ausgabe</span></div>
+      <div class="cheat-row"><span class="cheat-key">IPO-Prinzip</span><span class="cheat-val">Input → Process → Output</span></div>
+      <div class="cheat-row"><span class="cheat-key">Algorithmus</span><span class="cheat-val">Endliche, eindeutige Verfahrensvorschriften</span></div>
+      <div class="cheat-row"><span class="cheat-key">3 Schritte</span><span class="cheat-val">Problemdef. → Entwurf → Programmierung</span></div>
+      <div class="cheat-row"><span class="cheat-key">Software</span><span class="cheat-val">System- vs. Anwendungssoftware</span></div>
+      <div class="cheat-row"><span class="cheat-key">Strukturiert</span><span class="cheat-val">Sequenz, Auswahl, Wiederholung</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>OOP-Konzepte</h4>
+      <div class="cheat-row"><span class="cheat-key">Klasse</span><span class="cheat-val">Bauplan für Objekte (Attribute + Methoden)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Objekt</span><span class="cheat-val">Instanz einer Klasse</span></div>
+      <div class="cheat-row"><span class="cheat-key">Attribut</span><span class="cheat-val">Eigenschaft/Datenelement</span></div>
+      <div class="cheat-row"><span class="cheat-key">Methode</span><span class="cheat-val">Funktion eines Objekts</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kapselung</span><span class="cheat-val">Daten + Operationen in einer Einheit</span></div>
+      <div class="cheat-row"><span class="cheat-key">Punktnotation</span><span class="cheat-val">objekt.attribut / objekt.methode()</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Komplexität (Big-O)</h4>
+      <div class="cheat-row"><span class="cheat-key">O(1)</span><span class="cheat-val">Konstant</span></div>
+      <div class="cheat-row"><span class="cheat-key">O(log n)</span><span class="cheat-val">Logarithmisch</span></div>
+      <div class="cheat-row"><span class="cheat-key">O(√n)</span><span class="cheat-val">Wurzel (verbesserter Primzahltest)</span></div>
+      <div class="cheat-row"><span class="cheat-key">O(n)</span><span class="cheat-val">Linear (einfacher Primzahltest)</span></div>
+      <div class="cheat-row"><span class="cheat-key">O(n²)</span><span class="cheat-val">Quadratisch</span></div>
+      <div class="cheat-row"><span class="cheat-key">O(2ⁿ)</span><span class="cheat-val">Exponentiell</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Rechnerarchitektur</h4>
+      <div class="cheat-row"><span class="cheat-key">Babbage</span><span class="cheat-val">Analytische Maschine (nie gebaut, 19. Jh.)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Turing</span><span class="cheat-val">Band + Kopf + Zustände = Universalrechner</span></div>
+      <div class="cheat-row"><span class="cheat-key">Von Neumann</span><span class="cheat-val">Gespeichertes Programm, sequenzielle Ausf.</span></div>
+      <div class="cheat-row"><span class="cheat-key">CPU</span><span class="cheat-val">ALU (Rechenwerk) + Control Unit (Steuerwerk)</span></div>
+      <div class="cheat-row"><span class="cheat-key">RAM</span><span class="cheat-val">Flüchtig, wahlfreier Zugriff, Byte-adressiert</span></div>
+      <div class="cheat-row"><span class="cheat-key">Bus</span><span class="cheat-val">Transport von Daten/Befehlen zw. Komponenten</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Zahlensysteme</h4>
+      <div class="cheat-row"><span class="cheat-key">Dual→Dez</span><span class="cheat-val">Σ Ziffer × 2^Position</span></div>
+      <div class="cheat-row"><span class="cheat-key">Dez→Dual</span><span class="cheat-val">Fortlaufend ÷2, Reste rückwärts lesen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Dual→Hex</span><span class="cheat-val">Vierergruppen bilden</span></div>
+      <div class="cheat-row"><span class="cheat-key">Dual→Oktal</span><span class="cheat-val">Dreiergruppen bilden</span></div>
+      <div class="cheat-row"><span class="cheat-key">1er-Kompl.</span><span class="cheat-val">0↔1 tauschen</span></div>
+      <div class="cheat-row"><span class="cheat-key">2er-Kompl.</span><span class="cheat-val">1er-Komplement + 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">ASCII</span><span class="cheat-val">7 Bit → 128 Zeichen (erw. 8 Bit → 256)</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Logische Schaltungen</h4>
+      <div class="cheat-row"><span class="cheat-key">AND (∧)</span><span class="cheat-val">1 nur wenn alle Inputs = 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">OR (∨)</span><span class="cheat-val">1 wenn mind. ein Input = 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">NOT (¬)</span><span class="cheat-val">Invertiert: 0→1, 1→0</span></div>
+      <div class="cheat-row"><span class="cheat-key">XOR (⊕)</span><span class="cheat-val">1 wenn genau ein Input = 1</span></div>
+      <div class="cheat-row"><span class="cheat-key">Halbaddierer</span><span class="cheat-val">r = x⊕y, u = x∧y</span></div>
+      <div class="cheat-row"><span class="cheat-key">Volladdierer</span><span class="cheat-val">3 Inputs (x,y,u₁) → r + u₂</span></div>
+      <div class="cheat-row"><span class="cheat-key">Addierwerk</span><span class="cheat-val">1×HA + (n−1)×VA für n Stellen</span></div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+// ── FLASHCARDS DATA ──
+const flashcardsData = [
+  {cat:"Kap 1", q:"Was ist das EVA-Prinzip?", a:"Eingabe → Verarbeitung → Ausgabe. Grundprinzip jeder Datenverarbeitung (manuell und automatisiert). Englisch: IPO-Prinzip (Input – Process – Output)."},
+  {cat:"Kap 1", q:"Was ist ein Algorithmus?", a:"Eine endliche Menge von eindeutig festgelegten Verfahrensvorschriften zur Lösung eines Problems durch eine in der Regel endliche Menge von Einzelschritten."},
+  {cat:"Kap 1", q:"Welche drei Schritte sollte man bei der Programmerstellung durchlaufen?", a:"1. Problemdefinition – Problem genau beschreiben. 2. Programmentwurf – Algorithmus entwerfen. 3. Programmierung – Algorithmus in Programmiersprache umsetzen."},
+  {cat:"Kap 1", q:"Was ist der Unterschied zwischen Systemsoftware und Anwendungssoftware?", a:"Systemsoftware (z.B. Betriebssystem) verwaltet Ressourcen und ist Voraussetzung für den Betrieb. Anwendungssoftware löst konkrete Aufgaben des Benutzers (z.B. Textverarbeitung)."},
+  {cat:"Kap 1", q:"Was versteht man unter strukturierter Programmierung?", a:"Programmierung ohne Sprunganweisungen, nur mit den drei Kontrollstrukturen: Sequenz, Auswahl und Wiederholung. Eingeführt nach Dijkstras Kritik an Sprungbefehlen (späte 1960er)."},
+  {cat:"Kap 1", q:"Nenne drei Vorteile der automatisierten gegenüber der manuellen Datenverarbeitung.", a:"1. Höhere Geschwindigkeit (v.a. bei Routineaufgaben). 2. Höhere Zuverlässigkeit (keine Ermüdung). 3. Geringere Kosten (auf mittlere Sicht)."},
+  {cat:"Kap 2", q:"Welche drei Kontrollstrukturen gibt es in der strukturierten Programmierung?", a:"1. Sequenz – Anweisungen nacheinander. 2. Auswahl (Selektion) – if/else-Verzweigung. 3. Wiederholung (Iteration) – Schleifen (z.B. do-while)."},
+  {cat:"Kap 2", q:"Was sind Struktogramme und wer hat sie eingeführt?", a:"Struktogramme (Nassi-Shneiderman-Diagramme) sind grafische, sprachunabhängige Darstellungen von Algorithmen. 1973 von Nassi und Shneiderman vorgeschlagen."},
+  {cat:"Kap 2", q:"Was unterscheidet eine Klasse von einem Objekt in der OOP?", a:"Eine Klasse ist der abstrakte Bauplan (definiert Attribute und Methoden). Ein Objekt (Instanz) ist ein konkretes Exemplar dieser Klasse mit eigenen Eigenschaftswerten."},
+  {cat:"Kap 2", q:"Was bedeutet Kapselung in der OOP?", a:"Die Zusammenfassung von Daten (Attributen) und Operationen (Methoden) in einer Einheit (Klasse). Zugriff auf Objekte soll nur über die vordefinierten Methoden erfolgen."},
+  {cat:"Kap 2", q:"Was beschreibt die Zeitkomplexität O(n)?", a:"Der Algorithmus benötigt höchstens c·n Operationen (c = Konstante). Die Laufzeit wächst linear mit der Eingabegröße n. Beispiel: einfacher Primzahltest."},
+  {cat:"Kap 2", q:"Warum hat der verbesserte Primzahltest die Komplexität O(√n) statt O(n)?", a:"Man muss nur bis √n testen statt bis n−1. Wenn n einen Faktor > √n hätte, müsste der andere Faktor < √n sein und wäre schon gefunden worden."},
+  {cat:"Kap 3", q:"Was war die Analytische Maschine von Babbage?", a:"Ein Vorläufer moderner Computer (19. Jh.), nie gebaut. Plante: Rechenwerk (Zahnräder), Zahlenspeicher (1000 Zahlen), Ein-/Ausgabe über Lochkarten und ein Steuerwerk."},
+  {cat:"Kap 3", q:"Was sind die Bestandteile einer Turing-Maschine?", a:"Ein beliebig langes Band mit Speicherzellen, ein Lese-/Schreibkopf (bewegt sich L/R), ein endliches Alphabet (inkl. Blank) und endlich viele Zustände. Programm: Zustandsübergangstabelle."},
+  {cat:"Kap 3", q:"Was ist das Besondere an der Von-Neumann-Architektur?", a:"Das Konzept des gespeicherten Programms: Befehle und Daten liegen im gleichen Arbeitsspeicher. Komponenten: ALU, Steuerwerk, Arbeitsspeicher, I/O, Bussystem."},
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen Arbeitsspeicher (RAM) und externem Speicher?", a:"RAM: schnell, flüchtig (Daten weg bei Stromausfall), direkt von CPU adressierbar. Externer Speicher (Festplatte): langsamer, nicht-flüchtig, große Kapazität."},
+  {cat:"Kap 3", q:"Was unterscheidet Java von C in Bezug auf Plattformunabhängigkeit?", a:"Java ist plattformunabhängig durch die JVM (Java Virtual Machine) – einmal kompiliert, überall lauffähig. C ist maschinennah und muss für jede Plattform neu kompiliert werden."},
+  {cat:"Kap 3", q:"Nenne die 5 Komponenten der Von-Neumann-Architektur.", a:"1. Rechenwerk (ALU), 2. Steuerwerk (Control Unit), 3. Arbeitsspeicher (RAM), 4. Eingabe-/Ausgabewerk (I/O), 5. Bussystem. CPU = ALU + Steuerwerk."},
+  {cat:"Kap 4", q:"Wie rechnet man die Dualzahl 1101₂ in eine Dezimalzahl um?", a:"1×2³ + 1×2² + 0×2¹ + 1×2⁰ = 8 + 4 + 0 + 1 = 13"},
+  {cat:"Kap 4", q:"Wie rechnet man die Dezimalzahl 42 in eine Dualzahl um?", a:"42÷2=21 R0, 21÷2=10 R1, 10÷2=5 R0, 5÷2=2 R1, 2÷2=1 R0, 1÷2=0 R1 → Reste rückwärts: 101010₂"},
+  {cat:"Kap 4", q:"Was ist das Zweierkomplement und wozu dient es?", a:"Einserkomplement (0↔1 tauschen) + 1 addieren. Ermöglicht Subtraktion durch Addition: a − b = a + Zweierkomplement(b), führende 1 streichen."},
+  {cat:"Kap 4", q:"Wie wandelt man eine Dualzahl in eine Hexadezimalzahl um?", a:"Von rechts nach links in Vierergruppen aufteilen, jede Gruppe in die entsprechende Hex-Ziffer (0–F) umwandeln. Beispiel: 1010 1111 = AF₁₆"},
+  {cat:"Kap 4", q:"Was ist der ASCII-Code und wie viele Zeichen kann er darstellen?", a:"American Standard Code for Information Interchange. Ursprünglich 7 Bit = 128 Zeichen, erweitert 8 Bit = 256 Zeichen. A–Z = 41₁₆–5A₁₆."},
+  {cat:"Kap 4", q:"Warum sind Hexadezimalzahlen in der Informatik nützlich?", a:"Sie bieten eine kompakte Darstellung von Dualzahlen (4 Bit pro Hex-Ziffer). Ein Byte = 2 Hex-Ziffern. Viel lesbarer als lange Bitfolgen, z.B. in Speicherauszügen."},
+  {cat:"Kap 5", q:"Was macht die UND-Schaltung (AND)?", a:"Liefert Output 1 nur wenn ALLE Inputs auf 1 stehen. Steht auch nur ein Input auf 0, ergibt sich Output 0. Symbol: A ∧ B. Physikalisch: Reihenschaltung."},
+  {cat:"Kap 5", q:"Was macht die ODER-Schaltung (OR)?", a:"Liefert Output 1 wenn MINDESTENS ein Input auf 1 steht. Output 0 nur wenn alle Inputs auf 0 stehen. Symbol: A ∨ B. Physikalisch: Parallelschaltung."},
+  {cat:"Kap 5", q:"Was ist der Unterschied zwischen OR und XOR?", a:"OR (einschließendes Oder): 1 wenn mindestens ein Input = 1, auch wenn beide = 1. XOR (ausschließendes Oder): 1 nur wenn GENAU ein Input = 1 (bei beiden = 1 → 0)."},
+  {cat:"Kap 5", q:"Wie funktioniert ein Halbaddierer?", a:"Addiert 2 Dualziffern x, y. Ergebnisziffer r = x ⊕ y (XOR), Übertrag u = x ∧ y (AND). Besteht aus 1 XOR-Gatter + 1 AND-Gatter."},
+  {cat:"Kap 5", q:"Was unterscheidet einen Volladdierer vom Halbaddierer?", a:"Der Volladdierer hat 3 Inputs (x, y und alten Übertrag u₁) statt nur 2. Er liefert Ergebnisziffer r und neuen Übertrag u₂. Nötig für stellenweise Addition mehrstelliger Zahlen."},
+  {cat:"Kap 5", q:"Wie ist ein Addierwerk für n-stellige Dualzahlen aufgebaut?", a:"1 Halbaddierer für die niedrigste Stelle (kein eingehender Übertrag) + (n−1) Volladdierer für die übrigen Stellen (jeweils mit Übertrag der vorherigen Stelle)."}
+];
+
+// ── QUIZ DATA ──
+const quizData = [
+  {q:"Wofür steht das EVA-Prinzip?", opts:["Ergebnis-Verifikation-Analyse","Eingabe-Verarbeitung-Ausgabe","Entwicklung-Validierung-Abnahme","Einlesen-Vergleichen-Ausgeben"], correct:1, exp:"EVA = Eingabe → Verarbeitung → Ausgabe. Grundprinzip der Datenverarbeitung, gilt für manuelle und maschinelle DV gleichermaßen."},
+  {q:"Welche Eigenschaft muss ein Algorithmus NICHT zwingend haben?", opts:["Endlichkeit der Verfahrensvorschriften","Eindeutigkeit der Schritte","Grafische Darstellbarkeit","Bezug zu einem Problem"], correct:2, exp:"Ein Algorithmus muss endlich und eindeutig sein und ein Problem lösen. Eine grafische Darstellung (z.B. Struktogramm) ist hilfreich, aber nicht zwingend erforderlich."},
+  {q:"Was gehört NICHT zur Systemsoftware?", opts:["Betriebssystem","Treiber","Textverarbeitung","Dienstprogramme"], correct:2, exp:"Textverarbeitung ist Anwendungssoftware. Systemsoftware umfasst das Betriebssystem sowie systemnahe Dienstprogramme und Werkzeuge (z.B. Treiber)."},
+  {q:"Welche drei Kontrollstrukturen verwendet die strukturierte Programmierung?", opts:["Input, Output, Verarbeitung","Sequenz, Auswahl, Wiederholung","Klasse, Objekt, Methode","Eingabe, Schleife, Ausgabe"], correct:1, exp:"Die strukturierte Programmierung nutzt Sequenz (nacheinander), Auswahl (if/else) und Wiederholung (Schleifen) – ohne Sprunganweisungen."},
+  {q:"Was ist eine nicht abweisende Schleife?", opts:["Eine Schleife, die nie ausgeführt wird","Eine Schleife ohne Bedingung","Eine Schleife, die mindestens einmal durchlaufen wird","Eine Schleife, die genau einmal durchläuft"], correct:2, exp:"Bei der nicht abweisenden (fußgesteuerten) Schleife wird der Rumpf mindestens einmal ausgeführt. Erst danach wird die Durchführungsbedingung geprüft (do-while in C)."},
+  {q:"Was versteht man unter Kapselung in der OOP?", opts:["Verschlüsselung von Daten","Zusammenfassung von Daten und Methoden in einer Klasse","Verpackung von Software in Container","Schützen von Code vor Viren"], correct:1, exp:"Kapselung bedeutet, dass Daten (Attribute) und darauf operierende Methoden in einer Einheit (Klasse) zusammengefasst werden. Zugriff soll nur über Methoden erfolgen."},
+  {q:"Welche Zeitkomplexität hat der einfache Primzahltest (Prüfung aller Teiler bis n−1)?", opts:["O(1)","O(log n)","O(n)","O(n²)"], correct:2, exp:"Der einfache Primzahltest prüft alle potenziellen Teiler von 2 bis n−1, also ~n Durchläufe → Zeitkomplexität O(n). Der verbesserte Test (bis √n) hat O(√n)."},
+  {q:"Was bedeutet T(n) = O(n²)?", opts:["Der Algorithmus braucht genau n² Schritte","Die Laufzeit wächst höchstens quadratisch mit n","Der Algorithmus hat n² Variablen","Das Ergebnis hat n² Stellen"], correct:1, exp:"O(n²) bedeutet: Es gibt eine Konstante c, sodass T(n) ≤ c·n² für alle hinreichend großen n. Die Laufzeit wächst höchstens quadratisch mit der Eingabegröße."},
+  {q:"Wer entwickelte die Analytische Maschine?", opts:["Alan Turing","John von Neumann","Charles Babbage","Konrad Zuse"], correct:2, exp:"Charles Babbage plante die Analytische Maschine im 19. Jahrhundert – ein programmierbarer Universalrechner mit Rechenwerk, Speicher, I/O und Steuerwerk. Sie wurde nie gebaut."},
+  {q:"Welche Aussage zur Turing-Maschine ist RICHTIG?", opts:["Sie wurde in den 1950ern physisch gebaut","Sie kann alles berechnen, was berechenbar ist","Sie hat einen endlichen Speicher","Sie kann nur addieren"], correct:1, exp:"Mithilfe einer Turing-Maschine lässt sich alles berechnen, was überhaupt berechenbar ist. Sie ist ein rein theoretisches Modell mit unendlich langem Band."},
+  {q:"Was kennzeichnet die Von-Neumann-Architektur?", opts:["Getrennte Speicher für Daten und Programme","Parallele Verarbeitung aller Befehle","Gespeichertes Programm im gemeinsamen Arbeitsspeicher","Nur mechanische Bauteile"], correct:2, exp:"Kennzeichen: Befehle und Daten im gleichen Arbeitsspeicher (gespeichertes Programm). Befehle werden sequenziell abgearbeitet. 5 Komponenten: ALU, Steuerwerk, RAM, I/O, Bus."},
+  {q:"Was ist KEIN Bestandteil der Von-Neumann-Architektur?", opts:["Bussystem","Rechenwerk (ALU)","Grafikkarte","Steuerwerk"], correct:2, exp:"Die 5 Komponenten sind: Rechenwerk (ALU), Steuerwerk, Arbeitsspeicher, Ein-/Ausgabewerk und Bussystem. Eine Grafikkarte gehört nicht zum Von-Neumann-Grundmodell."},
+  {q:"Welchen Dezimalwert hat die Dualzahl 101010₂?", opts:["42","32","54","40"], correct:0, exp:"101010₂ = 1·32 + 0·16 + 1·8 + 0·4 + 1·2 + 0·1 = 32 + 8 + 2 = 42."},
+  {q:"Wie lautet die Dualdarstellung der Dezimalzahl 13?", opts:["1011₂","1101₂","1110₂","1010₂"], correct:1, exp:"13÷2=6 R1, 6÷2=3 R0, 3÷2=1 R1, 1÷2=0 R1. Reste rückwärts: 1101₂. Kontrolle: 8+4+0+1 = 13 ✓"},
+  {q:"Was ergibt 1011₂ + 1101₂?", opts:["11000₂","10100₂","10110₂","11001₂"], correct:0, exp:"1011 (=11) + 1101 (=13) = 24. 24 = 11000₂. Stellenweise: 1+1=10, 1+0+1=10, 0+1+1=10, 1+1+1=11."},
+  {q:"Was ist das Zweierkomplement von 0101 (bei 4 Bit)?", opts:["1010","1011","0110","1001"], correct:1, exp:"Einserkomplement von 0101 = 1010. +1 = 1011. Das Zweierkomplement von 0101 ist also 1011."},
+  {q:"Welche Hexadezimalzahl entspricht der Dualzahl 11111111₂?", opts:["FF₁₆","FE₁₆","1F₁₆","F0₁₆"], correct:0, exp:"1111 1111 in Vierergruppen: 1111=F und 1111=F → FF₁₆ = 255 dezimal."},
+  {q:"Wie viele Zeichen kann der Original-ASCII-Code (7 Bit) darstellen?", opts:["64","128","256","512"], correct:1, exp:"7 Bit → 2⁷ = 128 verschiedene Zeichen. Die erweiterte 8-Bit-Version kann 256 Zeichen darstellen."},
+  {q:"Was liefert die UND-Schaltung (AND) bei den Inputs A=1, B=0?", opts:["1","0","Undefiniert","Abhängig vom Kontext"], correct:1, exp:"Die AND-Schaltung liefert nur dann 1, wenn ALLE Inputs auf 1 stehen. Da B=0 ist, ergibt sich 1 ∧ 0 = 0."},
+  {q:"Wie lauten die Formeln des Halbaddierers?", opts:["r = x ∧ y, u = x ∨ y","r = x ⊕ y, u = x ∧ y","r = x ∨ y, u = x ⊕ y","r = ¬x ∧ y, u = x ∧ y"], correct:1, exp:"Halbaddierer: Ergebnisziffer r = x ⊕ y (XOR) und Übertrag u = x ∧ y (AND). XOR ergibt die Summenziffer, AND den Übertrag."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

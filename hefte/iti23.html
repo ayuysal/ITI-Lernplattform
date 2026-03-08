@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITI23 – Bitübertragung &amp; Netzzugang | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">ITI23 · 1022K04 · HfB</div>
+  <h1>Bitübertragung &amp; Netzzugang</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 6 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="kap6" onclick="showSection('kap6')">Kap 6</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header">
+    <h2>Lernübersicht</h2>
+    <span>6 Kapitel · Prüfungsvorbereitung</span>
+  </div>
+  <div class="card">
+    <div class="card-title">Lernpfad</div>
+    <p>Klicke auf ein Kapitel, um direkt zu den Lerninhalten zu springen. Nutze danach <strong>Flashcards</strong> zum Wiederholen und das <strong>Quiz</strong> zum Testen.</p>
+  </div>
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#4f9cff" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Grundlagen Bitübertragung &amp; Netzzugang</h3>
+      <p>Aufgaben physikalische Schicht, Datenverbindungsschicht, MAC-Adresse, IEEE-802-Standards</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Übertragungsmedien</h3>
+      <p>Dämpfung, SNR, TP-Kabel, Glasfaser, WLAN-Frequenzen, Bluetooth, Kabelkategorien</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#eab308" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Datenverbindungsschicht</h3>
+      <p>Frames, Flusskontrolle, LLC/MAC, Adressierung, CSMA/CD, Token Passing, CSMA/CA</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f97316" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Ethernet</h3>
+      <p>802.3-Familie, Bezeichnungssyntax, Switched Ethernet, Fast/Gigabit/10G-Ethernet</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#a78bfa" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Einführung Netzanalyse</h3>
+      <p>Wireshark, Promiscuous Mode, Aufzeichnen, Anzeigefilter, TCP-Flow</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('kap6')">
+      <div class="ch-num">KAP 6</div>
+      <h3>Drahtlose &amp; mobile Netze</h3>
+      <p>802.11-Architektur, BSS/ESS/SSID, Ad-hoc, Infrastruktur, Mesh-Netze, WLAN-Sicherheit</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Prüfungsrelevante Schwerpunkte</div>
+    <div class="two-col" style="margin-top:0.5rem">
+      <ul class="content-list">
+        <li>Dämpfung: a = 10·lg(P₁/P₂) dB</li>
+        <li>SNR = 10·lg(Pₛ/Pₙ) dB</li>
+        <li>Kabelkategorien Cat.5e bis Cat.8</li>
+        <li>TP-Bezeichnung: XX/YZZ (z.B. S/FTP)</li>
+        <li>Glasfaser: Multimode vs. Monomode</li>
+        <li>Bandbreiten-Längen-Produkt</li>
+      </ul>
+      <ul class="content-list">
+        <li>CSMA/CD: Listen Before/While Talk</li>
+        <li>CSMA/CA: RTS/CTS, NAV</li>
+        <li>Ethernet Frame: PR-SD-DA-SA-Typ-Daten-FCS</li>
+        <li>Min. Framelänge 64 Byte, Max. 1518 Byte</li>
+        <li>WLAN: BSS, ESS, SSID, Scanning, Assoziation</li>
+        <li>802.11 a/b/g/n/ac Standards</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 1 – Grundlagen
+══════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header">
+    <h2>Kapitel 1</h2>
+    <span>Grundlagen Bitübertragung &amp; Netzzugang</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Bitübertragungsschicht (Physical Layer)</div>
+    <p>Elementare Aufgabe: Übertragung einzelner Bits als geeignete Signale in einem Übertragungsmedium. OSI-Schicht 1.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Aufgaben der physikalischen Schicht</div>
+    <ul class="content-list">
+      <li>Physikalische Darstellung der Bits „0" und „1"</li>
+      <li>Erkennung der Bitgrenzen</li>
+      <li>Synchronisation zwischen Sender und Empfänger</li>
+      <li>Übertragung mit entsprechender Geschwindigkeit</li>
+      <li>Festlegung des Stecksystems und Steckerbelegung</li>
+      <li>Aufbau, Aufrechterhaltung und Abbau physikalischer Verbindung</li>
+      <li>Übertragung in unterschiedlichen Richtungen (Halbduplex/Vollduplex)</li>
+      <li>Signalverstärkung (Repeater)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Merkmale der physikalischen Schicht</div>
+    <table class="data-table">
+      <tr><th>Merkmal</th><th>Beschreibung</th></tr>
+      <tr><td>Mechanisch</td><td>Stecksystem, Art des Übertragungsmediums</td></tr>
+      <tr><td>Elektrisch</td><td>Spannungspegel, Kabelwiderstand, Codierungsverfahren</td></tr>
+      <tr><td>Optisch</td><td>Wellenlänge, Dauer und Stärke der Lichtsignale</td></tr>
+      <tr><td>Funktional</td><td>Pinbelegung, Art der Taktung</td></tr>
+      <tr><td>Verfahrenstechnisch</td><td>Halbduplex/Vollduplex, seriell/parallel</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Datenverbindungsschicht (Data Link Layer)</div>
+    <p>Verbindung zwischen mindestens zwei Hosts über Punkt-zu-Punkt-Verbindung. OSI-Schicht 2. Auch: Sicherungsschicht.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Aufgaben der Datenverbindungsschicht</div>
+    <ul class="content-list">
+      <li><strong>Physikalische Adressierung</strong> – MAC-Adresse zur Identifikation</li>
+      <li><strong>Aufteilung in Frames</strong> – Bitstrom in Abschnitte (Rahmen)</li>
+      <li><strong>Fehlererkennung</strong> – CRC-Prüfsummen im Trailer</li>
+      <li><strong>Zugang zum Medium</strong> – Zugriffsverfahren (CSMA/CD, Token)</li>
+      <li><strong>Flusskontrolle</strong> – Anpassung Sender-/Empfängergeschwindigkeit</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">OSI vs. TCP/IP</div>
+    <p>Im OSI-Modell: Schicht 1 (Bitübertragung) und Schicht 2 (Datenverbindung) getrennt. Im TCP/IP-Modell: beide zusammengefasst zur <strong>Netzzugangsschicht</strong> (Network Access Layer).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Wichtige Standardisierungsorganisationen</div>
+    <ul class="content-list">
+      <li><strong>IEEE</strong> – Institute of Electrical and Electronics Engineers (802.x Standards)</li>
+      <li><strong>ISO/IEC</strong> – International Organization for Standardization</li>
+      <li><strong>DIN</strong> – Deutsches Institut für Normung</li>
+      <li><strong>ITU-T</strong> – International Telecommunication Union</li>
+      <li><strong>ANSI</strong> – American National Standards Institute</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 2 – Übertragungsmedien
+══════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header">
+    <h2>Kapitel 2</h2>
+    <span>Übertragungsmedien</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Klassifizierung der Übertragungsmedien</div>
+    <table class="data-table">
+      <tr><th>Leitergebunden</th><th>Leiterungebunden</th></tr>
+      <tr><td>Twisted-Pair-Kabel (TP)</td><td>Terrestrischer Funk</td></tr>
+      <tr><td>Koaxialkabel</td><td>Satellitenfunk</td></tr>
+      <tr><td>Glasfaserkabel (LWL)</td><td>Zellularfunk (GSM, LTE)</td></tr>
+      <tr><td></td><td>Infrarot, Laser (FSO)</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Bandbreite</div>
+    <p>Differenz der Grenzfrequenzen eines Übertragungsmediums: B = f<sub>GO</sub> − f<sub>GU</sub>. Nur Signale innerhalb dieses Bereichs passieren das Medium.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Dämpfung (Attenuation)</div>
+    <p>Abschwächung eines Signals entlang des Übertragungsmediums:</p>
+    <p style="text-align:center; font-size:1.1em; margin:0.5rem 0;">
+      a = 10 · lg(P₁/P₂) dB &nbsp;&nbsp;bzw.&nbsp;&nbsp; a = 20 · lg(U₁/U₂) dB
+    </p>
+    <p>Entfernungs- und frequenzabhängig. Kompensation durch <strong>Repeater</strong>.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Signal-Rausch-Abstand (SNR)</div>
+    <p>Verhältnis von Signalleistung zu Störleistung:</p>
+    <p style="text-align:center; font-size:1.1em; margin:0.5rem 0;">
+      SNR = 10 · lg(P<sub>S</sub>/P<sub>N</sub>) dB
+    </p>
+    <p>50 dB SNR → Sendeleistung ist 100.000× so groß wie Rauschleistung.</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Störeinflüsse</div>
+    <ul class="content-list" style="margin:0">
+      <li><strong>Rauschen</strong> – Wärmerauschen (weiß), Impulsrauschen, Übersprechen</li>
+      <li><strong>Verzerrung</strong> – Dämpfungs- und Phasenverzerrung (elektrisch)</li>
+      <li><strong>Dispersion</strong> – Signalverbreiterung in Glasfaser (Modendispersion)</li>
+      <li><strong>Übersprechen</strong> – NEXT (Nah-) und FEXT (Fernübersprechen)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">NVP und Brechungsindex</div>
+    <p><strong>NVP</strong> (Nominal Velocity of Propagation): Ausbreitungsgeschwindigkeit im Medium relativ zu c. Typisch 65–80% bei Kabeln.</p>
+    <p><strong>Brechungsindex</strong> n = c/v → Glas: n = 1,5 → v = 200.000 km/s</p>
+    <p><strong>ACR</strong> = NEXT − Dämpfung [dB] (je größer, desto besser)</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Twisted-Pair-Kabel (TP)</div>
+    <p><strong>Aufbau:</strong> 4 verdrillte Adernpaare (8 Kupferadern), farblich codiert.</p>
+    <p><strong>Bezeichnung</strong> nach ISO/IEC 11801: <strong>XX/YZZ</strong></p>
+    <table class="data-table">
+      <tr><th>Bezeichnung</th><th>Gesamt</th><th>Paarschirm</th></tr>
+      <tr><td>U/UTP</td><td>Ungeschirmt</td><td>Ungeschirmt</td></tr>
+      <tr><td>S/UTP</td><td>Geflecht</td><td>Ungeschirmt</td></tr>
+      <tr><td>S/FTP</td><td>Geflecht</td><td>Folie</td></tr>
+      <tr><td>S/STP</td><td>Geflecht</td><td>Geflecht</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kabelkategorien (ISO/IEC 11801)</div>
+    <table class="data-table">
+      <tr><th>Kat.</th><th>Linkklasse</th><th>Max. Frequenz</th><th>Max. Rate</th><th>Länge</th></tr>
+      <tr><td>Cat. 5e</td><td>D</td><td>100 MHz</td><td>1 Gbit/s</td><td>100 m</td></tr>
+      <tr><td>Cat. 6</td><td>E</td><td>250 MHz</td><td>1 Gbit/s</td><td>100 m</td></tr>
+      <tr><td>Cat. 6A</td><td>E<sub>A</sub></td><td>500 MHz</td><td>10 Gbit/s</td><td>100 m</td></tr>
+      <tr><td>Cat. 7</td><td>F</td><td>600 MHz</td><td>10 Gbit/s</td><td>100 m</td></tr>
+      <tr><td>Cat. 7A</td><td>F<sub>A</sub></td><td>1 GHz</td><td>10 Gbit/s</td><td>100 m</td></tr>
+      <tr><td>Cat. 8.1/8.2</td><td>I/II</td><td>2 GHz</td><td>40 Gbit/s</td><td>30 m</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Glasfaserkabel</div>
+    <table class="data-table">
+      <tr><th>Eigenschaft</th><th>Multimode</th><th>Monomode</th></tr>
+      <tr><td>Kerndurchmesser</td><td>50/62,5 µm</td><td>9 µm</td></tr>
+      <tr><td>Moden</td><td>Viele Moden</td><td>Eine Mode</td></tr>
+      <tr><td>Dispersion</td><td>Hoch (Modendispersion)</td><td>Sehr gering</td></tr>
+      <tr><td>Reichweite</td><td>Bis einige km</td><td>Bis 100 km</td></tr>
+      <tr><td>Einsatz</td><td>Gebäude (Sekundär)</td><td>Gelände (Primär)</td></tr>
+      <tr><td>Kategorien</td><td>OM1–OM4</td><td>OS1–OS2</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Bandbreiten-Längen-Produkt:</strong> Konstant (z.B. 2000 MHz·km → 2000 MHz über 1 km oder 1000 MHz über 2 km).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WLAN-Standards (802.11)</div>
+    <table class="data-table">
+      <tr><th>Standard</th><th>Frequenz</th><th>Max. Bruttorate</th><th>Reichweite</th></tr>
+      <tr><td>802.11b</td><td>2,4 GHz</td><td>11 Mbit/s</td><td>~38 m</td></tr>
+      <tr><td>802.11g</td><td>2,4 GHz</td><td>54 Mbit/s</td><td>~38 m</td></tr>
+      <tr><td>802.11n</td><td>2,4 + 5 GHz</td><td>600 Mbit/s</td><td>~70 m</td></tr>
+      <tr><td>802.11ac</td><td>5 GHz</td><td>6,9 Gbit/s</td><td>~50 m</td></tr>
+      <tr><td>802.11ad</td><td>60 GHz</td><td>6,9 Gbit/s</td><td>~10 m</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Bluetooth</div>
+    <p>Standard für drahtlose Vernetzung über kurze Distanz (ISM-Band 2,4 GHz).</p>
+    <table class="data-table">
+      <tr><th>Klasse</th><th>Sendeleistung</th><th>Reichweite</th></tr>
+      <tr><td>Klasse 3</td><td>1 mW</td><td>~10 m</td></tr>
+      <tr><td>Klasse 2</td><td>2,5 mW</td><td>~50 m</td></tr>
+      <tr><td>Klasse 1</td><td>100 mW</td><td>~100 m</td></tr>
+    </table>
+    <p>Bluetooth 5: BLE (Low Energy), max. 2 Mbit/s, Reichweite oder Rate wählbar.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Vergleich Übertragungsmedien</div>
+    <table class="data-table">
+      <tr><th>Merkmal</th><th>TP-Kabel</th><th>Glasfaser</th><th>WLAN</th></tr>
+      <tr><td>Rate</td><td>bis 10 Gbit/s</td><td>Gbit–Tbit</td><td>bis ~7 Gbit/s</td></tr>
+      <tr><td>Entfernung</td><td>100 m</td><td>bis 100 km</td><td>~40–70 m innen</td></tr>
+      <tr><td>Dämpfung</td><td>Hoch</td><td>Sehr gering</td><td>Hoch (Wände)</td></tr>
+      <tr><td>Übersprechen</td><td>Ja</td><td>Nein</td><td>Störungen möglich</td></tr>
+      <tr><td>Abhörsicherheit</td><td>Gering</td><td>Hoch</td><td>Sehr gering</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 3 – Datenverbindungsschicht
+══════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header">
+    <h2>Kapitel 3</h2>
+    <span>Datenverbindungsschicht</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Frame (Rahmen)</div>
+    <p>Dateneinheit der Schicht 2: <strong>Header</strong> (Steuerinformationen) + <strong>Datenfeld</strong> (Nutzdaten) + <strong>Trailer</strong> (Fehlererkennung, FCS).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">PDU-Bezeichnungen pro Schicht</div>
+    <table class="data-table">
+      <tr><th>Schicht</th><th>PDU-Name</th></tr>
+      <tr><td>Transportschicht</td><td>Segment</td></tr>
+      <tr><td>Netzwerkschicht</td><td>Paket / Datagramm</td></tr>
+      <tr><td>Datenverbindungsschicht</td><td>Frame / Rahmen</td></tr>
+      <tr><td>Physikalische Schicht</td><td>Bits</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dienste der Schicht 2</div>
+    <ul class="content-list">
+      <li><strong>Verbindungslos ohne Bestätigung</strong> – Kein Verbindungsaufbau, keine Quittung. Meiste LANs nutzen dies.</li>
+      <li><strong>Verbindungslos mit Bestätigung</strong> – Jedes Frame wird quittiert. Für unzuverlässige Kanäle (WLAN).</li>
+      <li><strong>Verbindungsorientiert mit Bestätigung</strong> – Verbindungsaufbau, nummerierte Frames, Abbau.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Flusskontrolle</div>
+    <ul class="content-list">
+      <li><strong>Handshake</strong> – Hardware (Steuerleitungen) oder Software (XON/XOFF)</li>
+      <li><strong>Stop-and-Wait</strong> – Sender wartet auf ACK nach jedem Frame (Spezialfall Sliding Window mit Fenstergröße 1)</li>
+      <li><strong>Sliding Window</strong> – Fenster von n Frames ohne Quittung erlaubt. ACK bestätigt bis Sequenznummer. Effizient!</li>
+      <li><strong>Kredit-Methode</strong> – Empfänger gibt Kredit: „Du darfst n Frames senden"</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">LLC- und MAC-Subschicht</div>
+    <p><strong>LLC</strong> (Logical Link Control, IEEE 802.2): Einheitliche Schnittstelle nach oben, gilt für alle Medien.<br>
+    <strong>MAC</strong> (Medium Access Control): Anbindung an physikalische Schicht, regelt Zugriff auf gemeinsames Medium.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">MAC-Adresse (EUI-48)</div>
+    <ul class="content-list">
+      <li>48 Bit = 6 Byte, hexadezimal dargestellt (z.B. 00:07:E9:12:34:56)</li>
+      <li>Erste 3 Byte: <strong>OUI</strong> (Herstellerkennung, von IEEE vergeben)</li>
+      <li>Letzte 3 Byte: <strong>CID</strong> (Geräte-ID, vom Hersteller vergeben)</li>
+      <li><strong>M-Bit</strong> (I/G): 0 = Unicast, 1 = Multicast/Broadcast</li>
+      <li><strong>X-Bit</strong> (U/L): 0 = Globale Adresse, 1 = Lokal administriert</li>
+      <li>Broadcast: FF:FF:FF:FF:FF:FF</li>
+      <li>Übertragung: LSB zuerst (laut IEEE 802.3)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">CSMA/CD (Carrier Sense Multiple Access / Collision Detection)</div>
+    <p><strong>Prinzip:</strong> Listen Before Talk → Senden wenn frei → Listen While Talk → Bei Kollision: JAM-Signal → Zufällige Wartezeit → Erneut versuchen.</p>
+    <ul class="content-list">
+      <li>Minimale Framelänge muss Sendedauer > 2× maximale Signallaufzeit (Round Trip Delay) sicherstellen</li>
+      <li>10Base: Min. 64 Byte, Max. Ausdehnung 2500 m, Slot Time 51,2 µs</li>
+      <li>Back-off-Algorithmus: Wartezeit steigt mit Kollisionszahl, Abbruch nach 16 Kollisionen</li>
+      <li>Stochastisches Verfahren – keine garantierte Sendezeit!</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ethernet Frame (802.3 / Ethernet II)</div>
+    <table class="data-table">
+      <tr><th>Feld</th><th>Größe</th><th>Bedeutung</th></tr>
+      <tr><td>Präambel (PR)</td><td>7 Byte</td><td>Synchronisation (10101010…)</td></tr>
+      <tr><td>SD</td><td>1 Byte</td><td>Start Frame Delimiter (10101011)</td></tr>
+      <tr><td>DA</td><td>6 Byte</td><td>Ziel-MAC-Adresse</td></tr>
+      <tr><td>SA</td><td>6 Byte</td><td>Quell-MAC-Adresse</td></tr>
+      <tr><td>Typ/Länge</td><td>2 Byte</td><td>≤1500: Länge (802.3), >1500: Typ (EthII, z.B. 0x0800 = IPv4)</td></tr>
+      <tr><td>Daten + PAD</td><td>46–1500 Byte</td><td>Nutzdaten, ggf. Padding auf 46 Byte</td></tr>
+      <tr><td>FCS</td><td>4 Byte</td><td>Frame Check Sequence (CRC-32)</td></tr>
+    </table>
+    <p>Min. Framelänge: <strong>64 Byte</strong> | Max. Framelänge: <strong>1518 Byte</strong> (ohne PR/SD)</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Token-Passing-Verfahren (IEEE 802.5)</div>
+    <p>Deterministisch: Token kreist im Ring → Wer freies Token hat, darf senden → Nach Senden: Token freigeben.</p>
+    <ul class="content-list">
+      <li>Token Holding Time begrenzt maximale Sendedauer</li>
+      <li>Monitorstation für Administration nötig</li>
+      <li>Vorteil: Zuverlässig bei hoher Last, berechenbare Sendezeit</li>
+      <li>Nachteil: Komplizierter, Wartezeit auf Token</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">CSMA/CA (Collision Avoidance) – IEEE 802.11</div>
+    <p>Für drahtlose Medien: Kollisionserkennung nicht möglich (Hidden Terminal Problem)!</p>
+    <ul class="content-list">
+      <li><strong>DIFS</strong> – Distributed Interframe Spacing: Wartezeit vor Senden</li>
+      <li><strong>Contention Phase</strong> – Zufälliger Slot → Bei Kollision kein Erkennen möglich</li>
+      <li><strong>ACK</strong> – Empfänger bestätigt nach SIFS</li>
+      <li><strong>RTS/CTS</strong> – Request/Clear To Send löst Hidden Terminal Problem</li>
+      <li><strong>NAV</strong> – Network Allocation Vector: Reservierungszeit für andere Hosts</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 4 – Ethernet
+══════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header">
+    <h2>Kapitel 4</h2>
+    <span>Ethernet</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Ethernet</div>
+    <p>Sammelbegriff für die IEEE 802.3-Standardfamilie. Basistechnologie für LAN und zunehmend WAN. Frameformat blieb über alle Generationen unverändert.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Bezeichnungssyntax</div>
+    <p>Format: <strong>[Rate][Base][Medium]</strong></p>
+    <table class="data-table">
+      <tr><th>Teil</th><th>Bedeutung</th><th>Beispiele</th></tr>
+      <tr><td>Rate</td><td>Übertragungsrate</td><td>10, 100, 1000, 10G, 40G, 100G</td></tr>
+      <tr><td>Base</td><td>Basisband-Übertragung</td><td>Base (immer)</td></tr>
+      <tr><td>Medium</td><td>Kabeltyp/Entfernung</td><td>T=TP, 5=500m Koax, SX/LX=Glasfaser</td></tr>
+    </table>
+    <p>Beispiel: <strong>1000Base-T</strong> = 1 Gbit/s, Basisband, Twisted Pair</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ethernet-Standards Übersicht</div>
+    <table class="data-table">
+      <tr><th>Standard</th><th>Bezeichnung</th><th>Rate</th><th>Medium</th></tr>
+      <tr><td>802.3</td><td>10Base5</td><td>10 Mbit/s</td><td>Koax 500 m</td></tr>
+      <tr><td>802.3a</td><td>10Base2</td><td>10 Mbit/s</td><td>Koax 185 m</td></tr>
+      <tr><td>802.3i</td><td>10Base-T</td><td>10 Mbit/s</td><td>TP-Kabel</td></tr>
+      <tr><td>802.3u</td><td>100Base-TX</td><td>100 Mbit/s</td><td>TP-Kabel</td></tr>
+      <tr><td>802.3z</td><td>1000Base-SX/LX</td><td>1 Gbit/s</td><td>Glasfaser</td></tr>
+      <tr><td>802.3ab</td><td>1000Base-T</td><td>1 Gbit/s</td><td>TP (Cat.5+)</td></tr>
+      <tr><td>802.3an</td><td>10GBase-T</td><td>10 Gbit/s</td><td>TP (Cat.6A+)</td></tr>
+      <tr><td>802.3ba</td><td>40G/100GBase</td><td>40/100 Gbit/s</td><td>TP/Glasfaser</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Wichtige Entwicklungen</div>
+    <ul class="content-list">
+      <li><strong>Switched Ethernet:</strong> Switches lösen Kollisionsdomänen auf → kollisionsfrei, Vollduplex möglich</li>
+      <li><strong>Fast Ethernet (100Base-TX):</strong> Max. Ausdehnung 100 m, 4B/5B + MLT3-Codierung</li>
+      <li><strong>Gigabit-Ethernet:</strong> Min. Framelänge 512 Byte (Extension), Frame Bursting (8192 Byte), CSMA/CD praktisch irrelevant</li>
+      <li><strong>10G-Ethernet:</strong> Kein CSMA/CD mehr, nur Vollduplex, auch für WAN einsetzbar</li>
+      <li><strong>Autonegotiation:</strong> Hosts handeln automatisch die max. gemeinsame Geschwindigkeit aus</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Kollisionsdomäne &amp; 5-4-3-Regel</div>
+    <p>Durch Repeater verbundene Segmente = eine Kollisionsdomäne. <strong>5-4-3-Regel</strong> (10Base5/2): Max. 5 Segmente, 4 Repeater, nur 3 Segmente mit aktiven Hosts.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 5 – Netzanalyse
+══════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header">
+    <h2>Kapitel 5</h2>
+    <span>Einführung Netzanalyse (Wireshark)</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Wireshark</div>
+    <p>Kostenloses, leistungsfähiges Tool zur Netzanalyse. Erfassung und Untersuchung aller gesendeten und empfangenen Daten im Netz.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Wireshark-Oberfläche (3 Fenster)</div>
+    <ul class="content-list">
+      <li><strong>Fenster 1:</strong> Paketliste – Alle aufgezeichneten Pakete (Zeit, Adressen, Protokoll, Länge, Info)</li>
+      <li><strong>Fenster 2:</strong> Paketdetails – Header-Informationen des ausgewählten Pakets</li>
+      <li><strong>Fenster 3:</strong> Rohdaten – Hexadezimale Darstellung</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Promiscuous Mode</div>
+    <p>Empfangsmodus der Netzkarte, bei dem der gesamte ankommende Datenverkehr (nicht nur an die eigene MAC-Adresse gerichtete Frames) eingelesen wird. Voraussetzung für Sniffer-Funktion.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Wichtige Wireshark-Anzeigefilter</div>
+    <table class="data-table">
+      <tr><th>Filter</th><th>Funktion</th></tr>
+      <tr><td>icmp</td><td>Nur ICMP-Pakete (ping)</td></tr>
+      <tr><td>tcp</td><td>Nur TCP-Pakete</td></tr>
+      <tr><td>http</td><td>Nur HTTP-Pakete</td></tr>
+      <tr><td>ip.addr == 192.168.x.x</td><td>Pakete von/zu einer IP</td></tr>
+      <tr><td>eth.addr == AA:BB:CC:DD:EE:FF</td><td>Pakete von/zu einer MAC</td></tr>
+      <tr><td>tcp.port == 80</td><td>Pakete mit TCP-Port 80</td></tr>
+      <tr><td>ip.addr == x.x.x.x && icmp</td><td>Pings einer bestimmten IP</td></tr>
+      <tr><td>not ip.addr == x.x.x.x</td><td>Alle außer einer IP</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 6 – Drahtlose und mobile Netze
+══════════════════════════════════════ -->
+<div id="kap6" class="section">
+  <div class="section-header">
+    <h2>Kapitel 6</h2>
+    <span>Drahtlose &amp; mobile Netze</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">802.11-Architektur – Begriffe</div>
+    <table class="data-table">
+      <tr><th>Begriff</th><th>Bedeutung</th></tr>
+      <tr><td>BSS</td><td>Basic Service Set – die WLAN-Funkzelle</td></tr>
+      <tr><td>STA</td><td>Station – ein WLAN-fähiger Host</td></tr>
+      <tr><td>AP</td><td>Access Point – Vermittlungsstelle für STAs</td></tr>
+      <tr><td>IBSS</td><td>Independent BSS – direkte Kommunikation (Ad-hoc)</td></tr>
+      <tr><td>DS</td><td>Distribution System – verbindet BSS untereinander</td></tr>
+      <tr><td>ESS</td><td>Extended Service Set – mehrere BSS über DS verbunden</td></tr>
+      <tr><td>SSID</td><td>Service Set Identifier – Name des Funknetzes</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Arbeitsmodi</div>
+    <div class="two-col">
+      <div>
+        <h4>Ad-hoc-Modus (IBSS)</h4>
+        <ul class="content-list">
+          <li>Direkte P2P-Kommunikation</li>
+          <li>Kein Access Point nötig</li>
+          <li>Einfach, kostengünstig</li>
+          <li>Begrenzte Reichweite</li>
+          <li>WiFi Direct (802.11z)</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Infrastrukturmodus</h4>
+        <ul class="content-list">
+          <li>Kommunikation über AP</li>
+          <li>AP spannt Funkzelle (BSS)</li>
+          <li>Anbindung an LAN über DS</li>
+          <li>WLAN-Controller für Großnetze</li>
+          <li>Handover bei Zellwechsel</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Anmeldung am Access Point (3 Phasen)</div>
+    <ul class="content-list">
+      <li><strong>1. Scanning</strong> – Passiv: AP sendet Beacons mit SSID. Aktiv: Client sendet Probe Request, AP antwortet.</li>
+      <li><strong>2. Authentifizierung</strong> – Open System (immer erfolgreich) oder Shared Key (Challenge-Response mit WEP → unsicher!).</li>
+      <li><strong>3. Assoziation</strong> – Client sendet Association Request → AP vergibt Association ID → Datentransfer aktiviert.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Mesh-Netze</div>
+    <p>WLAN-Mesh (802.11s): Jeder Knoten (Mesh Point) kann Daten weiterleiten. Selbstorganisierend, selbstheilend.</p>
+    <ul class="content-list">
+      <li>Erweitert Reichweite ohne zusätzliche Verkabelung</li>
+      <li>Geräte wie Smart-Home-Komponenten als Mesh Points</li>
+      <li>Dynamisches Routing über mehrere Hops</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">WLAN-Sicherheit</div>
+    <ul class="content-list" style="margin:0">
+      <li><strong>WEP</strong> – Veraltet, unsicher, leicht knackbar</li>
+      <li><strong>WPA/WPA2</strong> – Standard, AES-Verschlüsselung (802.11i)</li>
+      <li><strong>WPA3</strong> – Aktuell empfohlen, SAE (Simultaneous Authentication of Equals)</li>
+      <li>SSID-Broadcast deaktivieren schützt NICHT wirklich</li>
+      <li>MAC-Filter bieten keinen echten Schutz (MAC spoofbar)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLASHCARDS
+══════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>Klick auf die Karte zum Umdrehen</span>
+  </div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Prüfungsquiz</h2>
+    <span>20 Fragen mit Erklärungen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEET
+══════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header">
+    <h2>Cheatsheet</h2>
+    <span>Alle Formeln &amp; Schlüsselkonzepte</span>
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-block">
+      <h4>Dämpfung &amp; SNR</h4>
+      <div class="cheat-row"><span class="cheat-key">Dämpfung (Leistung)</span><span class="cheat-val">a = 10·lg(P₁/P₂) dB</span></div>
+      <div class="cheat-row"><span class="cheat-key">Dämpfung (Spannung)</span><span class="cheat-val">a = 20·lg(U₁/U₂) dB</span></div>
+      <div class="cheat-row"><span class="cheat-key">SNR</span><span class="cheat-val">10·lg(Pₛ/Pₙ) dB</span></div>
+      <div class="cheat-row"><span class="cheat-key">BER</span><span class="cheat-val">Fehlerbits / Gesamtbits</span></div>
+      <div class="cheat-row"><span class="cheat-key">ACR</span><span class="cheat-val">NEXT − Dämpfung [dB]</span></div>
+      <div class="cheat-row"><span class="cheat-key">NVP</span><span class="cheat-val">v/c (typ. 0,65–0,80)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Brechungsindex</span><span class="cheat-val">n = c/v</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Kabelkategorien</h4>
+      <div class="cheat-row"><span class="cheat-key">Cat.5e</span><span class="cheat-val">100 MHz, 1G, 100m</span></div>
+      <div class="cheat-row"><span class="cheat-key">Cat.6</span><span class="cheat-val">250 MHz, 1G, 100m</span></div>
+      <div class="cheat-row"><span class="cheat-key">Cat.6A</span><span class="cheat-val">500 MHz, 10G, 100m</span></div>
+      <div class="cheat-row"><span class="cheat-key">Cat.7</span><span class="cheat-val">600 MHz, 10G, 100m</span></div>
+      <div class="cheat-row"><span class="cheat-key">Cat.7A</span><span class="cheat-val">1 GHz, 10G, 100m</span></div>
+      <div class="cheat-row"><span class="cheat-key">Cat.8</span><span class="cheat-val">2 GHz, 40G, 30m</span></div>
+      <div class="cheat-row"><span class="cheat-key">TP-Schema</span><span class="cheat-val">XX/YZZ (X=Gesamt, Y=Paar)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Ethernet Frame</h4>
+      <div class="cheat-row"><span class="cheat-key">Aufbau</span><span class="cheat-val">PR(7) SD(1) DA(6) SA(6)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Payload</span><span class="cheat-val">Typ/Len(2) Data(0–1500)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Trailer</span><span class="cheat-val">PAD(0–46) FCS(4)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Framegröße</span><span class="cheat-val">Min 64 B | Max 1518 B</span></div>
+      <div class="cheat-row"><span class="cheat-key">IFG</span><span class="cheat-val">9,6 µs (Inter-Frame Gap)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ-Feld IPv4</span><span class="cheat-val">0x0800</span></div>
+      <div class="cheat-row"><span class="cheat-key">FCS</span><span class="cheat-val">CRC-32 Prüfsumme</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>CSMA/CD vs. CSMA/CA</h4>
+      <div class="cheat-row"><span class="cheat-key">CSMA/CD (802.3)</span><span class="cheat-val">Listen Before + While Talk</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kollision (CD)</span><span class="cheat-val">JAM-Signal → Back-off</span></div>
+      <div class="cheat-row"><span class="cheat-key">CSMA/CA (802.11)</span><span class="cheat-val">DIFS → Contention Phase</span></div>
+      <div class="cheat-row"><span class="cheat-key">Bestätigung (CA)</span><span class="cheat-val">ACK nach SIFS</span></div>
+      <div class="cheat-row"><span class="cheat-key">Hidden Terminal</span><span class="cheat-val">RTS/CTS Lösung</span></div>
+      <div class="cheat-row"><span class="cheat-key">NAV</span><span class="cheat-val">Network Allocation Vector</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Ethernet-Standards</h4>
+      <div class="cheat-row"><span class="cheat-key">10Base5</span><span class="cheat-val">10 Mbit/s, Koax, 500m</span></div>
+      <div class="cheat-row"><span class="cheat-key">10Base-T</span><span class="cheat-val">10 Mbit/s, TP</span></div>
+      <div class="cheat-row"><span class="cheat-key">100Base-TX</span><span class="cheat-val">100 Mbit/s, TP</span></div>
+      <div class="cheat-row"><span class="cheat-key">1000Base-T</span><span class="cheat-val">1 Gbit/s, TP Cat.5+</span></div>
+      <div class="cheat-row"><span class="cheat-key">10GBase-T</span><span class="cheat-val">10 Gbit/s, TP Cat.6A+</span></div>
+      <div class="cheat-row"><span class="cheat-key">Ab 10G</span><span class="cheat-val">Kein CSMA/CD, Vollduplex</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>WLAN-Architektur</h4>
+      <div class="cheat-row"><span class="cheat-key">BSS</span><span class="cheat-val">Funkzelle mit AP</span></div>
+      <div class="cheat-row"><span class="cheat-key">IBSS</span><span class="cheat-val">Ad-hoc (kein AP)</span></div>
+      <div class="cheat-row"><span class="cheat-key">ESS</span><span class="cheat-val">BSS + DS verbunden</span></div>
+      <div class="cheat-row"><span class="cheat-key">SSID</span><span class="cheat-val">Netzwerkname (Kennung)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Anmeldung</span><span class="cheat-val">Scan → Auth → Assoziation</span></div>
+      <div class="cheat-row"><span class="cheat-key">Handover</span><span class="cheat-val">BSS Transition (Roaming)</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+// ── FLASHCARDS DATA ──
+const flashcardsData = [
+  {cat:"Kap 1", q:"Welche Aufgabe hat die Bitübertragungsschicht (Schicht 1)?", a:"Übertragung einzelner Bits als geeignete Signale in einem Übertragungsmedium – die elementare Transportschicht."},
+  {cat:"Kap 1", q:"Welche 5 Aufgaben hat die Datenverbindungsschicht?", a:"1) Physikalische Adressierung, 2) Aufteilung in Frames, 3) Fehlererkennung, 4) Zugang zum Medium, 5) Flusskontrolle."},
+  {cat:"Kap 1", q:"Wie unterscheidet sich die Schichtung im OSI- vs. TCP/IP-Modell bei den unteren Schichten?", a:"OSI: Schicht 1 (Bitübertragung) und Schicht 2 (Datenverbindung) getrennt. TCP/IP: Beide zusammengefasst zur Netzzugangsschicht."},
+  {cat:"Kap 2", q:"Was ist die Bandbreite eines Übertragungsmediums?", a:"Differenz der Grenzfrequenzen: B = fGO − fGU. Nur Signale innerhalb dieses Bereichs können übertragen werden."},
+  {cat:"Kap 2", q:"Wie berechnet man die Dämpfung in dB (Leistung)?", a:"a = 10 · lg(P₁/P₂) dB. Bei Spannungen: a = 20 · lg(U₁/U₂) dB."},
+  {cat:"Kap 2", q:"Was bedeutet ein SNR von 30 dB?", a:"Die Signalleistung ist 1000× so groß wie die Rauschleistung (10^(30/10) = 1000)."},
+  {cat:"Kap 2", q:"Was ist der NVP-Wert?", a:"Nominal Velocity of Propagation – Ausbreitungsgeschwindigkeit im Medium relativ zur Lichtgeschwindigkeit c. Typisch 0,65–0,80 bei Kabeln."},
+  {cat:"Kap 2", q:"Wie lautet die TP-Kabel-Bezeichnung nach ISO/IEC 11801?", a:"XX/YZZ – XX = Gesamtschirmung (U/F/S/SF), Y = Paarschirmung (U/F/S), ZZ = TP. Beispiel: S/FTP = Geflecht gesamt, Folie pro Paar."},
+  {cat:"Kap 2", q:"Was ist der Unterschied zwischen Multimode- und Monomode-Glasfaser?", a:"Multimode: großer Kern (50/62,5 µm), viele Lichtmoden, Modendispersion, kurze Strecken. Monomode: kleiner Kern (9 µm), eine Mode, kaum Dispersion, bis 100 km."},
+  {cat:"Kap 2", q:"Was ist das Bandbreiten-Längen-Produkt bei Glasfaser?", a:"Konstantes Produkt aus Bandbreite (MHz) × Länge (km). Beispiel: 2000 MHz·km → 2000 MHz über 1 km oder 1000 MHz über 2 km."},
+  {cat:"Kap 2", q:"Was ist NEXT und FEXT?", a:"NEXT = Nahübersprechen (Störer und gestörter Empfänger am gleichen Kabelende). FEXT = Fernübersprechen (verschiedene Enden). NEXT frequenzabhängig, FEXT längenabhängig."},
+  {cat:"Kap 2", q:"Welche 3 überlappungsfreien WLAN-Kanäle gibt es im 2,4-GHz-Band (22 MHz)?", a:"Kanäle 1, 7 und 13 (bei 20 MHz Bandbreite: 1, 5, 9, 13)."},
+  {cat:"Kap 2", q:"Was ist OFDM?", a:"Orthogonal Frequency Division Multiplexing – Vielträgerverfahren: serieller Datenstrom wird parallelisiert, jeder Teilstrom einem schmalen Frequenzträger zugeordnet, mit QAM moduliert."},
+  {cat:"Kap 2", q:"Was ist MIMO?", a:"Multiple Input Multiple Output – Verwendung mehrerer Sende- und Empfangsantennen für parallele Datenströme (bis zu 8 bei 802.11ac)."},
+  {cat:"Kap 3", q:"Was ist ein Frame?", a:"Dateneinheit der Schicht 2: Header (Steuerinfo) + Datenfeld (Nutzdaten) + Trailer (FCS zur Fehlererkennung)."},
+  {cat:"Kap 3", q:"Wie funktioniert das Sliding-Window-Verfahren?", a:"Fenster von n Frames darf ohne Quittung gesendet werden. ACK bestätigt alle Frames bis zur angegebenen Sequenznummer. Effizient, da nicht jedes Frame einzeln quittiert wird."},
+  {cat:"Kap 3", q:"Was ist eine MAC-Adresse und wie ist sie aufgebaut?", a:"48 Bit (6 Byte), hexadezimal. Erste 3 Byte = OUI (Hersteller), letzte 3 Byte = CID (Gerät). M-Bit: 0=Unicast, 1=Multicast. Broadcast: FF:FF:FF:FF:FF:FF."},
+  {cat:"Kap 3", q:"Wie funktioniert CSMA/CD?", a:"Listen Before Talk (Medium frei?) → Senden → Listen While Talk (Kollision?) → Bei Kollision: JAM-Signal → Zufällige Wartezeit (Back-off) → Erneut versuchen."},
+  {cat:"Kap 3", q:"Warum gibt es eine minimale Framelänge bei CSMA/CD?", a:"Die Sendedauer muss größer sein als die Round Trip Delay Time (2× maximale Signallaufzeit), damit der Sender eine Kollision noch während der Übertragung erkennt."},
+  {cat:"Kap 3", q:"Wie löst RTS/CTS das Hidden-Terminal-Problem?", a:"Sender schickt RTS → AP antwortet mit CTS → Alle in Reichweite wissen von der Reservierung (NAV) und warten. Kollisionen nur bei kurzen RTS/CTS möglich."},
+  {cat:"Kap 4", q:"Was bedeutet '100Base-TX'?", a:"100 = 100 Mbit/s Übertragungsrate, Base = Basisband, TX = Twisted Pair."},
+  {cat:"Kap 4", q:"Was ist Switched Ethernet?", a:"Switches lösen Kollisionsdomänen auf → jeder Host an eigenem Port → keine Kollisionen → volle Bandbreite → Vollduplex möglich."},
+  {cat:"Kap 4", q:"Was ist die 5-4-3-Regel?", a:"Bei 10Base5/2: Max. 5 Segmente, 4 Repeater, nur 3 Segmente mit aktiven Hosts. Zwei Segmente nur als Link-Segmente."},
+  {cat:"Kap 4", q:"Ab welchem Standard gibt es kein CSMA/CD mehr?", a:"Ab 10-Gigabit-Ethernet (802.3ae) ist CSMA/CD nicht mehr vorgesehen, da nur Vollduplex-Punkt-zu-Punkt-Verbindungen existieren."},
+  {cat:"Kap 5", q:"Was ist der Promiscuous Mode?", a:"Empfangsmodus der Netzkarte, bei dem ALLE ankommenden Frames eingelesen werden – nicht nur die an die eigene MAC-Adresse gerichteten. Basis für Sniffer."},
+  {cat:"Kap 5", q:"Was ist ein Anzeigefilter in Wireshark?", a:"Filter, der nach der Aufzeichnung angewendet wird. Syntax z.B.: 'icmp', 'ip.addr == x.x.x.x', 'tcp.port == 80'. Zeigt nur passende Pakete an."},
+  {cat:"Kap 6", q:"Was ist der Unterschied zwischen BSS und ESS?", a:"BSS = einzelne Funkzelle (ein AP). ESS = mehrere BSS über ein Distribution System (DS) verbunden zu einem logischen Netz."},
+  {cat:"Kap 6", q:"Welche 3 Phasen durchläuft die Anmeldung am Access Point?", a:"1) Scanning (Passiv: Beacons / Aktiv: Probe Request/Response), 2) Authentifizierung (Open System / Shared Key), 3) Assoziation (Association ID)."},
+  {cat:"Kap 6", q:"Was ist ein Mesh-Netz?", a:"Jeder Knoten (Mesh Point) kann Daten weiterleiten. Selbstorganisierend, selbstheilend, erweitert Reichweite ohne Verkabelung. Standard: 802.11s."},
+  {cat:"Kap 6", q:"Warum ist WEP unsicher?", a:"WEP nutzt schwache RC4-Verschlüsselung mit kurzen Schlüsseln. Leicht knackbar. WPA2 (AES) oder WPA3 (SAE) sind sicherer."}
+];
+
+// ── QUIZ DATA ──
+const quizData = [
+  {q:"Welche Schicht im OSI-Modell ist für die Übertragung einzelner Bits zuständig?", opts:["Schicht 1 – Bitübertragung","Schicht 2 – Datenverbindung","Schicht 3 – Netzwerk","Schicht 4 – Transport"], correct:0, exp:"Die physikalische Schicht (Schicht 1) ist für die Bitübertragung zuständig."},
+  {q:"Wie lautet die Formel für die Dämpfung mit Leistungswerten?", opts:["a = 20·lg(P₁/P₂) dB","a = 10·lg(P₁/P₂) dB","a = P₁/P₂ dB","a = 10·lg(U₁/U₂) dB"], correct:1, exp:"Leistungsdämpfung: a = 10·lg(P₁/P₂) dB. Bei Spannungen: a = 20·lg(U₁/U₂) dB."},
+  {q:"Was bedeutet ein SNR von 40 dB?", opts:["Signalleistung ist 100× Rauschleistung","Signalleistung ist 1.000× Rauschleistung","Signalleistung ist 10.000× Rauschleistung","Signalleistung ist 40× Rauschleistung"], correct:2, exp:"10^(40/10) = 10^4 = 10.000. Die Signalleistung ist 10.000× so groß wie die Rauschleistung."},
+  {q:"Welche Kabelkategorie unterstützt 10 Gbit/s über 100 m?", opts:["Cat. 5e","Cat. 6","Cat. 6A","Cat. 8"], correct:2, exp:"Cat. 6A (Linkklasse EA) unterstützt 10 Gbit/s bei max. 500 MHz und 100 m Länge."},
+  {q:"Was bedeutet die TP-Kabel-Bezeichnung S/FTP?", opts:["Ungeschirmt gesamt, Folie pro Paar","Geflecht gesamt, Folie pro Paar","Folie gesamt, Geflecht pro Paar","Geflecht gesamt, ungeschirmt pro Paar"], correct:1, exp:"S = Screened (Geflecht als Gesamtschirm), F = Foiled (Folie als Paarschirm), TP = Twisted Pair."},
+  {q:"Welcher Glasfasertyp eignet sich für Strecken bis 100 km?", opts:["Multimode OM1","Multimode OM4","Monomode OS1/OS2","Kunststofffaser"], correct:2, exp:"Monomodefasern (OS1/OS2) haben minimale Dispersion und eignen sich für sehr große Entfernungen."},
+  {q:"Was ist der NVP-Wert?", opts:["Netzwerk-Verbindungs-Protokoll","Nominal Velocity of Propagation","Net Value Performance","Network Virtual Path"], correct:1, exp:"NVP = Ausbreitungsgeschwindigkeit im Medium relativ zur Lichtgeschwindigkeit c. Typisch 0,65–0,80."},
+  {q:"Wie viele überlappungsfreie Kanäle gibt es im 2,4-GHz-Band bei 20 MHz Bandbreite?", opts:["3","4","8","13"], correct:1, exp:"Bei 20 MHz Kanalbandbreite und 5 MHz Kanalabstand: Kanäle 1, 5, 9, 13 = 4 nicht überlappende Kanäle."},
+  {q:"Aus wie vielen Bytes besteht eine MAC-Adresse?", opts:["4 Byte","6 Byte","8 Byte","12 Byte"], correct:1, exp:"MAC-Adresse = EUI-48 = 48 Bit = 6 Byte. Darstellung hexadezimal (z.B. 00:1A:2B:3C:4D:5E)."},
+  {q:"Wie lautet die Broadcast-MAC-Adresse?", opts:["00:00:00:00:00:00","FF:FF:FF:FF:FF:FF","01:00:00:00:00:00","FE:FF:FF:FF:FF:FF"], correct:1, exp:"Die Broadcast-Adresse hat alle 48 Bits auf 1 gesetzt: FF:FF:FF:FF:FF:FF."},
+  {q:"Was sendet ein Host bei einer CSMA/CD-Kollision?", opts:["ACK-Signal","RTS-Signal","JAM-Signal","CTS-Signal"], correct:2, exp:"Bei CSMA/CD wird nach erkannter Kollision ein JAM-Signal gesendet, um alle Sender zu informieren."},
+  {q:"Wie groß ist die minimale Ethernet-Framelänge (ohne Präambel)?", opts:["32 Byte","46 Byte","64 Byte","128 Byte"], correct:2, exp:"Minimale Framelänge = 64 Byte (inkl. Header, Daten, PAD, FCS, aber ohne Präambel und SD)."},
+  {q:"Welches Feld im Ethernet-II-Frame gibt das Protokoll der höheren Schicht an?", opts:["FCS","SA","Typ-Feld","PAD"], correct:2, exp:"Im Ethernet-II-Format gibt das Typ-Feld (2 Byte, Wert > 1500) das Protokoll an (z.B. 0x0800 = IPv4)."},
+  {q:"Was löst Switched Ethernet?", opts:["Das Problem der MAC-Adressvergabe","Kollisionsdomänen werden aufgelöst","Die Bandbreitenbegrenzung von Glasfaser","Das Hidden-Terminal-Problem"], correct:1, exp:"Switches trennen Kollisionsdomänen auf – jeder Port bildet eine eigene Domäne. Vollduplex wird möglich."},
+  {q:"Welcher Ethernet-Standard nutzt erstmals KEIN CSMA/CD mehr?", opts:["802.3u (Fast Ethernet)","802.3ab (Gigabit über TP)","802.3ae (10-Gigabit-Ethernet)","802.3i (10Base-T)"], correct:2, exp:"802.3ae (10GBase) spezifiziert erstmals kein CSMA/CD mehr – nur Vollduplex-Punkt-zu-Punkt."},
+  {q:"Was bedeutet die Ethernet-Bezeichnung '1000Base-T'?", opts:["1000 Mbit/s, Breitband, Twisted Pair","1 Gbit/s, Basisband, Twisted Pair","1000 MHz Bandbreite, Token Ring","1 Gbit/s, Broadcast, Thin Ethernet"], correct:1, exp:"1000 = 1000 Mbit/s (1 Gbit/s), Base = Basisband-Übertragung, T = Twisted Pair."},
+  {q:"Wie löst RTS/CTS das Hidden-Terminal-Problem?", opts:["Durch Erhöhung der Sendeleistung","Sender reserviert Kanal via RTS, AP bestätigt mit CTS, alle in Reichweite warten","Durch Wechsel auf andere Frequenz","Durch Verdopplung der Bandbreite"], correct:1, exp:"RTS/CTS: Sender sendet RTS, AP antwortet mit CTS. Alle Hosts in Reichweite setzen NAV-Timer und warten."},
+  {q:"Was ist der Promiscuous Mode?", opts:["Modus für verschlüsselte Übertragung","Empfangsmodus, bei dem alle Frames eingelesen werden","Modus für maximale Sendeleistung","Energiesparmodus der Netzkarte"], correct:1, exp:"Im Promiscuous Mode liest die Netzkarte ALLE Frames ein – auch die, die nicht an ihre MAC-Adresse gerichtet sind."},
+  {q:"Welche WLAN-Anmeldephase folgt nach dem Scanning?", opts:["Assoziation","Disassoziation","Authentifizierung","Handover"], correct:2, exp:"Die 3 Phasen: 1) Scanning → 2) Authentifizierung → 3) Assoziation. Erst nach erfolgreicher Authentifizierung kommt die Assoziation."},
+  {q:"Was verbindet mehrere BSS zu einem ESS?", opts:["Ein WLAN-Controller","Das Distribution System (DS)","Der SSID","Ein Mesh Point"], correct:1, exp:"Das Distribution System (DS) verbindet mehrere Basic Service Sets (BSS) zu einem Extended Service Set (ESS)."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

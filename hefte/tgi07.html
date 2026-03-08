@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGI07 · Formale Sprachen und abstrakte Automaten 2</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">TGI07 · 0723K04 · HfB</div>
+  <h1>Formale Sprachen und abstrakte Automaten 2</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 4 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════════════ ÜBERSICHT ════════════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header"><h2>Übersicht</h2><span>Alle Kapitel im Überblick</span></div>
+
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Kellerautomaten &amp; kontextfreie Sprachen</h3>
+      <p>Grenzen endlicher Automaten, NKA (7-Tupel), DKA, dkfS, Äquivalenz NKA ↔ kfG, Parsergeneratoren, Chomsky-Normalform</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#8b5cf6" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>LL(k)-Sprachen</h3>
+      <p>Top-down-Syntaxanalyse, LL(1)-Forderungen, FIRST-/FOLLOW-Mengen, Grammatiktransformationen, Linksrekursion beseitigen</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f59e0b" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>LR(k)-Sprachen</h3>
+      <p>Bottom-up-Syntaxanalyse, shift/reduce-Parsing, LR-Parsetabellen, SLR(1)/LALR(1), Parsergeneratoren (Yacc/Bison), Compiler</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Turing-Maschine &amp; Typ-0/1-Sprachen</h3>
+      <p>DTM (7-Tupel), Arbeitsweise, DTM als Akzeptor, NTM, LBTM, rekursiv aufzählbar vs. rekursiv, UTM, TM als Funktionsberechner</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.5rem;">
+    <div class="card-title">Prüfungsrelevante Schwerpunkte</div>
+    <div class="two-col">
+      <ul class="content-list">
+        <li><strong>NKA</strong> – 7-Tupel (Q, Σ, Γ, δ, q₀, k₀, E), Akzeptanz per Endzustand/leerem Keller</li>
+        <li><strong>DKA vs. NKA</strong> – DKA ⊊ NKA, dkfS = LR(k)-Sprachen</li>
+        <li><strong>CNF</strong> – Chomsky-Normalform: X → a | YZ, CYK in O(n³)</li>
+        <li><strong>LL(1)-Forderungen</strong> – FIRST disjunkt + FIRST ∩ FOLLOW = ∅</li>
+      </ul>
+      <ul class="content-list">
+        <li><strong>LR-Parsing</strong> – shift/reduce, Handle-Erkennung, Parsetabellen</li>
+        <li><strong>Sprachklassen</strong> – LL(k) ⊂ LR(k) = dkfS ⊂ kfS</li>
+        <li><strong>DTM</strong> – 7-Tupel (Q, Σ, Γ, δ, q₀, $, E), Lese-Schreib-Kopf L/N/R</li>
+        <li><strong>Chomsky-Hierarchie komplett</strong> – reg ⊂ dkfS ⊂ kfS ⊂ ksS ⊂ rek. ⊂ r.a.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 1 ════════════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header"><h2>Kapitel 1 – Kellerautomaten &amp; kontextfreie Sprachen</h2><span>NKA, DKA, dkfS, CNF</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Grenzen endlicher Automaten</div>
+    <p>Endliche Automaten können bestimmte kontextfreie Sprachen <strong>nicht</strong> beschreiben, z.&nbsp;B.:</p>
+    <p>• L₁ = {w ∈ {a,b}* | w enthält gleich viele a wie b} – erfordert Zählen</p>
+    <p>• L₂ = Palindrome über {a,b} – erfordert Reihenfolgenvergleich</p>
+    <p>• L₃ = korrekt geklammerte arithmetische Ausdrücke – erfordert Klammertiefe</p>
+    <p>Lösung: Endlicher Automat + <strong>Kellerspeicher (Stack)</strong> → Kellerautomat. Operationen: <code>push(x, st)</code> und <code>pop(st)</code> arbeiten auf dem top of stack (tos).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">NKA – Nichtdeterministischer Kellerautomat (Def. 1.1)</div>
+    <p>Ein NKA M ist ein <strong>7-Tupel</strong>: M = (Q, Σ, Γ, δ, q₀, k₀, E)</p>
+    <p>• Q = endliche Zustandsmenge &nbsp;• Σ = Eingabealphabet &nbsp;• Γ = Kelleralphabet</p>
+    <p>• δ: Q × (Σ ∪ {ε}) × Γ → P<sub>endlich</sub>(Q × Γ*) – partielle Überführungsfunktion</p>
+    <p>• q₀ = Anfangszustand &nbsp;• k₀ = Kellervorbelegungszeichen &nbsp;• E ⊆ Q = Endzustände</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Arbeitsweise NKA</div>
+    <p>In jedem Arbeitstakt: 1) tos wird <strong>verbrauchend gelesen</strong> (pop). 2) Kellerwort k₁k₂…k<sub>r</sub> wird aufgelegt (multiple push), wobei k₁ neues tos wird. 3) Zustandswechsel.</p>
+    <p><strong>Akzeptanz:</strong> Eingabewort vollständig gelesen UND Endzustand erreicht (Kellerinhalt egal).</p>
+    <p><strong>Spontane Übergänge</strong> (ε-Übergänge) erlaubt – auch nach Wortende möglich.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Alternative NKA-Definition (Def. 1.2) – 6-Tupel</div>
+    <p>M = (Q, Σ, Γ, δ, q₀, k₀) – <strong>ohne Endzustandsmenge</strong>.</p>
+    <p>Akzeptanz: Wort vollständig gelesen und <strong>Keller leer</strong> → „akzeptiert per leerem Keller".</p>
+    <p><strong>Satz 1.1:</strong> Beide Definitionen (7-Tupel und 6-Tupel) sind äquivalent – Transformation in beide Richtungen möglich.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Satz 1.2 – Äquivalenz NKA ↔ kfG</div>
+    <p><strong>Eine Sprache L ist kontextfrei genau dann, wenn L von einem NKA akzeptiert wird.</strong></p>
+    <p>→ kfS = NKA-Sprachen. Konstruktive Beweise liefern Transformationsverfahren:</p>
+    <p>• <strong>kfG → NKA:</strong> Linksableitung simulieren. Ein-Zustand-NKA, Kellervorbelegung = Startsymbol.</p>
+    <p>• <strong>NKA → kfG:</strong> Nichtterminale [q<sub>i</sub>, k, q<sub>j</sub>] aus Zustandspaaren + Kellerzeichen bilden.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">DKA – Deterministischer Kellerautomat (Def. 1.3)</div>
+    <p>Wie NKA, aber mit drei Einschränkungen:</p>
+    <p>1. δ-Funktionswerte sind <strong>Paare</strong> (keine Mengen) → eindeutiger Folgezustand</p>
+    <p>2. Wenn δ(q, ε, A) definiert → δ(q, a, A) undefiniert für alle a ∈ Σ (und umgekehrt)</p>
+    <p>3. Immer 7-Tupel-Form (6-Tupel nicht erlaubt für DKA)</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">DKA ⊊ NKA – Beschreibungsmächtigkeit</div>
+    <p>Im Gegensatz zu DEA ≡ NEA gilt für Kellerautomaten: <strong>DKA ist echt schwächer als NKA!</strong></p>
+    <p>Beispiel: Palindrome ohne markierte Wortmitte – NKA möglich, DKA nicht (Wortmitte nicht erkennbar).</p>
+    <p>Palindrome <strong>mit</strong> markierter Wortmitte (vcv̄) → DKA möglich.</p>
+    <p><strong>dkfS</strong> (deterministisch kontextfreie Sprachen) = DKA-Sprachen = LR(k)-Sprachen.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Optimierung kontextfreier Grammatiken</div>
+    <p><strong>Unnütze Nichtterminale entfernen:</strong> Iterativ „nützliche" Nichtterminale sammeln – solche, die (1) zu einem Terminalwort führen und (2) vom Startsymbol erreichbar sind.</p>
+    <p><strong>Kettenregeln beseitigen:</strong> Regeln X → Y (beide Nichtterminale). Menge M aller Paare (A,B) mit A ⇒* B bilden, dann Regeln substituieren.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Chomsky-Normalform (CNF) – Def. 1.4</div>
+    <p>Eine kfG ist in CNF, wenn jede Regel die Form hat: <strong>X → a</strong> oder <strong>X → YZ</strong> (a ∈ T, X,Y,Z ∈ N).</p>
+    <p><strong>Satz 1.3:</strong> Zu jeder kfG G mit ε ∉ L(G) gibt es eine äquivalente kfG in CNF.</p>
+    <p>Transformation: (a) Regeln X → a übernehmen. (b) Terminale in langen Regeln durch neue Nichtterminale ersetzen. (c) Regeln mit |β| ≥ 3 in Binärregeln aufteilen.</p>
+    <p>Vorteil: Ableitungsbäume sind <strong>Binärbäume</strong> → <strong>CYK-Algorithmus</strong> in O(n³).</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 2 ════════════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header"><h2>Kapitel 2 – LL(k)-Sprachen</h2><span>Top-down-Parsing, FIRST, FOLLOW</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">LL(k) – Begriff</div>
+    <p><strong>L</strong> = Analyse von <strong>links</strong> nach rechts &nbsp;• <strong>L</strong> = <strong>Linksableitung</strong> &nbsp;• <strong>(k)</strong> = Anzahl <strong>Vorausschauzeichen</strong></p>
+    <p>Deterministisches Top-down-Parsing: In jedem Ableitungsschritt ist die anzuwendende Regel <strong>eindeutig bestimmbar</strong> → keine Sackgassen, kein Backtracking.</p>
+    <p>Auch: <strong>prädiktive Syntaxanalyse</strong> (to predict = vorhersagen).</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Hierarchie der LL(k)-Sprachen</div>
+    <p>LL(1) ⊂ LL(2) ⊂ … ⊂ LL(k) ⊂ LL(k+1) ⊂ … ⊂ dkfS</p>
+    <p>Wichtige Fakten:</p>
+    <p>• Nicht jede kfS ist LL(k)-Sprache für irgendein k</p>
+    <p>• LL(k)-Grammatiken sind immer <strong>eindeutig</strong></p>
+    <p>• LL(1) ist für die meisten Praxisanwendungen mächtig genug (z.&nbsp;B. Pascal)</p>
+    <p>• <strong>stark-LL(k):</strong> Nur Vorausschau (ohne bereits analysiertes Teilwort) reicht</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">LL(1)-Forderung 1 – FIRST-Mengen (Def. 2.2)</div>
+    <p>Für jedes Nichtterminal X mit Regeln X → α₁ | α₂ | … | αₙ muss gelten:</p>
+    <p><strong>FIRST(αᵢ) ∩ FIRST(αⱼ) = ∅</strong> für alle i ≠ j</p>
+    <p><strong>FIRST(α)</strong> = {t ∈ T | α ⇒* tβ} – alle Terminale, die am Anfang einer von α ableitbaren Satzform stehen. Falls α ⇒* ε, dann auch ε ∈ FIRST(α).</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">LL(1)-Forderung 2 – FOLLOW-Mengen (Def. 2.4)</div>
+    <p>Für jedes Nichtterminal X mit X ⇒* ε muss gelten:</p>
+    <p><strong>FIRST(X) ∩ FOLLOW(X) = ∅</strong></p>
+    <p><strong>FOLLOW(X)</strong> = {t ∈ T | s ⇒* αXtβ} – alle Terminale, die in irgendeiner Satzform direkt rechts neben X stehen können.</p>
+    <p>Berechnung: Für Regel A → αXβ: FIRST(β)\{ε} in FOLLOW(X). Falls ε ∈ FIRST(β): auch FOLLOW(A) in FOLLOW(X).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">LL(1)-Grammatik (Def. 2.6)</div>
+    <p>Eine kfG ist <strong>LL(1)-Grammatik</strong> genau dann, wenn sie <strong>beide Forderungen</strong> erfüllt.</p>
+    <p>→ LL(1)-Grammatiken können <strong>niemals linksrekursiv oder mehrdeutig</strong> sein.</p>
+    <p>Parser: Methode des <strong>rekursiven Abstiegs</strong> – für jedes Nichtterminal eine Prozedur. Tabellengesteuerte Variante noch effizienter.</p>
+    <p>Zeitkomplexität: <strong>O(n)</strong> – optimal!</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Grammatiktransformationen</div>
+    <p><strong>1. Linksrekursion beseitigen:</strong> X → Xα | β wird zu X → βX', X' → αX' | ε.</p>
+    <p>Indirekte Linksrekursion: <strong>Paull-Algorithmus</strong> – Nichtterminale nummerieren, dann systematisch Regeln substituieren und direkte Linksrekursion entfernen.</p>
+    <p><strong>2. Mehrdeutigkeit beseitigen:</strong> Verschiedene Ableitungsbäume für ein Wort → umstrukturieren.</p>
+    <p><strong>3. Gemeinsame Präfixe (Left Factoring):</strong> X → αβ₁ | αβ₂ wird zu X → αX', X' → β₁ | β₂.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 3 ════════════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header"><h2>Kapitel 3 – LR(k)-Sprachen</h2><span>Bottom-up-Parsing, shift/reduce, Compiler</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">LR(k) – Begriff</div>
+    <p><strong>L</strong> = Analyse von <strong>links</strong> nach rechts &nbsp;• <strong>R</strong> = <strong>Rechtsableitung</strong> (Bottom-up = Linksreduktion) &nbsp;• <strong>(k)</strong> = Vorausschauzeichen</p>
+    <p>LR(k)-Sprachen = umfassendste Klasse deterministisch analysierbarer kfS = <strong>dkfS = DKA-Sprachen</strong>.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">shift/reduce-Parsing</div>
+    <p>Drei Aktionen des DKA-basierten Parsers:</p>
+    <p><strong>shift:</strong> Nächstes Token vom Eingabepuffer auf den Stapel legen.</p>
+    <p><strong>reduce X → β:</strong> Stapelinhalt β (Handle) durch Nichtterminal X ersetzen.</p>
+    <p><strong>accepted:</strong> Startsymbol allein im Keller + Eingabe leer.</p>
+    <p>Handle = Satzform β am oberen Stapelrand, die einer rechten Regelseite entspricht.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">LR-Parsetabellen</div>
+    <p>Bestehen aus zwei Teilen:</p>
+    <p><strong>action-Teil:</strong> Bestimmt aus (Zustand, Eingabezeichen) die Aktion (s = shift, rᵢ = reduce mit Regel i, accept, leer = Fehler).</p>
+    <p><strong>goto-Teil:</strong> Bestimmt aus (Zustand, Vokabularzeichen) den Folgezustand.</p>
+    <p>Auf dem Stapel liegen sowohl Zustandsnamen als auch Vokabularzeichen.</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Konflikte und Sprachklassen</div>
+    <p><strong>shift/reduce-Konflikt:</strong> Sowohl shift als auch reduce möglich.</p>
+    <p><strong>reduce/reduce-Konflikt:</strong> Mehrere Regeln zum Reduzieren möglich.</p>
+    <p>→ Nicht-LR(1)-Grammatiken; Reparatur: Assoziativität beschreiben, Regelreihenfolge.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">LR-Sprachklassen im Vergleich</div>
+    <table class="data-table">
+      <thead><tr><th>Klasse</th><th>Vorausschau Zustände</th><th>Vorausschau Tabelle</th><th>Praxisrelevanz</th></tr></thead>
+      <tbody>
+        <tr><td>LR(0)</td><td>0</td><td>0</td><td>Zu schwach für Programmiersprachen</td></tr>
+        <tr><td>SLR(1)</td><td>0</td><td>1</td><td>Fast alle Konstrukte, kleine Tabellen</td></tr>
+        <tr><td>LALR(1)</td><td>1 (verschmolzen)</td><td>1</td><td>Bester Kompromiss, Yacc/Bison</td></tr>
+        <tr><td>LR(1)</td><td>1</td><td>1</td><td>Mächtigste Klasse = dkfS, große Tabellen</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Satz 3.1 + 3.2</div>
+    <p><strong>Satz 3.1:</strong> Zu jeder LR(k)-Grammatik mit k &gt; 1 gibt es eine äquivalente LR(1)-Grammatik.</p>
+    <p><strong>Satz 3.2:</strong> Jede LL(k)-Sprache ist auch LR(k)-Sprache (aber nicht umgekehrt!).</p>
+    <p>Hierarchie: LL(1) ⊂ SLR(1) ⊂ LALR(1) ⊂ LR(1) = dkfS ⊂ kfS</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Compiler: Analyse + Synthese</div>
+    <p><strong>Analyseteil:</strong> Parsing des Quellcodes (Scanner + Parser).</p>
+    <p><strong>Syntheseteil:</strong> Zielcodegenerierung via <strong>syntaxgesteuerter Übersetzung</strong>.</p>
+    <p><strong>S-Attribute</strong> (synthetisiert): Attributwert ergibt sich aus Nachfolger-Knoten im Parsebaum. Notation: $$ = linke Seite, $1, $2, … = rechte Seite.</p>
+    <p><strong>Parsergeneratoren:</strong> Yacc/Bison (LALR(1)), Lex/Flex (Scanner), VCC (LL(1) + LALR(1)).</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 4 ════════════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header"><h2>Kapitel 4 – Turing-Maschine &amp; Chomsky-Typ-0/1-Sprachen</h2><span>DTM, NTM, LBTM, Berechenbarkeit</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Grenzen von Kellerautomaten</div>
+    <p>NKA reichen nicht für ksS (kontextsensitive Sprachen) und Typ-0-Sprachen:</p>
+    <p>• L₁ = {aⁿbⁿcⁿ | n ≥ 0} – beim Entkellern von b geht n verloren, wird aber für c noch gebraucht.</p>
+    <p>• Auch ein zweiter Keller oder eine Queue löst das Problem nicht allgemein.</p>
+    <p>→ Neues Modell nötig: <strong>Turing-Maschine</strong> mit Lese-<em>Schreib</em>-Kopf auf sequenziellem Band.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Turing-Maschine – Definition 4.1</div>
+    <p>Eine TM ist ein <strong>7-Tupel</strong>: M = (Q, Σ, Γ, δ, q₀, $, E)</p>
+    <p>• Q = endliche Zustandsmenge &nbsp;• Σ = Eingabealphabet &nbsp;• Γ = Bandalphabet (Σ ⊂ Γ\{$})</p>
+    <p>• δ: Q × Γ → Q × Γ × {L, N, R} – Überführungsfunktion (DTM) / P(Q × Γ × {L, N, R}) (NTM)</p>
+    <p>• q₀ = Anfangszustand &nbsp;• $ = Bandvorbelegungszeichen (Blank) &nbsp;• E ⊆ Q = Endzustände</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Arbeitsweise einer DTM</div>
+    <p>δ(qᵢ, k) = (qⱼ, m, b) bedeutet:</p>
+    <p>1. Gehe von Zustand qᵢ in Zustand qⱼ</p>
+    <p>2. Schreibe Zeichen m in das aktuelle Feld (überschreibt k)</p>
+    <p>3. Bewege den Kopf: <strong>L</strong> (links), <strong>N</strong> (bleiben), <strong>R</strong> (rechts)</p>
+    <p><strong>Stopp:</strong> Wenn δ(qᵢ, k) nicht definiert → Crash. Oder: Endloslauf (Rechtslauf/Linkslauf/Zyklus).</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">DTM als Akzeptor (Def. 4.3)</div>
+    <p>L(M) = {w ∈ Σ* | q₀w ⊢* αqₑβ, mit qₑ ∈ E}</p>
+    <p>Wort w wird akzeptiert, wenn DTM in <strong>endlich vielen Schritten in einem Endzustand stoppt</strong>.</p>
+    <p>Dabei egal: Bandinhalt, Kopfposition, ob w komplett gelesen wurde.</p>
+    <p><strong>Konfiguration:</strong> αqᵢβ ∈ Γ* ∘ Q ∘ Γ⁺ – Bandinhalt links (α) + Zustand + Bandinhalt ab Kopf (β).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Sprachklassen und Automaten</div>
+    <p><strong>Rekursiv aufzählbar (semientscheidbar):</strong> Es gibt eine DTM M mit L = L(M). Entspricht Chomsky-Typ 0.</p>
+    <p><strong>Rekursiv (entscheidbar):</strong> Es gibt eine <strong>stets anhaltende</strong> DTM M mit L = L(M). Obermenge der ksS.</p>
+    <p><strong>DTM ≡ NTM:</strong> Gleiche Beschreibungsmächtigkeit als Akzeptoren.</p>
+    <p><strong>LBTM:</strong> Linear beschränkte TM – Kopf bewegt sich nur im Eingabewort-Bereich → beschreibt ksS (Typ 1).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Vollständige Chomsky-Hierarchie</div>
+    <table class="data-table">
+      <thead><tr><th>Sprachklasse</th><th>Automat</th><th>Chomsky-Typ</th><th>Wortproblem</th></tr></thead>
+      <tbody>
+        <tr><td>Reguläre Sprachen</td><td>DEA / NEA</td><td>Typ 3</td><td>O(n)</td></tr>
+        <tr><td>dkfS</td><td>DKA</td><td>– (⊂ Typ 2)</td><td>O(n)</td></tr>
+        <tr><td>Kontextfreie Sprachen</td><td>NKA</td><td>Typ 2</td><td>O(n³) CYK</td></tr>
+        <tr><td>Kontextsensitive Spr.</td><td>LBTM</td><td>Typ 1</td><td>Entscheidbar (exp.)</td></tr>
+        <tr><td>Rek. aufzählbare Spr.</td><td>DTM / NTM</td><td>Typ 0</td><td>Nicht entscheidbar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">UTM und TM als Funktionsberechner</div>
+    <p><strong>Universelle TM (UTM):</strong> Simuliert jede andere TM. Eingabe: cod(M)$w. Entspricht Von-Neumann-Architektur (Programm + Daten im Speicher).</p>
+    <p><strong>TM als Funktionsberechner:</strong> f: (Σ*)ⁿ → Σ*. Argumente w₁$w₂$…$wₙ auf Band, Ergebnis nach Stopp am Kopf ablesen. Partielle Funktionen (TM hält ggf. nicht).</p>
+    <p><strong>Turing-Berechenbarkeit:</strong> Präzisierung des Berechenbarkeitsbegriffs – Church-Turing-These.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ FLASHCARDS ════════════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header"><h2>Flashcards</h2><span>Klick auf die Karte zum Umdrehen</span></div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ QUIZ ════════════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header"><h2>Prüfungsquiz</h2><span>20 Fragen mit Erklärungen</span></div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ CHEATSHEET ════════════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header"><h2>Cheatsheet</h2><span>Kompakte Zusammenfassung</span></div>
+  <div class="cheat-grid">
+
+    <div class="cheat-block">
+      <h4>Kellerautomaten</h4>
+      <div class="cheat-row"><span class="cheat-key">NKA 7-Tupel</span><span class="cheat-val">(Q, Σ, Γ, δ, q₀, k₀, E)</span></div>
+      <div class="cheat-row"><span class="cheat-key">NKA 6-Tupel</span><span class="cheat-val">Ohne E, akzeptiert per leerem Keller</span></div>
+      <div class="cheat-row"><span class="cheat-key">DKA</span><span class="cheat-val">δ-Werte = Paare, keine ε/a-Konflikte</span></div>
+      <div class="cheat-row"><span class="cheat-key">NKA = kfG</span><span class="cheat-val">Satz 1.2: kfS ≡ NKA-Sprachen</span></div>
+      <div class="cheat-row"><span class="cheat-key">DKA ⊊ NKA</span><span class="cheat-val">Palindrome ohne Mitte: NKA ja, DKA nein</span></div>
+      <div class="cheat-row"><span class="cheat-key">dkfS</span><span class="cheat-val">= DKA-Sprachen = LR(k)-Sprachen</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Grammatik-Optimierung</h4>
+      <div class="cheat-row"><span class="cheat-key">Unnütze NT</span><span class="cheat-val">Iterativ nützliche sammeln, Rest streichen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kettenregeln</span><span class="cheat-val">X → Y: Paare (A,B) bilden, substituieren</span></div>
+      <div class="cheat-row"><span class="cheat-key">CNF</span><span class="cheat-val">X → a oder X → YZ (Binärbäume)</span></div>
+      <div class="cheat-row"><span class="cheat-key">CYK</span><span class="cheat-val">Parsing auf CNF-Basis in O(n³)</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>LL(k)-Sprachen</h4>
+      <div class="cheat-row"><span class="cheat-key">LL(k)</span><span class="cheat-val">Links-lesen, Links-ableiten, k Vorausschau</span></div>
+      <div class="cheat-row"><span class="cheat-key">Forderung 1</span><span class="cheat-val">FIRST(αᵢ) ∩ FIRST(αⱼ) = ∅</span></div>
+      <div class="cheat-row"><span class="cheat-key">Forderung 2</span><span class="cheat-val">FIRST(X) ∩ FOLLOW(X) = ∅ (bei X ⇒* ε)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Konsequenz</span><span class="cheat-val">Nie linksrekursiv, nie mehrdeutig</span></div>
+      <div class="cheat-row"><span class="cheat-key">Parser</span><span class="cheat-val">Rekursiver Abstieg, O(n)</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>LR(k)-Sprachen</h4>
+      <div class="cheat-row"><span class="cheat-key">LR(k)</span><span class="cheat-val">Links-lesen, Rechts-ableiten, k Vorausschau</span></div>
+      <div class="cheat-row"><span class="cheat-key">Aktionen</span><span class="cheat-val">shift, reduce, accept (+ Fehler)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Parsetabelle</span><span class="cheat-val">action-Teil + goto-Teil</span></div>
+      <div class="cheat-row"><span class="cheat-key">Hierarchie</span><span class="cheat-val">LR(0) ⊂ SLR(1) ⊂ LALR(1) ⊂ LR(1)</span></div>
+      <div class="cheat-row"><span class="cheat-key">LL(k) ⊂ LR(k)</span><span class="cheat-val">Satz 3.2: Jede LL(k)-Spr. ist LR(k)</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Turing-Maschine</h4>
+      <div class="cheat-row"><span class="cheat-key">DTM 7-Tupel</span><span class="cheat-val">(Q, Σ, Γ, δ, q₀, $, E)</span></div>
+      <div class="cheat-row"><span class="cheat-key">δ-Funktion</span><span class="cheat-val">δ(q, k) = (q', m, b), b ∈ {L, N, R}</span></div>
+      <div class="cheat-row"><span class="cheat-key">DTM ≡ NTM</span><span class="cheat-val">Gleiche Akzeptorkraft</span></div>
+      <div class="cheat-row"><span class="cheat-key">LBTM</span><span class="cheat-val">NTM auf Eingabebereich beschränkt → ksS</span></div>
+      <div class="cheat-row"><span class="cheat-key">UTM</span><span class="cheat-val">Simuliert jede TM: cod(M)$w → Von-Neumann</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Sprachklassen-Hierarchie</h4>
+      <div class="cheat-row"><span class="cheat-key">Typ 3</span><span class="cheat-val">reg. Sprachen – DEA/NEA</span></div>
+      <div class="cheat-row"><span class="cheat-key">dkfS</span><span class="cheat-val">DKA-Sprachen – LR(k)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ 2</span><span class="cheat-val">kfS – NKA</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ 1</span><span class="cheat-val">ksS – LBTM</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ 0</span><span class="cheat-val">rek. aufzählbar – DTM/NTM</span></div>
+      <div class="cheat-row"><span class="cheat-key">rekursiv</span><span class="cheat-val">Stets stoppende DTM (ksS ⊂ rek. ⊂ r.a.)</span></div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+const flashcardsData = [
+  // Kap 1
+  {cat:"Kellerautomaten",q:"Was ist ein NKA (7-Tupel)?",a:"M = (Q, Σ, Γ, δ, q₀, k₀, E). Q = Zustände, Σ = Eingabealphabet, Γ = Kelleralphabet, δ = partielle Überführungsfunktion, q₀ = Anfangszustand, k₀ = Kellervorbelegungszeichen, E = Endzustände."},
+  {cat:"Kellerautomaten",q:"Wie arbeitet ein NKA in jedem Takt?",a:"1) top of stack wird verbrauchend gelesen (pop). 2) Kellerwort k₁k₂…kᵣ wird aufgelegt (multiple push), k₁ = neues tos. 3) Zustandswechsel. Akzeptanz: Wort komplett gelesen + Endzustand erreicht."},
+  {cat:"Kellerautomaten",q:"Was besagt Satz 1.2 (Äquivalenz NKA ↔ kfG)?",a:"Eine Sprache ist kontextfrei genau dann, wenn sie von einem NKA akzeptiert wird. kfS = NKA-Sprachen. Konstruktive Beweise liefern Transformationen in beide Richtungen."},
+  {cat:"Kellerautomaten",q:"Was unterscheidet DKA von NKA?",a:"3 Unterschiede: 1) δ-Werte sind Paare (keine Mengen). 2) δ(q,ε,A) definiert → δ(q,a,A) undefiniert (keine ε/a-Konflikte). 3) Nur 7-Tupel-Form erlaubt. DKA ⊊ NKA!"},
+  {cat:"Kellerautomaten",q:"Warum gibt es für Palindrome keinen DKA?",a:"Ein DKA kann die Wortmitte nicht erkennen – er weiß nicht, wann er vom Kellern auf Entkellern umschalten soll. Ein NKA kann nichtdeterministisch die Mitte 'raten'. Palindrome MIT markierter Mitte (vcv̄) sind DKA-akzeptierbar."},
+  {cat:"Kellerautomaten",q:"Was ist die Chomsky-Normalform (CNF)?",a:"Jede Regel hat die Form X → a oder X → YZ (a ∈ T, X,Y,Z ∈ N). Ableitungsbäume = Binärbäume. Ermöglicht CYK-Algorithmus in O(n³). Transformation: Terminale ersetzen + lange Regeln aufspalten."},
+  {cat:"Kellerautomaten",q:"Wie beseitigt man Kettenregeln?",a:"Kettenregel: X → Y (beide Nichtterminale). Verfahren: 1) Menge M aller Paare (A,B) mit A ⇒* B bilden. 2) Für jedes (X,Y) ∈ M und Y → β ∈ P (β ∉ N): X → β in neue Regelmenge aufnehmen."},
+  // Kap 2
+  {cat:"LL(k)-Sprachen",q:"Wofür steht LL(k)?",a:"L = Analyse von links nach rechts. L = Linksableitung. (k) = Anzahl Vorausschauzeichen. Deterministisches Top-down-Parsing ohne Backtracking. Auch 'prädiktive Syntaxanalyse' genannt."},
+  {cat:"LL(k)-Sprachen",q:"Was ist die LL(1)-Forderung 1?",a:"Für jedes Nichtterminal X mit Regeln X → α₁|…|αₙ: FIRST(αᵢ) ∩ FIRST(αⱼ) = ∅ für alle i≠j. Die Anfangssymbole alternativer Regeln müssen disjunkt sein."},
+  {cat:"LL(k)-Sprachen",q:"Was ist die LL(1)-Forderung 2?",a:"Für jedes X mit X ⇒* ε: FIRST(X) ∩ FOLLOW(X) = ∅. Die Anfangssymbole eines ε-ableitbaren Nichtterminals dürfen nicht in seiner Folgemenge vorkommen."},
+  {cat:"LL(k)-Sprachen",q:"Was ist FOLLOW(X)?",a:"FOLLOW(X) = Menge aller Terminale, die in irgendeiner vom Startsymbol ableitbaren Satzform direkt rechts neben X stehen können. Berechnung über Regeln A → αXβ: FIRST(β)\\{ε} ∪ ggf. FOLLOW(A)."},
+  {cat:"LL(k)-Sprachen",q:"Wie beseitigt man direkte Linksrekursion?",a:"X → Xα | β wird transformiert zu: X → βX', X' → αX' | ε. Für indirekte Linksrekursion: Paull-Algorithmus (Nichtterminale nummerieren, systematisch substituieren, dann direkte beseitigen)."},
+  {cat:"LL(k)-Sprachen",q:"Wie ist die LL(k)-Hierarchie?",a:"LL(1) ⊂ LL(2) ⊂ … ⊂ LL(k) ⊂ dkfS. LL(k)-Grammatiken sind immer eindeutig. LL(1) reicht für die meisten Praxisanwendungen (z.B. Pascal). Parser arbeiten in O(n)."},
+  // Kap 3
+  {cat:"LR(k)-Sprachen",q:"Wofür steht LR(k)?",a:"L = Analyse von links nach rechts. R = Rechtsableitung (Bottom-up = Linksreduktion). (k) = Vorausschauzeichen. LR(k)-Sprachen = dkfS = DKA-Sprachen. Umfassendste deterministische kfS-Klasse."},
+  {cat:"LR(k)-Sprachen",q:"Was ist shift/reduce-Parsing?",a:"Drei Aktionen: shift = Token auf Stapel legen. reduce X → β = Handle β am tos durch X ersetzen. accept = Startsymbol allein im Keller, Eingabe leer. Konflikte: shift/reduce oder reduce/reduce."},
+  {cat:"LR(k)-Sprachen",q:"Was ist eine LR-Parsetabelle?",a:"Zwei Teile: action(Zustand, Terminal) → s/rᵢ/accept/Fehler und goto(Zustand, Vokabularzeichen) → neuer Zustand. Auf dem Stapel liegen Zustandsnamen + Vokabularzeichen abwechselnd."},
+  {cat:"LR(k)-Sprachen",q:"Was ist LALR(1)?",a:"LookAhead-LR(1): LR(1)-Zustände erzeugen, dann zusammenfassbare Zustände verschmelzen → kleinere Tabellen. Bester Kompromiss für Praxis. Yacc/Bison verwenden LALR(1)."},
+  {cat:"LR(k)-Sprachen",q:"Was sind S-Attribute im Compilerbau?",a:"Synthetisierte Attribute: Wert ergibt sich aus Nachfolger-Knoten im Parsebaum (Bottom-up berechnet). Notation: $$ = linke Regelseite, $1,$2,… = rechte Seite. Semantische Regeln produzieren Zielcode-Fragmente."},
+  // Kap 4
+  {cat:"Turing-Maschine",q:"Was ist eine Turing-Maschine (7-Tupel)?",a:"M = (Q, Σ, Γ, δ, q₀, $, E). Q = Zustände, Σ = Eingabealphabet, Γ = Bandalphabet (Σ ⊂ Γ\\{$}), δ: Q×Γ → Q×Γ×{L,N,R}, q₀ = Anfangszustand, $ = Blank, E = Endzustände."},
+  {cat:"Turing-Maschine",q:"Was bedeutet δ(qᵢ, k) = (qⱼ, m, b)?",a:"Aus Zustand qᵢ beim Lesen von k: 1) Wechsle zu qⱼ. 2) Schreibe m ins aktuelle Feld. 3) Bewege Kopf gemäß b ∈ {L, N, R}. Falls δ nicht definiert: Stopp per Crash."},
+  {cat:"Turing-Maschine",q:"Was ist der Unterschied zwischen rekursiv aufzählbar und rekursiv?",a:"Rekursiv aufzählbar (Typ 0): DTM existiert (kann aber endlos laufen). Rekursiv (entscheidbar): STETS ANHALTENDE DTM existiert – liefert immer ja/nein. Es gilt: ksS ⊂ rekursiv ⊂ rek. aufzählbar."},
+  {cat:"Turing-Maschine",q:"Was ist eine LBTM?",a:"Linear beschränkte TM: NTM, deren Kopf sich nur innerhalb des Eingabewort-Bereichs bewegen darf. Beschreibt genau die kontextsensitiven Sprachen (Chomsky-Typ 1)."},
+  {cat:"Turing-Maschine",q:"Was ist eine UTM (Universelle TM)?",a:"Eine TM, die jede andere TM simuliert. Eingabe: cod(M)$w auf dem Band. UTM interpretiert die codierte Überführungsfunktion. Entspricht der Von-Neumann-Architektur (Programm + Daten im Speicher)."},
+  {cat:"Turing-Maschine",q:"Wie berechnet eine TM Funktionen?",a:"f: (Σ*)ⁿ → Σ*. Argumente w₁$w₂$…$wₙ auf das Band schreiben. Nach Stopp: Kopf steht auf erstem Zeichen des Ergebniswortes (bis zum nächsten $). Partielle Funktionen, da TM ggf. nicht hält."},
+  {cat:"Turing-Maschine",q:"Wie sieht die vollständige Sprachklassen-Hierarchie aus?",a:"endlich ⊂ regulär (DEA) ⊂ dkfS (DKA) ⊂ kfS (NKA) ⊂ ksS (LBTM) ⊂ rekursiv ⊂ rek. aufzählbar (DTM/NTM). Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0."}
+];
+
+const quizData = [
+  // Kap 1
+  {q:"Was ist die Definition eines NKA?",
+   opts:["Ein 5-Tupel mit endlicher Zustandsmenge","Ein 7-Tupel (Q, Σ, Γ, δ, q₀, k₀, E)","Ein 6-Tupel ohne Kelleralphabet","Ein 4-Tupel wie bei regulären Grammatiken"], correct:1,
+   exp:"Ein NKA ist ein 7-Tupel M = (Q, Σ, Γ, δ, q₀, k₀, E) mit Zuständen Q, Eingabealphabet Σ, Kelleralphabet Γ, Überführungsfunktion δ, Anfangszustand q₀, Kellervorbelegung k₀ und Endzuständen E."},
+  {q:"Welche Aussage über DKA und NKA ist korrekt?",
+   opts:["DKA und NKA sind gleich mächtig","DKA ist mächtiger als NKA","DKA ist echt schwächer als NKA","DKA gibt es nicht"], correct:2,
+   exp:"Im Gegensatz zu DEA ≡ NEA gilt: DKA ⊊ NKA. Es gibt kfS (z.B. Palindrome ohne markierte Wortmitte), für die ein NKA existiert, aber kein äquivalenter DKA."},
+  {q:"Was besagt Satz 1.2?",
+   opts:["Jeder DEA kann in einen NKA umgewandelt werden","NKA und kfG beschreiben die gleiche Sprachklasse","DKA und NKA sind äquivalent","Alle Typ-1-Sprachen sind kontextfrei"], correct:1,
+   exp:"Satz 1.2: Eine Sprache ist kontextfrei genau dann, wenn sie von einem NKA akzeptiert wird. Damit sind kfG (Chomsky-Typ 2) und NKA gleichberechtigte Beschreibungsmittel für kfS."},
+  {q:"Was ist die Chomsky-Normalform (CNF)?",
+   opts:["Regeln der Form X → aY oder X → a","Regeln der Form X → a oder X → YZ","Regeln der Form X → YaZ","Regeln ohne ε-Produktionen"], correct:1,
+   exp:"CNF: Jede Regel hat die Form X → a (Terminal) oder X → YZ (zwei Nichtterminale). Ableitungsbäume sind Binärbäume. Ermöglicht den CYK-Algorithmus mit O(n³) Zeitkomplexität."},
+  {q:"Warum gibt es für Palindrome (ohne Markierung) keinen DKA?",
+   opts:["Palindrome sind nicht kontextfrei","Der DKA kann die Wortmitte nicht erkennen","Der Keller ist zu klein","DKA kann keine Zeichen vergleichen"], correct:1,
+   exp:"Ein DKA hat keine Möglichkeit festzustellen, ob die Wortmitte erreicht ist, um vom Kellern auf Entkellern umzuschalten. Ein NKA kann die Mitte nichtdeterministisch 'raten'."},
+  // Kap 2
+  {q:"Wofür steht das erste L in LL(k)?",
+   opts:["Linksableitung","Analyse von links nach rechts","Leserichtung der Grammatik","Linksfaktorisierung"], correct:1,
+   exp:"Erstes L = Analyse des Eingabewortes von links nach rechts (Leserichtung). Zweites L = Linksableitung. k = Anzahl Vorausschauzeichen für irrtumsfreie Regelauswahl."},
+  {q:"Was fordert die LL(1)-Forderung 1?",
+   opts:["FIRST(X) ∩ FOLLOW(X) = ∅","FIRST(αᵢ) ∩ FIRST(αⱼ) = ∅ für alle Alternativen","Die Grammatik muss ε-frei sein","Alle Regeln müssen linksrekursionsfrei sein"], correct:1,
+   exp:"Für jedes Nichtterminal X mit Regeln X → α₁|…|αₙ müssen die FIRST-Mengen aller Alternativen paarweise disjunkt sein. Nur so kann mit einem Vorausschauzeichen die richtige Regel gewählt werden."},
+  {q:"Wann greift die LL(1)-Forderung 2?",
+   opts:["Immer bei jeder kfG","Nur wenn ein Nichtterminal ε ableiten kann","Nur bei linksrekursiven Grammatiken","Nur bei mehrdeutigen Grammatiken"], correct:1,
+   exp:"Forderung 2 betrifft Nichtterminale X mit X ⇒* ε: FIRST(X) ∩ FOLLOW(X) = ∅. Da X 'verschwinden' kann, dürfen seine Anfangssymbole nicht auch als Folgesymbole auftreten."},
+  {q:"Wie beseitigt man direkte Linksrekursion X → Xα | β?",
+   opts:["X → αX' und X' → βX' | ε","X → βX' und X' → αX' | ε","X → αβ und fertig","Durch Entfernen der Regel X → Xα"], correct:1,
+   exp:"X → Xα | β wird zu X → βX', X' → αX' | ε. Die Linksrekursion wird in eine Rechtsrekursion überführt. Für indirekte Linksrekursion: Paull-Algorithmus."},
+  {q:"Was gilt NICHT für LL(k)-Grammatiken?",
+   opts:["Sie sind immer eindeutig","Sie können linksrekursiv sein","Es gibt eine Hierarchie LL(1) ⊂ LL(2) ⊂ …","Sie bilden eine Teilmenge der dkfS"], correct:1,
+   exp:"LL(k)-Grammatiken können niemals linksrekursiv oder mehrdeutig sein. Eine linksrekursive Regel würde die FIRST-Mengen-Disjunktheit verletzen."},
+  // Kap 3
+  {q:"Was bedeutet 'shift' beim LR-Parsing?",
+   opts:["Eine Regel anwenden und den Stapel reduzieren","Das nächste Token vom Eingabepuffer auf den Stapel legen","Das Parsing erfolgreich abschließen","Einen Fehler melden"], correct:1,
+   exp:"shift = nächstes Zeichen (Token) vom Eingabepuffer entfernen und auf den Stapel legen. Die Alternative ist reduce (Handle durch Nichtterminal ersetzen) oder accept."},
+  {q:"Was ist ein Handle beim LR-Parsing?",
+   opts:["Das Startsymbol der Grammatik","Die Satzform am oberen Stapelrand, die einer rechten Regelseite entspricht","Das nächste Eingabezeichen","Der aktuelle Zustand des Automaten"], correct:1,
+   exp:"Handle = Satzform β am oberen Stapelrand, die einer rechten Regelseite X → β entspricht. reduce: Handle β wird durch Nichtterminal X ersetzt."},
+  {q:"Was ist LALR(1)?",
+   opts:["Eine Vereinfachung von LL(1)","LookAhead-LR(1): LR(1)-Zustände verschmelzen für kleinere Tabellen","Ein Scannergenerator","Eine reguläre Sprache"], correct:1,
+   exp:"LALR(1) = LookAhead-LR(1). LR(1)-Zustände erzeugen, dann zusammenfassbare verschmelzen → kleinere Tabellen bei fast gleicher Mächtigkeit. Yacc/Bison verwenden LALR(1)."},
+  {q:"Welche Beziehung gilt zwischen LL(k) und LR(k)?",
+   opts:["LL(k) = LR(k)","LL(k) ⊃ LR(k)","LL(k) ⊂ LR(k)","Kein Zusammenhang"], correct:2,
+   exp:"Satz 3.2: Jede LL(k)-Sprache ist auch LR(k)-Sprache, aber nicht umgekehrt. Hierarchie: LL(1) ⊂ SLR(1) ⊂ LALR(1) ⊂ LR(1) = dkfS."},
+  {q:"Was sind S-Attribute im Compilerbau?",
+   opts:["Semantische Regeln für Scanner","Synthetisierte Attribute, die Bottom-up aus Nachfolgerknoten berechnet werden","Statische Typinformationen","Symboltabelleneinträge"], correct:1,
+   exp:"S-Attribute (synthetisiert): Wert ergibt sich aus Attributwerten der Nachfolger-Knoten im Parsebaum. Bottom-up-Analyse: Berechnung steigt von Blättern auf. $$ = linke Seite, $1,$2… = rechte Seite."},
+  // Kap 4
+  {q:"Warum reichen Kellerautomaten nicht für {aⁿbⁿcⁿ}?",
+   opts:["Die Sprache ist nicht kontextfrei","Beim Entkellern der b geht n verloren, wird aber für c gebraucht","Der Keller kann nicht drei Zeichen speichern","Kellerautomaten können nicht zählen"], correct:1,
+   exp:"Die gekellerten a werden durch die b schrittweise entfernt. Dabei geht die Zählung n verloren, die für den Vergleich mit den c noch benötigt wird. {aⁿbⁿcⁿ} ist kontextsensitiv (Typ 1)."},
+  {q:"Was ist eine DTM?",
+   opts:["Ein endlicher Automat mit zwei Bändern","Ein 7-Tupel M = (Q, Σ, Γ, δ, q₀, $, E) mit Lese-Schreib-Kopf","Ein NKA mit erweitertem Keller","Ein Scanner für reguläre Ausdrücke"], correct:1,
+   exp:"DTM = deterministischer Turing-Maschine. 7-Tupel mit Lese-Schreib-Kopf auf potenziell unendlichem Band. δ: Q×Γ → Q×Γ×{L,N,R}. Kann Zeichen lesen UND schreiben, Kopf links/rechts/bleiben."},
+  {q:"Was bedeutet 'rekursiv aufzählbar'?",
+   opts:["Die Sprache ist mit einer endlichen Liste darstellbar","Es gibt eine DTM, die genau diese Sprache akzeptiert (kann aber endlos laufen)","Die Sprache ist mit einem DEA erkennbar","Die Grammatik enthält keine Rekursion"], correct:1,
+   exp:"Rekursiv aufzählbar = Typ 0: DTM M existiert mit L = L(M). Die DTM stoppt akzeptierend für w ∈ L, kann aber für w ∉ L endlos laufen. Rekursiv = stets anhaltende DTM → immer ja/nein."},
+  {q:"Was beschreibt eine LBTM?",
+   opts:["Typ-0-Sprachen","Typ-1-Sprachen (kontextsensitiv)","Typ-2-Sprachen","Reguläre Sprachen"], correct:1,
+   exp:"LBTM (Linear beschränkte TM): NTM, deren Kopf nur innerhalb des Eingabewort-Bereichs arbeiten darf. Beschreibt exakt die kontextsensitiven Sprachen (Chomsky-Typ 1)."},
+  {q:"Was ist die korrekte Hierarchie der Sprachklassen?",
+   opts:["Typ 0 ⊂ Typ 1 ⊂ Typ 2 ⊂ Typ 3","Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0","Alle Typen sind gleich mächtig","Typ 3 ⊂ Typ 1 ⊂ Typ 2 ⊂ Typ 0"], correct:1,
+   exp:"Typ 3 (regulär/DEA) ⊂ Typ 2 (kontextfrei/NKA) ⊂ Typ 1 (kontextsensitiv/LBTM) ⊂ Typ 0 (rek. aufzählbar/DTM). Dazwischen: dkfS (DKA) und rekursive Sprachen (stets stoppende DTM)."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGI06 · Formale Sprachen und abstrakte Automaten 1</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">TGI06 · 0723K05 · HfB</div>
+  <h1>Formale Sprachen und abstrakte Automaten 1</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 4 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════════════════ ÜBERSICHT ════════════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header"><h2>Übersicht</h2><span>Alle Kapitel im Überblick</span></div>
+
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#8b5cf6" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Grundbegriffe</h3>
+      <p>Alphabet, Zeichen, Wort, Wortlänge, Verkettung, Wortmenge A*, Sprache, Abzählbarkeit</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ef4444" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>Formale Grammatik</h3>
+      <p>4-Tupel G=(N,T,P,s), Ableitung, Links-/Rechtsableitung, Chomsky-Hierarchie, Wortproblem</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f59e0b" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>Sprachübersetzer</h3>
+      <p>Compiler, Interpreter, Zeichenroboter ZR, T-Diagramme, Scanner &amp; Parser</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#06b6d4" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Reguläre Sprachen</h3>
+      <p>DEA, NEA, Potenzmengenkonstruktion, Minimalautomaten, NEA mit ε-Übergängen, Reguläre Ausdrücke</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">PRÜFUNGSRELEVANTE SCHWERPUNKTE</div>
+    <div class="two-col">
+      <ul class="content-list">
+        <li><strong>Alphabet &amp; Wort</strong> – endliche nichtleere Zeichenmenge, Wortlänge, Verkettung</li>
+        <li><strong>Wortmenge A*</strong> – alle Wörter über A, abzählbar unendlich</li>
+        <li><strong>Formale Grammatik</strong> – G = (N, T, P, s), Ableitung, Satzform</li>
+        <li><strong>Chomsky-Hierarchie</strong> – Typ 0 (unbeschränkt), Typ 1 (kontextsensitiv), Typ 2 (kontextfrei), Typ 3 (regulär)</li>
+        <li><strong>Wortproblem</strong> – für Typ 1–3 entscheidbar, für Typ 0 nicht</li>
+        <li><strong>Mehrdeutigkeit</strong> – mehrere Linksableitungen für ein Wort</li>
+      </ul>
+      <ul class="content-list">
+        <li><strong>DEA</strong> – 5-Tupel (Q, Σ, δ, q₀, E), totale Überführungsfunktion</li>
+        <li><strong>NEA</strong> – δ: Q × Σ → P(Q), Nichtdeterminismus</li>
+        <li><strong>NEA → DEA</strong> – Potenzmengenkonstruktion</li>
+        <li><strong>Minimalautomaten</strong> – Hopcroft-Ullman-Verfahren, Zustandspaare verschmelzen</li>
+        <li><strong>Reguläre Ausdrücke</strong> – ∅, ε, a, Vereinigung, Konkatenation, Kleene-Stern</li>
+        <li><strong>Compiler-Phasen</strong> – Scanner (lexikalisch) → Parser (syntaktisch) → AST</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 1 ════════════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header"><h2>Kapitel 1</h2><span>Grundbegriffe</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Alphabet (Definition 1.1)</div>
+    <p>Ein <strong>Alphabet</strong> ist eine beliebige <strong>endliche, nichtleere Menge</strong>. Die Elemente dieser Menge heißen <strong>Zeichen</strong>. Beispiel: A₁ = {a, b, c, …, z}, A₅ = {0, 1}.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Wort (Definition 1.2)</div>
+    <p>Irgendeine (auch leere) Zeichenkette ist ein <strong>Wort</strong>. Ein Wort <em>w</em> ist ein „Wort über dem Alphabet A", wenn sämtliche Zeichen von <em>w</em> aus A stammen. Das Symbol für das <strong>leere Wort</strong> ist <strong>ε</strong> (Länge 0).</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Wortlänge (Definition 1.3)</div>
+    <p>Die <strong>Länge</strong> eines Wortes w, kurz |w|, ist bestimmt durch die Anzahl aller Zeichen, die das Wort w enthält. Dabei werden Mehrfachvorkommen entsprechend ihrem Auftreten <strong>mehrfach gezählt</strong>. Beispiel: |bbabcaa| = 7 (nicht 3).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Verkettung (Konkatenation)</div>
+    <p>Die <strong>Verkettung</strong> (Symbol ∘) verknüpft Zeichen oder Wörter durch Hintereinandersetzen. Beispiel: „aste" ∘ „rix" = „asterix". Das leere Wort ε ist das <strong>neutrale Element</strong>: w ∘ ε = ε ∘ w = w. Die Verkettung ist <strong>assoziativ</strong>, aber <strong>nicht kommutativ</strong>.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Wortmenge A* (Definition 1.4)</div>
+    <p>Die Menge <strong>aller Wörter</strong> über A nennt man die <strong>Wortmenge A*</strong>. Das leere Wort ε gehört zu jeder Wortmenge. A* ist stets eine <strong>abzählbar unendliche</strong> Menge – selbst für ein Alphabet mit nur einem Zeichen können unendlich viele Wörter gebildet werden.</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Längenlexikografische Ordnung</div>
+    <p>Wörter in A* werden systematisch geordnet: zuerst nach <strong>aufsteigender Wortlänge</strong>, innerhalb gleicher Länge <strong>lexikografisch</strong> (alphabetisch). Die Reihenfolge der Alphabetelemente bestimmt die Sortierung. So lässt sich eine <strong>bijektive Abbildung</strong> von ℕ₀ auf A* definieren (Satz 1.1).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Sprache (Definition 1.6)</div>
+    <p>Sei A ein Alphabet. Jede <strong>Teilmenge L ⊆ A*</strong> heißt <strong>Sprache über A</strong>. Zwei Extremfälle: L₁ = ∅ (leere Sprache) und L₂ = A* (Allsprache). Sprachen sind entweder endlich oder abzählbar unendlich. Für unendliche Sprachen braucht man <strong>formale Grammatiken</strong> zur Definition.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">EIGENSCHAFTEN DER VERKETTUNG IN A*</div>
+    <table class="data-table">
+      <tr><th>Eigenschaft</th><th>Beschreibung</th><th>Gilt?</th></tr>
+      <tr><td>Abgeschlossenheit</td><td>u, v ∈ A* → u ∘ v ∈ A*</td><td>✓</td></tr>
+      <tr><td>Assoziativität</td><td>(u ∘ v) ∘ w = u ∘ (v ∘ w)</td><td>✓</td></tr>
+      <tr><td>Neutrales Element</td><td>ε ∘ w = w ∘ ε = w</td><td>✓</td></tr>
+      <tr><td>Kommutativität</td><td>u ∘ v = v ∘ u ?</td><td>✗</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 2 ════════════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header"><h2>Kapitel 2</h2><span>Formale Grammatik</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Formale Grammatik (Definition 2.1)</div>
+    <p>Eine formale Grammatik G ist ein <strong>4-Tupel G = (N, T, P, s)</strong> mit: <strong>N</strong> = Menge der Nichtterminale, <strong>T</strong> = Menge der Terminale (Alphabetzeichen), <strong>P</strong> = endliche Menge von Regeln (Produktionen), <strong>s</strong> = Startsymbol (s ∈ N). N und T sind nichtleer, endlich und <strong>disjunkt</strong> (N ∩ T = ∅).</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">Beispiel: Grammatik für Zahlwörter</div>
+    <p>G = (N, T, P, s) mit N = {Zahl, Ziffern, Ziffer}, T = {0,1,…,9}, s = Zahl und P = {Zahl → Ziffer | Ziffer Zahl, Ziffer → 0|1|2|…|9}. Der <strong>Alternativstrich</strong> ( | ) fasst Regeln für dasselbe Nichtterminal zusammen. Das Wort „371" wird abgeleitet: Zahl ⇒ Ziffer Zahl ⇒ 3 Zahl ⇒ 3 Ziffer Zahl ⇒ 37 Zahl ⇒ 37 Ziffer ⇒ 371.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Ableitung &amp; definierte Sprache (Def. 2.3 &amp; 2.4)</div>
+    <p>Eine Folge von Satzformen (α₀, α₁, …, αₙ) mit α₀ = s und αₙ = w ∈ T* heißt <strong>Ableitung</strong> von w. Die durch G <strong>definierte Sprache L(G)</strong> ist die Menge aller Wörter w ∈ T*, die vom Startsymbol s aus ableitbar sind: L(G) = {w | w ∈ T* und s ⇒* w}.</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Nichtdeterminismus &amp; Backtracking</div>
+    <p>Bei spontaner Regelauswahl kann der Ableitungsprozess in <strong>Sackgassen</strong> geraten. <strong>Backtracking</strong> korrigiert dies: An der letzten Entscheidungsstelle wird eine alternative Regel gewählt. Erst wenn alle Möglichkeiten ausgeschöpft sind, ist bewiesen, dass w ∉ L(G). Bei kontextfreien Grammatiken reichen <strong>Linksableitungen</strong> (immer das linkste Nichtterminal ersetzen).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Mehrdeutigkeit (Definition 2.6)</div>
+    <p>Eine kfG ist <strong>mehrdeutig</strong>, wenn es ein Wort in L(G) gibt, das mindestens <strong>zwei verschiedene Linksableitungen</strong> (= verschiedene Ableitungsbäume) besitzt. Mehrdeutige Grammatiken sind für Compiler <strong>unerwünscht</strong>. Es gibt keinen Universalalgorithmus zur Feststellung von Mehrdeutigkeit. Manche kontextfreie Sprachen sind <strong>inhärent mehrdeutig</strong>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">CHOMSKY-HIERARCHIE (TAB. 2.1)</div>
+    <table class="data-table">
+      <tr><th>Typ</th><th>Bezeichnung</th><th>Regelgestalt</th><th>Automatenmodell</th></tr>
+      <tr><td>0</td><td>Unbeschränkt</td><td>Keine Einschränkung</td><td>Turing-Maschine</td></tr>
+      <tr><td>1</td><td>Kontextsensitiv</td><td>Längenmonotone Regeln: |α| ≤ |β|</td><td>Linear beschränkter Automat</td></tr>
+      <tr><td>2</td><td>Kontextfrei</td><td>Links nur ein Nichtterminal: A → β</td><td>Kellerautomat</td></tr>
+      <tr><td>3</td><td>Regulär</td><td>A → aB oder A → a (rechtslinear)</td><td>Endlicher Automat (DEA/NEA)</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Sprachklassen-Hierarchie</div>
+    <p>Die Chomsky-Sprachklassen bilden eine <strong>echte Hierarchie</strong>: Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0. Jede reguläre Sprache ist kontextfrei, jede kontextfreie ist kontextsensitiv usw. Die Inklusionen sind <strong>echt</strong> – es gibt z.B. kontextfreie Sprachen, die nicht regulär sind.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ε-Sonderregelungen</div>
+    <p>ε-Regeln (A → ε) verstoßen gegen die <strong>Längenmonotonie</strong>, sind aber praktisch nützlich und für ε ∈ L(G) unverzichtbar. <strong>Satz 2.2</strong>: Zu jeder ε-freien ksG gibt es eine äquivalente ksG, die ε enthält. <strong>Satz 2.3</strong>: Zu jeder kfG mit ε-Regeln gibt es eine äquivalente ε-freie kfG (ggf. bis auf s → ε).</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Wortproblem (Definition 2.8)</div>
+    <p>Das <strong>Wortproblem</strong> fragt: Gibt es ein Entscheidungsverfahren, das für jedes w ∈ T* und jede Grammatik G feststellt, ob w ∈ L(G)? <strong>Satz 2.4</strong>: Für <strong>Typ 1, 2, 3</strong> ist das Wortproblem <strong>entscheidbar</strong> (dank Längenmonotonie). Für <strong>Typ 0</strong> ist es <strong>nicht entscheidbar</strong>.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">BNF &amp; EBNF</div>
+    <p>Die <strong>Backus-Naur-Form (BNF)</strong> ist eine Metasprache zur Definition der Syntax kontextfreier Grammatiken. Zeichen: → (definiert als), | (oder). Die <strong>Erweiterte BNF (EBNF)</strong> ergänzt Metazeichen: * (beliebig viele, auch keines) und + (mindestens eines). Erstmals für <strong>Algol 60</strong> eingesetzt.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 3 ════════════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header"><h2>Kapitel 3</h2><span>Sprachübersetzer</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Compiler</div>
+    <p>Ein <strong>Compiler</strong> überführt Programme einer Quellsprache in eine Zielsprache. Zuerst wird die <strong>syntaktische Korrektheit</strong> geprüft (w ∈ L(G)?). Bei Erfolg entsteht ein <strong>abstrakter Syntaxbaum (AST)</strong>. Die Zielsprache ist oft Maschinensprache, bei Java ist es <strong>Bytecode</strong>.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Interpreter</div>
+    <p>Ein <strong>Interpreter</strong> analysiert und verarbeitet das Programm <strong>portionsweise</strong> (nicht vollständig auf einmal). Skriptsprachen wie Python, PHP und JavaScript werden interpretierend verarbeitet. Interpretierte Programme laufen i.d.R. <strong>langsamer</strong> als kompilierte, besonders bei Schleifen.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">T-Diagramme</div>
+    <p><strong>T-Diagramme</strong> (Bratman/McKeeman, 1971) modellieren Übersetzungsprozesse grafisch. Bausteine: <strong>Compiler</strong> (T-Form: Quellsprache S₁, Zielsprache S₂, Implementierungssprache S₃), <strong>Interpreter</strong> (Sprache S, Maschine M), <strong>Programm</strong> (in Sprache S). Ermöglichen mehrstufige Übersetzungen (z.B. ZR → PS → PDF).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">COMPILER-PHASEN</div>
+    <table class="data-table">
+      <tr><th>Phase</th><th>Bezeichnung</th><th>Aufgabe</th></tr>
+      <tr><td>a)</td><td>Lexikalische Analyse (Scanner)</td><td>Zeichenstrom → Tokenstrom</td></tr>
+      <tr><td>b)</td><td>Syntaktische Analyse (Parser)</td><td>Tokenstrom → Ableitungsbaum</td></tr>
+      <tr><td>c)</td><td>Zwischencodegenerierung</td><td>Abstrakter Syntaxbaum (AST)</td></tr>
+      <tr><td>d)</td><td>Semantische Analyse</td><td>Bedeutungsprüfung</td></tr>
+      <tr><td>e)</td><td>Code-Optimierung</td><td>Effizienzverbesserung</td></tr>
+      <tr><td>f)</td><td>Speicherplatzvergabe</td><td>Adresszuweisung</td></tr>
+      <tr><td>g)</td><td>Zielcodegenerierung</td><td>Maschinencode erzeugen</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Scanner (lexikalische Analyse)</div>
+    <p>Der <strong>Scanner</strong> tastet den Zeichenstrom ab und erkennt <strong>Token</strong> (syntaktische Elementarbausteine). Jedes Token ist ein Paar aus <strong>Tokenklasse</strong> und <strong>Lexem</strong>. Typische Tokenklassen: Schlüsselwort, Bezeichner, Zahl, Zuweisungsoperator, Klammern, Begrenzer. Scanner basieren auf <strong>endlichen Automaten</strong>.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Parser (syntaktische Analyse)</div>
+    <p>Der <strong>Parser</strong> arbeitet mit dem Tokenstrom und einer <strong>reduzierten Grammatik</strong> (Terminale = Token). Zwei Analysetechniken: <strong>Top-down</strong> (vom Startsymbol zum Eingabewort) und <strong>Bottom-up</strong> (vom Eingabewort zum Startsymbol reduzieren). Das Ergebnis ist ein <strong>Ableitungsbaum</strong>.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">Zeichenroboter ZR</div>
+    <p>ZR ist eine einfache Programmiersprache für einen Zeichenroboter mit Befehlen: <strong>VW n</strong> (Vorwärts n Schritte), <strong>RE n</strong> (Rechtsdrehung n°), <strong>STIFT n</strong> (Strichstärke), <strong>FARBE f</strong>, <strong>WH n [...]</strong> (Wiederholung). Beispiel: WH 10 [WH 36 [VW 10 RE 10] RE 40] zeichnet eine Blume.</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ KAPITEL 4 ════════════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header"><h2>Kapitel 4</h2><span>Reguläre Sprachen</span></div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Deterministischer endlicher Automat – DEA (Definition 4.1)</div>
+    <p>Ein <strong>DEA</strong> ist ein 5-Tupel M = (Q, Σ, δ, q₀, E) mit: <strong>Q</strong> = endliche Zustandsmenge, <strong>Σ</strong> = Eingabealphabet, <strong>δ: Q × Σ → Q</strong> = totale Überführungsfunktion, <strong>q₀</strong> = Startzustand, <strong>E ⊆ Q</strong> = Endzustandsmenge. In jedem Takt wird ein Zeichen gelesen, ein Folgezustand eingenommen und der Kopf nach rechts bewegt.</p>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Akzeptanzverhalten &amp; Trap State</div>
+    <p>Ein DEA <strong>stoppt</strong>, wenn das Eingabewort vollständig abgetastet ist. Ist der aktuelle Zustand ein <strong>Endzustand</strong> → Wort wird akzeptiert, sonst abgewiesen. Da δ <strong>total</strong> ist, müssen auch ungewollte Übergänge definiert werden – sie führen in einen <strong>Fallen-Zustand (Trap State)</strong>, aus dem es kein Entkommen gibt.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Nichtdeterministischer endlicher Automat – NEA (Definition 4.5)</div>
+    <p>Ein <strong>NEA</strong> wird durch M = (Q, Σ, δ, q₀, E) definiert, wobei die Überführungsfunktion <strong>δ: Q × Σ → P(Q)</strong> Mengen von Folgezuständen liefert (Potenzmenge). δ(qᵢ, a) = ∅ bedeutet: verbotener Übergang. Ein Wort wird akzeptiert, wenn <strong>mindestens ein</strong> Pfad in einen Endzustand führt.</p>
+  </div>
+
+  <div class="concept-box example">
+    <div class="concept-label">Interpretationen des Nichtdeterminismus</div>
+    <p>Drei Interpretationsmuster für NEA: <strong>Ambiguous</strong> (Orakel kennt den richtigen Pfad), <strong>Cloning</strong> (parallele Automaten-Kopien für jeden Folgezustand) und <strong>Backtracking</strong> (systematisches Zurückgehen bei Sackgassen). Alle drei Modelle liefern das gleiche Ergebnis.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Äquivalenz: rG ↔ NEA ↔ DEA (Satz 4.1 &amp; 4.2)</div>
+    <p>Reguläre Grammatiken, DEA und NEA sind <strong>äquivalente Beschreibungsmittel</strong> regulärer Sprachen. Transformationskette: rG → NEA → DEA → rG. <strong>Satz 4.1</strong>: Zu jeder rG gibt es einen äquivalenten DEA und umgekehrt. <strong>Satz 4.2</strong>: Zu jedem NEA gibt es einen äquivalenten DEA (Potenzmengenkonstruktion).</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Potenzmengenkonstruktion (NEA → DEA)</div>
+    <p>Jedem Element der <strong>Potenzmenge P(Q)</strong> wird ein neuer Zustand zugeordnet. Für |Q| = n hat P(Q) genau <strong>2ⁿ</strong> Elemente. Die neue Überführungsfunktion: δ'(zᵢ, a) = ⋃ δ(q, a) für alle q in der Zustandsmenge von zᵢ. Nicht erreichbare Zustände werden <strong>gestrichen</strong>.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Minimalautomaten</div>
+    <p>Für jede reguläre Sprache L gibt es <strong>genau einen Minimal-DEA</strong> (bis auf Isomorphie). Das <strong>Hopcroft-Ullman-Verfahren</strong> findet ihn: Zustandspaare (z, z') markieren, die sich unterschiedlich verhalten. Schritt 1: Alle End-/Nicht-End-Paare markieren. Schritt 2–4: Iterativ Paare markieren, deren Nachfolger markiert sind. Unmarkierte Paare werden <strong>verschmolzen</strong>.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">NEA mit ε-Übergängen (NEAε)</div>
+    <p>Ein <strong>ε-Übergang</strong> (spontaner Übergang) ist ein Zustandswechsel <strong>ohne Verbrauch eines Eingabezeichens</strong>. NEAε sind besonders übersichtlich für den Entwurf. <strong>Satz 4.3</strong>: NEA und NEAε sind äquivalent. Für die Praxis: NEAε entwerfen, dann über NEA und DEA zum <strong>Minimal-DEA</strong> transformieren.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Reguläre Ausdrücke (Definition 4.8)</div>
+    <p><strong>Reguläre Ausdrücke</strong> (RegExp) definieren reguläre Sprachen kompakt. Basisausdrücke: <strong>∅</strong> (leere Menge), <strong>ε</strong> (leeres Wort), <strong>a</strong> (Einzelzeichen). Operationen: <strong>Vereinigung</strong> (u | v), <strong>Konkatenation</strong> (uv), <strong>Kleene-Stern</strong> (u*). Prioritäten: * vor · vor |. Beispiel: a(a|b)*bb(a|b)* = alle Wörter, die mit a beginnen und bb enthalten.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Satz von Kleene (Satz 4.4)</div>
+    <p>Eine Sprache L wird von einem DEA genau dann akzeptiert, wenn L durch einen <strong>regulären Ausdruck</strong> beschrieben werden kann. Äquivalenzkette: <strong>rG ↔ NEA ↔ DEA ↔ NEAε ↔ RegExp</strong>. Alle fünf Beschreibungsmittel definieren exakt die Klasse der regulären Sprachen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WICHTIGE ÄQUIVALENZEN FÜR REGULÄRE AUSDRÜCKE</div>
+    <table class="data-table">
+      <tr><th>Äquivalenz</th><th>Beschreibung</th></tr>
+      <tr><td>∅ · u = u · ∅ = ∅</td><td>Konkatenation mit leerer Menge (wie Multiplikation mit 0)</td></tr>
+      <tr><td>ε · u = u · ε = u</td><td>Neutrales Element der Konkatenation (wie Multiplikation mit 1)</td></tr>
+      <tr><td>u | u = u</td><td>Idempotenz (Unterschied zur Zahlenarithmetik!)</td></tr>
+      <tr><td>(u*)*  = u*</td><td>Doppelter Kleene-Stern ist redundant</td></tr>
+      <tr><td>(u | v)* = (u* | v*)*</td><td>Alternative Stern-Darstellung</td></tr>
+      <tr><td>u(v | w) = uv | uw</td><td>Distributivität</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ FLASHCARDS ════════════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header"><h2>Flashcards</h2><span>Klick auf die Karte zum Umdrehen</span></div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ QUIZ ════════════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header"><h2>Prüfungsquiz</h2><span>20 Fragen mit Erklärungen</span></div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════ CHEATSHEET ════════════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header"><h2>Cheatsheet</h2><span>Kompakte Zusammenfassung</span></div>
+
+  <div class="cheat-grid">
+
+    <div class="cheat-block">
+      <h4>Grundbegriffe</h4>
+      <div class="cheat-row"><span class="cheat-key">Alphabet</span><span class="cheat-val">Endliche, nichtleere Zeichenmenge</span></div>
+      <div class="cheat-row"><span class="cheat-key">Wort</span><span class="cheat-val">Zeichenkette über Alphabet A</span></div>
+      <div class="cheat-row"><span class="cheat-key">|w|</span><span class="cheat-val">Wortlänge (Mehrfachvorkommen zählen)</span></div>
+      <div class="cheat-row"><span class="cheat-key">ε</span><span class="cheat-val">Leeres Wort, Länge 0</span></div>
+      <div class="cheat-row"><span class="cheat-key">A*</span><span class="cheat-val">Alle Wörter über A, abzählbar unendlich</span></div>
+      <div class="cheat-row"><span class="cheat-key">Sprache L</span><span class="cheat-val">Teilmenge L ⊆ A*</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Formale Grammatik</h4>
+      <div class="cheat-row"><span class="cheat-key">G = (N,T,P,s)</span><span class="cheat-val">Nichtterminale, Terminale, Produktionen, Startsymbol</span></div>
+      <div class="cheat-row"><span class="cheat-key">L(G)</span><span class="cheat-val">{w ∈ T* | s ⇒* w}</span></div>
+      <div class="cheat-row"><span class="cheat-key">Linksableitung</span><span class="cheat-val">Immer linkestes Nichtterminal ersetzen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Mehrdeutig</span><span class="cheat-val">Wort mit ≥ 2 Linksableitungen</span></div>
+      <div class="cheat-row"><span class="cheat-key">BNF</span><span class="cheat-val">Backus-Naur-Form: → und |</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Chomsky-Hierarchie</h4>
+      <div class="cheat-row"><span class="cheat-key">Typ 0</span><span class="cheat-val">Unbeschränkt – Turing-Maschine</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ 1</span><span class="cheat-val">Kontextsensitiv – |α| ≤ |β|</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ 2</span><span class="cheat-val">Kontextfrei – A → β (kfG)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Typ 3</span><span class="cheat-val">Regulär – A → aB oder A → a</span></div>
+      <div class="cheat-row"><span class="cheat-key">Wortproblem</span><span class="cheat-val">Typ 1–3: entscheidbar, Typ 0: nicht</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Sprachübersetzer</h4>
+      <div class="cheat-row"><span class="cheat-key">Compiler</span><span class="cheat-val">Vollständige Übersetzung → Zielsprache</span></div>
+      <div class="cheat-row"><span class="cheat-key">Interpreter</span><span class="cheat-val">Portionsweise analysieren &amp; ausführen</span></div>
+      <div class="cheat-row"><span class="cheat-key">Scanner</span><span class="cheat-val">Zeichenstrom → Tokenstrom</span></div>
+      <div class="cheat-row"><span class="cheat-key">Parser</span><span class="cheat-val">Tokenstrom → Ableitungsbaum</span></div>
+      <div class="cheat-row"><span class="cheat-key">T-Diagramm</span><span class="cheat-val">Grafische Modellierung von Übersetzungen</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Endliche Automaten</h4>
+      <div class="cheat-row"><span class="cheat-key">DEA</span><span class="cheat-val">(Q, Σ, δ, q₀, E), δ total</span></div>
+      <div class="cheat-row"><span class="cheat-key">NEA</span><span class="cheat-val">δ: Q × Σ → P(Q), Mengen als Folgezustand</span></div>
+      <div class="cheat-row"><span class="cheat-key">NEA → DEA</span><span class="cheat-val">Potenzmengenkonstruktion, 2ⁿ Zustände max</span></div>
+      <div class="cheat-row"><span class="cheat-key">Minimalautomat</span><span class="cheat-val">Hopcroft-Ullman: Paare markieren &amp; verschmelzen</span></div>
+      <div class="cheat-row"><span class="cheat-key">NEAε</span><span class="cheat-val">Spontane Übergänge ohne Zeichenverbrauch</span></div>
+    </div>
+
+    <div class="cheat-block">
+      <h4>Reguläre Ausdrücke</h4>
+      <div class="cheat-row"><span class="cheat-key">Basis</span><span class="cheat-val">∅, ε, a (für jedes a ∈ Σ)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Vereinigung</span><span class="cheat-val">u | v – „oder"</span></div>
+      <div class="cheat-row"><span class="cheat-key">Konkatenation</span><span class="cheat-val">u · v – hintereinander</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kleene-Stern</span><span class="cheat-val">u* – beliebig oft (auch 0×)</span></div>
+      <div class="cheat-row"><span class="cheat-key">Prioritäten</span><span class="cheat-val">* vor · vor |</span></div>
+      <div class="cheat-row"><span class="cheat-key">Kleene-Satz</span><span class="cheat-val">DEA ↔ RegExp ↔ rG ↔ NEA</span></div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+const flashcardsData = [
+  // Kap 1
+  {cat:"Kap 1", q:"Was ist ein Alphabet in der theoretischen Informatik?", a:"Eine beliebige endliche, nichtleere Menge. Die Elemente heißen Zeichen. Beispiel: A = {a, b, c} oder A = {0, 1}. Auch längere Symbole wie 'begin' oder 'while' können einzelne Zeichen sein."},
+  {cat:"Kap 1", q:"Was ist das leere Wort ε?", a:"Das leere Wort ε hat die Länge 0 und enthält kein einziges Zeichen. Es ist ein Wort über jedem Alphabet A. Es ist das neutrale Element der Verkettung: w ∘ ε = ε ∘ w = w."},
+  {cat:"Kap 1", q:"Was ist die Wortmenge A* und warum ist sie unendlich?", a:"A* ist die Menge aller Wörter über A, inkl. ε. Sie ist stets abzählbar unendlich, denn für jedes Wort kann durch Verkettung mit einem Alphabetzeichen ein weiteres Wort gebildet werden – selbst bei nur einem Zeichen."},
+  {cat:"Kap 1", q:"Was ist eine Sprache in der theoretischen Informatik?", a:"Eine Sprache L ist jede Teilmenge von A* (L ⊆ A*). Extreme: L = ∅ (leer) und L = A* (Allsprache). Praktisch relevant: Sprachen mit Kriterien für die Wortmitgliedschaft, z.B. gültige E-Mail-Adressen."},
+  {cat:"Kap 1", q:"Warum ist die Verkettung nicht kommutativ?", a:"Weil die Reihenfolge zählt: 'ab' ∘ 'c' = 'abc', aber 'c' ∘ 'ab' = 'cab'. Die Verkettung ist jedoch assoziativ und abgeschlossen in A*. Das leere Wort ε ist das neutrale Element."},
+  {cat:"Kap 1", q:"Was bedeutet 'abzählbar unendlich'?", a:"Eine Menge M ist abzählbar unendlich, wenn es eine bijektive Abbildung von ℕ₀ auf M gibt – man kann alle Elemente durchnummerieren. A* ist abzählbar unendlich (Satz 1.1), die reellen Zahlen ℝ hingegen überabzählbar."},
+  // Kap 2
+  {cat:"Kap 2", q:"Was ist eine formale Grammatik?", a:"Ein 4-Tupel G = (N, T, P, s) mit: N = Nichtterminale, T = Terminale (Alphabetzeichen), P = Produktionen (Regeln), s = Startsymbol ∈ N. N und T sind endlich, nichtleer und disjunkt (N ∩ T = ∅)."},
+  {cat:"Kap 2", q:"Was ist die Chomsky-Hierarchie?", a:"Vier Grammatiktypen: Typ 0 (unbeschränkt), Typ 1 (kontextsensitiv – Regeln längenmonoton), Typ 2 (kontextfrei – nur ein Nichtterminal links), Typ 3 (regulär – A → aB oder A → a). Bilden eine echte Hierarchie: Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0."},
+  {cat:"Kap 2", q:"Was ist das Wortproblem?", a:"Die Frage, ob ein Wort w zur Sprache L(G) gehört. Für Typ 1, 2, 3 ist es entscheidbar (das Verfahren terminiert immer). Für Typ 0 ist es NICHT entscheidbar, weil fehlende Längenmonotonie unbegrenzte Satzformen erlaubt."},
+  {cat:"Kap 2", q:"Was bedeutet Mehrdeutigkeit bei kontextfreien Grammatiken?", a:"Eine kfG ist mehrdeutig, wenn es ein Wort mit mindestens zwei verschiedenen Linksableitungen (verschiedene Ableitungsbäume) gibt. Für Compiler problematisch! Es gibt keinen Universalalgorithmus zur Erkennung. Manche kfS sind inhärent mehrdeutig."},
+  {cat:"Kap 2", q:"Was ist der Unterschied zwischen kontextfrei und kontextsensitiv?", a:"Kontextfrei: Links steht nur ein Nichtterminal A → β – A wird überall gleich ersetzt, egal welcher Kontext. Kontextsensitiv: Links darf auch Kontext stehen, z.B. uAv → uβv – A wird nur im Kontext u...v ersetzt. Zusätzlich: |α| ≤ |β|."},
+  {cat:"Kap 2", q:"Was sind ε-Regeln und warum sind sie problematisch?", a:"ε-Regeln (A → ε) verkürzen Satzformen und verletzen die Längenmonotonie. Sie sind aber praktisch nützlich. Satz 2.3: Jede kfG mit ε-Regeln kann in eine äquivalente ε-freie kfG transformiert werden (ggf. bis auf s → ε)."},
+  {cat:"Kap 2", q:"Was ist die BNF?", a:"Die Backus-Naur-Form ist eine Metasprache für kontextfreie Grammatiken. Zeichen: → (definiert als), | (oder). Entwickelt für Algol 60 (Backus 1924–2007, Naur 1928–2016). Die EBNF ergänzt * und + als Metazeichen."},
+  // Kap 3
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen Compiler und Interpreter?", a:"Compiler: Vollständige Übersetzung des Quellprogramms in Zielsprache, dann Ausführung. Interpreter: Portionsweise Analyse, Übersetzung und sofortige Ausführung. Compiler-Programme laufen schneller, Interpreter sind flexibler."},
+  {cat:"Kap 3", q:"Was sind T-Diagramme?", a:"Grafische Darstellung von Übersetzungsprozessen (Bratman 1971). Bausteine: Compiler (T-Form mit Quell-/Zielsprache und Implementierungssprache), Interpreter, Programme. Ermöglichen mehrstufige Übersetzungen und Compiler-Bootstrapping."},
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen Scanner und Parser?", a:"Scanner (lexikalische Analyse): Zeichenstrom → Tokenstrom. Erkennt Schlüsselwörter, Zahlen, Bezeichner als Token. Parser (syntaktische Analyse): Arbeitet mit Tokenstrom und reduzierter Grammatik, baut Ableitungsbaum auf."},
+  {cat:"Kap 3", q:"Was ist ein Token im Compilerbau?", a:"Ein syntaktischer Elementarbaustein, bestehend aus Tokenklasse und Lexem. Beispiel: (keyword, 'var'), (identifier, 'radius'), (number, '12'). Tokenklassen werden typischerweise durch reguläre Sprachen (Typ 3) definiert."},
+  {cat:"Kap 3", q:"Was ist Top-down vs. Bottom-up Analyse?", a:"Top-down: Vom Startsymbol ausgehend herleiten (Ableitung). Bottom-up: Vom Eingabewort schrittweise zum Startsymbol reduzieren. Beide Techniken haben spezifische Verfahren und Einsatzgebiete."},
+  // Kap 4
+  {cat:"Kap 4", q:"Was ist ein DEA und wie arbeitet er?", a:"Deterministischer endlicher Automat: M = (Q, Σ, δ, q₀, E). δ ist eine totale Funktion Q × Σ → Q. In jedem Takt: Zeichen lesen, Zustand wechseln, Kopf nach rechts. Stoppt nach letztem Zeichen – Endzustand = akzeptiert."},
+  {cat:"Kap 4", q:"Was unterscheidet einen NEA von einem DEA?", a:"Beim NEA liefert δ eine Menge von Folgezuständen: δ: Q × Σ → P(Q). Mehrere Folgezustände möglich! Akzeptanz: Mindestens ein Pfad führt in Endzustand. NEA sind kompakter, aber nicht mächtiger als DEA (gleiche Sprachklasse)."},
+  {cat:"Kap 4", q:"Wie funktioniert die Potenzmengenkonstruktion?", a:"NEA → DEA: Jede Teilmenge von Q wird ein neuer DEA-Zustand. P(Q) hat 2ⁿ Elemente. Neue δ: Vereinigung aller Übergänge der enthaltenen Zustände. Nicht erreichbare Zustände werden gestrichen → meist viel weniger als 2ⁿ Zustände."},
+  {cat:"Kap 4", q:"Was ist ein Minimalautomat und wie findet man ihn?", a:"Der DEA mit der geringsten Zustandsanzahl für eine Sprache L. Hopcroft-Ullman-Verfahren: 1) End-/Nicht-End-Paare markieren. 2) Iterativ Paare markieren, deren δ-Nachfolger markiert sind. 3) Unmarkierte Paare verschmelzen."},
+  {cat:"Kap 4", q:"Was ist ein ε-Übergang bei NEAε?", a:"Ein spontaner Zustandswechsel ohne Verbrauch eines Eingabezeichens. Macht Automaten übersichtlicher. NEAε sind äquivalent zu NEA (Satz 4.3). Praxisempfehlung: NEAε entwerfen → NEA → DEA → Minimal-DEA transformieren."},
+  {cat:"Kap 4", q:"Was sind die drei Operationen bei regulären Ausdrücken?", a:"1) Vereinigung (u | v): Wörter aus L(u) oder L(v). 2) Konkatenation (u · v): Wörter aus L(u) gefolgt von L(v). 3) Kleene-Stern (u*): beliebig oft, auch 0×. Prioritäten: * vor · vor |."},
+  {cat:"Kap 4", q:"Was besagt der Satz von Kleene?", a:"Eine Sprache wird von einem DEA genau dann akzeptiert, wenn sie durch einen regulären Ausdruck beschreibbar ist. Alle fünf Beschreibungsmittel (rG, DEA, NEA, NEAε, RegExp) definieren exakt die regulären Sprachen."},
+  {cat:"Kap 4", q:"Warum gilt ∅ · u = ∅ bei regulären Ausdrücken?", a:"Konkatenation mit der leeren Menge ergibt die leere Menge – wie Multiplikation mit 0. Es gibt kein einziges Wort in ∅, das mit u verkettet werden könnte. Achtung: ∅ ≠ {ε}! {ε} · u = u (wie Multiplikation mit 1)."},
+  {cat:"Kap 4", q:"Wie transformiert man eine linkslineare rG in eine rechtslineare?", a:"Zwei Schritte: 1) Regeln X → a durch X → Ha und H → ε ersetzen. 2) H als neues Startsymbol, s → ε ergänzen, Regeln X → Ya umdrehen zu Y → aX. Falls ε ∈ L(G): H → ε wieder hinzufügen."}
+];
+
+const quizData = [
+  // Kap 1
+  {q:"Was ist ein Alphabet in der theoretischen Informatik?",
+   opts:["Eine unendliche Menge von Zeichen","Eine beliebige endliche, nichtleere Menge","Eine geordnete Folge von Buchstaben","Die Menge {a, b, ..., z}"], correct:1,
+   exp:"Ein Alphabet ist per Definition eine beliebige endliche, nichtleere Menge. Die Elemente heißen Zeichen – das können auch längere Symbole wie 'begin' oder 'while' sein."},
+  {q:"Welche Eigenschaft hat die Verkettung in A* NICHT?",
+   opts:["Assoziativität","Abgeschlossenheit","Kommutativität","Neutrales Element (ε)"], correct:2,
+   exp:"Die Verkettung ist NICHT kommutativ: 'ab' ∘ 'c' = 'abc' ≠ 'cab' = 'c' ∘ 'ab'. Sie ist aber assoziativ, abgeschlossen in A* und hat ε als neutrales Element."},
+  {q:"Warum ist A* immer abzählbar unendlich?",
+   opts:["Weil jedes Alphabet endlich ist","Weil man die Wörter längenlexikografisch durchnummerieren kann","Weil es nur endlich viele Zeichen gibt","Weil ε dazugehört"], correct:1,
+   exp:"Durch längenlexikografische Ordnung lässt sich eine bijektive Abbildung von ℕ₀ auf A* definieren (Satz 1.1). Jedes Wort bekommt eine eindeutige Nummer – sie sind abzählbar."},
+  {q:"Was ist eine Sprache L über einem Alphabet A?",
+   opts:["Eine Grammatik zur Wortbildung","Jede Teilmenge L ⊆ A*","Die Menge aller korrekten Sätze","Ein regulärer Ausdruck"], correct:1,
+   exp:"Eine Sprache ist jede Teilmenge der Wortmenge A*. Das umfasst die leere Menge ∅ (kein Wort), A* selbst (alle Wörter) und jede Zwischenstufe."},
+  // Kap 2
+  {q:"Welche Komponenten hat eine formale Grammatik G?",
+   opts:["(Q, Σ, δ, q₀, E)","(N, T, P, s)","(A, L, R, ε)","(S, V, P, ε)"], correct:1,
+   exp:"G = (N, T, P, s): N = Nichtterminale, T = Terminale (Alphabet), P = Produktionen (Regeln), s = Startsymbol ∈ N. N und T sind disjunkt."},
+  {q:"Bei welchem Chomsky-Typ ist das Wortproblem NICHT entscheidbar?",
+   opts:["Typ 3 (regulär)","Typ 2 (kontextfrei)","Typ 1 (kontextsensitiv)","Typ 0 (unbeschränkt)"], correct:3,
+   exp:"Bei Typ 0 fehlt die Längenmonotonie – Satzformen können beliebig wachsen und schrumpfen. Dadurch kann die Menge möglicher Ableitungen nicht begrenzt werden → nicht entscheidbar."},
+  {q:"Was bedeutet 'kontextfrei' bei einer Grammatik?",
+   opts:["Die Grammatik hat keine Regeln","Auf der linken Regelseite steht nur ein einziges Nichtterminal","Die Regeln sind längenmonoton","Die Sprache ist endlich"], correct:1,
+   exp:"Kontextfrei (Typ 2): Links steht genau ein Nichtterminal A → β. A wird überall gleich ersetzt, unabhängig vom Kontext. Im Gegensatz dazu steht bei kontextsensitiv auch Kontext links."},
+  {q:"Wann ist eine kontextfreie Grammatik mehrdeutig?",
+   opts:["Wenn sie ε-Regeln enthält","Wenn es ein Wort mit mindestens zwei verschiedenen Linksableitungen gibt","Wenn sie mehr als 10 Regeln hat","Wenn das Startsymbol auf der rechten Seite vorkommt"], correct:1,
+   exp:"Mehrdeutig = mindestens ein Wort hat ≥ 2 verschiedene Ableitungsbäume (= Linksableitungen). Problematisch für Compiler, da die Struktur nicht eindeutig ist. Beispiel: 'dangling else'-Problem."},
+  {q:"Was ist die korrekte Hierarchie der Chomsky-Sprachklassen?",
+   opts:["Typ 0 ⊂ Typ 1 ⊂ Typ 2 ⊂ Typ 3","Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0","Typ 3 = Typ 2 ⊂ Typ 1 = Typ 0","Alle Typen sind gleich mächtig"], correct:1,
+   exp:"Typ 3 (regulär) ⊂ Typ 2 (kontextfrei) ⊂ Typ 1 (kontextsensitiv) ⊂ Typ 0 (unbeschränkt). Jede reguläre Sprache ist kontextfrei usw., aber nicht umgekehrt."},
+  // Kap 3
+  {q:"Was unterscheidet einen Compiler von einem Interpreter?",
+   opts:["Compiler ist schneller bei der Übersetzung","Compiler übersetzt vollständig, Interpreter verarbeitet portionsweise","Interpreter kann nur Typ-3-Sprachen verarbeiten","Es gibt keinen Unterschied"], correct:1,
+   exp:"Compiler übersetzt das gesamte Programm in Zielsprache, dann wird es ausgeführt. Interpreter analysiert und führt portionsweise aus. Compiler-Programme laufen i.d.R. schneller (besonders bei Schleifen)."},
+  {q:"Was macht ein Scanner im Compilerbau?",
+   opts:["Er prüft die Semantik","Er erzeugt Maschinencode","Er wandelt den Zeichenstrom in einen Tokenstrom um","Er optimiert den Code"], correct:2,
+   exp:"Der Scanner (lexikalische Analyse) tastet den Eingabe-Zeichenstrom ab und erkennt Token (Schlüsselwörter, Zahlen, Bezeichner). Tokenklassen werden durch reguläre Sprachen definiert."},
+  {q:"Was modellieren T-Diagramme?",
+   opts:["Datenstrukturen","Übersetzungsprozesse von Compilern","Automaten","Chomsky-Grammatiken"], correct:1,
+   exp:"T-Diagramme (Bratman 1971) modellieren grafisch Übersetzungsprozesse. Bausteine: Compiler (T-Form), Interpreter, Programme. Ermöglichen mehrstufige Übersetzungen und Compiler-Bootstrapping."},
+  {q:"Was ist die Aufgabe des Parsers im Compilerbau?",
+   opts:["Er erzeugt den Maschinencode","Er prüft die Syntax und baut einen Ableitungsbaum auf","Er wandelt den Quelltext in Token um","Er führt das Programm aus"], correct:1,
+   exp:"Der Parser (syntaktische Analyse) prüft, ob der Tokenstrom zur Grammatik der Programmiersprache passt, und erstellt den Ableitungsbaum. Die Tokenklassen liefert der Scanner."},
+  // Kap 4
+  {q:"Was bedeutet es, dass die Überführungsfunktion eines DEA 'total' ist?",
+   opts:["Sie kann jedes Wort akzeptieren","Für jedes (Zustand, Zeichen)-Paar gibt es genau einen Folgezustand","Sie hat keine Endzustände","Sie braucht keinen Startzustand"], correct:1,
+   exp:"δ(qᵢ, a) muss für ALLE qᵢ ∈ Q und a ∈ Σ existieren. Es gibt nie eine ungewisse Situation. Ungewollte Übergänge führen in einen Fallen-Zustand (Trap State)."},
+  {q:"Wie viele Zustände hat die Potenzmenge P(Q) für |Q| = 3?",
+   opts:["3","6","8","9"], correct:2,
+   exp:"Die Potenzmenge P(Q) hat 2^|Q| Elemente. Bei |Q| = 3: 2³ = 8 Teilmengen (inkl. ∅ und Q selbst). Bei der NEA→DEA-Konstruktion werden aber nicht erreichbare Zustände gestrichen."},
+  {q:"Was ist ein ε-Übergang?",
+   opts:["Ein Übergang, der das Wort ε akzeptiert","Ein spontaner Zustandswechsel ohne Verbrauch eines Eingabezeichens","Ein verbotener Übergang","Ein Übergang zum Startzustand"], correct:1,
+   exp:"Ein ε-Übergang (spontaner Übergang) wechselt den Zustand, ohne ein Zeichen vom Eingabeband zu lesen. Macht NEAε übersichtlicher. NEAε und NEA sind äquivalent (Satz 4.3)."},
+  {q:"Was ist die Prioritätenreihenfolge bei regulären Ausdrücken?",
+   opts:["| vor · vor *","· vor * vor |","* vor · vor |","Alle gleichwertig"], correct:2,
+   exp:"Kleene-Stern (*) hat höchste Priorität, dann Konkatenation (·), dann Vereinigung (|). Wie Potenz > Multiplikation > Addition bei Zahlen. Klammern können die Reihenfolge ändern."},
+  {q:"Welche Beschreibungsmittel definieren NICHT die gleiche Sprachklasse?",
+   opts:["DEA und NEA","Reguläre Grammatik und regulärer Ausdruck","NEAε und DEA","Kontextfreie Grammatik und DEA"], correct:3,
+   exp:"rG, DEA, NEA, NEAε und RegExp definieren alle exakt die regulären Sprachen (Typ 3). Eine kontextfreie Grammatik (Typ 2) kann jedoch Sprachen definieren, die kein DEA akzeptiert, z.B. {aⁿbⁿ | n ≥ 1}."},
+  {q:"Was ist das Hopcroft-Ullman-Verfahren?",
+   opts:["Ein Verfahren zur NEA-Konstruktion","Ein Verfahren zur Minimierung von DEA","Ein Parser-Algorithmus","Ein Verfahren für ε-Elimination"], correct:1,
+   exp:"Das Hopcroft-Ullman-Verfahren findet den Minimal-DEA: Zustandspaare markieren, die sich unterschiedlich verhalten. End-/Nicht-End-Paare zuerst, dann iterativ. Unmarkierte Paare werden verschmolzen."},
+  {q:"Warum gilt ∅ · u = ∅ bei regulären Ausdrücken?",
+   opts:["Weil ∅ das neutrale Element ist","Weil Konkatenation mit der leeren Menge keinen Partner findet","Weil u = ∅","Weil der Kleene-Stern fehlt"], correct:1,
+   exp:"In ∅ gibt es kein einziges Wort. Für die Konkatenation bräuchte man je ein Wort aus ∅ und aus L(u) – da ∅ leer ist, gibt es keine Kombinationsmöglichkeit. Ergebnis: ∅. Wie Multiplikation mit 0."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>

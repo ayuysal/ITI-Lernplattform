@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ITI24 – TCP/IP-Protokollfamilie | Prüfungsvorbereitung</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header>
+  <a href="../index.html" class="back-link">&larr; Zurück zur Übersicht</a>
+  <div class="badge">ITI24 · 1022K08 · HfB</div>
+  <h1>TCP/IP-Protokollfamilie</h1>
+  <p class="subtitle">Interaktives Lernkonzept zur Prüfungsvorbereitung · 7 Kapitel</p>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-target="overview" onclick="showSection('overview')">Übersicht</button>
+  <button class="nav-btn" data-target="kap1" onclick="showSection('kap1')">Kap 1</button>
+  <button class="nav-btn" data-target="kap2" onclick="showSection('kap2')">Kap 2</button>
+  <button class="nav-btn" data-target="kap3" onclick="showSection('kap3')">Kap 3</button>
+  <button class="nav-btn" data-target="kap4" onclick="showSection('kap4')">Kap 4</button>
+  <button class="nav-btn" data-target="kap5" onclick="showSection('kap5')">Kap 5</button>
+  <button class="nav-btn" data-target="kap6" onclick="showSection('kap6')">Kap 6</button>
+  <button class="nav-btn" data-target="kap7" onclick="showSection('kap7')">Kap 7</button>
+  <button class="nav-btn" data-target="flashcards" onclick="showSection('flashcards')">Flashcards</button>
+  <button class="nav-btn" data-target="quiz" onclick="showSection('quiz')">Quiz</button>
+  <button class="nav-btn" data-target="cheatsheet" onclick="showSection('cheatsheet')">Cheatsheet</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-header">
+    <h2>Lernübersicht</h2>
+    <span>7 Kapitel · Prüfungsvorbereitung</span>
+  </div>
+  <div class="card">
+    <div class="card-title">Lernpfad</div>
+    <p>Klicke auf ein Kapitel, um direkt zu den Lerninhalten zu springen. Nutze danach <strong>Flashcards</strong> zum Wiederholen und das <strong>Quiz</strong> zum Testen.</p>
+  </div>
+  <div class="chapter-grid">
+    <div class="chapter-card" style="--ch-color:#4f9cff" onclick="showSection('kap1')">
+      <div class="ch-num">KAP 1</div>
+      <h3>Einführung &amp; Überblick</h3>
+      <p>TCP/IP-Protokollfamilie, Netzwerk- &amp; Transportschicht, Leitungs- vs. Paketvermittlung</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#22c55e" onclick="showSection('kap2')">
+      <div class="ch-num">KAP 2</div>
+      <h3>IP-Adressierung</h3>
+      <p>IPv4-Klassen, CIDR, Subnetting, IPv6-Adressen, Interface Identifier, SLAAC</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#eab308" onclick="showSection('kap3')">
+      <div class="ch-num">KAP 3</div>
+      <h3>IP-Protokolle</h3>
+      <p>IPv4/IPv6-Header, Fragmentierung, ICMP, ARP, NDP, DNS, DHCP, NAT</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#f97316" onclick="showSection('kap4')">
+      <div class="ch-num">KAP 4</div>
+      <h3>Routing-Verfahren</h3>
+      <p>Routing vs. Forwarding, DV-Algorithmus, LS-Algorithmus, Count to Infinity, Autonome Systeme</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#a78bfa" onclick="showSection('kap5')">
+      <div class="ch-num">KAP 5</div>
+      <h3>Routing-Protokolle</h3>
+      <p>RIP, OSPF, BGP, hierarchisches Routing, IPv6-Routing</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ec4899" onclick="showSection('kap6')">
+      <div class="ch-num">KAP 6</div>
+      <h3>Transportprotokolle</h3>
+      <p>TCP, UDP, Portnummern, Sockets, 3-Wege-Handshake, Flusskontrolle, SYN-Flooding</p>
+    </div>
+    <div class="chapter-card" style="--ch-color:#ef4444" onclick="showSection('kap7')">
+      <div class="ch-num">KAP 7</div>
+      <h3>Netzbefehle &amp; Troubleshooting</h3>
+      <p>ipconfig, ping, tracert, arp, nslookup, netstat, Wireshark-Analyse</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Prüfungsrelevante Schwerpunkte</div>
+    <div class="two-col" style="margin-top:0.5rem">
+      <ul class="content-list">
+        <li>IPv4-Klassen A/B/C + CIDR-Notation</li>
+        <li>Subnetting: Netzadresse, Broadcast, Hostanzahl</li>
+        <li>IPv6: 128 Bit, Autokonfiguration (SLAAC)</li>
+        <li>IPv4-Header: TTL, Fragmentierung, Prüfsumme</li>
+        <li>ICMP: Ping, Traceroute, TTL exceeded</li>
+        <li>ARP: MAC-Auflösung, Broadcast</li>
+        <li>DNS: Hierarchie, iterativ/rekursiv</li>
+      </ul>
+      <ul class="content-list">
+        <li>DV- vs. LS-Algorithmus (Bellman-Ford / Dijkstra)</li>
+        <li>Count to Infinity + Gegenmaßnahmen</li>
+        <li>RIP (max. 15 Hops), OSPF (Kosten), BGP (Pfadvektor)</li>
+        <li>TCP: 3-Wege-Handshake, Sequenznummern</li>
+        <li>UDP: verbindungslos, kein Overhead</li>
+        <li>Ports: Well-known (0–1023), registered, dynamic</li>
+        <li>NAT: Private → öffentliche Adressen</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 1 – Einführung & Überblick
+══════════════════════════════════════ -->
+<div id="kap1" class="section">
+  <div class="section-header">
+    <h2>Kapitel 1</h2>
+    <span>Einführung &amp; Überblick</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">TCP/IP-Protokollfamilie</div>
+    <p>Sammlung von über 500 Protokollen, die die Kommunikation im Internet regeln. Benannt nach den beiden wichtigsten Protokollen: <strong>TCP</strong> (Transmission Control Protocol) und <strong>IP</strong> (Internet Protocol).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TCP/IP-Referenzmodell (4 Schichten)</div>
+    <table class="data-table">
+      <tr><th>Schicht</th><th>Name</th><th>Protokolle (Beispiele)</th><th>PDU</th></tr>
+      <tr><td>4</td><td>Anwendungsschicht</td><td>HTTP, FTP, SMTP, DNS, DHCP</td><td>Daten</td></tr>
+      <tr><td>3</td><td>Transportschicht</td><td>TCP, UDP</td><td>Segment / Datagramm</td></tr>
+      <tr><td>2</td><td>Netzwerkschicht (Internet)</td><td>IP, ICMP, ARP, IGMP</td><td>Paket</td></tr>
+      <tr><td>1</td><td>Netzzugangsschicht</td><td>Ethernet, WLAN, PPP</td><td>Frame / Bits</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Netzwerkschicht – Kernaufgaben</div>
+    <ul class="content-list">
+      <li><strong>Logische Adressierung</strong> – IP-Adressen zur Identifikation von Hosts weltweit</li>
+      <li><strong>Routing</strong> – Optimale Wegberechnung durch das Netz</li>
+      <li><strong>Forwarding</strong> – Weiterleitung pro Paket anhand der Forwardingtabelle</li>
+      <li><strong>Best-Effort-Dienst</strong> – Keine Garantie für Zustellung, Reihenfolge oder Fehlerfreiheit</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Leitungsvermittlung vs. Paketvermittlung</div>
+    <p><strong>Leitungsvermittlung:</strong> Fester Weg für gesamte Verbindung (Telefon). Alle Daten nehmen denselben Weg.<br>
+    <strong>Paketvermittlung:</strong> Jedes Paket wird einzeln geroutet. Pakete können verschiedene Wege nehmen. Bessere Netzauslastung, aber mehr Overhead.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Transportschicht – Kernaufgaben</div>
+    <ul class="content-list">
+      <li><strong>Ende-zu-Ende-Kommunikation</strong> – Zwischen Anwendungsprozessen auf den Hosts</li>
+      <li><strong>Multiplexing/Demultiplexing</strong> – Zuordnung über Portnummern</li>
+      <li><strong>TCP:</strong> verbindungsorientiert, zuverlässig, Flusskontrolle, Staukontrolle</li>
+      <li><strong>UDP:</strong> verbindungslos, unzuverlässig, minimal Overhead</li>
+      <li>Router werten nur bis Schicht 3 aus – Transportprotokolle laufen auf den Hosts</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">RFC (Request for Comments)</div>
+    <p>Offene Standards der IETF (Internet Engineering Task Force). Jedes Internetprotokoll wird in einem RFC spezifiziert. RFCs werden fortlaufend nummeriert und können durch neuere ersetzt werden.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 2 – IP-Adressierung
+══════════════════════════════════════ -->
+<div id="kap2" class="section">
+  <div class="section-header">
+    <h2>Kapitel 2</h2>
+    <span>IP-Adressierung</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">IPv4-Adresse</div>
+    <p>32 Bit = 4 Byte, dezimale Punkt-Notation (z.B. 192.168.1.1). Maximal 2³² ≈ 4,3 Milliarden Adressen. Besteht aus <strong>Netzanteil</strong> (Netz-ID) und <strong>Hostanteil</strong> (Host-ID).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Klassenbasierte Adressierung (historisch)</div>
+    <table class="data-table">
+      <tr><th>Klasse</th><th>Bereich</th><th>Netzanteil</th><th>Netzmaske</th><th>Hosts/Netz</th></tr>
+      <tr><td>A</td><td>1.0.0.0 – 126.x.x.x</td><td>8 Bit</td><td>255.0.0.0 (/8)</td><td>~16,7 Mio.</td></tr>
+      <tr><td>B</td><td>128.0.0.0 – 191.255.x.x</td><td>16 Bit</td><td>255.255.0.0 (/16)</td><td>~65.500</td></tr>
+      <tr><td>C</td><td>192.0.0.0 – 223.255.255.x</td><td>24 Bit</td><td>255.255.255.0 (/24)</td><td>254</td></tr>
+      <tr><td>D</td><td>224.0.0.0 – 239.x.x.x</td><td colspan="3">Multicast (keine Host-Adressierung)</td></tr>
+      <tr><td>E</td><td>240.0.0.0 – 255.x.x.x</td><td colspan="3">Reserviert (experimentell)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Private IP-Adressen (RFC 1918)</div>
+    <table class="data-table">
+      <tr><th>Klasse</th><th>Bereich</th><th>CIDR</th></tr>
+      <tr><td>A</td><td>10.0.0.0 – 10.255.255.255</td><td>10.0.0.0/8</td></tr>
+      <tr><td>B</td><td>172.16.0.0 – 172.31.255.255</td><td>172.16.0.0/12</td></tr>
+      <tr><td>C</td><td>192.168.0.0 – 192.168.255.255</td><td>192.168.0.0/16</td></tr>
+    </table>
+    <p style="margin-top:0.5rem">Private Adressen werden im Internet <strong>nicht geroutet</strong>. Für Internetzugang ist <strong>NAT</strong> erforderlich.</p>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">CIDR (Classless Interdomain Routing)</div>
+    <p>Flexible Aufteilung statt starrer Klassen. Notation: <strong>IP/Präfixlänge</strong> (z.B. 192.168.1.0/24).</p>
+    <p style="text-align:center; font-size:1.1em; margin:0.5rem 0;">
+      Adressierbare Hosts = 2<sup>(32−Präfixlänge)</sup> − 2
+    </p>
+    <p>Minus 2: eine Adresse für das Netz (alle Hostbits = 0), eine für Broadcast (alle Hostbits = 1).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Subnetting – Berechnungsbeispiel</div>
+    <p><strong>Gegeben:</strong> 135.7.107.5/22</p>
+    <table class="data-table">
+      <tr><th>Eigenschaft</th><th>Berechnung</th><th>Ergebnis</th></tr>
+      <tr><td>Netzmaske</td><td>22 Bit → 11111111.11111111.11111100.00000000</td><td>255.255.252.0</td></tr>
+      <tr><td>Netzadresse</td><td>IP AND Maske</td><td>135.7.104.0</td></tr>
+      <tr><td>Broadcast</td><td>Netzadresse OR Inverse Maske</td><td>135.7.107.255</td></tr>
+      <tr><td>Hosts</td><td>2¹⁰ − 2</td><td>1022</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">IPv6-Adresse</div>
+    <p>128 Bit = 16 Byte, hexadezimale Notation mit Doppelpunkten (z.B. 2001:0db8:85a3::8a2e:0370:7334). Adressraum: 2¹²⁸ ≈ 3,4 × 10³⁸ Adressen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IPv6-Adresstypen</div>
+    <table class="data-table">
+      <tr><th>Typ</th><th>Präfix</th><th>Gültigkeitsbereich</th></tr>
+      <tr><td>Link-Local Unicast</td><td>FE80::/10</td><td>Nur innerhalb eines Segments (nicht geroutet)</td></tr>
+      <tr><td>Global Unicast</td><td>2000::/3</td><td>Weltweit eindeutig (Internet)</td></tr>
+      <tr><td>Unique Local</td><td>FC00::/7</td><td>Privat (wie RFC 1918 bei IPv4)</td></tr>
+      <tr><td>Multicast</td><td>FF00::/8</td><td>Gruppe von Hosts</td></tr>
+      <tr><td>Loopback</td><td>::1/128</td><td>Localhost</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Interface Identifier &amp; SLAAC</div>
+    <ul class="content-list">
+      <li><strong>Interface ID</strong> – 64 Bit, gebildet aus MAC-Adresse (EUI-64): OUI + <strong>FFFE</strong> + CID, U/L-Bit invertiert</li>
+      <li><strong>SLAAC</strong> (Stateless Address Autoconfiguration) – Host bildet Adresse selbst: Präfix vom Router (Router Advertisement) + Interface ID</li>
+      <li><strong>Privacy Extensions</strong> – Zufällige Interface ID statt MAC-basiert (Datenschutz)</li>
+      <li><strong>DAD</strong> (Duplicate Address Detection) – Prüfung auf Adressduplikate via Neighbor Solicitation</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Spezielle IPv4-Adressen</div>
+    <ul class="content-list" style="margin:0">
+      <li><strong>127.0.0.1</strong> – Loopback (localhost)</li>
+      <li><strong>0.0.0.0</strong> – Unbekannte/Standardroute</li>
+      <li><strong>255.255.255.255</strong> – Limited Broadcast</li>
+      <li><strong>169.254.x.x</strong> – APIPA (Automatic Private IP Addressing, bei DHCP-Ausfall)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 3 – IP-Protokolle
+══════════════════════════════════════ -->
+<div id="kap3" class="section">
+  <div class="section-header">
+    <h2>Kapitel 3</h2>
+    <span>IP-Protokolle</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IPv4-Header (20–60 Byte)</div>
+    <table class="data-table">
+      <tr><th>Feld</th><th>Bits</th><th>Bedeutung</th></tr>
+      <tr><td>Version</td><td>4</td><td>IPv4 = 4</td></tr>
+      <tr><td>IHL</td><td>4</td><td>Header Length in 32-Bit-Wörtern (min. 5 = 20 Byte)</td></tr>
+      <tr><td>ToS / DSCP</td><td>8</td><td>Type of Service / Differentiated Services (QoS)</td></tr>
+      <tr><td>Total Length</td><td>16</td><td>Gesamtlänge des Pakets in Byte (max. 65.535)</td></tr>
+      <tr><td>Identification</td><td>16</td><td>Eindeutige Kennung für Fragmentierung</td></tr>
+      <tr><td>Flags</td><td>3</td><td>DF = Don't Fragment, MF = More Fragments</td></tr>
+      <tr><td>Fragment Offset</td><td>13</td><td>Position des Fragments (in 8-Byte-Einheiten)</td></tr>
+      <tr><td>TTL</td><td>8</td><td>Time to Live – wird an jedem Router um 1 verringert</td></tr>
+      <tr><td>Protocol</td><td>8</td><td>Höheres Protokoll (6=TCP, 17=UDP, 1=ICMP)</td></tr>
+      <tr><td>Header Checksum</td><td>16</td><td>Prüfsumme nur über den Header</td></tr>
+      <tr><td>Source IP</td><td>32</td><td>Quell-IP-Adresse</td></tr>
+      <tr><td>Destination IP</td><td>32</td><td>Ziel-IP-Adresse</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">Fragmentierung</div>
+    <p>Wenn ein IP-Paket die <strong>MTU</strong> (Maximum Transmission Unit, Ethernet: 1500 Byte) überschreitet, wird es fragmentiert. Jedes Fragment enthält eigenen IP-Header (20 Byte).</p>
+    <p style="text-align:center; font-size:1.1em; margin:0.5rem 0;">
+      Nutzdaten pro Fragment = MTU − IP-Header = 1500 − 20 = 1480 Byte
+    </p>
+    <p>Zusammensetzung erst beim Empfänger. <strong>DF-Flag</strong> verhindert Fragmentierung → bei Überschreitung: ICMP „Fragmentation Needed".</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IPv6-Header (feste 40 Byte)</div>
+    <table class="data-table">
+      <tr><th>Feld</th><th>Bits</th><th>Bedeutung</th></tr>
+      <tr><td>Version</td><td>4</td><td>IPv6 = 6</td></tr>
+      <tr><td>Traffic Class</td><td>8</td><td>QoS-Markierung (wie DSCP bei IPv4)</td></tr>
+      <tr><td>Flow Label</td><td>20</td><td>Kennzeichnung zusammengehöriger Pakete</td></tr>
+      <tr><td>Payload Length</td><td>16</td><td>Nutzdatenlänge in Byte</td></tr>
+      <tr><td>Next Header</td><td>8</td><td>Nächstes Protokoll / Extension Header</td></tr>
+      <tr><td>Hop Limit</td><td>8</td><td>Entspricht TTL bei IPv4</td></tr>
+      <tr><td>Source Address</td><td>128</td><td>Quell-IPv6-Adresse</td></tr>
+      <tr><td>Destination Address</td><td>128</td><td>Ziel-IPv6-Adresse</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Unterschiede zu IPv4:</strong> Feste Headerlänge, keine Prüfsumme, keine Fragmentierung im Header (Extension Header), Flow Label für QoS.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">ICMP (Internet Control Message Protocol)</div>
+    <p>Hilfsprotokoll für Fehlermeldungen und Diagnosefunktionen in IP-Netzen. Wird von <strong>Ping</strong> und <strong>Traceroute</strong> genutzt.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Wichtige ICMP-Typen</div>
+    <table class="data-table">
+      <tr><th>Typ</th><th>Name</th><th>Bedeutung</th></tr>
+      <tr><td>0</td><td>Echo Reply</td><td>Antwort auf Ping</td></tr>
+      <tr><td>3</td><td>Destination Unreachable</td><td>Ziel nicht erreichbar (diverse Codes)</td></tr>
+      <tr><td>8</td><td>Echo Request</td><td>Ping-Anfrage</td></tr>
+      <tr><td>11</td><td>Time Exceeded</td><td>TTL abgelaufen (Basis für Traceroute)</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Traceroute:</strong> Sendet Pakete mit aufsteigender TTL (1, 2, 3, …). Jeder Router auf dem Weg sendet „TTL Exceeded" zurück → Route wird sichtbar.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ARP (Address Resolution Protocol)</div>
+    <ul class="content-list">
+      <li><strong>Aufgabe:</strong> Auflösung von IP-Adresse → MAC-Adresse im lokalen Netz</li>
+      <li><strong>ARP-Request:</strong> Broadcast (FF:FF:FF:FF:FF:FF) – „Wer hat IP x.x.x.x?"</li>
+      <li><strong>ARP-Reply:</strong> Unicast – „Ich habe x.x.x.x, meine MAC ist …"</li>
+      <li><strong>ARP-Cache:</strong> Zwischenspeicher für aufgelöste Zuordnungen (arp -a / arp -d)</li>
+      <li><strong>Proxy ARP:</strong> Router antwortet für Hosts in einem anderen Netz</li>
+      <li><strong>RARP:</strong> Umgekehrt: MAC → IP (historisch, durch DHCP abgelöst)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">NDP (Neighbor Discovery Protocol) – IPv6</div>
+    <ul class="content-list">
+      <li>Ersetzt ARP, ICMP Router Discovery und DHCP-Teile bei IPv6</li>
+      <li><strong>Neighbor Solicitation</strong> – Multicast statt Broadcast (effizienter als ARP)</li>
+      <li><strong>Neighbor Advertisement</strong> – Antwort mit Link-Layer-Adresse</li>
+      <li><strong>Router Solicitation / Advertisement</strong> – Host fragt nach Routern, Router antworten mit Präfix</li>
+      <li><strong>DAD</strong> – Duplicate Address Detection über Neighbor Solicitation</li>
+      <li><strong>NUD</strong> – Neighbor Unreachability Detection (Erreichbarkeitsprüfung)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DNS (Domain Name System)</div>
+    <ul class="content-list">
+      <li><strong>Aufgabe:</strong> Auflösung von Domainnamen in IP-Adressen (und umgekehrt)</li>
+      <li><strong>Hierarchie:</strong> Root-Server → TLD-Server (.de, .com) → Authoritative Server</li>
+      <li><strong>Rekursive Abfrage:</strong> DNS-Resolver erledigt gesamte Auflösung für den Client</li>
+      <li><strong>Iterative Abfrage:</strong> Jeder Server verweist auf den nächsten zuständigen Server</li>
+      <li><strong>DNS-Cache:</strong> Zwischenspeicher für schnellere Auflösung (TTL begrenzt)</li>
+      <li><strong>Record-Typen:</strong> A (IPv4), AAAA (IPv6), CNAME (Alias), MX (Mail), NS (Nameserver)</li>
+      <li>Transport über <strong>UDP Port 53</strong> (Standardanfragen) oder TCP Port 53 (Zonentransfer)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DHCP (Dynamic Host Configuration Protocol)</div>
+    <ul class="content-list">
+      <li><strong>Aufgabe:</strong> Automatische Vergabe von IP-Konfiguration (IP, Maske, Gateway, DNS)</li>
+      <li><strong>DORA-Prozess:</strong> Discover → Offer → Request → Acknowledge</li>
+      <li>Client sendet <strong>Broadcast</strong> (DHCP Discover), Server antwortet mit Angebot</li>
+      <li><strong>Lease Time:</strong> Gültigkeitsdauer der zugewiesenen Adresse</li>
+      <li><strong>DHCPv6:</strong> Für IPv6, ergänzt SLAAC um zusätzliche Konfigurationsparameter</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">NAT (Network Address Translation)</div>
+    <ul class="content-list">
+      <li><strong>Aufgabe:</strong> Übersetzung privater in öffentliche IP-Adressen am Router</li>
+      <li><strong>Static NAT:</strong> 1:1-Zuordnung (private → öffentliche Adresse)</li>
+      <li><strong>Dynamic NAT:</strong> Pool öffentlicher Adressen, dynamische Zuordnung</li>
+      <li><strong>PAT / NAT Overload:</strong> Viele private Adressen → eine öffentliche Adresse (unterschieden durch Portnummern)</li>
+      <li>Verhindert direkte Erreichbarkeit interner Hosts von außen</li>
+      <li>NAT-Tabelle speichert Zuordnungen für aktive Verbindungen</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 4 – Routing-Verfahren
+══════════════════════════════════════ -->
+<div id="kap4" class="section">
+  <div class="section-header">
+    <h2>Kapitel 4</h2>
+    <span>Routing-Verfahren &amp; Routing-Algorithmen</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Routing vs. Forwarding</div>
+    <p><strong>Routing:</strong> Berechnung des optimalen Weges durch das Netz mittels Routing-Algorithmen → Ergebnis: Routingtabelle.<br>
+    <strong>Forwarding:</strong> Weiterleitung eines konkreten Pakets anhand der Forwardingtabelle (Zielnetz → Next Hop + Ausgangs-Interface).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Forwardingtabelle – Aufbau</div>
+    <table class="data-table">
+      <tr><th>Zielnetz</th><th>Netzmaske</th><th>Next Hop</th><th>Interface</th><th>Metrik</th></tr>
+      <tr><td>192.168.1.0</td><td>/24</td><td>direkt verbunden</td><td>eth0</td><td>0</td></tr>
+      <tr><td>10.0.0.0</td><td>/8</td><td>192.168.1.1</td><td>eth0</td><td>1</td></tr>
+      <tr><td>0.0.0.0</td><td>/0</td><td>192.168.1.254</td><td>eth0</td><td>–</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Longest Prefix Match:</strong> Router wählt den Eintrag mit der längsten passenden Netzmaske. Default-Route (0.0.0.0/0) wird als letztes verwendet.</p>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Distanz-Vektor-Algorithmus (Bellman-Ford)</div>
+    <p>Jeder Router kennt nur seine <strong>direkten Nachbarn</strong> und deren Kosten. Router tauschen regelmäßig ihre Distanzvektoren aus. Iterative Annäherung an optimale Routen.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DV-Algorithmus – Ablauf</div>
+    <ul class="content-list">
+      <li><strong>Schritt 1:</strong> Jeder Router initialisiert Tabelle mit direkten Nachbarn (Kosten bekannt)</li>
+      <li><strong>Schritt 2:</strong> Router senden Distanzvektoren an Nachbarn (Ziel + Kosten)</li>
+      <li><strong>Schritt 3:</strong> Bei Empfang: Prüfen ob neuer Weg kürzer → Tabelle aktualisieren</li>
+      <li><strong>Schritt 4:</strong> Wiederholen bis Konvergenz (keine Änderungen mehr)</li>
+      <li><strong>Formel:</strong> d(x,y) = min { c(x,v) + d(v,y) } für alle Nachbarn v</li>
+    </ul>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">Count-to-Infinity-Problem</div>
+    <p>Bei Ausfall einer Verbindung bietet ein Nachbar eine veraltete, scheinbar günstigere Route an → <strong>Routingschleife</strong> entsteht. Kosten zählen bis „unendlich" hoch.</p>
+    <ul class="content-list" style="margin:0.5rem 0 0">
+      <li><strong>Split Horizon:</strong> Route nicht an den Nachbarn zurücksenden, von dem sie gelernt wurde</li>
+      <li><strong>Poison Reverse:</strong> Route mit ∞ Kosten an Herkunftsrouter senden</li>
+      <li><strong>Triggered Updates:</strong> Sofortige Benachrichtigung bei Änderung (statt periodisch)</li>
+      <li><strong>Hold-on Timer:</strong> Neue Informationen zeitlich sperren</li>
+      <li><strong>Hop Count Limit:</strong> Maximum festlegen (z.B. 15 bei RIP → 16 = ∞)</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Link-State-Algorithmus (Dijkstra)</div>
+    <p>Jeder Router kennt die <strong>gesamte Netztopologie</strong>. Aufbau einer Topologie-Datenbank durch Austausch von LSA-Paketen (Link-State Advertisements). Berechnung des kürzesten Weges mit Dijkstra-Algorithmus.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">DV vs. LS – Vergleich</div>
+    <table class="data-table">
+      <tr><th>Eigenschaft</th><th>Distanz-Vektor</th><th>Link-State</th></tr>
+      <tr><td>Algorithmus</td><td>Bellman-Ford</td><td>Dijkstra</td></tr>
+      <tr><td>Wissen</td><td>Nur Nachbarn</td><td>Gesamte Topologie</td></tr>
+      <tr><td>Austausch</td><td>Distanzvektoren an Nachbarn</td><td>LSA an alle Router (Flooding)</td></tr>
+      <tr><td>Konvergenz</td><td>Langsam</td><td>Schnell</td></tr>
+      <tr><td>Probleme</td><td>Count to Infinity, Schleifen</td><td>Hoher Speicher- &amp; CPU-Bedarf</td></tr>
+      <tr><td>Skalierung</td><td>Kleine Netze</td><td>Große Netze (mit Areas)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hierarchisches Routing &amp; Autonome Systeme</div>
+    <ul class="content-list">
+      <li><strong>Autonomes System (AS):</strong> Gruppe von Routern unter einer gemeinsamen Verwaltung und technischen Kontrolle</li>
+      <li><strong>Intra-AS-Routing (IGP):</strong> Innerhalb eines AS → RIP, OSPF</li>
+      <li><strong>Inter-AS-Routing (EGP):</strong> Zwischen verschiedenen AS → BGP</li>
+      <li><strong>Gateway-Router:</strong> Router an der Grenze eines AS, verbindet mit anderen AS</li>
+      <li>Jedes AS hat eine eindeutige <strong>AS-Nummer</strong> (ASN), vergeben durch RIR (z.B. RIPE NCC)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 5 – Routing-Protokolle
+══════════════════════════════════════ -->
+<div id="kap5" class="section">
+  <div class="section-header">
+    <h2>Kapitel 5</h2>
+    <span>Routing-Protokolle</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">RIP (Routing Information Protocol)</div>
+    <ul class="content-list">
+      <li><strong>Typ:</strong> Intra-AS, Distanz-Vektor-Algorithmus</li>
+      <li><strong>Metrik:</strong> Hop Count (Anzahl der Router bis zum Ziel)</li>
+      <li><strong>Maximum:</strong> 15 Hops (16 = unerreichbar / ∞)</li>
+      <li><strong>Update:</strong> Alle 30 Sekunden komplette Routingtabelle an Nachbarn</li>
+      <li><strong>RIPv1:</strong> Klassenbasiert, keine Netzmaske im Update → kein CIDR/VLSM</li>
+      <li><strong>RIPv2:</strong> Unterstützt CIDR, VLSM, Authentisierung, Multicast (224.0.0.9)</li>
+      <li><strong>RIPng:</strong> RIP für IPv6, UDP Port 521</li>
+      <li><strong>Nachteil:</strong> Langsame Konvergenz, Count to Infinity, nur für kleine Netze</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">OSPF (Open Shortest Path First)</div>
+    <ul class="content-list">
+      <li><strong>Typ:</strong> Intra-AS, Link-State-Algorithmus (Dijkstra)</li>
+      <li><strong>Metrik:</strong> Kosten = Referenzbandbreite / Interface-Bandbreite (Standard: 10⁸ / Bandbreite)</li>
+      <li><strong>LSA-Flooding:</strong> Topologieänderungen werden sofort an alle Router weitergegeben</li>
+      <li><strong>Areas:</strong> Hierarchische Unterteilung für Skalierbarkeit. Area 0 = Backbone</li>
+      <li><strong>Designated Router (DR):</strong> Reduziert LSA-Verkehr in Multi-Access-Netzen</li>
+      <li><strong>Authentisierung:</strong> Simple Password oder MD5</li>
+      <li><strong>Konvergenz:</strong> Schnell (nur bei Änderungen, Refresh alle ~30 min)</li>
+      <li><strong>Vorteil:</strong> Skaliert gut, schnelle Konvergenz, kein Count to Infinity</li>
+    </ul>
+  </div>
+
+  <div class="concept-box formula">
+    <div class="concept-label">OSPF-Kostenberechnung</div>
+    <p style="text-align:center; font-size:1.1em; margin:0.5rem 0;">
+      Kosten = Referenzbandbreite / Interface-Bandbreite
+    </p>
+    <p>Standard-Referenz: 10⁸ bit/s. Beispiel: 100 Mbit/s-Link → Kosten = 10⁸/10⁸ = 1. 10 Mbit/s-Link → Kosten = 10⁸/10⁷ = 10.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">BGP (Border Gateway Protocol)</div>
+    <ul class="content-list">
+      <li><strong>Typ:</strong> Inter-AS, Pfadvektor-Algorithmus</li>
+      <li><strong>Aufgabe:</strong> Routing zwischen Autonomen Systemen (das Routing-Protokoll des Internets)</li>
+      <li><strong>Metrik:</strong> AS-Pfad (Liste der durchquerten AS) + weitere Attribute (z.B. Local Preference)</li>
+      <li><strong>eBGP:</strong> Zwischen verschiedenen AS (External BGP)</li>
+      <li><strong>iBGP:</strong> Innerhalb eines AS (Internal BGP), verteilt extern gelernte Routen</li>
+      <li><strong>TCP Port 179:</strong> BGP nutzt TCP für zuverlässige Nachbarschaftsbeziehungen</li>
+      <li><strong>Policy-based:</strong> Administrator kann Routing-Entscheidungen durch Policies beeinflussen</li>
+      <li><strong>Routenaggregation:</strong> Zusammenfassung von Routen (Supernetting) reduziert Tabelleneinträge</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Vergleich RIP – OSPF – BGP</div>
+    <table class="data-table">
+      <tr><th>Eigenschaft</th><th>RIP</th><th>OSPF</th><th>BGP</th></tr>
+      <tr><td>Algorithmus</td><td>DV (Bellman-Ford)</td><td>LS (Dijkstra)</td><td>Pfadvektor</td></tr>
+      <tr><td>Metrik</td><td>Hop Count</td><td>Kosten (Bandbreite)</td><td>AS-Pfad + Attribute</td></tr>
+      <tr><td>Einsatz</td><td>Intra-AS (klein)</td><td>Intra-AS (groß)</td><td>Inter-AS</td></tr>
+      <tr><td>Max. Hops</td><td>15</td><td>Unbegrenzt</td><td>Unbegrenzt</td></tr>
+      <tr><td>Konvergenz</td><td>Langsam</td><td>Schnell</td><td>Mittel</td></tr>
+      <tr><td>Transport</td><td>UDP (520)</td><td>IP direkt (89)</td><td>TCP (179)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IPv6-Routing</div>
+    <ul class="content-list">
+      <li><strong>RIPng:</strong> RIP für IPv6, UDP Port 521, Multicast FF02::9</li>
+      <li><strong>OSPFv3:</strong> OSPF für IPv6, Link-lokale Adressen für Nachbarschaft</li>
+      <li><strong>MP-BGP:</strong> Multiprotocol BGP, unterstützt IPv4 und IPv6 gleichzeitig</li>
+      <li>Routing-Prinzipien bleiben gleich, Adressformat ändert sich</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 6 – Transportprotokolle
+══════════════════════════════════════ -->
+<div id="kap6" class="section">
+  <div class="section-header">
+    <h2>Kapitel 6</h2>
+    <span>Transportprotokolle</span>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Transportschicht</div>
+    <p>Ende-zu-Ende-Kommunikation zwischen <strong>Anwendungsprozessen</strong>. Identifikation der Prozesse über <strong>Portnummern</strong>. Zwei Protokolle: TCP (zuverlässig) und UDP (schnell).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Portnummern</div>
+    <table class="data-table">
+      <tr><th>Bereich</th><th>Name</th><th>Beschreibung</th></tr>
+      <tr><td>0 – 1023</td><td>Well-known Ports</td><td>Reserviert für Standarddienste (HTTP=80, HTTPS=443, FTP=21, SSH=22, DNS=53, SMTP=25)</td></tr>
+      <tr><td>1024 – 49151</td><td>Registered Ports</td><td>Registriert bei IANA für bestimmte Anwendungen</td></tr>
+      <tr><td>49152 – 65535</td><td>Dynamic/Private Ports</td><td>Dynamisch vom Betriebssystem vergeben (Quellports)</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Socket:</strong> IP-Adresse + Portnummer (z.B. 192.168.1.1:80). Ein Socket-Paar definiert eine Verbindung eindeutig.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TCP (Transmission Control Protocol)</div>
+    <ul class="content-list">
+      <li><strong>Verbindungsorientiert</strong> – 3-Wege-Handshake zum Verbindungsaufbau</li>
+      <li><strong>Zuverlässig</strong> – Sequenznummern, Bestätigungen (ACK), Neuübertragung bei Verlust</li>
+      <li><strong>Reihenfolge</strong> – Segmente werden in richtiger Reihenfolge zusammengesetzt</li>
+      <li><strong>Flusskontrolle</strong> – Sliding Window, Empfänger gibt Fenstergröße (rwnd) vor</li>
+      <li><strong>Staukontrolle</strong> – Slow Start, Congestion Avoidance, Anpassung der Senderate</li>
+      <li><strong>Vollduplex</strong> – Gleichzeitiges Senden und Empfangen</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TCP – 3-Wege-Handshake</div>
+    <table class="data-table">
+      <tr><th>Schritt</th><th>Richtung</th><th>Flags</th><th>Bedeutung</th></tr>
+      <tr><td>1</td><td>Client → Server</td><td>SYN</td><td>Verbindungsanfrage, ISN (Initial Sequence Number) des Clients</td></tr>
+      <tr><td>2</td><td>Server → Client</td><td>SYN + ACK</td><td>Bestätigung + ISN des Servers</td></tr>
+      <tr><td>3</td><td>Client → Server</td><td>ACK</td><td>Bestätigung → Verbindung steht</td></tr>
+    </table>
+    <p style="margin-top:0.5rem"><strong>Verbindungsabbau:</strong> 4-Wege-Handshake mit FIN/ACK (jede Seite sendet FIN und erhält ACK).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TCP-Header (20–60 Byte)</div>
+    <table class="data-table">
+      <tr><th>Feld</th><th>Bits</th><th>Bedeutung</th></tr>
+      <tr><td>Source Port</td><td>16</td><td>Quell-Portnummer</td></tr>
+      <tr><td>Destination Port</td><td>16</td><td>Ziel-Portnummer</td></tr>
+      <tr><td>Sequence Number</td><td>32</td><td>Byteposition im Datenstrom</td></tr>
+      <tr><td>ACK Number</td><td>32</td><td>Nächste erwartete Sequenznummer</td></tr>
+      <tr><td>Flags</td><td>6</td><td>SYN, ACK, FIN, RST, PSH, URG</td></tr>
+      <tr><td>Window Size</td><td>16</td><td>Empfangsfenstergröße (Flusskontrolle)</td></tr>
+      <tr><td>Checksum</td><td>16</td><td>Prüfsumme über Header + Daten</td></tr>
+    </table>
+  </div>
+
+  <div class="concept-box warning">
+    <div class="concept-label">SYN-Flooding (DoS-Angriff)</div>
+    <p>Angreifer sendet massenweise SYN-Pakete mit gefälschten Quelladressen. Server reserviert Ressourcen (TCB) für jede halboffene Verbindung → <strong>Speicher und Verbindungslimit erschöpft</strong> → Server nicht mehr erreichbar. Gegenmaßnahme: <strong>SYN-Cookies</strong>.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">UDP (User Datagram Protocol)</div>
+    <ul class="content-list">
+      <li><strong>Verbindungslos</strong> – Kein Handshake, kein Verbindungsaufbau</li>
+      <li><strong>Unzuverlässig</strong> – Keine Bestätigungen, keine Neuübertragung</li>
+      <li><strong>Minimaler Overhead</strong> – Header nur 8 Byte (Quellport, Zielport, Länge, Prüfsumme)</li>
+      <li><strong>Schnell</strong> – Ideal für zeitkritische Anwendungen</li>
+      <li><strong>Einsatz:</strong> DNS-Anfragen, VoIP, Video-Streaming, Onlinespiele, DHCP, SNMP</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">TCP vs. UDP – Vergleich</div>
+    <table class="data-table">
+      <tr><th>Eigenschaft</th><th>TCP</th><th>UDP</th></tr>
+      <tr><td>Verbindung</td><td>Verbindungsorientiert</td><td>Verbindungslos</td></tr>
+      <tr><td>Zuverlässigkeit</td><td>Ja (ACK, Retransmission)</td><td>Nein</td></tr>
+      <tr><td>Reihenfolge</td><td>Garantiert</td><td>Nicht garantiert</td></tr>
+      <tr><td>Flusskontrolle</td><td>Ja (Sliding Window)</td><td>Nein</td></tr>
+      <tr><td>Header</td><td>20–60 Byte</td><td>8 Byte</td></tr>
+      <tr><td>Overhead</td><td>Hoch</td><td>Niedrig</td></tr>
+      <tr><td>Einsatz</td><td>HTTP, FTP, SMTP, SSH</td><td>DNS, VoIP, Streaming</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     KAP 7 – Netzbefehle & Troubleshooting
+══════════════════════════════════════ -->
+<div id="kap7" class="section">
+  <div class="section-header">
+    <h2>Kapitel 7</h2>
+    <span>Netzbefehle &amp; Troubleshooting</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ipconfig / ifconfig</div>
+    <table class="data-table">
+      <tr><th>Befehl (Windows)</th><th>Funktion</th></tr>
+      <tr><td>ipconfig</td><td>IP-Adresse, Subnetzmaske, Standardgateway anzeigen</td></tr>
+      <tr><td>ipconfig /all</td><td>Detaillierte Konfiguration (inkl. MAC, DHCP, DNS)</td></tr>
+      <tr><td>ipconfig /release</td><td>DHCP-Lease freigeben</td></tr>
+      <tr><td>ipconfig /renew</td><td>Neue DHCP-Lease anfordern</td></tr>
+      <tr><td>ipconfig /flushdns</td><td>DNS-Cache leeren</td></tr>
+      <tr><td>ipconfig /displaydns</td><td>DNS-Cache anzeigen</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">ping – Erreichbarkeitstest</div>
+    <ul class="content-list">
+      <li><strong>Funktion:</strong> Sendet ICMP Echo Request, wartet auf Echo Reply</li>
+      <li><strong>Antwortzeit (RTT):</strong> Hin- und Rückweg des Pakets</li>
+      <li><strong>TTL:</strong> Wird in Antwort angezeigt → Rückschluss auf Hops</li>
+      <li><code>ping -t &lt;IP&gt;</code> – Dauerhaft senden (Stopp: STRG+C)</li>
+      <li><code>ping -l &lt;Größe&gt; &lt;IP&gt;</code> – Pufferlänge ändern</li>
+      <li><code>ping -w &lt;ms&gt; &lt;IP&gt;</code> – Timeout setzen</li>
+    </ul>
+  </div>
+
+  <div class="concept-box definition">
+    <div class="concept-label">Systematische Fehlerdiagnose mit Ping</div>
+    <p>Schrittweises Testen: <strong>1.</strong> ping localhost (127.0.0.1) → <strong>2.</strong> ping eigene IP → <strong>3.</strong> ping Gateway → <strong>4.</strong> ping entfernter Host → <strong>5.</strong> ping Domainname (DNS-Test). Fehler grenzt Problem ein.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">tracert / traceroute</div>
+    <ul class="content-list">
+      <li><strong>Funktion:</strong> Verfolgt den Weg eines Pakets durch das Netz</li>
+      <li>Sendet Pakete mit aufsteigender TTL (1, 2, 3, …)</li>
+      <li>Jeder Router sendet „Time Exceeded" zurück → Route wird sichtbar</li>
+      <li><code>***</code> = Router blockiert ICMP (Timeout)</li>
+      <li><code>tracert &lt;Ziel&gt;</code> (Windows) / <code>traceroute &lt;Ziel&gt;</code> (Linux)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Weitere Netzbefehle</div>
+    <table class="data-table">
+      <tr><th>Befehl</th><th>Funktion</th></tr>
+      <tr><td>arp -a</td><td>ARP-Cache anzeigen (IP → MAC Zuordnungen)</td></tr>
+      <tr><td>arp -d</td><td>ARP-Cache löschen</td></tr>
+      <tr><td>nslookup &lt;Domain&gt;</td><td>DNS-Abfrage: Domainname → IP-Adresse</td></tr>
+      <tr><td>netstat -a</td><td>Alle offenen Verbindungen und Ports anzeigen</td></tr>
+      <tr><td>netstat -an</td><td>Verbindungen numerisch anzeigen</td></tr>
+      <tr><td>netstat -ano</td><td>Verbindungen mit Prozess-ID anzeigen</td></tr>
+      <tr><td>netstat -r / route print</td><td>Routing-Tabelle anzeigen</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Wireshark-Analyse (Zusammenfassung)</div>
+    <ul class="content-list">
+      <li><strong>ARP aufzeichnen:</strong> ARP-Cache löschen → Wireshark starten → ping → ARP Request/Reply analysieren</li>
+      <li><strong>DNS aufzeichnen:</strong> DNS-Cache leeren → Webseite öffnen → DNS Query/Response analysieren (Port 53)</li>
+      <li><strong>TCP aufzeichnen:</strong> Verbindung mitschneiden → 3-Wege-Handshake identifizieren → Flow Graph analysieren</li>
+      <li><strong>Filter:</strong> arp, dns, tcp, icmp, ip.addr==x.x.x.x</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLASHCARDS
+══════════════════════════════════════ -->
+<div id="flashcards" class="section">
+  <div class="section-header">
+    <h2>Flashcards</h2>
+    <span>Klick auf die Karte zum Umdrehen</span>
+  </div>
+  <div class="progress-bar"><div id="fc-progress" class="progress-fill"></div></div>
+  <div class="flashcard-container">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="fc-front">
+        <div class="fc-label">FLASHCARD <span id="fc-label-cat"></span></div>
+        <h3 id="fc-question"></h3>
+        <div class="fc-hint">Klicken zum Umdrehen</div>
+      </div>
+      <div class="fc-back">
+        <div class="fc-label">ANTWORT</div>
+        <p id="fc-answer"></p>
+      </div>
+    </div>
+  </div>
+  <div class="fc-controls">
+    <button class="btn ghost" onclick="prevCard()">&#9664; Zurück</button>
+    <span class="fc-counter" id="fc-counter">1 / 1</span>
+    <button class="btn ghost" onclick="nextCard()">Weiter &#9654;</button>
+  </div>
+  <div style="display:flex; gap:0.75rem; justify-content:center;">
+    <button class="btn ghost" onclick="shuffleCards()">Mischen</button>
+    <button class="btn ghost" onclick="resetCards()">Zurücksetzen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     QUIZ
+══════════════════════════════════════ -->
+<div id="quiz" class="section">
+  <div class="section-header">
+    <h2>Prüfungsquiz</h2>
+    <span>20 Fragen mit Erklärungen</span>
+  </div>
+  <div id="quiz-questions"></div>
+  <div id="quiz-submit-area" style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem;">
+    <button class="btn" onclick="submitQuiz()">Auswertung</button>
+  </div>
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-text" id="result-text"></div>
+    <button class="btn ghost" style="margin-top:1rem" onclick="resetQuiz()">Quiz wiederholen</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEATSHEET
+══════════════════════════════════════ -->
+<div id="cheatsheet" class="section">
+  <div class="section-header">
+    <h2>Cheatsheet</h2>
+    <span>Alle Formeln &amp; Schlüsselkonzepte</span>
+  </div>
+  <div class="cheat-grid">
+    <div class="cheat-block">
+      <h4>IP-Adressierung</h4>
+      <div class="cheat-row"><span class="cheat-key">IPv4</span><span class="cheat-val">32 Bit, max. 4,3 Mrd.</span></div>
+      <div class="cheat-row"><span class="cheat-key">IPv6</span><span class="cheat-val">128 Bit, 3,4 × 10³⁸</span></div>
+      <div class="cheat-row"><span class="cheat-key">Klasse A</span><span class="cheat-val">/8, 1.x – 126.x</span></div>
+      <div class="cheat-row"><span class="cheat-key">Klasse B</span><span class="cheat-val">/16, 128.x – 191.x</span></div>
+      <div class="cheat-row"><span class="cheat-key">Klasse C</span><span class="cheat-val">/24, 192.x – 223.x</span></div>
+      <div class="cheat-row"><span class="cheat-key">Hosts berechnen</span><span class="cheat-val">2^(32−Präfix) − 2</span></div>
+      <div class="cheat-row"><span class="cheat-key">Netzadresse</span><span class="cheat-val">IP AND Maske</span></div>
+      <div class="cheat-row"><span class="cheat-key">Broadcast</span><span class="cheat-val">Netz OR inv. Maske</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Private Adressen &amp; Spezial</h4>
+      <div class="cheat-row"><span class="cheat-key">Privat A</span><span class="cheat-val">10.0.0.0/8</span></div>
+      <div class="cheat-row"><span class="cheat-key">Privat B</span><span class="cheat-val">172.16.0.0/12</span></div>
+      <div class="cheat-row"><span class="cheat-key">Privat C</span><span class="cheat-val">192.168.0.0/16</span></div>
+      <div class="cheat-row"><span class="cheat-key">Loopback</span><span class="cheat-val">127.0.0.1 / ::1</span></div>
+      <div class="cheat-row"><span class="cheat-key">APIPA</span><span class="cheat-val">169.254.x.x</span></div>
+      <div class="cheat-row"><span class="cheat-key">Link-Local v6</span><span class="cheat-val">FE80::/10</span></div>
+      <div class="cheat-row"><span class="cheat-key">Global v6</span><span class="cheat-val">2000::/3</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>IP-Protokolle</h4>
+      <div class="cheat-row"><span class="cheat-key">IPv4-Header</span><span class="cheat-val">20–60 Byte, variabel</span></div>
+      <div class="cheat-row"><span class="cheat-key">IPv6-Header</span><span class="cheat-val">40 Byte, fest</span></div>
+      <div class="cheat-row"><span class="cheat-key">MTU Ethernet</span><span class="cheat-val">1500 Byte</span></div>
+      <div class="cheat-row"><span class="cheat-key">ICMP Echo Req</span><span class="cheat-val">Typ 8 (Ping)</span></div>
+      <div class="cheat-row"><span class="cheat-key">ICMP Echo Reply</span><span class="cheat-val">Typ 0</span></div>
+      <div class="cheat-row"><span class="cheat-key">TTL Exceeded</span><span class="cheat-val">Typ 11 (Traceroute)</span></div>
+      <div class="cheat-row"><span class="cheat-key">ARP</span><span class="cheat-val">IP → MAC (Broadcast)</span></div>
+      <div class="cheat-row"><span class="cheat-key">DNS</span><span class="cheat-val">UDP Port 53</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Routing</h4>
+      <div class="cheat-row"><span class="cheat-key">RIP</span><span class="cheat-val">DV, Hop Count, max 15</span></div>
+      <div class="cheat-row"><span class="cheat-key">OSPF</span><span class="cheat-val">LS, Kosten (Bandbreite)</span></div>
+      <div class="cheat-row"><span class="cheat-key">BGP</span><span class="cheat-val">Pfadvektor, TCP 179</span></div>
+      <div class="cheat-row"><span class="cheat-key">OSPF Kosten</span><span class="cheat-val">10⁸ / Bandbreite</span></div>
+      <div class="cheat-row"><span class="cheat-key">DV-Problem</span><span class="cheat-val">Count to Infinity</span></div>
+      <div class="cheat-row"><span class="cheat-key">Gegenmaßnahme</span><span class="cheat-val">Split Horizon, Poison Rev.</span></div>
+      <div class="cheat-row"><span class="cheat-key">IGP</span><span class="cheat-val">RIP, OSPF (Intra-AS)</span></div>
+      <div class="cheat-row"><span class="cheat-key">EGP</span><span class="cheat-val">BGP (Inter-AS)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>TCP &amp; UDP</h4>
+      <div class="cheat-row"><span class="cheat-key">TCP</span><span class="cheat-val">verbindungsorientiert, zuverlässig</span></div>
+      <div class="cheat-row"><span class="cheat-key">UDP</span><span class="cheat-val">verbindungslos, 8 B Header</span></div>
+      <div class="cheat-row"><span class="cheat-key">3-Wege-HS</span><span class="cheat-val">SYN → SYN+ACK → ACK</span></div>
+      <div class="cheat-row"><span class="cheat-key">Well-known</span><span class="cheat-val">Ports 0–1023</span></div>
+      <div class="cheat-row"><span class="cheat-key">HTTP/HTTPS</span><span class="cheat-val">80 / 443</span></div>
+      <div class="cheat-row"><span class="cheat-key">FTP / SSH</span><span class="cheat-val">21 / 22</span></div>
+      <div class="cheat-row"><span class="cheat-key">SMTP / DNS</span><span class="cheat-val">25 / 53</span></div>
+      <div class="cheat-row"><span class="cheat-key">DHCP</span><span class="cheat-val">67 (Server) / 68 (Client)</span></div>
+    </div>
+    <div class="cheat-block">
+      <h4>Netzbefehle</h4>
+      <div class="cheat-row"><span class="cheat-key">ipconfig</span><span class="cheat-val">IP-Konfiguration anzeigen</span></div>
+      <div class="cheat-row"><span class="cheat-key">ping</span><span class="cheat-val">ICMP Echo, Erreichbarkeit</span></div>
+      <div class="cheat-row"><span class="cheat-key">tracert</span><span class="cheat-val">Route verfolgen (TTL++)</span></div>
+      <div class="cheat-row"><span class="cheat-key">arp -a</span><span class="cheat-val">ARP-Cache anzeigen</span></div>
+      <div class="cheat-row"><span class="cheat-key">nslookup</span><span class="cheat-val">DNS-Auflösung testen</span></div>
+      <div class="cheat-row"><span class="cheat-key">netstat -a</span><span class="cheat-val">Offene Verbindungen</span></div>
+      <div class="cheat-row"><span class="cheat-key">netstat -r</span><span class="cheat-val">Routing-Tabelle anzeigen</span></div>
+      <div class="cheat-row"><span class="cheat-key">NAT/PAT</span><span class="cheat-val">Privat → Öffentlich (Port)</span></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+// ── FLASHCARDS DATA ──
+const flashcardsData = [
+  {cat:"Kap 1", q:"Aus wie vielen Protokollen besteht die TCP/IP-Familie ungefähr?", a:"Über 500 Protokolle. Die beiden namensgebenden sind TCP (Transmission Control Protocol) und IP (Internet Protocol)."},
+  {cat:"Kap 1", q:"Was ist der Unterschied zwischen Routing und Forwarding?", a:"Routing: Berechnung des optimalen Weges (Routingtabelle). Forwarding: Weiterleitung eines konkreten Pakets anhand der Forwardingtabelle (Zielnetz → Next Hop + Interface)."},
+  {cat:"Kap 1", q:"Was bedeutet 'Best Effort' bei der Netzwerkschicht?", a:"Pakete werden so schnell wie möglich weitergeleitet, aber es gibt keine Garantie für Zustellung, Reihenfolge oder Fehlerfreiheit."},
+  {cat:"Kap 2", q:"Wie groß ist eine IPv4-Adresse und wie viele Adressen sind möglich?", a:"32 Bit (4 Byte). Maximal 2³² ≈ 4,3 Milliarden Adressen. Notation: dezimal mit Punkten (z.B. 192.168.1.1)."},
+  {cat:"Kap 2", q:"Welche drei privaten IPv4-Adressbereiche gibt es (RFC 1918)?", a:"Klasse A: 10.0.0.0/8, Klasse B: 172.16.0.0/12, Klasse C: 192.168.0.0/16. Diese Adressen werden im Internet nicht geroutet."},
+  {cat:"Kap 2", q:"Wie berechnet man die Anzahl adressierbarer Hosts in einem Subnetz?", a:"Hosts = 2^(32 − Präfixlänge) − 2. Minus 2: eine Adresse für das Netz (Hostbits = 0), eine für Broadcast (Hostbits = 1)."},
+  {cat:"Kap 2", q:"Was ist CIDR und warum wurde es eingeführt?", a:"Classless Interdomain Routing: flexible Präfixlängen statt starrer Klassen. Notation: IP/Präfix (z.B. /22). Verhindert Adressverschwendung und ermöglicht Routenaggregation."},
+  {cat:"Kap 2", q:"Wie groß ist eine IPv6-Adresse und wie wird sie dargestellt?", a:"128 Bit (16 Byte). Hexadezimale Notation mit Doppelpunkten (8 Gruppen à 4 Hex-Zeichen). Führende Nullen weglassbar, eine Folge von Nullgruppen durch :: ersetzbar."},
+  {cat:"Kap 2", q:"Was ist SLAAC und wie funktioniert es?", a:"Stateless Address Autoconfiguration: Host bildet IPv6-Adresse selbst aus Netzpräfix (vom Router via Router Advertisement) + Interface Identifier (aus MAC via EUI-64 oder zufällig bei Privacy Extensions)."},
+  {cat:"Kap 3", q:"Welche Felder im IPv4-Header sind für die Fragmentierung zuständig?", a:"Identification (eindeutige Kennung), Flags (DF = Don't Fragment, MF = More Fragments) und Fragment Offset (Position in 8-Byte-Einheiten)."},
+  {cat:"Kap 3", q:"Was ist der Unterschied zwischen IPv4- und IPv6-Header?", a:"IPv4: variable Länge (20–60 Byte), Prüfsumme, Fragmentierung im Header. IPv6: feste 40 Byte, keine Prüfsumme, keine Fragmentierung (Extension Header), Flow Label für QoS."},
+  {cat:"Kap 3", q:"Was macht das TTL-Feld im IP-Header?", a:"Time to Live: Wird an jedem Router um 1 verringert. Bei TTL=0 wird das Paket verworfen und eine ICMP 'Time Exceeded'-Meldung (Typ 11) an den Absender geschickt. Verhindert endloses Kreisen."},
+  {cat:"Kap 3", q:"Wie funktioniert ARP?", a:"Address Resolution Protocol: Auflösung IP → MAC im lokalen Netz. ARP-Request als Broadcast (FF:FF:FF:FF:FF:FF), ARP-Reply als Unicast. Ergebnisse werden im ARP-Cache gespeichert."},
+  {cat:"Kap 3", q:"Was ersetzt ARP bei IPv6 und welche zusätzlichen Funktionen bietet es?", a:"NDP (Neighbor Discovery Protocol): Neighbor Solicitation/Advertisement (Multicast statt Broadcast), Router Solicitation/Advertisement, DAD (Duplicate Address Detection), NUD (Unreachability Detection)."},
+  {cat:"Kap 3", q:"Wie funktioniert der DNS-Auflösungsprozess?", a:"Client fragt DNS-Resolver → Resolver fragt Root-Server → TLD-Server (.de) → Authoritative Server → IP-Adresse. Rekursiv: Resolver erledigt alles. Iterativ: Jeder Server verweist auf den nächsten."},
+  {cat:"Kap 3", q:"Was ist der DORA-Prozess bei DHCP?", a:"Discover (Client Broadcast) → Offer (Server bietet IP an) → Request (Client wählt Angebot) → Acknowledge (Server bestätigt). Automatische IP-Konfiguration inkl. Maske, Gateway, DNS."},
+  {cat:"Kap 3", q:"Was ist NAT und welche Varianten gibt es?", a:"Network Address Translation: Übersetzung privater in öffentliche IPs. Static NAT (1:1), Dynamic NAT (Pool), PAT/NAT Overload (viele:1, unterschieden durch Ports)."},
+  {cat:"Kap 4", q:"Wie funktioniert der Distanz-Vektor-Algorithmus?", a:"Jeder Router kennt nur Nachbarn + Kosten. Tauscht periodisch Distanzvektoren aus. Formel: d(x,y) = min{c(x,v) + d(v,y)}. Iterative Annäherung an optimale Routen (Bellman-Ford)."},
+  {cat:"Kap 4", q:"Was ist das Count-to-Infinity-Problem?", a:"Bei Verbindungsausfall bietet ein Nachbar veraltete Route an → Routingschleife, Kosten steigen bis 'unendlich'. Gegenmaßnahmen: Split Horizon, Poison Reverse, Triggered Updates, Hold-on Timer."},
+  {cat:"Kap 4", q:"Wie unterscheiden sich DV- und LS-Algorithmus?", a:"DV: Nur Nachbarn bekannt, Distanzvektoren austauschen, langsame Konvergenz, Count to Infinity. LS: Gesamte Topologie bekannt (LSA Flooding), Dijkstra-Algorithmus, schnelle Konvergenz, hoher Speicherbedarf."},
+  {cat:"Kap 4", q:"Was ist ein Autonomes System (AS)?", a:"Gruppe von Routern unter gemeinsamer Verwaltung und technischer Kontrolle. Innerhalb: IGP (RIP, OSPF). Zwischen AS: EGP (BGP). Jedes AS hat eine eindeutige AS-Nummer (ASN)."},
+  {cat:"Kap 5", q:"Was sind die wichtigsten Eigenschaften von RIP?", a:"DV-Algorithmus, Metrik: Hop Count, Maximum 15 Hops (16=∞), Update alle 30s. RIPv2 unterstützt CIDR/VLSM. Nachteil: langsame Konvergenz, nur für kleine Netze."},
+  {cat:"Kap 5", q:"Wie berechnet OSPF die Kosten einer Route?", a:"Kosten = Referenzbandbreite / Interface-Bandbreite. Standard: 10⁸/Bandbreite. Beispiel: 100 Mbit/s = Kosten 1, 10 Mbit/s = Kosten 10. Geringere Kosten = bessere Route."},
+  {cat:"Kap 5", q:"Was ist BGP und wofür wird es eingesetzt?", a:"Border Gateway Protocol: Inter-AS-Routing (das Routing-Protokoll des Internets). Pfadvektor-Algorithmus, Metrik: AS-Pfad + Attribute. Nutzt TCP Port 179. Policy-basiert."},
+  {cat:"Kap 6", q:"In welche drei Bereiche werden Portnummern eingeteilt?", a:"Well-known (0–1023): HTTP=80, HTTPS=443, FTP=21, SSH=22, DNS=53. Registered (1024–49151): registrierte Anwendungen. Dynamic (49152–65535): vom OS dynamisch vergeben."},
+  {cat:"Kap 6", q:"Wie läuft der TCP 3-Wege-Handshake ab?", a:"1) Client → Server: SYN (mit ISN). 2) Server → Client: SYN+ACK (mit Server-ISN). 3) Client → Server: ACK → Verbindung steht. Abbau: 4-Wege mit FIN/ACK."},
+  {cat:"Kap 6", q:"Was ist ein SYN-Flooding-Angriff?", a:"DoS-Angriff: Massenweise SYN-Pakete mit gefälschten Quelladressen → Server reserviert Ressourcen (TCB) für halboffene Verbindungen → Speicher erschöpft → Server nicht erreichbar. Gegenmaßnahme: SYN-Cookies."},
+  {cat:"Kap 6", q:"Nenne 5 wesentliche Unterschiede zwischen TCP und UDP.", a:"TCP: verbindungsorientiert, zuverlässig, Reihenfolge garantiert, Flusskontrolle, 20–60 Byte Header. UDP: verbindungslos, unzuverlässig, keine Reihenfolge, keine Flusskontrolle, 8 Byte Header."},
+  {cat:"Kap 7", q:"In welcher Reihenfolge testet man systematisch die Netzwerkverbindung mit Ping?", a:"1) ping 127.0.0.1 (Loopback) → 2) ping eigene IP → 3) ping Standardgateway → 4) ping entfernter Host → 5) ping Domainname (DNS). Fehler grenzt Problemursache ein."},
+  {cat:"Kap 7", q:"Wie funktioniert Traceroute technisch?", a:"Sendet Pakete mit aufsteigender TTL (1, 2, 3, …). Jeder Router auf dem Weg dekrementiert TTL → bei 0: ICMP 'Time Exceeded' zurück. So wird die Route Hop für Hop sichtbar."}
+];
+
+// ── QUIZ DATA ──
+const quizData = [
+  {q:"Wie viele Bits hat eine IPv4-Adresse?", opts:["16 Bit","32 Bit","64 Bit","128 Bit"], correct:1, exp:"IPv4-Adressen sind 32 Bit (4 Byte) lang, in dezimaler Punkt-Notation dargestellt."},
+  {q:"Welcher IPv4-Adressbereich gehört zur Klasse B?", opts:["1.0.0.0 – 126.x.x.x","128.0.0.0 – 191.255.x.x","192.0.0.0 – 223.255.255.x","224.0.0.0 – 239.x.x.x"], correct:1, exp:"Klasse B: 128.0.0.0 – 191.255.x.x mit /16 Netzmaske (255.255.0.0)."},
+  {q:"Wie viele adressierbare Hosts hat ein /24-Subnetz?", opts:["256","254","252","128"], correct:1, exp:"2^(32−24) − 2 = 2⁸ − 2 = 254. Minus 2 für Netz- und Broadcastadresse."},
+  {q:"Welche IPv4-Adresse ist die APIPA-Adresse (bei DHCP-Ausfall)?", opts:["10.0.0.1","172.16.0.1","192.168.1.1","169.254.x.x"], correct:3, exp:"APIPA (Automatic Private IP Addressing): 169.254.0.0/16 wird automatisch zugewiesen, wenn kein DHCP-Server erreichbar ist."},
+  {q:"Welches Präfix kennzeichnet IPv6 Link-Local-Adressen?", opts:["2001::/16","FC00::/7","FE80::/10","FF00::/8"], correct:2, exp:"FE80::/10 kennzeichnet Link-Local-Adressen, die nur im lokalen Segment gültig sind und nicht geroutet werden."},
+  {q:"Wie groß ist der IPv4-Header minimal?", opts:["8 Byte","16 Byte","20 Byte","40 Byte"], correct:2, exp:"Der IPv4-Header ist minimal 20 Byte (IHL = 5 × 4 Byte). Maximal 60 Byte mit Optionen."},
+  {q:"Welcher ICMP-Typ wird für Ping (Echo Request) verwendet?", opts:["Typ 0","Typ 3","Typ 8","Typ 11"], correct:2, exp:"ICMP Typ 8 = Echo Request (Ping-Anfrage). Typ 0 = Echo Reply (Antwort)."},
+  {q:"Was macht ARP?", opts:["Löst Domainnamen in IP-Adressen auf","Löst IP-Adressen in MAC-Adressen auf","Vergibt dynamisch IP-Adressen","Übersetzt private in öffentliche Adressen"], correct:1, exp:"ARP (Address Resolution Protocol) löst IP-Adressen in MAC-Adressen auf. ARP-Request als Broadcast, ARP-Reply als Unicast."},
+  {q:"Wie lautet der DHCP-Ablauf?", opts:["SYN → SYN+ACK → ACK","Discover → Offer → Request → Acknowledge","Query → Response → Confirm","Request → Reply → Accept → Done"], correct:1, exp:"DORA-Prozess: Discover (Broadcast) → Offer (Server) → Request (Client) → Acknowledge (Server bestätigt Lease)."},
+  {q:"Welcher Routing-Algorithmus wird bei OSPF verwendet?", opts:["Bellman-Ford","Dijkstra (Link-State)","Pfadvektor","Flooding"], correct:1, exp:"OSPF nutzt den Dijkstra-Algorithmus (Shortest Path First) auf Basis einer vollständigen Topologie-Datenbank."},
+  {q:"Was ist die maximale Hop-Anzahl bei RIP?", opts:["8","15","32","255"], correct:1, exp:"RIP erlaubt maximal 15 Hops. 16 Hops bedeutet 'unerreichbar' (∞). Daher nur für kleine Netze geeignet."},
+  {q:"Welches Protokoll wird für das Inter-AS-Routing im Internet verwendet?", opts:["RIP","OSPF","BGP","EIGRP"], correct:2, exp:"BGP (Border Gateway Protocol) ist das Routing-Protokoll zwischen Autonomen Systemen – das Routing-Protokoll des Internets."},
+  {q:"Was ist das Count-to-Infinity-Problem?", opts:["Router zählt zu viele Hops","Routingschleife durch veraltete DV-Informationen nach Verbindungsausfall","Zu viele Router im Netz","Überlauf der Routingtabelle"], correct:1, exp:"Bei Verbindungsausfall bietet ein Nachbar eine veraltete Route an → Routingschleife, Kosten steigen bis 'unendlich'."},
+  {q:"Wie berechnet OSPF die Kosten eines Links?", opts:["Hop Count","Referenzbandbreite / Interface-Bandbreite","Latenz × Distanz","Fixwert pro Router"], correct:1, exp:"OSPF-Kosten = 10⁸ / Bandbreite (Standard). 100 Mbit/s → Kosten 1, 10 Mbit/s → Kosten 10."},
+  {q:"Welcher Portbereich umfasst die Well-known Ports?", opts:["0 – 255","0 – 1023","1024 – 49151","49152 – 65535"], correct:1, exp:"Well-known Ports: 0–1023, reserviert für Standarddienste (HTTP=80, HTTPS=443, FTP=21, SSH=22, DNS=53)."},
+  {q:"Wie läuft der TCP 3-Wege-Handshake ab?", opts:["ACK → SYN → FIN","SYN → SYN+ACK → ACK","SYN → ACK → SYN+ACK","FIN → FIN+ACK → ACK"], correct:1, exp:"1) Client sendet SYN, 2) Server antwortet mit SYN+ACK, 3) Client bestätigt mit ACK → Verbindung steht."},
+  {q:"Welchen Port nutzt BGP?", opts:["UDP 53","TCP 80","TCP 179","UDP 520"], correct:2, exp:"BGP nutzt TCP Port 179 für zuverlässige Nachbarschaftsbeziehungen zwischen BGP-Routern."},
+  {q:"Wie groß ist der UDP-Header?", opts:["4 Byte","8 Byte","20 Byte","40 Byte"], correct:1, exp:"UDP-Header: nur 8 Byte (Quellport, Zielport, Länge, Prüfsumme). Minimaler Overhead für schnelle Übertragung."},
+  {q:"Was macht NAT Overload (PAT)?", opts:["Übersetzt MAC- in IP-Adressen","Übersetzt viele private Adressen auf eine öffentliche mit unterschiedlichen Ports","Weist dynamisch IP-Adressen zu","Verschlüsselt IP-Pakete"], correct:1, exp:"PAT/NAT Overload: Viele private Adressen werden auf eine öffentliche IP abgebildet, unterschieden durch verschiedene Portnummern."},
+  {q:"Welches Tool zeigt den Weg eines Pakets durch das Netz?", opts:["ping","ipconfig","tracert / traceroute","netstat"], correct:2, exp:"tracert/traceroute sendet Pakete mit aufsteigender TTL. Jeder Router sendet ICMP 'Time Exceeded' zurück → Route wird sichtbar."}
+];
+
+initFlashcards(flashcardsData);
+initQuiz(quizData);
+</script>
+</body>
+</html>
