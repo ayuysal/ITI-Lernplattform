@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wissensbaum &ndash; Informatik Studium</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0c0e13;--surface:#14171e;--border:#1e2230;--text:#e2e4ea;--muted:#6b7084;--accent:#6c63ff;
+    --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+  .noise{position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+  .container{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:40px 20px 80px}
+  /* Header */
+  .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:12px;transition:color .15s}
+  .back-link:hover{color:var(--accent)}
+  header{text-align:center;margin-bottom:36px}
+  header .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+  header h1{font-weight:900;font-size:clamp(24px,5vw,40px);background:linear-gradient(135deg,#fff,#9ba0b5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+  header p{font-weight:300;color:var(--muted);font-size:14px}
+  /* Search */
+  .search-wrap{max-width:400px;margin:0 auto 20px;position:relative}
+  .search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px 10px 38px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;transition:border-color .2s}
+  .search-input:focus{border-color:var(--accent)}
+  .search-input::placeholder{color:var(--muted)}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+  .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;display:none;padding:2px 6px}
+  .search-clear:hover{color:var(--text)}
+  .no-results{display:none;text-align:center;padding:40px;color:var(--muted);font-size:14px}
+  /* Controls */
+  .controls{display:flex;gap:8px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+  .ctrl-btn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .2s}
+  .ctrl-btn:hover{background:rgba(255,255,255,.06);color:var(--text);border-color:rgba(255,255,255,.1)}
+  /* Tree */
+  .tree{position:relative;padding-left:0}
+  /* L0 Branch */
+  .branch{margin-bottom:6px}
+  .branch-header{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:14px;background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:all .25s;position:relative;user-select:none}
+  .branch-header:hover{border-color:rgba(255,255,255,.1);background:rgba(20,23,30,.98)}
+  .branch-header.open{border-color:rgba(255,255,255,.08)}
+  .branch-bar{width:4px;height:100%;position:absolute;left:0;top:0;border-radius:14px 0 0 14px}
+  .branch-emoji{font-size:26px;flex-shrink:0;filter:saturate(1.1)}
+  .branch-text{flex:1;min-width:0}
+  .branch-title{font-size:18px;font-weight:700;line-height:1.2}
+  .branch-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.5px;margin-top:2px}
+  .branch-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);padding:3px 10px;border-radius:6px;background:rgba(255,255,255,.04);flex-shrink:0}
+  .branch-chevron{font-size:14px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+  .branch-header.open .branch-chevron{transform:rotate(90deg)}
+  .branch-children{overflow:hidden;max-height:0;opacity:0;transition:max-height .5s cubic-bezier(.4,0,.2,1),opacity .35s ease,margin .3s;margin-left:22px;border-left:2px solid var(--border);padding-left:0;margin-top:0}
+  .branch-children.open{opacity:1;margin-top:4px}
+  /* L1 Topic */
+  .topic{margin:0;position:relative}
+  .topic-header{display:flex;align-items:center;gap:12px;padding:12px 18px;margin-left:16px;border-radius:10px;cursor:pointer;transition:all .25s;user-select:none}
+  .topic-header:hover{background:rgba(255,255,255,.03)}
+  .topic-header.open{background:rgba(255,255,255,.02)}
+  .topic-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 8px var(--dot-color)}
+  .topic-connector{position:absolute;left:0;top:0;bottom:0;width:16px}
+  .topic-connector::before{content:'';position:absolute;left:0;top:22px;width:16px;height:2px;background:var(--border)}
+  .topic-emoji{font-size:18px;flex-shrink:0}
+  .topic-text{flex:1;min-width:0}
+  .topic-title{font-size:14px;font-weight:600;line-height:1.3}
+  .topic-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.3px}
+  .topic-chevron{font-size:12px;color:var(--muted);transition:transform .3s;flex-shrink:0}
+  .topic-header.open .topic-chevron{transform:rotate(90deg)}
+  .topic-link{font-size:10px;color:var(--muted);text-decoration:none;padding:3px 8px;border-radius:5px;border:1px solid var(--border);font-family:'JetBrains Mono',monospace;transition:all .15s;flex-shrink:0;white-space:nowrap}
+  .topic-link:hover{border-color:var(--accent);color:var(--accent);background:rgba(108,99,255,.08)}
+  .topic-children{overflow:hidden;max-height:0;opacity:0;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s;margin-left:38px;border-left:2px dashed rgba(255,255,255,.04);padding-left:0}
+  .topic-children.open{opacity:1}
+  /* L2 Concept */
+  .concept{position:relative}
+  .concept-item{display:flex;align-items:flex-start;gap:10px;padding:9px 16px;margin-left:14px;border-radius:8px;transition:all .2s;user-select:none}
+  .concept-item:hover{background:rgba(255,255,255,.03)}
+  .concept-connector{position:absolute;left:0;top:0;width:14px}
+  .concept-connector::before{content:'';position:absolute;left:0;top:16px;width:14px;height:1px;background:rgba(255,255,255,.06)}
+  .concept-dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0;opacity:.7}
+  .concept-text{flex:1;min-width:0}
+  .concept-title{font-size:12px;font-weight:600;line-height:1.3}
+  .concept-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)}
+  .concept-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+  .concept-tag{font-family:'JetBrains Mono',monospace;font-size:8px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);color:var(--muted)}
+  /* L2 Description */
+  .topic-desc{margin:0 0 6px 14px;padding:10px 14px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);border-radius:8px}
+  .topic-desc p{font-size:11px;color:var(--muted);line-height:1.6;font-weight:300}
+  .topic-desc strong{color:var(--text);font-weight:600}
+  /* L3 Deep */
+  .deep-items{margin-top:6px}
+  .deep-item{display:flex;align-items:center;gap:8px;padding:5px 12px;margin-left:8px;border-radius:6px;font-size:11px;color:var(--muted);font-weight:300}
+  .deep-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:.5}
+  .deep-item strong{color:var(--text);font-weight:600;margin-right:3px}
+  /* Progress */
+  .progress-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;background:var(--border)}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--c-netz),var(--c-sig),var(--c-tcp),var(--c-info),var(--c-formal));width:0%;transition:width .5s ease}
+  /* Stat bar */
+  .stat-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1px solid var(--border);backdrop-filter:blur(12px);padding:8px 20px;display:flex;align-items:center;justify-content:center;gap:20px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);flex-wrap:wrap}
+  .stat-item{display:flex;align-items:center;gap:5px}
+  .stat-dot{width:8px;height:8px;border-radius:3px}
+  /* Animations */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .branch{animation:fadeUp .4s ease both}
+  .branch:nth-child(1){animation-delay:.05s}
+  .branch:nth-child(2){animation-delay:.1s}
+  .branch:nth-child(3){animation-delay:.15s}
+  .branch:nth-child(4){animation-delay:.2s}
+  .branch:nth-child(5){animation-delay:.25s}
+  .hidden{display:none!important}
+  @media(max-width:600px){.branch-title{font-size:15px}.branch-header{padding:12px 14px;gap:10px}.stat-bar{gap:10px;font-size:10px}}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+<div class="container">
+  <a href="index.html" class="back-link">&larr; Zur&uuml;ck zur Lernplattform</a>
+  <header>
+    <div class="tag">Informatik-Studium</div>
+    <h1>Wissensbaum</h1>
+    <p>Alle Themen aus 11 Studienheften &ndash; klicke auf ein Fachgebiet, um es aufzuklappen.</p>
+  </header>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Thema suchen &hellip;" oninput="filterTree(this.value)">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">&times;</button>
+  </div>
+  <div class="controls">
+    <button class="ctrl-btn" onclick="expandAll()">&#8597; Alle &ouml;ffnen</button>
+    <button class="ctrl-btn" onclick="collapseAll()">&#8596; Alle schlie&szlig;en</button>
+    <button class="ctrl-btn" onclick="expandLevel(1)">Ebene 1</button>
+    <button class="ctrl-btn" onclick="expandLevel(2)">Ebene 2</button>
+    <button class="ctrl-btn" onclick="expandLevel(3)">Alle Details</button>
+  </div>
+  <div class="tree" id="tree"></div>
+  <div class="no-results" id="noResults">Kein Treffer gefunden.</div>
+</div>
+<div class="stat-bar">
+  <div class="stat-item"><div class="stat-dot" style="background:var(--c-netz)"></div>Netzwerk</div>
+  <div class="stat-item"><div class="stat-dot" style="background:var(--c-sig)"></div>Signale</div>
+  <div class="stat-item"><div class="stat-dot" style="background:var(--c-tcp)"></div>TCP/IP</div>
+  <div class="stat-item"><div class="stat-dot" style="background:var(--c-info)"></div>Informatik</div>
+  <div class="stat-item"><div class="stat-dot" style="background:var(--c-formal)"></div>Automaten</div>
+  <span style="color:var(--border)">&vert;</span>
+  <div class="stat-item">Ge&ouml;ffnet: <strong style="color:var(--text)" id="stat-open">0</strong> / <span id="stat-total">0</span></div>
+</div>
+<script>
+// ═══════════════════════════════════════
+// TREE DATA – Alle 11 Hefte
+// ═══════════════════════════════════════
+const TREE = [
+  // ──────────────── 1. NETZWERK-GRUNDLAGEN (ITI21) ────────────────
+  { id:'netz', emoji:'🌐', title:'Netzwerk-Grundlagen', sub:'ITI21 · 6 Kapitel · Computernetze', color:'var(--c-netz)',
+    children: [
+      { emoji:'🏛️', title:'Internet & Organisation', sub:'Kap 1–2 · IuK, ISPs, IETF, RFC', color:'var(--c-netz)', href:'hefte/iti21.html',
+        desc:'Aufbau des Internets: <strong>Tier-1/2/3-ISPs</strong>, Organisationen (IANA, IETF, IEEE), RFCs als Quasi-Standards, DE-CIX Frankfurt.',
+        children: [
+          { title:'IuK-Technologien', sub:'Informations- & Kommunikationstechnologien' },
+          { title:'Internet-Hierarchie', sub:'Tier-1 (Backbone) → Tier-2 → Tier-3 (Access)', tags:['Peering','Transit','IXP'] },
+          { title:'Standardisierung', sub:'IETF, IEEE 802, ISO, RFC-Prozess' },
+        ]},
+      { emoji:'🔗', title:'Computernetz-Grundlagen', sub:'Kap 3 · Definition, Verbundeffekte', color:'var(--c-netz)', href:'hefte/iti21.html',
+        desc:'<strong>Def. 3.1:</strong> Verbund von 2+ autonomen Computern. 9 Verbundeffekte: Kommunikation, Ressourcen, Information, Daten, Leistung, Last, Verfügbarkeit, Funktion, Steuerung.',
+        children: [
+          { title:'9 Verbundeffekte', sub:'Kommunikation, Ressourcen, Last, Verfügbarkeit …' },
+          { title:'Verteiltes System vs. Netz', sub:'Erscheint als ein System (z.B. WWW)' },
+          { title:'Intranet / Extranet', sub:'Intern (TCP/IP) / Extern für Partner' },
+        ]},
+      { emoji:'📐', title:'Topologien & Klassifikation', sub:'Kap 4 · LAN/WAN, Stern/Bus/Ring', color:'var(--c-netz)', href:'hefte/iti21.html',
+        desc:'Einteilung nach Reichweite (<strong>PAN/LAN/MAN/WAN/GAN</strong>) und Struktur (Stern, Bus, Ring, Mesh). Vermittlung: Leitungs- vs. Paketvermittlung.',
+        children: [
+          { title:'Netzreichweiten', sub:'PAN · LAN · MAN · WAN · GAN', tags:['Bluetooth','Ethernet','Metro','MPLS'] },
+          { title:'Topologien', sub:'Stern, Bus, Ring, Baum, Mesh (vermascht)' },
+          { title:'Vermittlungsarten', sub:'Leitungsvermittlung vs. Paketvermittlung', deep:[
+            {t:'Circuit Switching',s:'Dediziert, reserviert, ISDN'},
+            {t:'Packet Switching',s:'Shared, effizient, Internet'}
+          ]},
+          { title:'Kommunikationsarten', sub:'Unicast · Multicast · Broadcast · Anycast' },
+          { title:'Duplex-Modi', sub:'Simplex / Halbduplex / Vollduplex' },
+        ]},
+      { emoji:'📏', title:'Kenngrößen', sub:'Kap 5 · Latenz, Jitter, Durchsatz', color:'var(--c-netz)', href:'hefte/iti21.html',
+        desc:'Vier Latenz-Komponenten: <strong>t_v</strong> (Processing) + <strong>t_w</strong> (Queuing) + <strong>t_Ü</strong> (Transmission) + <strong>t_a</strong> (Propagation).',
+        children: [
+          { title:'Übertragungsrate b', sub:'b = D / t · bit/s · Basis 10!', tags:['kbit/s = 1000'] },
+          { title:'4 Latenz-Komponenten', sub:'t_v + t_w + t_Ü + t_a', deep:[
+            {t:'t_Ü = D/b',s:'Übertragungsverzögerung'},
+            {t:'t_a = d/v',s:'Ausbreitungsverzögerung'}
+          ]},
+          { title:'Jitter', sub:'Latenzschwankungen · Problem für VoIP/Video' },
+          { title:'Durchsatz vs. Rate', sub:'Nutzdaten (Payload) vs. gesamte Daten' },
+          { title:'Kanalvolumen', sub:'V = Latenz × Übertragungsrate' },
+        ]},
+      { emoji:'📶', title:'OSI- & TCP/IP-Modell', sub:'Kap 6 · 7 Schichten vs. 4 Schichten', color:'var(--c-netz)', href:'hefte/iti21.html',
+        desc:'<strong>OSI</strong> (7 Schichten, Referenz) vs. <strong>TCP/IP</strong> (4 Schichten, praxisnah). Kapselung: Daten → Segment → Paket → Frame → Bits.',
+        children: [
+          { title:'OSI-Schichten 1–7', sub:'Physical · Data Link · Network · Transport · Session · Presentation · Application', deep:[
+            {t:'Merksatz',s:'Please Do Not Throw Sausage Pizza Away'}
+          ]},
+          { title:'TCP/IP-Modell', sub:'Netzzugang · Internet · Transport · Anwendung' },
+          { title:'Kapselung / Entkapselung', sub:'Header pro Schicht · PDU-Bezeichnungen' },
+          { title:'Protokoll-Zuordnung', sub:'HTTP/DNS (L7) · TCP/UDP (L4) · IP (L3) · Ethernet (L2)' },
+        ]},
+    ]},
+
+  // ──────────────── 2. SIGNALE & ÜBERTRAGUNG (ITI22+23) ────────────────
+  { id:'sig', emoji:'📡', title:'Signale & Übertragung', sub:'ITI22+ITI23 · Informationstheorie, Medien, Ethernet, WLAN', color:'var(--c-sig)',
+    children: [
+      { emoji:'📐', title:'Informationsgehalt & Entropie', sub:'ITI22 Kap 1 · Shannon, Bit', color:'var(--c-sig)', href:'hefte/iti22.html',
+        desc:'<strong>I = −log₂(p)</strong> · Je unwahrscheinlicher, desto mehr Information. <strong>Entropie H</strong> = gewichteter Durchschnitt aller Informationsgehalte.',
+        children: [
+          { title:'Informationsgehalt I', sub:'I = log₂(1/p) = −log₂(p) · Einheit: Bit' },
+          { title:'Entropie H (Shannon)', sub:'H = Σ pᵢ · log₂(1/pᵢ) · Max bei Gleichverteilung', deep:[
+            {t:'Entscheidungsgehalt H₀',s:'H₀ = log₂(N) · Gleichverteilung'},
+            {t:'Redundanz R',s:'R = H₀ − H · Überflüssige Bits'}
+          ]},
+        ]},
+      { emoji:'⚡', title:'Kanalkapazität', sub:'ITI22 Kap 4 · Nyquist & Shannon-Hartley', color:'var(--c-sig)', href:'hefte/iti22.html',
+        desc:'<strong>Nyquist</strong> = rauschfreier Kanal. <strong>Shannon-Hartley</strong> = realistisch mit Rauschen (SNR).',
+        children: [
+          { title:'Nyquist-Formel', sub:'C = 2·B·log₂(M) · rauschfrei', tags:['Bandbreite','Signalstufen'] },
+          { title:'Shannon-Hartley', sub:'C = B·log₂(1 + S/N) · verrauscht', tags:['SNR','dB → linear'], deep:[
+            {t:'SNR Umrechnung',s:'dB → linear: 10^(dB/10)'}
+          ]},
+          { title:'Abtasttheorem', sub:'fₛ ≥ 2·f_max · Aliasing-Grenze', tags:['Nyquist-Shannon','44.1 kHz'] },
+        ]},
+      { emoji:'🔤', title:'Codierung', sub:'ITI22 Kap 5 · Quellen-/Kanal-/Leitungscode', color:'var(--c-sig)', href:'hefte/iti22.html',
+        desc:'Drei Codierungsarten: <strong>Quellencodierung</strong> (Kompression), <strong>Kanalcodierung</strong> (Fehlerschutz), <strong>Leitungscodierung</strong> (Signalform).',
+        children: [
+          { title:'Huffman-Codierung', sub:'Optimale präfixfreie Quellencodierung', tags:['Binärbaum','variable Länge'] },
+          { title:'Hamming-Code', sub:'Fehlererkennung + 1-Bit-Korrektur', tags:['Paritätsbits','Hamming-Distanz'] },
+          { title:'Leitungscodes', sub:'NRZ, NRZI, Manchester, 4B5B, MLT-3' },
+        ]},
+      { emoji:'🔌', title:'Übertragungsmedien', sub:'ITI23 Kap 2 · Kupfer, Glasfaser, Funk', color:'var(--c-sig)', href:'hefte/iti23.html',
+        desc:'<strong>Twisted Pair</strong> (100m), <strong>Glasfaser</strong> (80km+), <strong>Koaxial</strong> (veraltet). Funk: WLAN, Bluetooth.',
+        children: [
+          { title:'Twisted Pair (TP)', sub:'RJ-45 · Cat 5e–Cat 8 · 100m', tags:['UTP','STP','S/FTP'] },
+          { title:'Lichtwellenleiter (LWL)', sub:'Singlemode (9µm) / Multimode (50µm)', tags:['LC/SC','immun gegen EMI'] },
+          { title:'Koaxialkabel', sub:'BNC/F · 50/75 Ω · TV/Altlasten' },
+        ]},
+      { emoji:'🔗', title:'Ethernet & Data Link', sub:'ITI23 Kap 3–4 · Frames, MAC, CSMA/CD', color:'var(--c-sig)', href:'hefte/iti23.html',
+        desc:'Schicht 2: <strong>MAC</strong> (Medienzugriff) + <strong>LLC</strong> (Fehlererkennung). Ethernet: IEEE 802.3, CSMA/CD, Frame-Format.',
+        children: [
+          { title:'MAC-Adressen', sub:'48 Bit · OUI:Device · FF:FF:FF:FF:FF:FF = Broadcast' },
+          { title:'CSMA/CD', sub:'Listen before Talk · Kollisionserkennung', tags:['Ethernet','Hub','veraltet bei Switches'] },
+          { title:'Ethernet-Frame', sub:'Preamble · DA · SA · Type · Data · FCS', tags:['MTU 1500','CRC-32'] },
+          { title:'Ethernet-Standards', sub:'10BASE-T → 100BASE-TX → 1000BASE-T → 10G', deep:[
+            {t:'Namensschema',s:'Geschwindigkeit – BASE – Medium'}
+          ]},
+        ]},
+      { emoji:'📶', title:'WLAN & Drahtlos', sub:'ITI23 Kap 6 · WiFi, Mobilfunk, BT', color:'var(--c-sig)', href:'hefte/iti23.html',
+        desc:'<strong>IEEE 802.11</strong> (WLAN/WiFi), Mobilfunk (GSM → LTE → 5G), Bluetooth/NFC.',
+        children: [
+          { title:'WLAN (IEEE 802.11)', sub:'a/b/g/n/ac/ax · 2.4 GHz / 5 GHz', tags:['CSMA/CA','SSID','WPA3'] },
+          { title:'Mobilfunk', sub:'GSM → UMTS → LTE → 5G', tags:['Zellulär','Handover'] },
+          { title:'Wireshark', sub:'Netzwerkanalyse · Paketmitschnitt · Filter' },
+        ]},
+    ]},
+
+  // ──────────────── 3. TCP/IP & NETZDESIGN (ITI24+25+26) ────────────────
+  { id:'tcp', emoji:'🔗', title:'TCP/IP & Netzdesign', sub:'ITI24+ITI25+ITI26 · Protokolle, Design, Sicherheit', color:'var(--c-tcp)',
+    children: [
+      { emoji:'🏷️', title:'IP-Adressierung', sub:'ITI24 Kap 2 · IPv4, Subnetting, CIDR, IPv6', color:'var(--c-tcp)', href:'hefte/iti24.html',
+        desc:'<strong>IPv4</strong>: 32 Bit, Dotted Decimal. <strong>Subnetting</strong>: Netz aufteilen. <strong>CIDR</strong>: Classless, /xx Notation. <strong>IPv6</strong>: 128 Bit.',
+        children: [
+          { title:'IPv4-Klassen', sub:'A (0–127) · B (128–191) · C (192–223)', tags:['Netz-ID','Host-ID'] },
+          { title:'Subnetting', sub:'Hosts = 2^n − 2 · Subnetzmaske', deep:[
+            {t:'/26 Beispiel',s:'6 Host-Bits → 2⁶−2 = 62 Hosts'}
+          ]},
+          { title:'CIDR', sub:'Classless Inter-Domain Routing · /xx Notation' },
+          { title:'IPv6', sub:'128 Bit · 8 Hexblöcke · :: Kurzschreibweise', tags:['Link-Local','Global Unicast'] },
+          { title:'Private Adressen', sub:'10.x / 172.16–31.x / 192.168.x · NAT' },
+        ]},
+      { emoji:'📮', title:'IP, ICMP & ARP', sub:'ITI24 Kap 3 · Vermittlungsschicht', color:'var(--c-tcp)', href:'hefte/iti24.html',
+        desc:'<strong>IP</strong>: Verbindungsloses Protokoll, Best Effort. <strong>ICMP</strong>: Fehlermeldungen (ping). <strong>ARP</strong>: IP → MAC Auflösung.',
+        children: [
+          { title:'IP-Header', sub:'Version, TTL, Protocol, Src/Dst IP', tags:['20 Byte min','Fragmentierung'] },
+          { title:'ICMP', sub:'Echo Request/Reply (ping), Destination Unreachable', tags:['Traceroute','TTL exceeded'] },
+          { title:'ARP', sub:'Address Resolution Protocol · IP → MAC', tags:['ARP-Cache','Broadcast'] },
+        ]},
+      { emoji:'🔀', title:'Routing', sub:'ITI24 Kap 4–5 · RIP, OSPF, BGP', color:'var(--c-tcp)', href:'hefte/iti24.html',
+        desc:'<strong>Distanzvektor</strong> (RIP) vs. <strong>Link-State</strong> (OSPF) vs. <strong>Pfadvektor</strong> (BGP).',
+        children: [
+          { title:'Statisches Routing', sub:'Manuell konfiguriert · kleine Netze' },
+          { title:'RIP', sub:'Distanzvektor · Hop Count · Max 15 Hops', tags:['Bellman-Ford','einfach'] },
+          { title:'OSPF', sub:'Link-State · Dijkstra · Areas · schnelle Konvergenz', tags:['LSA','SPF-Baum'] },
+          { title:'BGP', sub:'Pfadvektor · Inter-AS · Internet-Backbone', tags:['AS-Path','eBGP/iBGP'] },
+        ]},
+      { emoji:'🚀', title:'TCP & UDP', sub:'ITI24 Kap 6 · Transportschicht', color:'var(--c-tcp)', href:'hefte/iti24.html',
+        desc:'<strong>TCP</strong>: Zuverlässig, verbindungsorientiert, 3-Way-Handshake. <strong>UDP</strong>: Schnell, verbindungslos, kein Overhead.',
+        children: [
+          { title:'TCP', sub:'Verbindungsorientiert · Flusskontrolle · Staukontrolle', deep:[
+            {t:'3-Way-Handshake',s:'SYN → SYN-ACK → ACK'},
+            {t:'Congestion Control',s:'Slow Start → Congestion Avoidance'}
+          ]},
+          { title:'UDP', sub:'Verbindungslos · schnell · kein Handshake', tags:['DNS','Streaming','VoIP'] },
+          { title:'Ports', sub:'Well-Known (0–1023) · Registered · Dynamic', tags:['HTTP 80','HTTPS 443','DNS 53'] },
+        ]},
+      { emoji:'🏗️', title:'Netzkomponenten & Design', sub:'ITI25 · Router, Switch, VLAN', color:'var(--c-tcp)', href:'hefte/iti25.html',
+        desc:'<strong>Switch</strong> (L2, MAC) vs. <strong>Router</strong> (L3, IP). VLANs für logische Segmentierung.',
+        children: [
+          { title:'Switch vs. Router', sub:'L2 MAC-Tabelle vs. L3 Routing-Tabelle' },
+          { title:'VLAN', sub:'Virtual LAN · 802.1Q Tagging · Trunk', tags:['Tagged','Untagged','Inter-VLAN'] },
+          { title:'STP', sub:'Spanning Tree Protocol · Loop-Vermeidung', tags:['Root Bridge','Port States'] },
+          { title:'Subnetzplanung (VLSM)', sub:'Variable Length Subnet Masking', tags:['Effiziente IP-Vergabe'] },
+        ]},
+      { emoji:'🛡️', title:'Anwendungen & Sicherheit', sub:'ITI26 · HTTP, DNS, E-Mail, Kryptografie', color:'var(--c-tcp)', href:'hefte/iti26.html',
+        desc:'Client-Server vs. P2P. Anwendungsprotokolle: <strong>HTTP, DNS, SMTP, FTP</strong>. Sicherheit: Verschlüsselung, Firewalls, VPN.',
+        children: [
+          { title:'Client-Server / P2P', sub:'Zentralisiert vs. Dezentral · Sockets' },
+          { title:'HTTP / HTTPS', sub:'Request/Response · Methoden · TLS/SSL', tags:['GET','POST','Status-Codes'] },
+          { title:'DNS', sub:'Domain → IP · Hierarchisch · Caching', tags:['A','AAAA','MX','NS','CNAME'] },
+          { title:'E-Mail', sub:'SMTP (senden) · POP3/IMAP (empfangen)', tags:['Port 25','Port 143/993'] },
+          { title:'Kryptografie', sub:'Symmetrisch (AES) · Asymmetrisch (RSA) · Hashing', deep:[
+            {t:'Symmetrisch',s:'1 Schlüssel · AES · schnell'},
+            {t:'Asymmetrisch',s:'Public/Private Key · RSA · sicher'}
+          ]},
+          { title:'Firewalls & VPN', sub:'Paketfilter · Stateful · Application-Level', tags:['IPsec','OpenVPN'] },
+          { title:'SNMP', sub:'Netzmanagement · MIB · Monitoring' },
+        ]},
+    ]},
+
+  // ──────────────── 4. INFORMATIK-GRUNDLAGEN (GDI01+TGI01+TGI02) ────────────────
+  { id:'info', emoji:'💻', title:'Informatik-Grundlagen', sub:'GDI01+TGI01+TGI02 · Algorithmen, Datenstrukturen, Komplexität', color:'var(--c-info)',
+    children: [
+      { emoji:'📥', title:'EVA-Prinzip & Algorithmus', sub:'GDI01 Kap 1–2 · Grundkonzepte', color:'var(--c-info)', href:'hefte/gdi01.html',
+        desc:'<strong>EVA</strong>: Eingabe → Verarbeitung → Ausgabe. <strong>Algorithmus</strong>: Endliche, eindeutige Handlungsvorschrift.',
+        children: [
+          { title:'EVA-Prinzip', sub:'Input → Processing → Output' },
+          { title:'6 Algorithmus-Eigenschaften', sub:'Finitheit, Terminierung, Determiniertheit, Determinismus, Allgemeingültigkeit, Ausführbarkeit' },
+          { title:'Kontrollstrukturen', sub:'Sequenz · Selektion (if) · Iteration (Schleife)' },
+          { title:'Struktogramme', sub:'Nassi-Shneiderman · grafisch · sprachunabhängig' },
+          { title:'OOP-Grundlagen', sub:'Klasse vs. Objekt · Kapselung · Vererbung · Polymorphie' },
+        ]},
+      { emoji:'🖥️', title:'Rechnerarchitektur', sub:'GDI01 Kap 3 · Von-Neumann, Turing', color:'var(--c-info)', href:'hefte/gdi01.html',
+        desc:'<strong>Von-Neumann</strong>: Gespeichertes Programm, 5 Komponenten. <strong>Turing-Maschine</strong>: Theoretisches Berechnungsmodell.',
+        children: [
+          { title:'Von-Neumann-Architektur', sub:'ALU + Steuerwerk + RAM + I/O + Bus', tags:['CPU = ALU + CU','gespeichertes Programm'] },
+          { title:'Turing-Maschine (Grundidee)', sub:'Band + Lese-/Schreibkopf + Zustände' },
+          { title:'RAM vs. Festplatte', sub:'Flüchtig/schnell vs. persistent/langsam' },
+        ]},
+      { emoji:'🔢', title:'Zahlensysteme & Logik', sub:'GDI01 Kap 4–5 · Dual, Hex, Gatter', color:'var(--c-info)', href:'hefte/gdi01.html',
+        desc:'<strong>Dualzahlen</strong>: Divisionsmethode (Dez→Bin), Stellenwert (Bin→Dez). <strong>Logikgatter</strong>: AND, OR, NOT, XOR, NAND, NOR.',
+        children: [
+          { title:'Dezimal ↔ Binär', sub:'42 = 101010₂ · Divisionsmethode / Stellenwerte' },
+          { title:'Hexadezimal', sub:'4-Bit-Gruppen · 0–F · AF₁₆ = 10101111₂' },
+          { title:'Zweierkomplement', sub:'Einserkomplement + 1 · Subtraktion durch Addition' },
+          { title:'Logikgatter', sub:'AND (∧) · OR (∨) · NOT (¬) · XOR (⊕)', deep:[
+            {t:'De Morgan',s:'¬(A∧B) = ¬A∨¬B · ¬(A∨B) = ¬A∧¬B'},
+            {t:'NAND',s:'Universelles Gatter – jede Schaltung baubar'}
+          ]},
+          { title:'Halb-/Volladdierer', sub:'HA: S=A⊕B, C=A∧B · VA: +Carry-In' },
+        ]},
+      { emoji:'📦', title:'Datenstrukturen & ADTs', sub:'TGI01 · Mengen, Listen, Stack, Queue, Bäume', color:'var(--c-info)', href:'hefte/tgi01.html',
+        desc:'<strong>ADT</strong> = abstraktes Interface (Was). <strong>Datenstruktur</strong> = Implementierung (Wie). Grundlegende Strukturen und ihre Operationen.',
+        children: [
+          { title:'Mengen & Relationen', sub:'∈, ⊆, ∩, ∪, Potenzmenge P(M) = 2^n' },
+          { title:'Stack (LIFO)', sub:'push/pop/peek · O(1) · Bücherstapel', tags:['Call Stack','Undo','DFS'] },
+          { title:'Queue (FIFO)', sub:'enqueue/dequeue · O(1) · Warteschlange', tags:['BFS','Scheduler'] },
+          { title:'Linked List', sub:'Knoten → Zeiger → Nachfolger', tags:['einfach','doppelt','zirkulär'] },
+          { title:'Binärbäume & BST', sub:'Wurzel · Knoten · Blätter · Inorder/Preorder/Postorder' },
+          { title:'Graphen', sub:'G = (V, E) · gerichtet/ungerichtet · BFS/DFS', tags:['Adjazenzmatrix','Adjazenzliste'] },
+        ]},
+      { emoji:'📊', title:'Sortieralgorithmen', sub:'TGI01+TGI02 · Bubble bis Quick', color:'var(--c-info)', href:'hefte/tgi02.html',
+        desc:'Einfache O(n²)-Verfahren und effiziente O(n log n)-Verfahren. <strong>Prüfungsrelevant</strong>: Zustand nach jedem Durchlauf!',
+        children: [
+          { title:'Bubble Sort', sub:'Nachbarn tauschen · O(n²) · stabil', tags:['Best O(n)'] },
+          { title:'Selection Sort', sub:'Minimum suchen · O(n²) · instabil' },
+          { title:'Insertion Sort', sub:'Einsortieren · O(n²) · stabil', tags:['Best O(n)'] },
+          { title:'QuickSort', sub:'Pivot · Partitionierung · O(n log n) avg', tags:['Worst O(n²)','in-place'] },
+          { title:'MergeSort', sub:'Teile & Herrsche · O(n log n) · stabil', tags:['nicht in-place'] },
+          { title:'HeapSort', sub:'Max-Heap · O(n log n) · instabil · in-place' },
+        ]},
+      { emoji:'🔍', title:'Hashing & Pattern Matching', sub:'TGI02 Kap 4–5 · Hashtabellen, KMP', color:'var(--c-info)', href:'hefte/tgi02.html',
+        desc:'<strong>Hashing</strong>: O(1) Zugriff mit Hashfunktion. <strong>Pattern Matching</strong>: Textsuche mit KMP/Boyer-Moore.',
+        children: [
+          { title:'Hashfunktionen', sub:'h(k) = k mod m · Gleichverteilung', tags:['Divisionsmethode'] },
+          { title:'Kollisionsbehandlung', sub:'Verkettung (Chaining) · Offene Adressierung', tags:['Linear Probing','Double Hashing'] },
+          { title:'KMP-Algorithmus', sub:'Knuth-Morris-Pratt · Präfixfunktion · O(n+m)' },
+          { title:'Boyer-Moore', sub:'Bad Character + Good Suffix · rechts→links' },
+        ]},
+      { emoji:'📈', title:'Komplexitätsanalyse', sub:'TGI02 Kap 6 · O-Notation, Master-Theorem', color:'var(--c-info)', href:'hefte/tgi02.html',
+        desc:'<strong>O-Notation</strong>: Obere Schranke für Laufzeit. Best/Average/Worst Case. <strong>Master-Theorem</strong> für Rekursionsgleichungen.',
+        children: [
+          { title:'O-Notation', sub:'O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)', deep:[
+            {t:'Ω (Omega)',s:'Untere Schranke · Best Case'},
+            {t:'Θ (Theta)',s:'Exakte Schranke · Average Case'}
+          ]},
+          { title:'Master-Theorem', sub:'T(n) = a·T(n/b) + f(n) · 3 Fälle' },
+          { title:'Komplexitätsklassen', sub:'P · NP · NP-vollständig · NP-schwer' },
+        ]},
+    ]},
+
+  // ──────────────── 5. FORMALE SPRACHEN & AUTOMATEN (TGI06+TGI07) ────────────────
+  { id:'formal', emoji:'🤖', title:'Formale Sprachen & Automaten', sub:'TGI06+TGI07 · Grammatiken, Automaten, Turing-Maschine', color:'var(--c-formal)',
+    children: [
+      { emoji:'🔤', title:'Grundbegriffe', sub:'TGI06 Kap 1 · Alphabet, Wort, Sprache', color:'var(--c-formal)', href:'hefte/tgi06.html',
+        desc:'<strong>Alphabet Σ</strong>: Endliche Menge von Zeichen. <strong>Wort</strong>: Endliche Folge über Σ. <strong>Sprache L ⊆ Σ*</strong>: Menge von Wörtern.',
+        children: [
+          { title:'Alphabet Σ', sub:'Endliche, nichtleere Zeichenmenge · Def. 1.1' },
+          { title:'Wort & Wortlänge', sub:'w ∈ Σ* · |w| · ε = leeres Wort · Def. 1.2–1.3' },
+          { title:'Kleenesche Hülle Σ*', sub:'Menge aller Wörter über Σ · abzählbar unendlich' },
+          { title:'Sprache L ⊆ Σ*', sub:'Formale Sprache = Teilmenge von Σ*' },
+        ]},
+      { emoji:'📝', title:'Formale Grammatiken', sub:'TGI06 Kap 2 · Chomsky-Hierarchie', color:'var(--c-formal)', href:'hefte/tgi06.html',
+        desc:'<strong>G = (N, T, P, s)</strong>: Nichtterminale, Terminale, Produktionen, Startsymbol. 4 Typen nach Chomsky.',
+        children: [
+          { title:'Grammatik G = (N,T,P,s)', sub:'Def. 2.1 · Ableitung: S ⇒* w' },
+          { title:'Chomsky-Hierarchie', sub:'Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0', deep:[
+            {t:'Typ 3 · Regulär',s:'A → aB | a · Endlicher Automat'},
+            {t:'Typ 2 · Kontextfrei',s:'A → α · Kellerautomat'},
+            {t:'Typ 1 · Kontextsensitiv',s:'|l| ≤ |r| · LBTM'},
+            {t:'Typ 0 · Unbeschränkt',s:'Beliebig · Turingmaschine'}
+          ]},
+          { title:'BNF & EBNF', sub:'Backus-Naur-Form · Metasyntax · [ ] { } ( | )' },
+          { title:'Mehrdeutigkeit', sub:'Wort hat ≥2 Ableitungsbäume · Def. 2.6' },
+        ]},
+      { emoji:'⚙️', title:'Compiler & Sprachübersetzer', sub:'TGI06 Kap 3 · Scanner, Parser', color:'var(--c-formal)', href:'hefte/tgi06.html',
+        desc:'<strong>Compiler</strong>: Quelltext → Maschinencode. Phasen: Scanner (Tokens) → Parser (Syntaxbaum) → Codegenerierung.',
+        children: [
+          { title:'Compiler vs. Interpreter', sub:'Übersetzt einmalig vs. zeilenweise Ausführung' },
+          { title:'Scanner', sub:'Lexikalische Analyse · Tokens erkennen · reguläre Ausdrücke' },
+          { title:'Parser', sub:'Syntaktische Analyse · Ableitungsbaum aufbauen' },
+          { title:'T-Diagramme', sub:'Quellsprache → Zielsprache in Implementierungssprache' },
+        ]},
+      { emoji:'🔄', title:'Reguläre Sprachen & Automaten', sub:'TGI06 Kap 4 · DEA, NEA, RegEx', color:'var(--c-formal)', href:'hefte/tgi06.html',
+        desc:'<strong>DEA</strong> = 5-Tupel (Q, Σ, δ, q₀, E). <strong>NEA ↔ DEA ↔ rG ↔ RegEx</strong> sind alle äquivalent (Satz von Kleene).',
+        children: [
+          { title:'DEA (5-Tupel)', sub:'Q, Σ, δ: Q×Σ→Q, q₀, E · Def. 4.1', tags:['deterministisch','Trap State'] },
+          { title:'NEA', sub:'δ: Q×Σ → P(Q) · mehrere Folgezustände', tags:['Backtracking','Parallelität'] },
+          { title:'Potenzmengenkonstruktion', sub:'NEA → DEA · P(Q) als neue Zustandsmenge' },
+          { title:'Minimalautomat', sub:'Äquivalenzklassen · Nerode-Relation' },
+          { title:'NEA mit ε-Übergängen', sub:'Spontanübergänge · ε-Hülle' },
+          { title:'Reguläre Ausdrücke', sub:'a | b · ab · a* · Satz von Kleene', tags:['Klammerung','Priorität: * > · > |'] },
+        ]},
+      { emoji:'📚', title:'Kellerautomaten & kfS', sub:'TGI07 Kap 1 · NKA, DKA, CNF', color:'var(--c-formal)', href:'hefte/tgi07.html',
+        desc:'<strong>NKA</strong> = 7-Tupel mit Kellerstack. Akzeptiert kontextfreie Sprachen. <strong>DKA ⊊ NKA</strong> (DKA ist echt schwächer).',
+        children: [
+          { title:'NKA (7-Tupel)', sub:'M = (Q, Σ, Γ, δ, q₀, k₀, E) · Def. 1.1', tags:['Keller','Stack'] },
+          { title:'DKA', sub:'Deterministischer Kellerautomat · dkfS', tags:['echt schwächer als NKA'] },
+          { title:'NKA ↔ kfG', sub:'Satz 1.2: Gleiche Sprachklasse' },
+          { title:'Chomsky-Normalform (CNF)', sub:'X → a oder X → YZ · CYK in O(n³)' },
+          { title:'Grammatik-Optimierung', sub:'Unnütze NT entfernen · Kettenregeln · ε-Regeln' },
+        ]},
+      { emoji:'⬇️', title:'LL(k)-Sprachen', sub:'TGI07 Kap 2 · Top-Down-Parsing', color:'var(--c-formal)', href:'hefte/tgi07.html',
+        desc:'<strong>LL(k)</strong>: Links-Analyse, Linksableitung, k Vorausschauzeichen. Rekursiver Abstieg in O(n).',
+        children: [
+          { title:'FIRST-Mengen', sub:'Forderung 1: FIRST(αᵢ) ∩ FIRST(αⱼ) = ∅' },
+          { title:'FOLLOW-Mengen', sub:'Forderung 2: FIRST(X) ∩ FOLLOW(X) = ∅ bei X ⇒* ε' },
+          { title:'Rekursiver Abstieg', sub:'LL(1)-Parser · O(n) · Top-Down' },
+          { title:'Linksrekursion beseitigen', sub:'X → Xα|β wird zu X → βX\', X\' → αX\'|ε' },
+        ]},
+      { emoji:'⬆️', title:'LR(k)-Sprachen', sub:'TGI07 Kap 3 · Bottom-Up-Parsing', color:'var(--c-formal)', href:'hefte/tgi07.html',
+        desc:'<strong>LR(k)</strong> = dkfS = DKA-Sprachen. shift/reduce-Parsing mit LR-Parsetabellen. LL(k) ⊂ LR(k).',
+        children: [
+          { title:'shift/reduce', sub:'shift (lesen) · reduce (X → β) · accept' },
+          { title:'LR-Parsetabellen', sub:'action-Teil + goto-Teil' },
+          { title:'Konflikte', sub:'shift/reduce · reduce/reduce' },
+          { title:'Sprachklassen', sub:'LR(0) ⊂ SLR(1) ⊂ LALR(1) ⊂ LR(1)' },
+          { title:'Parsergeneratoren', sub:'Yacc/Bison (Parser) · Lex/Flex (Scanner)' },
+        ]},
+      { emoji:'♾️', title:'Turing-Maschine', sub:'TGI07 Kap 4 · DTM, NTM, LBTM, UTM', color:'var(--c-formal)', href:'hefte/tgi07.html',
+        desc:'<strong>DTM</strong> = 7-Tupel, unbeschränktes Band. Mächtigstes Automatenmodell. <strong>Church-Turing-These</strong>: Alles Berechenbare ist TM-berechenbar.',
+        children: [
+          { title:'DTM (7-Tupel)', sub:'M = (Q, Σ, Γ, δ, q₀, $, E) · δ: Q×Γ → Q×Γ×{L,N,R}' },
+          { title:'DTM ≡ NTM', sub:'Gleiche Akzeptorkraft · NTM simulierbar durch DTM' },
+          { title:'LBTM', sub:'Linear beschränkte TM · Typ-1-Sprachen (kontextsensitiv)' },
+          { title:'UTM', sub:'Universelle TM · Simuliert jede andere TM' },
+          { title:'Sprachklassen', sub:'Rekursiv aufzählbar (Typ 0) vs. Rekursiv (entscheidbar)', deep:[
+            {t:'Vollständige Hierarchie',s:'Typ 3 ⊂ dkfS ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0'}
+          ]},
+          { title:'Church-Turing-These', sub:'Alles intuitiv Berechenbare = TM-berechenbar' },
+        ]},
+    ]},
+];
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+const treeEl = document.getElementById('tree');
+let totalNodes = 0;
+
+function renderTree() {
+  treeEl.innerHTML = '';
+  totalNodes = 0;
+  TREE.forEach(branch => treeEl.appendChild(createBranch(branch)));
+  document.getElementById('stat-total').textContent = totalNodes;
+  updateStats();
+}
+
+function createBranch(data) {
+  totalNodes++;
+  const el = document.createElement('div');
+  el.className = 'branch';
+  el.dataset.searchText = getSearchText(data);
+  const childCount = data.children ? data.children.reduce((s, t) => s + 1 + (t.children ? t.children.length : 0), 0) : 0;
+  el.innerHTML =
+    '<div class="branch-header" data-id="' + data.id + '">' +
+      '<div class="branch-bar" style="background:' + data.color + '"></div>' +
+      '<div class="branch-emoji">' + data.emoji + '</div>' +
+      '<div class="branch-text">' +
+        '<div class="branch-title" style="color:' + data.color + '">' + data.title + '</div>' +
+        '<div class="branch-sub">' + data.sub + '</div>' +
+      '</div>' +
+      '<div class="branch-count">' + childCount + ' Themen</div>' +
+      '<div class="branch-chevron">&#9656;</div>' +
+    '</div>';
+  const cw = document.createElement('div');
+  cw.className = 'branch-children';
+  cw.style.borderColor = data.color.replace('var(--c-','').replace(')','') ? data.color + '30' : 'rgba(255,255,255,.06)';
+  if (data.children) data.children.forEach(t => cw.appendChild(createTopic(t, data.color)));
+  el.appendChild(cw);
+  el.querySelector('.branch-header').addEventListener('click', function() {
+    const h = this, c = el.querySelector('.branch-children');
+    const isOpen = h.classList.toggle('open');
+    if (isOpen) { c.classList.add('open'); c.style.maxHeight = c.scrollHeight + 5000 + 'px'; }
+    else { c.classList.remove('open'); c.style.maxHeight = '0'; }
+    updateStats();
+  });
+  return el;
+}
+
+function createTopic(data, parentColor) {
+  totalNodes++;
+  const color = data.color || parentColor;
+  const el = document.createElement('div');
+  el.className = 'topic';
+  el.dataset.searchText = getSearchText(data);
+  const hasChildren = data.children && data.children.length > 0;
+  const linkHTML = data.href ? '<a class="topic-link" href="' + data.href + '" target="_blank" onclick="event.stopPropagation()">Heft &rarr;</a>' : '';
+  el.innerHTML =
+    '<div class="topic-connector"></div>' +
+    '<div class="topic-header">' +
+      '<div class="topic-dot" style="background:' + color + ';--dot-color:' + color + '"></div>' +
+      '<div class="topic-emoji">' + data.emoji + '</div>' +
+      '<div class="topic-text">' +
+        '<div class="topic-title">' + data.title + '</div>' +
+        '<div class="topic-sub">' + data.sub + '</div>' +
+      '</div>' +
+      linkHTML +
+      (hasChildren || data.desc ? '<div class="topic-chevron">&#9656;</div>' : '') +
+    '</div>';
+  if (hasChildren || data.desc) {
+    const cw = document.createElement('div');
+    cw.className = 'topic-children';
+    if (data.desc) {
+      const d = document.createElement('div');
+      d.className = 'topic-desc';
+      d.innerHTML = '<p>' + data.desc + '</p>';
+      cw.appendChild(d);
+    }
+    if (data.children) data.children.forEach(c => cw.appendChild(createConcept(c, color)));
+    el.appendChild(cw);
+    el.querySelector('.topic-header').addEventListener('click', function() {
+      const h = this, c = el.querySelector('.topic-children');
+      const isOpen = h.classList.toggle('open');
+      if (isOpen) { c.classList.add('open'); c.style.maxHeight = c.scrollHeight + 2000 + 'px'; }
+      else { c.classList.remove('open'); c.style.maxHeight = '0'; }
+      const parent = el.closest('.branch-children');
+      if (parent && parent.classList.contains('open')) parent.style.maxHeight = parent.scrollHeight + 5000 + 'px';
+      updateStats();
+    });
+  }
+  return el;
+}
+
+function createConcept(data, color) {
+  totalNodes++;
+  const el = document.createElement('div');
+  el.className = 'concept';
+  el.dataset.searchText = (data.title + ' ' + data.sub + ' ' + (data.tags||[]).join(' ')).toLowerCase();
+  let tagsHTML = '';
+  if (data.tags) tagsHTML = '<div class="concept-tags">' + data.tags.map(t => '<span class="concept-tag">' + t + '</span>').join('') + '</div>';
+  let deepHTML = '';
+  if (data.deep) deepHTML = '<div class="deep-items">' + data.deep.map(d =>
+    '<div class="deep-item"><div class="deep-dot" style="background:' + color + '"></div><strong>' + d.t + '</strong> ' + d.s + '</div>'
+  ).join('') + '</div>';
+  el.innerHTML =
+    '<div class="concept-connector"></div>' +
+    '<div class="concept-item">' +
+      '<div class="concept-dot" style="background:' + color + '"></div>' +
+      '<div class="concept-text">' +
+        '<div class="concept-title">' + data.title + '</div>' +
+        '<div class="concept-sub">' + data.sub + '</div>' +
+        tagsHTML + deepHTML +
+      '</div>' +
+    '</div>';
+  return el;
+}
+
+function getSearchText(data) {
+  let text = (data.title + ' ' + data.sub + ' ' + (data.desc || '')).toLowerCase();
+  if (data.children) data.children.forEach(c => {
+    text += ' ' + (c.title + ' ' + c.sub + ' ' + (c.desc || '')).toLowerCase();
+    if (c.children) c.children.forEach(cc => {
+      text += ' ' + (cc.title + ' ' + cc.sub + ' ' + (cc.tags||[]).join(' ')).toLowerCase();
+    });
+  });
+  return text;
+}
+
+// ═══════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════
+function filterTree(query) {
+  const q = query.trim().toLowerCase();
+  const clearBtn = document.getElementById('searchClear');
+  clearBtn.style.display = q ? 'block' : 'none';
+  const branches = document.querySelectorAll('.branch');
+  let anyVisible = false;
+  branches.forEach(b => {
+    if (!q) { b.classList.remove('hidden'); anyVisible = true; return; }
+    const match = b.dataset.searchText.includes(q);
+    b.classList.toggle('hidden', !match);
+    if (match) {
+      anyVisible = true;
+      const h = b.querySelector('.branch-header');
+      if (!h.classList.contains('open')) h.click();
+    }
+  });
+  document.getElementById('noResults').style.display = anyVisible || !q ? 'none' : 'block';
+}
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  filterTree('');
+}
+
+// ═══════════════════════════════════════
+// CONTROLS
+// ═══════════════════════════════════════
+function expandAll() {
+  document.querySelectorAll('.branch-header').forEach(h => { if (!h.classList.contains('open')) h.click(); });
+  setTimeout(() => {
+    document.querySelectorAll('.topic-header').forEach(h => { if (!h.classList.contains('open') && h.querySelector('.topic-chevron')) h.click(); });
+  }, 100);
+}
+function collapseAll() {
+  document.querySelectorAll('.topic-header.open').forEach(h => h.click());
+  setTimeout(() => { document.querySelectorAll('.branch-header.open').forEach(h => h.click()); }, 100);
+}
+function expandLevel(level) {
+  collapseAll();
+  setTimeout(() => {
+    if (level >= 1) document.querySelectorAll('.branch-header').forEach(h => { if (!h.classList.contains('open')) h.click(); });
+    if (level >= 2) setTimeout(() => {
+      document.querySelectorAll('.topic-header').forEach(h => { if (!h.classList.contains('open') && h.querySelector('.topic-chevron')) h.click(); });
+    }, 200);
+  }, 200);
+}
+function updateStats() {
+  const open = document.querySelectorAll('.branch-header.open, .topic-header.open').length;
+  document.getElementById('stat-open').textContent = open;
+  const total = document.querySelectorAll('.branch-header, .topic-header').length;
+  document.getElementById('progress-fill').style.width = (total > 0 ? open / total * 100 : 0) + '%';
+}
+
+// Init
+renderTree();
+</script>
+</body>
+</html>
