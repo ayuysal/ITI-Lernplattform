@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lernlandkarte – Visuelles Lernen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0e11;--surface:#18171d;--border:#1e2230;
+  --text:#e2e4ea;--muted:#6b7084;
+  --amber:#f5c542;--teal:#5ec4b6;
+  --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6;
+  --radius:12px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
+
+/* Noise overlay */
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+
+a{color:inherit;text-decoration:none}
+
+/* Back link */
+.back{display:inline-block;padding:0.6rem 0;margin:0.8rem 1.5rem;font-size:.85rem;color:var(--muted);transition:color .2s}
+.back:hover{color:var(--text)}
+
+/* Header */
+header{text-align:center;padding:0.5rem 1.5rem 1.2rem}
+header .tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;color:var(--amber);text-transform:uppercase}
+header h1{font-family:'Outfit',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin:.3rem 0}
+header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
+
+/* Toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;align-items:center;padding:.8rem 1.5rem;max-width:1000px;margin:0 auto}
+.toolbar .search{flex:1;min-width:200px;max-width:320px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s}
+.toolbar .search:focus{border-color:var(--amber)}
+.filter-group{display:flex;gap:.3rem;align-items:center}
+.filter-group .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-right:.2rem}
+.fbtn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .55rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.65rem;cursor:pointer;transition:all .2s}
+.fbtn:hover{border-color:var(--text);color:var(--text)}
+.fbtn.active{border-color:var(--amber);color:var(--amber);background:rgba(245,197,66,.08)}
+
+/* SVG overlay */
+.svg-layer{position:absolute;inset:0;pointer-events:none;z-index:1}
+.svg-layer line{stroke:rgba(255,255,255,.06);stroke-width:1.5;transition:stroke .3s,opacity .3s}
+.svg-layer line.highlight{stroke-width:2;opacity:1}
+
+/* Main canvas */
+.canvas{position:relative;max-width:1200px;margin:1rem auto;padding:0 1rem}
+
+/* Domain grid */
+.islands{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;position:relative;z-index:2}
+.island:nth-child(3){grid-column:1/-1}
+
+/* Island */
+.island{border-radius:16px;padding:1.2rem;position:relative;overflow:hidden}
+.island::before{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none}
+.island[data-domain="netz"]{background:radial-gradient(ellipse at 30% 30%,rgba(6,182,212,.08),transparent 70%)}
+.island[data-domain="sig"]{background:radial-gradient(ellipse at 70% 30%,rgba(167,139,250,.08),transparent 70%)}
+.island[data-domain="tcp"]{background:radial-gradient(ellipse at 50% 50%,rgba(251,146,60,.08),transparent 70%)}
+.island[data-domain="info"]{background:radial-gradient(ellipse at 30% 70%,rgba(34,197,94,.08),transparent 70%)}
+.island[data-domain="formal"]{background:radial-gradient(ellipse at 70% 70%,rgba(244,114,182,.08),transparent 70%)}
+
+.island-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.island-icon{font-size:1.5rem}
+.island-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700}
+.island-sub{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.04em}
+.island-stats{margin-left:auto;text-align:right;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted)}
+
+/* Topic cards */
+.topics{display:flex;flex-wrap:wrap;gap:.7rem}
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem;width:calc(50% - .35rem);position:relative;cursor:pointer;transition:all .25s;border-top:3px solid var(--card-color)}
+.topic-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3);border-color:color-mix(in srgb,var(--card-color) 40%,var(--border))}
+.topic-card.learned{border-color:rgba(34,197,94,.3)}
+.topic-card.learned .check-btn{color:var(--c-info);opacity:1}
+.topic-card.hidden{display:none}
+
+.card-top{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.4rem}
+.card-emoji{font-size:1.1rem;line-height:1.2}
+.card-title{font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;flex:1;line-height:1.3}
+.card-heft{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted)}
+
+/* Badges */
+.badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.3rem}
+.badge{display:inline-flex;align-items:center;gap:.25rem;font-family:'JetBrains Mono',monospace;font-size:.58rem;padding:.15rem .4rem;border-radius:4px;white-space:nowrap}
+.badge-complexity{background:rgba(0,0,0,.3)}
+.badge-time{background:rgba(94,196,182,.08);color:var(--teal)}
+.complexity-dots{display:inline-flex;gap:2px}
+.complexity-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--border)}
+.complexity-dots span.filled{background:var(--dot-color)}
+
+/* Complexity labels */
+.clabel-1{color:#22c55e} .clabel-2{color:#06b6d4} .clabel-3{color:#f5c542} .clabel-4{color:#fb923c} .clabel-5{color:#f472b6}
+
+/* Check button */
+.check-btn{position:absolute;top:.5rem;right:.5rem;background:none;border:none;color:var(--border);font-size:.9rem;cursor:pointer;opacity:.5;transition:all .2s;padding:2px}
+.check-btn:hover{color:var(--c-info);opacity:1}
+
+/* Expanded content */
+.card-expand{display:none;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)}
+.topic-card.expanded .card-expand{display:block}
+
+.visual-box{background:#0c0b0f;border:1px solid rgba(245,197,66,.15);border-radius:6px;padding:.5rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--amber);margin-bottom:.5rem;line-height:1.6;white-space:pre-wrap}
+.keywords{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem}
+.kw{font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.12rem .35rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;color:var(--muted)}
+.concepts-list{font-size:.75rem;color:var(--muted);line-height:1.7}
+.concepts-list li{list-style:none;padding-left:.8rem;position:relative}
+.concepts-list li::before{content:'›';position:absolute;left:0;color:var(--card-color)}
+.heft-link{display:inline-block;margin-top:.4rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.25rem .6rem;border-radius:4px;border:1px solid var(--card-color);color:var(--card-color);transition:all .2s}
+.heft-link:hover{background:var(--card-color);color:#000}
+
+/* Stat bar */
+.stat-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,14,17,.92);backdrop-filter:blur(8px);border-top:1px solid var(--border);padding:.5rem 1.5rem;display:flex;justify-content:center;gap:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);z-index:100}
+.stat-bar .val{color:var(--amber)}
+
+/* Legend */
+.legend{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;padding:.4rem 1rem;margin-bottom:.3rem}
+.legend-item{display:flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);cursor:pointer;transition:opacity .2s;padding:.2rem .4rem;border-radius:4px}
+.legend-item:hover{background:rgba(255,255,255,.04)}
+.legend-item.dimmed{opacity:.3}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* Responsive */
+@media(max-width:900px){
+  .islands{grid-template-columns:1fr}
+  .island:nth-child(3){grid-column:auto}
+  .topic-card{width:100%}
+}
+@media(max-width:600px){
+  .toolbar{padding:.5rem .8rem}
+  .island{padding:.8rem}
+  .card-title{font-size:.78rem}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+body{padding-bottom:3rem}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back">← Zurück zur Lernplattform</a>
+
+<header>
+  <div class="tag">Informatik-Studium</div>
+  <h1>Lernlandkarte</h1>
+  <p>Alle Themen visuell aufbereitet – mit Komplexität, Zeitaufwand und Verbindungen. Klicke auf eine Karte für Details.</p>
+</header>
+
+<div class="toolbar">
+  <input type="text" class="search" placeholder="🔍 Thema suchen …" oninput="applyFilters()">
+  <div class="filter-group">
+    <span class="label">Level</span>
+    <button class="fbtn active" data-c="0" onclick="toggleComplexity(0)">Alle</button>
+    <button class="fbtn" data-c="1" onclick="toggleComplexity(1)">●○○</button>
+    <button class="fbtn" data-c="2" onclick="toggleComplexity(2)">●●○</button>
+    <button class="fbtn" data-c="3" onclick="toggleComplexity(3)">●●●</button>
+    <button class="fbtn" data-c="4" onclick="toggleComplexity(4)">●●●●</button>
+    <button class="fbtn" data-c="5" onclick="toggleComplexity(5)">●●●●●</button>
+  </div>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<div class="canvas">
+  <svg class="svg-layer" id="svgLayer"></svg>
+  <div class="islands" id="islands"></div>
+</div>
+
+<div class="stat-bar" id="statBar"></div>
+
+<script>
+/* ── DATA ─────────────────────────────────────────── */
+const DOMAINS = [
+  {
+    id:'netz', emoji:'🌐', title:'Netzwerk-Grundlagen', sub:'ITI21 · 6 Kapitel',
+    color:'#06b6d4',
+    topics:[
+      {id:'netz-internet',emoji:'🏛️',title:'Internet & Organisation',heft:'hefte/iti21.html',complexity:2,time:30,
+        visual:'Tier-1 (Backbone)\n  └→ Tier-2 (Regional)\n      └→ Tier-3 (Access/ISP)\nIANA → IETF → RFC → Standard',
+        keywords:['ISP','IETF','RFC','IANA','DE-CIX','Peering','Transit'],
+        concepts:['IuK-Technologien','Internet-Hierarchie','Standardisierung (IETF, IEEE, ISO)']},
+      {id:'netz-grundlagen',emoji:'🔗',title:'Computernetz-Grundlagen',heft:'hefte/iti21.html',complexity:1,time:20,
+        visual:'Computernetz = 2+ autonome Rechner\n9 Verbundeffekte:\n  Kommunikation · Ressourcen · Last\n  Verfügbarkeit · Leistung · Daten',
+        keywords:['Verbundeffekte','Autonomie','Intranet','Extranet'],
+        concepts:['9 Verbundeffekte','Verteiltes System vs. Netz','Intranet/Extranet']},
+      {id:'netz-topo',emoji:'📐',title:'Topologien & Klassifikation',heft:'hefte/iti21.html',complexity:2,time:45,
+        visual:'PAN ⊂ LAN ⊂ MAN ⊂ WAN ⊂ GAN\n\n★ Stern  ◆ Bus  ○ Ring  ▲ Mesh\n\nCircuit Switching ↔ Packet Switching',
+        keywords:['PAN','LAN','MAN','WAN','Stern','Bus','Ring','Mesh','Unicast','Broadcast'],
+        concepts:['Netzreichweiten (PAN→GAN)','Topologien','Vermittlungsarten','Kommunikationsarten','Duplex-Modi']},
+      {id:'netz-kenn',emoji:'📏',title:'Kenngrößen',heft:'hefte/iti21.html',complexity:3,time:45,
+        visual:'Latenz = t_v + t_w + t_Ü + t_a\nt_Ü = D/b  (Übertragung)\nt_a = d/v  (Ausbreitung)\n\nb = D/t [bit/s] · Basis 10!',
+        keywords:['Latenz','Jitter','Durchsatz','Übertragungsrate','Propagation'],
+        concepts:['Übertragungsrate b','4 Latenz-Komponenten','Jitter & Paketverlust','BDP (Bandwidth-Delay Product)']},
+      {id:'netz-osi',emoji:'📊',title:'OSI- & TCP/IP-Modell',heft:'hefte/iti21.html',complexity:3,time:60,
+        visual:'OSI 7 Schichten vs. TCP/IP 4 Schichten\n7 Application    ┐\n6 Presentation   ├→ Application\n5 Session        ┘\n4 Transport      → Transport\n3 Network        → Internet\n2 Data Link  ┐\n1 Physical   ┘→ Network Access',
+        keywords:['OSI','TCP/IP','PDU','Kapselung','Schichtenmodell'],
+        concepts:['7 OSI-Schichten','4 TCP/IP-Schichten','PDU-Bezeichnungen','Kapselung/Entkapselung']}
+    ]
+  },
+  {
+    id:'sig', emoji:'📡', title:'Signale & Übertragung', sub:'ITI22+ITI23 · 11 Kapitel',
+    color:'#a78bfa',
+    topics:[
+      {id:'sig-entropie',emoji:'📊',title:'Informationsgehalt & Entropie',heft:'hefte/iti22.html',complexity:4,time:60,
+        visual:'I(x) = -log₂(p(x)) [bit]\nH(X) = -Σ p(xᵢ)·log₂(p(xᵢ))\n\nH_max = log₂(N)\nRedundanz R = 1 - H/H_max',
+        keywords:['Shannon','Entropie','Informationsgehalt','Redundanz','Bit'],
+        concepts:['Informationsgehalt I(x)','Shannon-Entropie H(X)','Redundanz & Irrelevanz']},
+      {id:'sig-kanal',emoji:'📈',title:'Kanalkapazität',heft:'hefte/iti22.html',complexity:5,time:90,
+        visual:'Nyquist:  C = 2B · log₂(M)\nShannon:  C = B · log₂(1 + S/N)\n\nS/N [dB] = 10 · log₁₀(S/N)\nBandbreite B [Hz]',
+        keywords:['Nyquist','Shannon-Hartley','SNR','Bandbreite','Kanalkapazität'],
+        concepts:['Nyquist-Theorem','Shannon-Hartley','SNR in dB','Kanalmodell']},
+      {id:'sig-code',emoji:'🔢',title:'Codierung',heft:'hefte/iti22.html',complexity:4,time:75,
+        visual:'Quellcodierung → Kanalcodierung → Leitungscode\n\nHuffman: Häufigkeit → kurzer Code\nHamming: d_min = 3, 1-Bit korrigierbar\n\nNRZ · Manchester · 4B5B · MLT-3',
+        keywords:['Huffman','Hamming','NRZ','Manchester','Quellencodierung','Kanalcodierung'],
+        concepts:['Huffman-Algorithmus','Hamming-Code','Leitungscodes (NRZ, Manchester)','Fehlererkennung']},
+      {id:'sig-medien',emoji:'🔌',title:'Übertragungsmedien',heft:'hefte/iti23.html',complexity:2,time:30,
+        visual:'Kupfer: TP (Cat5e/6/7), Koaxial\nGlas:   Multimode · Singlemode\nFunk:   WLAN · Bluetooth · LTE/5G\n\nDämpfung = 10·log₁₀(P₁/P₂) [dB]',
+        keywords:['Twisted Pair','LWL','Koaxial','Dämpfung','Cat6'],
+        concepts:['Twisted Pair Kategorien','Lichtwellenleiter','Koaxialkabel','Signaldämpfung']},
+      {id:'sig-ethernet',emoji:'🌊',title:'Ethernet & Data Link',heft:'hefte/iti23.html',complexity:3,time:60,
+        visual:'CSMA/CD (kabelgebunden)\n  Listen → Send → Collision? → Backoff\n\nMAC: FF:FF:FF:FF:FF:FF = Broadcast\nFrame: |Preamble|DA|SA|Type|Data|FCS|',
+        keywords:['CSMA/CD','MAC','Frame','Ethernet','802.3','Backoff'],
+        concepts:['CSMA/CD Algorithmus','MAC-Adressen','Ethernet Frame-Format','Fast/Gigabit Ethernet']},
+      {id:'sig-wlan',emoji:'📶',title:'WLAN & Drahtlos',heft:'hefte/iti23.html',complexity:2,time:30,
+        visual:'802.11: a/b/g/n/ac/ax (WiFi 6)\nCSMA/CA (Hidden Station Problem)\n\nInfrastruktur-Modus ↔ Ad-Hoc\nSSID · WPA2/3 · Frequenz: 2.4/5 GHz',
+        keywords:['802.11','CSMA/CA','WPA','SSID','WiFi','Ad-Hoc'],
+        concepts:['WLAN-Standards (a→ax)','CSMA/CA','Betriebsmodi','Mobilfunkgenerationen']}
+    ]
+  },
+  {
+    id:'tcp', emoji:'🔧', title:'TCP/IP & Netzdesign', sub:'ITI24+ITI25+ITI26 · 17 Kapitel',
+    color:'#fb923c',
+    topics:[
+      {id:'tcp-ip',emoji:'🌍',title:'IP-Adressierung',heft:'hefte/iti24.html',complexity:4,time:90,
+        visual:'IPv4: 32 Bit = 4 Oktette\n  Klasse A: /8  · B: /16 · C: /24\n  Subnetz: Netz-ID | Host-ID\n\nIPv6: 128 Bit = 8×16 Bit\n  fe80:: = Link-Local',
+        keywords:['IPv4','IPv6','Subnetting','CIDR','VLSM','Klassen'],
+        concepts:['IPv4-Klassen & Spezial-Adressen','Subnetting & CIDR','IPv6-Grundlagen','NAT/PAT']},
+      {id:'tcp-proto',emoji:'📬',title:'IP, ICMP & ARP',heft:'hefte/iti24.html',complexity:3,time:45,
+        visual:'ARP: IP → MAC (Broadcast → Unicast)\nICMP: Ping, Traceroute, Unreachable\n\nIP-Header: Version|IHL|TTL|Protocol\n           |Src IP|Dst IP|Data',
+        keywords:['ARP','ICMP','IP-Header','TTL','Ping','Traceroute'],
+        concepts:['ARP-Ablauf','ICMP-Typen','IP-Header Felder','Fragmentierung']},
+      {id:'tcp-routing',emoji:'🗺️',title:'Routing',heft:'hefte/iti24.html',complexity:4,time:75,
+        visual:'Statisch vs. Dynamisch\n\nDistanz-Vektor: RIP (Hop Count ≤15)\nLink-State:     OSPF (Dijkstra)\nPfad-Vektor:    BGP (AS-Pfade)\n\nAS = Autonomes System',
+        keywords:['RIP','OSPF','BGP','Dijkstra','Routing-Tabelle','AS'],
+        concepts:['Statisches Routing','RIP (Distanz-Vektor)','OSPF (Link-State)','BGP (Inter-AS)']},
+      {id:'tcp-transport',emoji:'🔄',title:'TCP & UDP',heft:'hefte/iti24.html',complexity:3,time:60,
+        visual:'TCP: zuverlässig, verbindungsorientiert\n  SYN → SYN-ACK → ACK (3-Way)\n  Flow Control: Sliding Window\n\nUDP: schnell, verbindungslos\n  Header: Src|Dst|Len|Checksum',
+        keywords:['TCP','UDP','3-Way-Handshake','Sliding Window','Ports'],
+        concepts:['TCP 3-Way-Handshake','Flow/Congestion Control','UDP Einsatzgebiete','Well-Known Ports']},
+      {id:'tcp-design',emoji:'🏗️',title:'Netzkomponenten & Design',heft:'hefte/iti25.html',complexity:3,time:60,
+        visual:'Hub → Switch → Router\n\nVLAN: Logische Trennung (802.1Q)\nSTP:  Spanning Tree (Loop-frei)\nVLSM: Variable Subnetzmasken\n\n3-Schichten: Core|Distribution|Access',
+        keywords:['Switch','Router','VLAN','STP','VLSM','3-Schichten-Modell'],
+        concepts:['Switch vs. Router','VLAN & Trunk','STP (Spanning Tree)','Subnetzplanung (VLSM)']},
+      {id:'tcp-sicherheit',emoji:'🔒',title:'Anwendungen & Sicherheit',heft:'hefte/iti26.html',complexity:3,time:75,
+        visual:'HTTP/S → Port 80/443\nDNS:   Name → IP (rekursiv/iterativ)\nSMTP/POP3/IMAP → E-Mail\n\nSymm.: AES | Asymm.: RSA\nFirewall: Paketfilter · Proxy · WAF\nVPN: IPsec · SSL/TLS',
+        keywords:['HTTP','DNS','SMTP','AES','RSA','Firewall','VPN','TLS'],
+        concepts:['HTTP/HTTPS','DNS-Auflösung','E-Mail-Protokolle','Kryptografie (AES/RSA)','Firewalls & VPN']}
+    ]
+  },
+  {
+    id:'info', emoji:'💻', title:'Informatik-Grundlagen', sub:'GDI01+TGI01+TGI02 · 17 Kapitel',
+    color:'#22c55e',
+    topics:[
+      {id:'info-eva',emoji:'⚙️',title:'EVA-Prinzip & Algorithmus',heft:'hefte/gdi01.html',complexity:1,time:20,
+        visual:'E → V → A\nEingabe → Verarbeitung → Ausgabe\n\nAlgorithmus: endlich, determiniert,\n  terminierend, effektiv\n\nDarstellung: Pseudocode · Struktogramm',
+        keywords:['EVA','Algorithmus','Pseudocode','Struktogramm','Kontrollstrukturen'],
+        concepts:['EVA-Prinzip','Algorithmus-Eigenschaften','Kontrollstrukturen','OOP-Grundbegriffe']},
+      {id:'info-rechner',emoji:'🖥️',title:'Rechnerarchitektur',heft:'hefte/gdi01.html',complexity:2,time:30,
+        visual:'Von-Neumann-Architektur:\n  CPU ↔ Speicher ↔ I/O\n  Steuerwerk | Rechenwerk | Register\n\nTuring-Maschine:\n  Band | Kopf | Zustandstabelle',
+        keywords:['Von-Neumann','CPU','ALU','Register','Turing-Maschine','Harvard'],
+        concepts:['Von-Neumann-Architektur','CPU-Bestandteile','Turing-Maschine (Grundidee)','Harvard-Architektur']},
+      {id:'info-zahlen',emoji:'🔢',title:'Zahlensysteme & Logik',heft:'hefte/gdi01.html',complexity:3,time:60,
+        visual:'Dezimal ↔ Binär ↔ Hex ↔ Oktal\n\n42₁₀ = 101010₂ = 2A₁₆\n\nAND · OR · NOT · XOR · NAND\nDe Morgan: ¬(A∧B) = ¬A∨¬B',
+        keywords:['Binär','Hex','Boolesche Algebra','Gatter','De Morgan','Zweierkomplement'],
+        concepts:['Zahlensystem-Umrechnung','Zweierkomplement','Logikgatter','De Morgan Regeln']},
+      {id:'info-daten',emoji:'🗂️',title:'Datenstrukturen & ADTs',heft:'hefte/tgi01.html',complexity:4,time:90,
+        visual:'Liste → Stack → Queue → Baum → Graph\n\nStack: LIFO  push/pop  O(1)\nQueue: FIFO  enq/deq   O(1)\nBaum:  Wurzel → Knoten → Blatt\n       Binär: max 2 Kinder',
+        keywords:['Stack','Queue','Liste','Baum','Graph','ADT','BST'],
+        concepts:['Mengen & Relationen','Listen (Array/Linked)','Stack & Queue','Bäume & Graphen','ADT-Konzept']},
+      {id:'info-sort',emoji:'📊',title:'Sortieralgorithmen',heft:'hefte/tgi01.html',complexity:4,time:75,
+        visual:'O(n²):  Bubble · Selection · Insertion\nO(n·log n): Quick · Merge · Heap\n\nQuickSort: Pivot → Partition → Rekursion\nMergeSort: Teile → Sortiere → Merge\nHeapSort:  Max-Heap → Extract-Max',
+        keywords:['QuickSort','MergeSort','HeapSort','BubbleSort','O(n²)','O(n·log n)','in-place','stabil'],
+        concepts:['Einfache Sortierung (Bubble/Selection/Insertion)','QuickSort','MergeSort','HeapSort','Stabilität & In-Place']},
+      {id:'info-hash',emoji:'🔍',title:'Hashing & Pattern Matching',heft:'hefte/tgi02.html',complexity:4,time:60,
+        visual:'h(k) = k mod m\nKollision → Chaining | Open Addressing\n  Linear · Quadratisch · Double Hashing\n\nKMP: Prefix-Tabelle → O(n+m)\nBoyer-Moore: Bad Char + Good Suffix',
+        keywords:['Hashfunktion','Kollision','Chaining','KMP','Boyer-Moore'],
+        concepts:['Hashfunktionen','Kollisionsbehandlung','KMP-Algorithmus','Boyer-Moore']},
+      {id:'info-komplex',emoji:'📉',title:'Komplexitätsanalyse',heft:'hefte/tgi02.html',complexity:5,time:75,
+        visual:'O(1) < O(log n) < O(n) < O(n·log n)\n     < O(n²) < O(2ⁿ) < O(n!)\n\nMaster-Theorem:\nT(n) = a·T(n/b) + f(n)\n  Fall 1/2/3 je nach f(n) vs. n^(log_b a)',
+        keywords:['O-Notation','Ω','Θ','Master-Theorem','Best/Worst/Average Case'],
+        concepts:['O/Ω/Θ-Notation','Komplexitätsklassen','Master-Theorem','Rekurrenzgleichungen']}
+    ]
+  },
+  {
+    id:'formal', emoji:'🤖', title:'Formale Sprachen & Automaten', sub:'TGI06+TGI07 · 8 Kapitel',
+    color:'#f472b6',
+    topics:[
+      {id:'formal-grund',emoji:'🔤',title:'Grundbegriffe',heft:'hefte/tgi06.html',complexity:2,time:30,
+        visual:'Alphabet Σ = {a,b,c}\nWort w ∈ Σ* (Kleene-Stern)\nSprache L ⊆ Σ*\n\n|w| = Länge, ε = leeres Wort\nΣ⁺ = Σ* \\ {ε}',
+        keywords:['Alphabet','Wort','Sprache','Kleene-Stern','Konkatenation'],
+        concepts:['Alphabet & Wort','Formale Sprache','Kleene-Stern','Konkatenation & Potenz']},
+      {id:'formal-grammar',emoji:'📜',title:'Formale Grammatiken',heft:'hefte/tgi06.html',complexity:4,time:75,
+        visual:'G = (N, T, P, S)\nChomsky-Hierarchie:\n  Typ 0: Unbeschränkt    → TM\n  Typ 1: Kontextsensitiv → LBA\n  Typ 2: Kontextfrei     → KA\n  Typ 3: Regulär         → DEA',
+        keywords:['Chomsky','Typ 0-3','Produktion','Terminal','Nichtterminal','CNF'],
+        concepts:['Grammatik-Definition G=(N,T,P,S)','Chomsky-Hierarchie','Typ 3 (rechtslinear)','Chomsky-Normalform']},
+      {id:'formal-compiler',emoji:'⚒️',title:'Compiler & Sprachübersetzer',heft:'hefte/tgi06.html',complexity:3,time:45,
+        visual:'Quellcode\n  → Scanner (Lexer): Tokens\n  → Parser: Syntaxbaum\n  → Semantik: Typprüfung\n  → Codegen: Maschinencode\n\nCompiler vs. Interpreter',
+        keywords:['Scanner','Parser','Lexer','Token','Syntaxbaum','Compiler','Interpreter'],
+        concepts:['Compiler-Phasen','Scanner & Token','Parser & Syntaxbaum','Compiler vs. Interpreter']},
+      {id:'formal-automaten',emoji:'🔄',title:'Reguläre Sprachen & Automaten',heft:'hefte/tgi06.html',complexity:5,time:90,
+        visual:'DEA = (Q, Σ, δ, q₀, F)  deterministisch\nNEA = (Q, Σ, δ, q₀, F)  δ→Potenzmenge\n\nDEA ↔ NEA ↔ RegEx  (äquivalent)\nPumping-Lemma: Regulär? Test!\n\nDEA-Minimierung: Äquivalenzklassen',
+        keywords:['DEA','NEA','RegEx','δ-Funktion','Pumping-Lemma','Minimierung'],
+        concepts:['DEA 5-Tupel','NEA & ε-Übergänge','NEA→DEA (Potenzmengenkonstruktion)','Reguläre Ausdrücke','Pumping-Lemma']},
+      {id:'formal-keller',emoji:'📚',title:'Kellerautomaten & kfS',heft:'hefte/tgi07.html',complexity:5,time:90,
+        visual:'NKA = (Q, Σ, Γ, δ, q₀, Z₀, F)\nKeller = Stack (LIFO)\n\nkfS ↔ NKA (äquivalent)\nDKA ⊂ NKA (echt schwächer!)\n\nBeispiel: L = {aⁿbⁿ | n≥1}',
+        keywords:['NKA','DKA','Keller','kfS','kontextfrei','Stack','Γ'],
+        concepts:['NKA 7-Tupel','DKA vs. NKA','Kontextfreie Sprachen','Kelleroperationen (push/pop)']},
+      {id:'formal-ll',emoji:'⬇️',title:'LL(k)-Sprachen',heft:'hefte/tgi07.html',complexity:4,time:60,
+        visual:'LL(k): Left-to-right, Leftmost derivation\n  → Top-Down Parsing\n\nFIRST(α) ∩ FOLLOW(A) = ∅?\n  Ja → LL(1)-Grammatik\n\nParsetabelle → Recursive Descent',
+        keywords:['LL(1)','FIRST','FOLLOW','Top-Down','Parsetabelle','Recursive Descent'],
+        concepts:['LL(k)-Definition','FIRST- & FOLLOW-Mengen','LL(1)-Bedingung','Top-Down-Parser']},
+      {id:'formal-lr',emoji:'⬆️',title:'LR(k)-Sprachen',heft:'hefte/tgi07.html',complexity:4,time:60,
+        visual:'LR(k): Left-to-right, Rightmost derivation\n  → Bottom-Up Parsing\n\nShift-Reduce-Parser:\n  Shift: Token auf Stack\n  Reduce: Handle → Nichtterminal\n\nSLR(1) ⊂ LALR(1) ⊂ LR(1)',
+        keywords:['LR(1)','SLR','LALR','Shift','Reduce','Bottom-Up'],
+        concepts:['LR(k)-Definition','Shift-Reduce-Parsing','SLR/LALR/LR(1)-Hierarchie','Handle-Erkennung']},
+      {id:'formal-turing',emoji:'♾️',title:'Turing-Maschine',heft:'hefte/tgi07.html',complexity:5,time:90,
+        visual:'TM = (Q, Σ, Γ, δ, q₀, □, F)\nBand: unendlich, Lese-/Schreibkopf\n\nDTM · NTM · LBTM · UTM\n\nChurch-Turing-These:\n  Berechenbar = TM-berechenbar\n\nHalteproblem: UNENTSCHEIDBAR',
+        keywords:['DTM','NTM','LBTM','UTM','Halteproblem','Church-Turing','Entscheidbar'],
+        concepts:['TM 7-Tupel','DTM vs. NTM','Church-Turing-These','Halteproblem','Sprachklassen-Hierarchie']}
+    ]
+  }
+];
+
+/* Cross-domain connections */
+const CONNECTIONS = [
+  {from:'netz-osi',to:'sig-ethernet',label:'Layer 1-2'},
+  {from:'netz-osi',to:'tcp-transport',label:'Layer 4'},
+  {from:'netz-osi',to:'tcp-ip',label:'Layer 3'},
+  {from:'netz-kenn',to:'sig-kanal',label:'Bandbreite'},
+  {from:'sig-code',to:'sig-entropie',label:'Quellencodierung'},
+  {from:'sig-ethernet',to:'sig-wlan',label:'MAC-Schicht'},
+  {from:'tcp-ip',to:'tcp-routing',label:'Weiterleitung'},
+  {from:'tcp-routing',to:'tcp-design',label:'Netzplanung'},
+  {from:'tcp-transport',to:'tcp-sicherheit',label:'TLS/SSL'},
+  {from:'info-eva',to:'info-rechner',label:'Hardware'},
+  {from:'info-daten',to:'info-sort',label:'Algorithmen'},
+  {from:'info-sort',to:'info-komplex',label:'Analyse'},
+  {from:'info-hash',to:'info-komplex',label:'O-Notation'},
+  {from:'formal-grund',to:'formal-grammar',label:'Sprachen'},
+  {from:'formal-grammar',to:'formal-automaten',label:'Typ 3 ↔ DEA'},
+  {from:'formal-grammar',to:'formal-keller',label:'Typ 2 ↔ KA'},
+  {from:'formal-grammar',to:'formal-turing',label:'Typ 0 ↔ TM'},
+  {from:'formal-compiler',to:'formal-ll',label:'Parser'},
+  {from:'formal-ll',to:'formal-lr',label:'Top↔Bottom'},
+  {from:'info-rechner',to:'formal-turing',label:'Berechenbarkeit'}
+];
+
+/* ── STATE ────────────────────────────────────────── */
+let activeComplexity = 0; // 0 = all
+let activeDomains = new Set(DOMAINS.map(d=>d.id));
+let searchTerm = '';
+let learned = JSON.parse(localStorage.getItem('lk-learned')||'{}');
+
+/* ── RENDER ───────────────────────────────────────── */
+const complexityLabels = ['','Leicht','Einfach','Mittel','Schwer','Experte'];
+const dotColors = ['','#22c55e','#06b6d4','#f5c542','#fb923c','#f472b6'];
+
+function formatTime(min){
+  if(min < 60) return `~${min} Min`;
+  const h = Math.floor(min/60), m = min%60;
+  return m ? `~${h}h ${m}m` : `~${h}h`;
+}
+
+function renderDots(level){
+  let html = '<span class="complexity-dots">';
+  for(let i=1;i<=5;i++) html += `<span${i<=level?' class="filled" style="background:'+dotColors[level]+'"':''}></span>`;
+  return html+'</span>';
+}
+
+function renderIslands(){
+  const el = document.getElementById('islands');
+  el.innerHTML = '';
+  DOMAINS.forEach(d=>{
+    const island = document.createElement('div');
+    island.className = 'island';
+    island.dataset.domain = d.id;
+    const topicCount = d.topics.length;
+    const totalTime = d.topics.reduce((s,t)=>s+t.time,0);
+    island.innerHTML = `
+      <div class="island-header">
+        <span class="island-icon">${d.emoji}</span>
+        <div>
+          <div class="island-title" style="color:${d.color}">${d.title}</div>
+          <div class="island-sub">${d.sub}</div>
+        </div>
+        <div class="island-stats">${topicCount} Themen<br>${formatTime(totalTime)}</div>
+      </div>
+      <div class="topics">${d.topics.map(t=>renderCard(t,d.color)).join('')}</div>
+    `;
+    el.appendChild(island);
+  });
+}
+
+function renderCard(t, color){
+  const isLearned = learned[t.id];
+  return `
+    <div class="topic-card${isLearned?' learned':''}" id="card-${t.id}" style="--card-color:${color}"
+         data-id="${t.id}" data-complexity="${t.complexity}" data-time="${t.time}"
+         data-search="${(t.title+' '+t.keywords.join(' ')).toLowerCase()}"
+         onclick="toggleCard(this)" onmouseenter="highlightConnections('${t.id}')" onmouseleave="clearConnections()">
+      <button class="check-btn" onclick="event.stopPropagation();toggleLearned('${t.id}',this)" title="Als gelernt markieren">
+        ${isLearned?'✅':'☐'}
+      </button>
+      <div class="card-top">
+        <span class="card-emoji">${t.emoji}</span>
+        <div>
+          <div class="card-title">${t.title}</div>
+          <div class="card-heft">${t.heft.replace('hefte/','').replace('.html','').toUpperCase()}</div>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge badge-complexity">${renderDots(t.complexity)} <span class="clabel-${t.complexity}">${complexityLabels[t.complexity]}</span></span>
+        <span class="badge badge-time">⏱ ${formatTime(t.time)}</span>
+      </div>
+      <div class="card-expand">
+        <div class="visual-box">${t.visual}</div>
+        <div class="keywords">${t.keywords.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+        <ul class="concepts-list">${t.concepts.map(c=>`<li>${c}</li>`).join('')}</ul>
+        <a href="${t.heft}" target="_blank" class="heft-link" onclick="event.stopPropagation()">Heft öffnen →</a>
+      </div>
+    </div>
+  `;
+}
+
+function renderLegend(){
+  const el = document.getElementById('legend');
+  el.innerHTML = DOMAINS.map(d=>`
+    <div class="legend-item${activeDomains.has(d.id)?'':' dimmed'}" data-domain="${d.id}" onclick="toggleDomain('${d.id}')">
+      <span class="legend-dot" style="background:${d.color}"></span>${d.title.split(' ')[0]}
+    </div>
+  `).join('');
+}
+
+/* ── INTERACTIONS ─────────────────────────────────── */
+function toggleCard(el){
+  const wasExpanded = el.classList.contains('expanded');
+  document.querySelectorAll('.topic-card.expanded').forEach(c=>c.classList.remove('expanded'));
+  if(!wasExpanded) el.classList.add('expanded');
+  requestAnimationFrame(drawConnections);
+}
+
+function toggleLearned(id, btn){
+  learned[id] = !learned[id];
+  if(!learned[id]) delete learned[id];
+  localStorage.setItem('lk-learned', JSON.stringify(learned));
+  const card = btn.closest('.topic-card');
+  card.classList.toggle('learned', !!learned[id]);
+  btn.textContent = learned[id]?'✅':'☐';
+  updateStats();
+}
+
+function toggleDomain(id){
+  if(activeDomains.has(id)) activeDomains.delete(id); else activeDomains.add(id);
+  applyFilters();
+  renderLegend();
+}
+
+function toggleComplexity(level){
+  activeComplexity = level;
+  document.querySelectorAll('.fbtn[data-c]').forEach(b=>b.classList.toggle('active', parseInt(b.dataset.c)===level));
+  applyFilters();
+}
+
+function applyFilters(){
+  searchTerm = document.querySelector('.search').value.toLowerCase().trim();
+  document.querySelectorAll('.island').forEach(island=>{
+    const domId = island.dataset.domain;
+    island.style.display = activeDomains.has(domId)?'':'none';
+  });
+  document.querySelectorAll('.topic-card').forEach(card=>{
+    const c = parseInt(card.dataset.complexity);
+    const matchC = activeComplexity===0 || c===activeComplexity;
+    const matchS = !searchTerm || card.dataset.search.includes(searchTerm);
+    card.classList.toggle('hidden', !(matchC && matchS));
+  });
+  requestAnimationFrame(drawConnections);
+  updateStats();
+}
+
+/* ── SVG CONNECTIONS ──────────────────────────────── */
+function drawConnections(){
+  const svg = document.getElementById('svgLayer');
+  const canvas = document.querySelector('.canvas');
+  const rect = canvas.getBoundingClientRect();
+  svg.setAttribute('width', canvas.scrollWidth);
+  svg.setAttribute('height', canvas.scrollHeight);
+  svg.innerHTML = '';
+  if(window.innerWidth < 900) return;
+
+  CONNECTIONS.forEach(conn=>{
+    const fromEl = document.getElementById('card-'+conn.from);
+    const toEl = document.getElementById('card-'+conn.to);
+    if(!fromEl || !toEl || fromEl.classList.contains('hidden') || toEl.classList.contains('hidden')) return;
+    if(fromEl.offsetParent===null || toEl.offsetParent===null) return;
+
+    const fRect = fromEl.getBoundingClientRect();
+    const tRect = toEl.getBoundingClientRect();
+    const cRect = canvas.getBoundingClientRect();
+
+    const x1 = fRect.left + fRect.width/2 - cRect.left;
+    const y1 = fRect.top + fRect.height/2 - cRect.top;
+    const x2 = tRect.left + tRect.width/2 - cRect.left;
+    const y2 = tRect.top + tRect.height/2 - cRect.top;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.dataset.from = conn.from;
+    line.dataset.to = conn.to;
+    svg.appendChild(line);
+  });
+}
+
+function highlightConnections(topicId){
+  document.querySelectorAll('.svg-layer line').forEach(line=>{
+    if(line.dataset.from===topicId || line.dataset.to===topicId){
+      const domain = DOMAINS.find(d=>d.topics.some(t=>t.id===topicId));
+      line.classList.add('highlight');
+      line.style.stroke = domain?domain.color:'#fff';
+    }
+  });
+}
+
+function clearConnections(){
+  document.querySelectorAll('.svg-layer line').forEach(line=>{
+    line.classList.remove('highlight');
+    line.style.stroke = '';
+  });
+}
+
+/* ── STATS ────────────────────────────────────────── */
+function updateStats(){
+  const allTopics = DOMAINS.flatMap(d=>d.topics);
+  const visible = allTopics.filter(t=>{
+    const card = document.getElementById('card-'+t.id);
+    return card && !card.classList.contains('hidden');
+  });
+  const learnedCount = visible.filter(t=>learned[t.id]).length;
+  const totalTime = visible.reduce((s,t)=>s+t.time,0);
+  const remainTime = visible.filter(t=>!learned[t.id]).reduce((s,t)=>s+t.time,0);
+  document.getElementById('statBar').innerHTML = `
+    <span>✅ Gelernt: <span class="val">${learnedCount} / ${visible.length}</span></span>
+    <span>⏱ Gesamt: <span class="val">${formatTime(totalTime)}</span></span>
+    <span>📋 Verbleibend: <span class="val">${formatTime(remainTime)}</span></span>
+  `;
+}
+
+/* ── INIT ─────────────────────────────────────────── */
+renderIslands();
+renderLegend();
+updateStats();
+requestAnimationFrame(()=>setTimeout(drawConnections, 100));
+window.addEventListener('resize', ()=>requestAnimationFrame(drawConnections));
+</script>
+</body>
+</html>
