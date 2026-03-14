@@ -103,7 +103,56 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 .card-expand{display:none;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)}
 .topic-card.expanded .card-expand{display:block}
 
-.visual-box{background:#0c0b0f;border:1px solid rgba(245,197,66,.15);border-radius:6px;padding:.5rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--amber);margin-bottom:.5rem;line-height:1.6;white-space:pre-wrap}
+.visual-box{background:#0c0b0f;border:1px solid rgba(245,197,66,.15);border-radius:6px;padding:.6rem .7rem;margin-bottom:.5rem;overflow:hidden}
+
+/* Exam relevance badge */
+.badge-exam{background:rgba(245,197,66,.1);color:var(--amber)}
+.badge-exam.hot{background:rgba(239,68,68,.12);color:#ef4444}
+.badge-exam.warm{background:rgba(251,146,60,.1);color:#fb923c}
+.badge-exam.mild{background:rgba(94,196,182,.08);color:var(--teal)}
+/* Learn type badge */
+.badge-type{background:rgba(167,139,250,.08);color:#a78bfa}
+
+/* Memorize list */
+.memo-box{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:6px;padding:.4rem .6rem;margin-bottom:.5rem;font-size:.7rem}
+.memo-box .memo-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:#ef4444;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.05em}
+.memo-box li{list-style:none;padding-left:.7rem;position:relative;color:var(--muted);line-height:1.6;font-size:.68rem}
+.memo-box li::before{content:'!';position:absolute;left:0;color:#ef4444;font-weight:700;font-size:.6rem}
+
+/* ── VISUAL DIAGRAM SYSTEM ── */
+.vis-layers{display:flex;flex-direction:column;gap:2px}
+.vis-layer{display:flex;align-items:center;gap:.5rem;padding:.25rem .5rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.62rem;border-left:3px solid var(--lc,var(--amber))}
+.vis-layer .vis-num{font-weight:700;min-width:14px;color:var(--lc,var(--amber))}
+.vis-layer .vis-tag{margin-left:auto;font-size:.55rem;opacity:.6;color:var(--lc)}
+
+.vis-flow{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;justify-content:center}
+.vis-node{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:.2rem .45rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text);text-align:center;white-space:nowrap}
+.vis-node.accent{border-color:var(--nc,var(--amber));color:var(--nc,var(--amber));background:rgba(245,197,66,.08)}
+.vis-arrow{color:var(--amber);font-size:.75rem;font-family:'JetBrains Mono',monospace}
+.vis-arrow.down{display:block;text-align:center;font-size:.65rem;color:var(--muted);line-height:1}
+
+.vis-formula{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--amber);line-height:1.8;padding:.1rem 0}
+.vis-formula .hi{color:#ef4444;font-weight:700}
+.vis-formula .lo{color:var(--teal)}
+.vis-formula .sub{font-size:.55rem;color:var(--muted)}
+.vis-formula div{padding:.05rem 0}
+
+.vis-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.vis-grid.cols3{grid-template-columns:1fr 1fr 1fr}
+.vis-cell{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:.2rem .35rem;font-family:'JetBrains Mono',monospace;font-size:.58rem;text-align:center;color:var(--muted)}
+.vis-cell.hi{border-color:var(--amber);color:var(--amber);background:rgba(245,197,66,.06)}
+
+.vis-compare{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.vis-side{border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:.3rem .4rem}
+.vis-side-title{font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;margin-bottom:.2rem;color:var(--nc,var(--amber))}
+.vis-side-item{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--muted);line-height:1.6}
+
+.vis-tree{padding-left:.2rem}
+.vis-branch{padding-left:.8rem;border-left:2px solid rgba(255,255,255,.08);margin:.1rem 0}
+.vis-leaf{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);padding:.1rem 0;position:relative}
+.vis-leaf::before{content:'─';position:absolute;left:-.8rem;color:rgba(255,255,255,.15)}
+.vis-leaf.root{border:none;padding-left:0;font-weight:600;color:var(--amber);font-size:.65rem}
+.vis-leaf.root::before{content:none}
 .keywords{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem}
 .kw{font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.12rem .35rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;color:var(--muted)}
 .concepts-list{font-size:.75rem;color:var(--muted);line-height:1.7}
@@ -163,6 +212,12 @@ body{padding-bottom:3rem}
     <button class="fbtn" data-c="4" onclick="toggleComplexity(4)">●●●●</button>
     <button class="fbtn" data-c="5" onclick="toggleComplexity(5)">●●●●●</button>
   </div>
+  <div class="filter-group">
+    <span class="label">Prüfung</span>
+    <button class="fbtn active" data-e="0" onclick="toggleExam(0)">Alle</button>
+    <button class="fbtn" data-e="1" onclick="toggleExam(1)">🔥 Sehr häufig</button>
+    <button class="fbtn" data-e="2" onclick="toggleExam(2)">⚡ Häufig</button>
+  </div>
 </div>
 
 <div class="legend" id="legend"></div>
@@ -182,23 +237,28 @@ const DOMAINS = [
     color:'#06b6d4',
     topics:[
       {id:'netz-internet',emoji:'🏛️',title:'Internet & Organisation',heft:'hefte/iti21.html',complexity:2,time:30,
-        visual:'Tier-1 (Backbone)\n  └→ Tier-2 (Regional)\n      └→ Tier-3 (Access/ISP)\nIANA → IETF → RFC → Standard',
+        exam:0,examLabel:'Selten',learnType:'konzept',memorize:[],
+        visualHTML:`<div class="vis-tree"><div class="vis-leaf root">🌍 Internet-Hierarchie</div><div class="vis-branch"><div class="vis-leaf" style="color:var(--amber)">Tier-1 — Backbone (DE-CIX)</div><div class="vis-branch"><div class="vis-leaf">Tier-2 — Regional ISP</div><div class="vis-branch"><div class="vis-leaf">Tier-3 — Access/Endkunde</div></div></div></div></div><div class="vis-flow" style="margin-top:.4rem"><div class="vis-node accent">IANA</div><div class="vis-arrow">→</div><div class="vis-node">IETF</div><div class="vis-arrow">→</div><div class="vis-node">RFC</div><div class="vis-arrow">→</div><div class="vis-node accent">Standard</div></div>`,
         keywords:['ISP','IETF','RFC','IANA','DE-CIX','Peering','Transit'],
         concepts:['IuK-Technologien','Internet-Hierarchie','Standardisierung (IETF, IEEE, ISO)']},
       {id:'netz-grundlagen',emoji:'🔗',title:'Computernetz-Grundlagen',heft:'hefte/iti21.html',complexity:1,time:20,
-        visual:'Computernetz = 2+ autonome Rechner\n9 Verbundeffekte:\n  Kommunikation · Ressourcen · Last\n  Verfügbarkeit · Leistung · Daten',
+        exam:0,examLabel:'Selten',learnType:'konzept',memorize:[],
+        visualHTML:`<div class="vis-flow"><div class="vis-node accent" style="--nc:#06b6d4">Rechner A</div><div class="vis-arrow">⇄</div><div class="vis-node accent" style="--nc:#06b6d4">Rechner B</div></div><div class="vis-grid cols3" style="margin-top:.4rem"><div class="vis-cell hi">Kommunikation</div><div class="vis-cell hi">Ressourcen</div><div class="vis-cell hi">Last</div><div class="vis-cell">Verfügbarkeit</div><div class="vis-cell">Leistung</div><div class="vis-cell">Daten</div><div class="vis-cell">Kosten</div><div class="vis-cell">Sicherheit</div><div class="vis-cell">Funktions-V.</div></div>`,
         keywords:['Verbundeffekte','Autonomie','Intranet','Extranet'],
         concepts:['9 Verbundeffekte','Verteiltes System vs. Netz','Intranet/Extranet']},
       {id:'netz-topo',emoji:'📐',title:'Topologien & Klassifikation',heft:'hefte/iti21.html',complexity:2,time:45,
-        visual:'PAN ⊂ LAN ⊂ MAN ⊂ WAN ⊂ GAN\n\n★ Stern  ◆ Bus  ○ Ring  ▲ Mesh\n\nCircuit Switching ↔ Packet Switching',
+        exam:2,examLabel:'Gelegentlich',learnType:'kombiniert',memorize:['Topologie-Typen: Stern, Bus, Ring, Mesh, Baum','Netzreichweiten: PAN < LAN < MAN < WAN < GAN'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node" style="font-size:.5rem">PAN</div><div class="vis-arrow">⊂</div><div class="vis-node">LAN</div><div class="vis-arrow">⊂</div><div class="vis-node accent">MAN</div><div class="vis-arrow">⊂</div><div class="vis-node">WAN</div><div class="vis-arrow">⊂</div><div class="vis-node">GAN</div></div><div class="vis-grid" style="margin-top:.4rem"><div class="vis-cell hi">★ Stern</div><div class="vis-cell hi">═ Bus</div><div class="vis-cell">○ Ring</div><div class="vis-cell">▲ Mesh</div></div><div class="vis-compare" style="margin-top:.3rem"><div class="vis-side"><div class="vis-side-title" style="--nc:#22c55e">Circuit Switch</div><div class="vis-side-item">fester Pfad, garantiert</div></div><div class="vis-side"><div class="vis-side-title" style="--nc:#fb923c">Packet Switch</div><div class="vis-side-item">Pakete, flexibel</div></div></div>`,
         keywords:['PAN','LAN','MAN','WAN','Stern','Bus','Ring','Mesh','Unicast','Broadcast'],
         concepts:['Netzreichweiten (PAN→GAN)','Topologien','Vermittlungsarten','Kommunikationsarten','Duplex-Modi']},
       {id:'netz-kenn',emoji:'📏',title:'Kenngrößen',heft:'hefte/iti21.html',complexity:3,time:45,
-        visual:'Latenz = t_v + t_w + t_Ü + t_a\nt_Ü = D/b  (Übertragung)\nt_a = d/v  (Ausbreitung)\n\nb = D/t [bit/s] · Basis 10!',
+        exam:2,examLabel:'Gelegentlich',learnType:'kombiniert',memorize:['Latenz = t_v + t_w + t_Ü + t_a','t_Ü = D/b (Daten/Bitrate)','t_a = d/v (Strecke/Ausbreitungsgeschw.)','Übertragungsrate: Basis 10 (kbit=1000)'],
+        visualHTML:`<div class="vis-formula"><div><span class="hi">Latenz</span> = t<sub>v</sub> + t<sub>w</sub> + t<sub>Ü</sub> + t<sub>a</sub></div><div class="sub">Verarbeitung + Warteschlange + Übertragung + Ausbreitung</div><div style="margin-top:.3rem"><span class="lo">t<sub>Ü</sub></span> = D / b <span class="sub">(Datenmenge / Bitrate)</span></div><div><span class="lo">t<sub>a</sub></span> = d / v <span class="sub">(Entfernung / Geschw.)</span></div><div style="margin-top:.3rem"><span class="hi">b</span> = D / t <span class="sub">[bit/s] – Basis 10!</span></div></div>`,
         keywords:['Latenz','Jitter','Durchsatz','Übertragungsrate','Propagation'],
         concepts:['Übertragungsrate b','4 Latenz-Komponenten','Jitter & Paketverlust','BDP (Bandwidth-Delay Product)']},
       {id:'netz-osi',emoji:'📊',title:'OSI- & TCP/IP-Modell',heft:'hefte/iti21.html',complexity:3,time:60,
-        visual:'OSI 7 Schichten vs. TCP/IP 4 Schichten\n7 Application    ┐\n6 Presentation   ├→ Application\n5 Session        ┘\n4 Transport      → Transport\n3 Network        → Internet\n2 Data Link  ┐\n1 Physical   ┘→ Network Access',
+        exam:4,examLabel:'Häufig',learnType:'auswendig',memorize:['7 OSI-Schichten: Physical, Data Link, Network, Transport, Session, Presentation, Application','PDU-Namen: Bits→Frames→Pakete→Segmente→Daten','TCP/IP 4 Schichten: Network Access, Internet, Transport, Application','Zuordnung OSI→TCP/IP auswendig'],
+        visualHTML:`<div class="vis-layers"><div class="vis-layer" style="--lc:#f472b6;background:rgba(244,114,182,.08)"><span class="vis-num">7</span> Application <span class="vis-tag">┐</span></div><div class="vis-layer" style="--lc:#f472b6;background:rgba(244,114,182,.06)"><span class="vis-num">6</span> Presentation <span class="vis-tag">├→ Application</span></div><div class="vis-layer" style="--lc:#f472b6;background:rgba(244,114,182,.04)"><span class="vis-num">5</span> Session <span class="vis-tag">┘</span></div><div class="vis-layer" style="--lc:#fb923c;background:rgba(251,146,60,.08)"><span class="vis-num">4</span> Transport <span class="vis-tag">→ Transport</span></div><div class="vis-layer" style="--lc:#f5c542;background:rgba(245,197,66,.08)"><span class="vis-num">3</span> Network <span class="vis-tag">→ Internet</span></div><div class="vis-layer" style="--lc:#06b6d4;background:rgba(6,182,212,.08)"><span class="vis-num">2</span> Data Link <span class="vis-tag">┐</span></div><div class="vis-layer" style="--lc:#06b6d4;background:rgba(6,182,212,.05)"><span class="vis-num">1</span> Physical <span class="vis-tag">┘→ Net Access</span></div></div>`,
         keywords:['OSI','TCP/IP','PDU','Kapselung','Schichtenmodell'],
         concepts:['7 OSI-Schichten','4 TCP/IP-Schichten','PDU-Bezeichnungen','Kapselung/Entkapselung']}
     ]
@@ -208,29 +268,35 @@ const DOMAINS = [
     color:'#a78bfa',
     topics:[
       {id:'sig-entropie',emoji:'📊',title:'Informationsgehalt & Entropie',heft:'hefte/iti22.html',complexity:4,time:60,
-        visual:'I(x) = -log₂(p(x)) [bit]\nH(X) = -Σ p(xᵢ)·log₂(p(xᵢ))\n\nH_max = log₂(N)\nRedundanz R = 1 - H/H_max',
-        keywords:['Shannon','Entropie','Informationsgehalt','Redundanz','Bit'],
-        concepts:['Informationsgehalt I(x)','Shannon-Entropie H(X)','Redundanz & Irrelevanz']},
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['I(x) = -log₂(p(x)) [bit]','H(X) = -Σ p(xᵢ)·log₂(p(xᵢ))','H_max = log₂(N)','Redundanz R = 1 - H/H_max','Transinformation: H(X) - H(X|Y)'],
+        visualHTML:`<div class="vis-formula"><div><span class="hi">I(x)</span> = −log₂(p(x)) <span class="sub">[bit]</span></div><div><span class="hi">H(X)</span> = −Σ p(x<sub>i</sub>) · log₂(p(x<sub>i</sub>))</div><div style="margin-top:.3rem;border-top:1px solid rgba(255,255,255,.06);padding-top:.3rem"><span class="lo">H<sub>max</sub></span> = log₂(N)</div><div><span class="lo">Redundanz</span> R = 1 − H / H<sub>max</sub></div></div>`,
+        keywords:['Shannon','Entropie','Informationsgehalt','Redundanz','Bit','Transinformation'],
+        concepts:['Informationsgehalt I(x)','Shannon-Entropie H(X)','Redundanz & Irrelevanz','Transinformation']},
       {id:'sig-kanal',emoji:'📈',title:'Kanalkapazität',heft:'hefte/iti22.html',complexity:5,time:90,
-        visual:'Nyquist:  C = 2B · log₂(M)\nShannon:  C = B · log₂(1 + S/N)\n\nS/N [dB] = 10 · log₁₀(S/N)\nBandbreite B [Hz]',
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['Nyquist: C = 2B · log₂(M)','Shannon: C = B · log₂(1 + S/N)','S/N [dB] = 10 · log₁₀(S/N)','Abtasttheorem: f_s ≥ 2·f_max'],
+        visualHTML:`<div class="vis-compare"><div class="vis-side" style="border-color:rgba(245,197,66,.2)"><div class="vis-side-title" style="--nc:var(--amber)">Nyquist</div><div class="vis-formula" style="font-size:.62rem"><span class="hi">C</span> = 2B · log₂(M)</div><div class="vis-side-item">rauschfrei, M Stufen</div></div><div class="vis-side" style="border-color:rgba(94,196,182,.2)"><div class="vis-side-title" style="--nc:var(--teal)">Shannon</div><div class="vis-formula" style="font-size:.62rem"><span class="lo">C</span> = B · log₂(1+S/N)</div><div class="vis-side-item">mit Rauschen, SNR</div></div></div><div class="vis-formula" style="margin-top:.3rem;text-align:center"><span class="sub">S/N [dB] = 10 · log₁₀(S/N)</span></div>`,
         keywords:['Nyquist','Shannon-Hartley','SNR','Bandbreite','Kanalkapazität'],
         concepts:['Nyquist-Theorem','Shannon-Hartley','SNR in dB','Kanalmodell']},
       {id:'sig-code',emoji:'🔢',title:'Codierung',heft:'hefte/iti22.html',complexity:4,time:75,
-        visual:'Quellcodierung → Kanalcodierung → Leitungscode\n\nHuffman: Häufigkeit → kurzer Code\nHamming: d_min = 3, 1-Bit korrigierbar\n\nNRZ · Manchester · 4B5B · MLT-3',
+        exam:4,examLabel:'Häufig',learnType:'kombiniert',memorize:['Hamming: d_min = 3, 1-Bit korrigierbar','Manchester: Taktmitte = Flanke (High→Low=1)','NRZ: High=1, Low=0 (kein Takt)','4B5B + MLT-3 Kombination','Huffman: häufig = kurzer Code'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node accent" style="--nc:#a78bfa">Quelle</div><div class="vis-arrow">→</div><div class="vis-node">Quellcod.</div><div class="vis-arrow">→</div><div class="vis-node">Kanalcod.</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#a78bfa">Leitung</div></div><div class="vis-grid" style="margin-top:.4rem"><div class="vis-cell hi">Huffman</div><div class="vis-cell">Häufig→kurz</div><div class="vis-cell hi">Hamming</div><div class="vis-cell">d<sub>min</sub>=3, 1-Bit fix</div><div class="vis-cell hi">NRZ</div><div class="vis-cell">kein Takt</div><div class="vis-cell hi">Manchester</div><div class="vis-cell">mit Takt ✓</div></div>`,
         keywords:['Huffman','Hamming','NRZ','Manchester','Quellencodierung','Kanalcodierung'],
-        concepts:['Huffman-Algorithmus','Hamming-Code','Leitungscodes (NRZ, Manchester)','Fehlererkennung']},
+        concepts:['Huffman-Algorithmus','Hamming-Code','Leitungscodes (NRZ, Manchester)','Fehlererkennung','4B5B/MLT-3']},
       {id:'sig-medien',emoji:'🔌',title:'Übertragungsmedien',heft:'hefte/iti23.html',complexity:2,time:30,
-        visual:'Kupfer: TP (Cat5e/6/7), Koaxial\nGlas:   Multimode · Singlemode\nFunk:   WLAN · Bluetooth · LTE/5G\n\nDämpfung = 10·log₁₀(P₁/P₂) [dB]',
-        keywords:['Twisted Pair','LWL','Koaxial','Dämpfung','Cat6'],
-        concepts:['Twisted Pair Kategorien','Lichtwellenleiter','Koaxialkabel','Signaldämpfung']},
+        exam:2,examLabel:'Gelegentlich',learnType:'kombiniert',memorize:['Cat5e: 100MHz, Cat6: 250MHz, Cat7: 600MHz','LWL Multimode: LED, kurz | Singlemode: Laser, lang','Dämpfung = 10·log₁₀(P₁/P₂) [dB]'],
+        visualHTML:`<div class="vis-grid cols3"><div class="vis-cell hi">🔌 Kupfer</div><div class="vis-cell hi">🔮 Glas</div><div class="vis-cell hi">📡 Funk</div><div class="vis-cell">TP Cat5e/6/7</div><div class="vis-cell">Multimode</div><div class="vis-cell">WLAN</div><div class="vis-cell">Koaxial</div><div class="vis-cell">Singlemode</div><div class="vis-cell">LTE/5G</div></div><div class="vis-formula" style="margin-top:.3rem;text-align:center"><span class="hi">Dämpfung</span> = 10·log₁₀(P₁/P₂) <span class="sub">[dB]</span></div>`,
+        keywords:['Twisted Pair','LWL','Koaxial','Dämpfung','Cat6','Multimode','Singlemode'],
+        concepts:['Twisted Pair Kategorien','Lichtwellenleiter (Multimode/Singlemode)','Koaxialkabel','Signaldämpfung']},
       {id:'sig-ethernet',emoji:'🌊',title:'Ethernet & Data Link',heft:'hefte/iti23.html',complexity:3,time:60,
-        visual:'CSMA/CD (kabelgebunden)\n  Listen → Send → Collision? → Backoff\n\nMAC: FF:FF:FF:FF:FF:FF = Broadcast\nFrame: |Preamble|DA|SA|Type|Data|FCS|',
-        keywords:['CSMA/CD','MAC','Frame','Ethernet','802.3','Backoff'],
-        concepts:['CSMA/CD Algorithmus','MAC-Adressen','Ethernet Frame-Format','Fast/Gigabit Ethernet']},
+        exam:4,examLabel:'Häufig',learnType:'kombiniert',memorize:['CSMA/CD: Listen→Send→Collision?→Backoff','MAC Broadcast: FF:FF:FF:FF:FF:FF','Frame: Preamble|DA|SA|Type|Data|FCS','Token Ring: Token kreist, Sender wartet'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node">Listen</div><div class="vis-arrow">→</div><div class="vis-node accent">Send</div><div class="vis-arrow">→</div><div class="vis-node" style="border-color:#ef4444;color:#ef4444">Collision?</div><div class="vis-arrow">→</div><div class="vis-node">Backoff</div></div><div style="margin-top:.4rem"><div class="vis-layers"><div class="vis-layer" style="--lc:#a78bfa"><span class="vis-num">▸</span> Preamble</div><div class="vis-layer" style="--lc:#06b6d4"><span class="vis-num">▸</span> DA | SA <span class="vis-tag">MAC-Adressen</span></div><div class="vis-layer" style="--lc:var(--amber)"><span class="vis-num">▸</span> Type | Data | FCS</div></div></div>`,
+        keywords:['CSMA/CD','MAC','Frame','Ethernet','802.3','Backoff','Token Ring'],
+        concepts:['CSMA/CD Algorithmus','MAC-Adressen','Ethernet Frame-Format','Fast/Gigabit Ethernet','Token Ring (Legacy)']},
       {id:'sig-wlan',emoji:'📶',title:'WLAN & Drahtlos',heft:'hefte/iti23.html',complexity:2,time:30,
-        visual:'802.11: a/b/g/n/ac/ax (WiFi 6)\nCSMA/CA (Hidden Station Problem)\n\nInfrastruktur-Modus ↔ Ad-Hoc\nSSID · WPA2/3 · Frequenz: 2.4/5 GHz',
+        exam:1,examLabel:'Gelegentlich',learnType:'kombiniert',memorize:['802.11: a(5GHz)/b(2.4)/g(2.4)/n(beide)/ac(5)/ax(beide)','CSMA/CA: RTS/CTS gegen Hidden Station','WPA2: AES, WPA3: SAE'],
+        visualHTML:`<div class="vis-grid"><div class="vis-cell hi">802.11a</div><div class="vis-cell">5 GHz, 54Mbit</div><div class="vis-cell hi">802.11n</div><div class="vis-cell">WiFi 4, MIMO</div><div class="vis-cell hi">802.11ac</div><div class="vis-cell">WiFi 5, 5GHz</div><div class="vis-cell hi">802.11ax</div><div class="vis-cell">WiFi 6, OFDMA</div></div><div class="vis-compare" style="margin-top:.3rem"><div class="vis-side"><div class="vis-side-title" style="--nc:#22c55e">Infrastruktur</div><div class="vis-side-item">AP + Clients</div></div><div class="vis-side"><div class="vis-side-title" style="--nc:#fb923c">Ad-Hoc</div><div class="vis-side-item">Peer-to-Peer</div></div></div>`,
         keywords:['802.11','CSMA/CA','WPA','SSID','WiFi','Ad-Hoc'],
-        concepts:['WLAN-Standards (a→ax)','CSMA/CA','Betriebsmodi','Mobilfunkgenerationen']}
+        concepts:['WLAN-Standards (a→ax)','CSMA/CA & Hidden Station','Betriebsmodi','Mobilfunkgenerationen']}
     ]
   },
   {
@@ -238,29 +304,35 @@ const DOMAINS = [
     color:'#fb923c',
     topics:[
       {id:'tcp-ip',emoji:'🌍',title:'IP-Adressierung',heft:'hefte/iti24.html',complexity:4,time:90,
-        visual:'IPv4: 32 Bit = 4 Oktette\n  Klasse A: /8  · B: /16 · C: /24\n  Subnetz: Netz-ID | Host-ID\n\nIPv6: 128 Bit = 8×16 Bit\n  fe80:: = Link-Local',
-        keywords:['IPv4','IPv6','Subnetting','CIDR','VLSM','Klassen'],
-        concepts:['IPv4-Klassen & Spezial-Adressen','Subnetting & CIDR','IPv6-Grundlagen','NAT/PAT']},
+        exam:5,examLabel:'Sehr häufig',learnType:'kombiniert',memorize:['Klasse A: 1.0.0.0–126.x /8','Klasse B: 128.0.0.0–191.x /16','Klasse C: 192.0.0.0–223.x /24','Private: 10.x, 172.16-31.x, 192.168.x','NAT: intern→extern, PAT: Port-basiert','IPv6: 128 Bit, fe80:: = Link-Local','DHCP: Discover→Offer→Request→Ack'],
+        visualHTML:`<div class="vis-layers"><div class="vis-layer" style="--lc:#ef4444;background:rgba(239,68,68,.06)"><span class="vis-num">A</span> /8 — 1.0.0.0 <span class="vis-tag">16M Hosts</span></div><div class="vis-layer" style="--lc:#fb923c;background:rgba(251,146,60,.06)"><span class="vis-num">B</span> /16 — 128.0.0.0 <span class="vis-tag">65k Hosts</span></div><div class="vis-layer" style="--lc:#f5c542;background:rgba(245,197,66,.06)"><span class="vis-num">C</span> /24 — 192.0.0.0 <span class="vis-tag">254 Hosts</span></div></div><div class="vis-flow" style="margin-top:.4rem"><div class="vis-node">IPv4 32-Bit</div><div class="vis-arrow">⟶</div><div class="vis-node accent" style="--nc:#22c55e">IPv6 128-Bit</div></div><div class="vis-flow" style="margin-top:.2rem"><div class="vis-node accent">NAT</div><div class="vis-arrow">+</div><div class="vis-node accent">PAT</div><div class="vis-arrow">=</div><div class="vis-node">Port-Übersetzung</div></div>`,
+        keywords:['IPv4','IPv6','Subnetting','CIDR','VLSM','Klassen','NAT','PAT','DHCP'],
+        concepts:['IPv4-Klassen & Spezial-Adressen','Subnetting & CIDR','IPv6-Grundlagen','NAT/PAT','DHCP-Ablauf']},
       {id:'tcp-proto',emoji:'📬',title:'IP, ICMP & ARP',heft:'hefte/iti24.html',complexity:3,time:45,
-        visual:'ARP: IP → MAC (Broadcast → Unicast)\nICMP: Ping, Traceroute, Unreachable\n\nIP-Header: Version|IHL|TTL|Protocol\n           |Src IP|Dst IP|Data',
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['ARP: IP→MAC via Broadcast, Antwort Unicast','TTL: wird pro Hop um 1 verringert','ICMP Typ 0/8: Echo Reply/Request','ICMP Typ 3: Destination Unreachable','IP-Header: Version, IHL, TTL, Protocol, Src/Dst'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node accent" style="--nc:#22c55e">IP?</div><div class="vis-arrow">ARP Broadcast →</div><div class="vis-node">Alle</div></div><div class="vis-flow"><div class="vis-node accent" style="--nc:#22c55e">MAC!</div><div class="vis-arrow">← Unicast</div><div class="vis-node">Ziel</div></div><div class="vis-layers" style="margin-top:.4rem"><div class="vis-layer" style="--lc:#fb923c"><span class="vis-num">▸</span> Version | IHL | TTL | Protocol</div><div class="vis-layer" style="--lc:#f5c542"><span class="vis-num">▸</span> Source IP | Destination IP</div><div class="vis-layer" style="--lc:var(--teal)"><span class="vis-num">▸</span> Data (Payload)</div></div>`,
         keywords:['ARP','ICMP','IP-Header','TTL','Ping','Traceroute'],
-        concepts:['ARP-Ablauf','ICMP-Typen','IP-Header Felder','Fragmentierung']},
+        concepts:['ARP-Ablauf','ICMP-Typen','IP-Header Felder','Fragmentierung','TTL-Mechanismus']},
       {id:'tcp-routing',emoji:'🗺️',title:'Routing',heft:'hefte/iti24.html',complexity:4,time:75,
-        visual:'Statisch vs. Dynamisch\n\nDistanz-Vektor: RIP (Hop Count ≤15)\nLink-State:     OSPF (Dijkstra)\nPfad-Vektor:    BGP (AS-Pfade)\n\nAS = Autonomes System',
-        keywords:['RIP','OSPF','BGP','Dijkstra','Routing-Tabelle','AS'],
-        concepts:['Statisches Routing','RIP (Distanz-Vektor)','OSPF (Link-State)','BGP (Inter-AS)']},
+        exam:4,examLabel:'Häufig',learnType:'kombiniert',memorize:['RIP: Distanz-Vektor, max 15 Hops, Metrik=Hopcount','OSPF: Link-State, Dijkstra, Areas','BGP: Pfad-Vektor, zwischen AS','Default Gateway: nächster Router','Distance-Vector: Bellman-Ford, Count-to-Infinity Problem'],
+        visualHTML:`<div class="vis-grid cols3"><div class="vis-cell hi" style="grid-column:1/-1;font-size:.65rem">Routing-Algorithmen</div><div class="vis-cell" style="border-color:rgba(34,197,94,.3)"><div style="color:#22c55e;font-weight:700">RIP</div><div style="font-size:.5rem">Distanz-Vektor<br>≤15 Hops</div></div><div class="vis-cell" style="border-color:rgba(6,182,212,.3)"><div style="color:#06b6d4;font-weight:700">OSPF</div><div style="font-size:.5rem">Link-State<br>Dijkstra</div></div><div class="vis-cell" style="border-color:rgba(244,114,182,.3)"><div style="color:#f472b6;font-weight:700">BGP</div><div style="font-size:.5rem">Pfad-Vektor<br>Inter-AS</div></div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node">Paket</div><div class="vis-arrow">→</div><div class="vis-node accent">Routing-Tabelle</div><div class="vis-arrow">→</div><div class="vis-node">Next Hop</div></div>`,
+        keywords:['RIP','OSPF','BGP','Dijkstra','Routing-Tabelle','AS','Default Gateway'],
+        concepts:['Statisches Routing','RIP (Distanz-Vektor)','OSPF (Link-State)','BGP (Inter-AS)','Distance-Vector-Algorithmus']},
       {id:'tcp-transport',emoji:'🔄',title:'TCP & UDP',heft:'hefte/iti24.html',complexity:3,time:60,
-        visual:'TCP: zuverlässig, verbindungsorientiert\n  SYN → SYN-ACK → ACK (3-Way)\n  Flow Control: Sliding Window\n\nUDP: schnell, verbindungslos\n  Header: Src|Dst|Len|Checksum',
-        keywords:['TCP','UDP','3-Way-Handshake','Sliding Window','Ports'],
-        concepts:['TCP 3-Way-Handshake','Flow/Congestion Control','UDP Einsatzgebiete','Well-Known Ports']},
+        exam:4,examLabel:'Häufig',learnType:'kombiniert',memorize:['TCP: 3-Way Handshake SYN→SYN-ACK→ACK','Well-Known Ports: HTTP=80, HTTPS=443, DNS=53, SMTP=25, FTP=21, SSH=22','UDP Header: Src Port|Dst Port|Length|Checksum','Sockets = IP + Port','TCP: Sliding Window, Congestion Control'],
+        visualHTML:`<div class="vis-compare"><div class="vis-side" style="border-color:rgba(34,197,94,.3)"><div class="vis-side-title" style="--nc:#22c55e">TCP ✓</div><div class="vis-side-item">zuverlässig<br>verbindungsorientiert<br>Flow Control</div></div><div class="vis-side" style="border-color:rgba(251,146,60,.3)"><div class="vis-side-title" style="--nc:#fb923c">UDP ⚡</div><div class="vis-side-item">schnell<br>verbindungslos<br>kein Handshake</div></div></div><div class="vis-flow" style="margin-top:.4rem"><div class="vis-node accent" style="--nc:#22c55e">SYN</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#06b6d4">SYN-ACK</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#22c55e">ACK</div></div>`,
+        keywords:['TCP','UDP','3-Way-Handshake','Sliding Window','Ports','Sockets'],
+        concepts:['TCP 3-Way-Handshake','Flow/Congestion Control','UDP Einsatzgebiete','Well-Known Ports','Sockets']},
       {id:'tcp-design',emoji:'🏗️',title:'Netzkomponenten & Design',heft:'hefte/iti25.html',complexity:3,time:60,
-        visual:'Hub → Switch → Router\n\nVLAN: Logische Trennung (802.1Q)\nSTP:  Spanning Tree (Loop-frei)\nVLSM: Variable Subnetzmasken\n\n3-Schichten: Core|Distribution|Access',
-        keywords:['Switch','Router','VLAN','STP','VLSM','3-Schichten-Modell'],
-        concepts:['Switch vs. Router','VLAN & Trunk','STP (Spanning Tree)','Subnetzplanung (VLSM)']},
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['Hub=L1, Switch=L2, Router=L3','VLAN: 802.1Q Tag im Frame','STP: Root Bridge, Blocked Ports','Bridge: lernt MACs, filtert Frames','Multiplexing: FDM, TDM, WDM, STDM'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node">Hub<div style="font-size:.45rem;color:var(--muted)">L1</div></div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#06b6d4">Switch<div style="font-size:.45rem;color:var(--muted)">L2</div></div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#fb923c">Router<div style="font-size:.45rem;color:var(--muted)">L3</div></div></div><div class="vis-grid" style="margin-top:.4rem"><div class="vis-cell hi">VLAN 802.1Q</div><div class="vis-cell">logische Trennung</div><div class="vis-cell hi">STP</div><div class="vis-cell">Loop-frei</div><div class="vis-cell hi">VLSM</div><div class="vis-cell">variable Subnetze</div><div class="vis-cell hi">MUX</div><div class="vis-cell">FDM·TDM·WDM</div></div>`,
+        keywords:['Switch','Router','VLAN','STP','VLSM','3-Schichten-Modell','Bridge','Multiplexing'],
+        concepts:['Switch vs. Router','VLAN & Trunk','STP (Spanning Tree)','Subnetzplanung (VLSM)','Multiplexing (FDM/TDM/WDM)','Bridge-Funktionsweise']},
       {id:'tcp-sicherheit',emoji:'🔒',title:'Anwendungen & Sicherheit',heft:'hefte/iti26.html',complexity:3,time:75,
-        visual:'HTTP/S → Port 80/443\nDNS:   Name → IP (rekursiv/iterativ)\nSMTP/POP3/IMAP → E-Mail\n\nSymm.: AES | Asymm.: RSA\nFirewall: Paketfilter · Proxy · WAF\nVPN: IPsec · SSL/TLS',
-        keywords:['HTTP','DNS','SMTP','AES','RSA','Firewall','VPN','TLS'],
-        concepts:['HTTP/HTTPS','DNS-Auflösung','E-Mail-Protokolle','Kryptografie (AES/RSA)','Firewalls & VPN']}
+        exam:4,examLabel:'Häufig',learnType:'kombiniert',memorize:['Symmetrisch: AES (ein Schlüssel)','Asymmetrisch: RSA (Public+Private Key)','VPN: IPsec (L3) oder SSL/TLS (L4+)','Firewall: Paketfilter, Stateful, Proxy','SNMP: Manager↔Agent, MIB=Datenbank','Ports: HTTP=80, HTTPS=443, DNS=53, SMTP=25'],
+        visualHTML:`<div class="vis-grid cols3"><div class="vis-cell hi">HTTP/S</div><div class="vis-cell hi">DNS</div><div class="vis-cell hi">SMTP</div><div class="vis-cell">Port 80/443</div><div class="vis-cell">Port 53</div><div class="vis-cell">Port 25</div></div><div class="vis-compare" style="margin-top:.3rem"><div class="vis-side" style="border-color:rgba(34,197,94,.3)"><div class="vis-side-title" style="--nc:#22c55e">Symm: AES</div><div class="vis-side-item">1 Schlüssel, schnell</div></div><div class="vis-side" style="border-color:rgba(244,114,182,.3)"><div class="vis-side-title" style="--nc:#f472b6">Asymm: RSA</div><div class="vis-side-item">2 Schlüssel, sicher</div></div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node accent">VPN</div><div class="vis-arrow">:</div><div class="vis-node">IPsec</div><div class="vis-node">SSL/TLS</div></div>`,
+        keywords:['HTTP','DNS','SMTP','AES','RSA','Firewall','VPN','TLS','SNMP','MIB'],
+        concepts:['HTTP/HTTPS','DNS-Auflösung','E-Mail-Protokolle','Kryptografie (AES/RSA)','Firewalls & VPN','SNMP & MIB']}
     ]
   },
   {
@@ -268,33 +340,40 @@ const DOMAINS = [
     color:'#22c55e',
     topics:[
       {id:'info-eva',emoji:'⚙️',title:'EVA-Prinzip & Algorithmus',heft:'hefte/gdi01.html',complexity:1,time:20,
-        visual:'E → V → A\nEingabe → Verarbeitung → Ausgabe\n\nAlgorithmus: endlich, determiniert,\n  terminierend, effektiv\n\nDarstellung: Pseudocode · Struktogramm',
+        exam:2,examLabel:'Gelegentlich',learnType:'auswendig',memorize:['Algorithmus: endlich, determiniert, terminierend, effektiv','Unterschied: determiniert vs. deterministisch','Darstellungsformen: Pseudocode, Struktogramm, Programmablaufplan'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node accent" style="--nc:#22c55e">E</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#f5c542">V</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#f472b6">A</div></div><div class="vis-grid" style="margin-top:.4rem"><div class="vis-cell hi">endlich</div><div class="vis-cell hi">determiniert</div><div class="vis-cell hi">terminierend</div><div class="vis-cell hi">effektiv</div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node">Pseudocode</div><div class="vis-node">Struktogramm</div><div class="vis-node">PAP</div></div>`,
         keywords:['EVA','Algorithmus','Pseudocode','Struktogramm','Kontrollstrukturen'],
         concepts:['EVA-Prinzip','Algorithmus-Eigenschaften','Kontrollstrukturen','OOP-Grundbegriffe']},
       {id:'info-rechner',emoji:'🖥️',title:'Rechnerarchitektur',heft:'hefte/gdi01.html',complexity:2,time:30,
-        visual:'Von-Neumann-Architektur:\n  CPU ↔ Speicher ↔ I/O\n  Steuerwerk | Rechenwerk | Register\n\nTuring-Maschine:\n  Band | Kopf | Zustandstabelle',
+        exam:0,examLabel:'Selten',learnType:'konzept',memorize:[],
+        visualHTML:`<div class="vis-flow"><div class="vis-node accent" style="--nc:#22c55e">CPU</div><div class="vis-arrow">⇄</div><div class="vis-node accent" style="--nc:#06b6d4">Speicher</div><div class="vis-arrow">⇄</div><div class="vis-node accent" style="--nc:#fb923c">I/O</div></div><div class="vis-layers" style="margin-top:.4rem"><div class="vis-layer" style="--lc:#22c55e"><span class="vis-num">▸</span> Steuerwerk <span class="vis-tag">Befehle dekodieren</span></div><div class="vis-layer" style="--lc:#06b6d4"><span class="vis-num">▸</span> Rechenwerk (ALU) <span class="vis-tag">Berechnung</span></div><div class="vis-layer" style="--lc:#fb923c"><span class="vis-num">▸</span> Register <span class="vis-tag">Schnellspeicher</span></div></div>`,
         keywords:['Von-Neumann','CPU','ALU','Register','Turing-Maschine','Harvard'],
         concepts:['Von-Neumann-Architektur','CPU-Bestandteile','Turing-Maschine (Grundidee)','Harvard-Architektur']},
       {id:'info-zahlen',emoji:'🔢',title:'Zahlensysteme & Logik',heft:'hefte/gdi01.html',complexity:3,time:60,
-        visual:'Dezimal ↔ Binär ↔ Hex ↔ Oktal\n\n42₁₀ = 101010₂ = 2A₁₆\n\nAND · OR · NOT · XOR · NAND\nDe Morgan: ¬(A∧B) = ¬A∨¬B',
+        exam:0,examLabel:'Selten',learnType:'kombiniert',memorize:['De Morgan: ¬(A∧B) = ¬A∨¬B und ¬(A∨B) = ¬A∧¬B','Zweierkomplement: invertieren + 1'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node accent">42₁₀</div><div class="vis-arrow">=</div><div class="vis-node accent" style="--nc:#22c55e">101010₂</div><div class="vis-arrow">=</div><div class="vis-node accent" style="--nc:#06b6d4">2A₁₆</div></div><div class="vis-grid" style="margin-top:.4rem"><div class="vis-cell hi">AND ∧</div><div class="vis-cell hi">OR ∨</div><div class="vis-cell hi">NOT ¬</div><div class="vis-cell hi">XOR ⊕</div></div><div class="vis-formula" style="margin-top:.3rem"><div><span class="hi">De Morgan:</span> ¬(A∧B) = ¬A ∨ ¬B</div></div>`,
         keywords:['Binär','Hex','Boolesche Algebra','Gatter','De Morgan','Zweierkomplement'],
         concepts:['Zahlensystem-Umrechnung','Zweierkomplement','Logikgatter','De Morgan Regeln']},
       {id:'info-daten',emoji:'🗂️',title:'Datenstrukturen & ADTs',heft:'hefte/tgi01.html',complexity:4,time:90,
-        visual:'Liste → Stack → Queue → Baum → Graph\n\nStack: LIFO  push/pop  O(1)\nQueue: FIFO  enq/deq   O(1)\nBaum:  Wurzel → Knoten → Blatt\n       Binär: max 2 Kinder',
-        keywords:['Stack','Queue','Liste','Baum','Graph','ADT','BST'],
-        concepts:['Mengen & Relationen','Listen (Array/Linked)','Stack & Queue','Bäume & Graphen','ADT-Konzept']},
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['Stack: LIFO, push/pop O(1)','Queue: FIFO, enqueue/dequeue O(1)','Relation: reflexiv, symmetrisch, transitiv, antisymmetrisch','Äquivalenzrelation = reflexiv + symmetrisch + transitiv','Surjektiv: jedes Bild hat Urbild, Injektiv: eindeutig'],
+        visualHTML:`<div class="vis-flow"><div class="vis-node">Liste</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#22c55e">Stack</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#06b6d4">Queue</div><div class="vis-arrow">→</div><div class="vis-node accent" style="--nc:#f472b6">Baum</div></div><div class="vis-compare" style="margin-top:.4rem"><div class="vis-side" style="border-color:rgba(34,197,94,.3)"><div class="vis-side-title" style="--nc:#22c55e">Stack LIFO</div><div class="vis-side-item">push / pop<br>O(1)</div></div><div class="vis-side" style="border-color:rgba(6,182,212,.3)"><div class="vis-side-title" style="--nc:#06b6d4">Queue FIFO</div><div class="vis-side-item">enq / deq<br>O(1)</div></div></div>`,
+        keywords:['Stack','Queue','Liste','Baum','Graph','ADT','BST','Relation','Äquivalenz'],
+        concepts:['Mengen & Relationen','Äquivalenzrelationen','Listen (Array/Linked)','Stack & Queue','Bäume & Graphen','Surjektivität/Injektivität']},
       {id:'info-sort',emoji:'📊',title:'Sortieralgorithmen',heft:'hefte/tgi01.html',complexity:4,time:75,
-        visual:'O(n²):  Bubble · Selection · Insertion\nO(n·log n): Quick · Merge · Heap\n\nQuickSort: Pivot → Partition → Rekursion\nMergeSort: Teile → Sortiere → Merge\nHeapSort:  Max-Heap → Extract-Max',
+        exam:4,examLabel:'Sehr häufig',learnType:'kombiniert',memorize:['BubbleSort: Nachbarn vergleichen+tauschen, O(n²)','InsertionSort: Element an richtige Stelle einfügen, O(n²)','QuickSort: Pivot→Partition→Rekursion, O(n·log n) avg','MergeSort: Teile→Sortiere→Merge, O(n·log n) stabil','HeapSort: Max-Heap→Extract-Max, O(n·log n) in-place'],
+        visualHTML:`<div class="vis-compare"><div class="vis-side" style="border-color:rgba(239,68,68,.3)"><div class="vis-side-title" style="--nc:#ef4444">O(n²) Einfach</div><div class="vis-side-item">• Bubble<br>• Selection<br>• Insertion</div></div><div class="vis-side" style="border-color:rgba(34,197,94,.3)"><div class="vis-side-title" style="--nc:#22c55e">O(n·log n) Effizient</div><div class="vis-side-item">• Quick (avg)<br>• Merge (stabil)<br>• Heap (in-place)</div></div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node accent">Pivot</div><div class="vis-arrow">→</div><div class="vis-node">Partition</div><div class="vis-arrow">→</div><div class="vis-node accent">Rekursion</div></div>`,
         keywords:['QuickSort','MergeSort','HeapSort','BubbleSort','O(n²)','O(n·log n)','in-place','stabil'],
         concepts:['Einfache Sortierung (Bubble/Selection/Insertion)','QuickSort','MergeSort','HeapSort','Stabilität & In-Place']},
       {id:'info-hash',emoji:'🔍',title:'Hashing & Pattern Matching',heft:'hefte/tgi02.html',complexity:4,time:60,
-        visual:'h(k) = k mod m\nKollision → Chaining | Open Addressing\n  Linear · Quadratisch · Double Hashing\n\nKMP: Prefix-Tabelle → O(n+m)\nBoyer-Moore: Bad Char + Good Suffix',
-        keywords:['Hashfunktion','Kollision','Chaining','KMP','Boyer-Moore'],
-        concepts:['Hashfunktionen','Kollisionsbehandlung','KMP-Algorithmus','Boyer-Moore']},
+        exam:4,examLabel:'Sehr häufig',learnType:'kombiniert',memorize:['h(k) = k mod m (Divisionsmethode)','h(k) = ⌊m·(k·A mod 1)⌋ (Multiplikation, A≈0.618)','Kollision: Chaining (Liste) oder Open Addr.','Open: Linear, Quadratisch, Double Hashing','KMP: Prefix-Tabelle, O(n+m)','Boyer-Moore: Bad Character + Good Suffix'],
+        visualHTML:`<div class="vis-formula"><div><span class="hi">h(k)</span> = k mod m <span class="sub">(Division)</span></div><div><span class="hi">h(k)</span> = ⌊m·(k·A mod 1)⌋ <span class="sub">(Multiplikation)</span></div></div><div class="vis-grid" style="margin-top:.3rem"><div class="vis-cell hi">Chaining</div><div class="vis-cell">→ Linked List</div><div class="vis-cell hi">Linear</div><div class="vis-cell">h+1, h+2, …</div><div class="vis-cell hi">Quadratisch</div><div class="vis-cell">h+1², h+2², …</div><div class="vis-cell hi">Double</div><div class="vis-cell">h₁ + i·h₂</div></div>`,
+        keywords:['Hashfunktion','Kollision','Chaining','KMP','Boyer-Moore','Multiplikationsmethode'],
+        concepts:['Hashfunktionen (Division/Multiplikation)','Kollisionsbehandlung','KMP-Algorithmus','Boyer-Moore']},
       {id:'info-komplex',emoji:'📉',title:'Komplexitätsanalyse',heft:'hefte/tgi02.html',complexity:5,time:75,
-        visual:'O(1) < O(log n) < O(n) < O(n·log n)\n     < O(n²) < O(2ⁿ) < O(n!)\n\nMaster-Theorem:\nT(n) = a·T(n/b) + f(n)\n  Fall 1/2/3 je nach f(n) vs. n^(log_b a)',
+        exam:4,examLabel:'Sehr häufig',learnType:'kombiniert',memorize:['O(1) < O(log n) < O(n) < O(n·log n) < O(n²) < O(2ⁿ)','Master-Theorem: T(n) = a·T(n/b) + f(n)','Fall 1: f ∈ O(n^(log_b(a)-ε)) → T = Θ(n^log_b(a))','Fall 2: f ∈ Θ(n^log_b(a)) → T = Θ(n^log_b(a)·log n)','Fall 3: f ∈ Ω(n^(log_b(a)+ε)) → T = Θ(f(n))'],
+        visualHTML:`<div class="vis-layers"><div class="vis-layer" style="--lc:#22c55e;background:rgba(34,197,94,.06)"><span class="vis-num">1</span> O(1) <span class="vis-tag">konstant</span></div><div class="vis-layer" style="--lc:#06b6d4;background:rgba(6,182,212,.06)"><span class="vis-num">2</span> O(log n) <span class="vis-tag">logarithmisch</span></div><div class="vis-layer" style="--lc:#f5c542;background:rgba(245,197,66,.06)"><span class="vis-num">3</span> O(n) <span class="vis-tag">linear</span></div><div class="vis-layer" style="--lc:#fb923c;background:rgba(251,146,60,.06)"><span class="vis-num">4</span> O(n·log n) <span class="vis-tag">quasilinear</span></div><div class="vis-layer" style="--lc:#ef4444;background:rgba(239,68,68,.06)"><span class="vis-num">5</span> O(n²) <span class="vis-tag">quadratisch</span></div><div class="vis-layer" style="--lc:#f472b6;background:rgba(244,114,182,.06)"><span class="vis-num">6</span> O(2ⁿ) <span class="vis-tag">exponentiell</span></div></div><div class="vis-formula" style="margin-top:.3rem"><div><span class="hi">Master:</span> T(n) = a·T(n/b) + f(n)</div></div>`,
         keywords:['O-Notation','Ω','Θ','Master-Theorem','Best/Worst/Average Case'],
-        concepts:['O/Ω/Θ-Notation','Komplexitätsklassen','Master-Theorem','Rekurrenzgleichungen']}
+        concepts:['O/Ω/Θ-Notation','Komplexitätsklassen','Master-Theorem (3 Fälle)','Rekurrenzgleichungen']}
     ]
   },
   {
@@ -302,35 +381,43 @@ const DOMAINS = [
     color:'#f472b6',
     topics:[
       {id:'formal-grund',emoji:'🔤',title:'Grundbegriffe',heft:'hefte/tgi06.html',complexity:2,time:30,
-        visual:'Alphabet Σ = {a,b,c}\nWort w ∈ Σ* (Kleene-Stern)\nSprache L ⊆ Σ*\n\n|w| = Länge, ε = leeres Wort\nΣ⁺ = Σ* \\ {ε}',
+        exam:1,examLabel:'Gelegentlich',learnType:'auswendig',memorize:['Σ = Alphabet (endliche Menge)','Σ* = alle Wörter (Kleene-Stern)','ε = leeres Wort, |w| = Wortlänge','L ⊆ Σ* = formale Sprache','Σ⁺ = Σ* \\ {ε}'],
+        visualHTML:`<div class="vis-formula"><div><span class="hi">Σ</span> = {a, b, c} <span class="sub">Alphabet</span></div><div><span class="hi">w</span> ∈ Σ* <span class="sub">Wort (Kleene-Stern)</span></div><div><span class="hi">L</span> ⊆ Σ* <span class="sub">Sprache</span></div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node accent" style="--nc:#f472b6">ε</div><div class="vis-arrow">⊂</div><div class="vis-node accent" style="--nc:#f472b6">Σ</div><div class="vis-arrow">⊂</div><div class="vis-node accent" style="--nc:#f472b6">Σ*</div></div>`,
         keywords:['Alphabet','Wort','Sprache','Kleene-Stern','Konkatenation'],
         concepts:['Alphabet & Wort','Formale Sprache','Kleene-Stern','Konkatenation & Potenz']},
       {id:'formal-grammar',emoji:'📜',title:'Formale Grammatiken',heft:'hefte/tgi06.html',complexity:4,time:75,
-        visual:'G = (N, T, P, S)\nChomsky-Hierarchie:\n  Typ 0: Unbeschränkt    → TM\n  Typ 1: Kontextsensitiv → LBA\n  Typ 2: Kontextfrei     → KA\n  Typ 3: Regulär         → DEA',
-        keywords:['Chomsky','Typ 0-3','Produktion','Terminal','Nichtterminal','CNF'],
-        concepts:['Grammatik-Definition G=(N,T,P,S)','Chomsky-Hierarchie','Typ 3 (rechtslinear)','Chomsky-Normalform']},
+        exam:4,examLabel:'Sehr häufig',learnType:'kombiniert',memorize:['G = (N, T, P, S)','Chomsky-Hierarchie: Typ 0⊃1⊃2⊃3','Typ 3: A→aB|a (rechtslinear) → DEA','Typ 2: A→α (kontextfrei) → KA','Typ 1: αAβ→αγβ (kontextsensitiv) → LBA','Typ 0: unbeschränkt → TM','CNF: A→BC oder A→a','ε-Freiheit: keine ε-Produktionen außer S→ε'],
+        visualHTML:`<div class="vis-formula" style="margin-bottom:.3rem"><span class="hi">G</span> = (N, T, P, S)</div><div class="vis-layers"><div class="vis-layer" style="--lc:#f472b6;background:rgba(244,114,182,.1)"><span class="vis-num">0</span> Unbeschränkt <span class="vis-tag">→ TM</span></div><div class="vis-layer" style="--lc:#fb923c;background:rgba(251,146,60,.08)"><span class="vis-num">1</span> Kontextsensitiv <span class="vis-tag">→ LBA</span></div><div class="vis-layer" style="--lc:#f5c542;background:rgba(245,197,66,.08)"><span class="vis-num">2</span> Kontextfrei <span class="vis-tag">→ KA</span></div><div class="vis-layer" style="--lc:#22c55e;background:rgba(34,197,94,.08)"><span class="vis-num">3</span> Regulär <span class="vis-tag">→ DEA</span></div></div>`,
+        keywords:['Chomsky','Typ 0-3','Produktion','Terminal','Nichtterminal','CNF','ε-Freiheit'],
+        concepts:['Grammatik-Definition G=(N,T,P,S)','Chomsky-Hierarchie','Typ 3 (rechtslinear)','Chomsky-Normalform','ε-Freiheit herstellen']},
       {id:'formal-compiler',emoji:'⚒️',title:'Compiler & Sprachübersetzer',heft:'hefte/tgi06.html',complexity:3,time:45,
-        visual:'Quellcode\n  → Scanner (Lexer): Tokens\n  → Parser: Syntaxbaum\n  → Semantik: Typprüfung\n  → Codegen: Maschinencode\n\nCompiler vs. Interpreter',
+        exam:1,examLabel:'Gelegentlich',learnType:'konzept',memorize:['Compiler: komplett → Maschinencode','Interpreter: Zeile für Zeile','Scanner→Parser→Semantik→Codegen'],
+        visualHTML:`<div class="vis-flow" style="flex-direction:column;gap:1px"><div class="vis-node" style="width:100%">📄 Quellcode</div><div class="vis-arrow down">↓</div><div class="vis-node accent" style="width:100%;--nc:#a78bfa">Scanner (Lexer) → Tokens</div><div class="vis-arrow down">↓</div><div class="vis-node accent" style="width:100%;--nc:#f5c542">Parser → Syntaxbaum</div><div class="vis-arrow down">↓</div><div class="vis-node accent" style="width:100%;--nc:#22c55e">Semantik → Typprüfung</div><div class="vis-arrow down">↓</div><div class="vis-node" style="width:100%">⚙️ Maschinencode</div></div>`,
         keywords:['Scanner','Parser','Lexer','Token','Syntaxbaum','Compiler','Interpreter'],
         concepts:['Compiler-Phasen','Scanner & Token','Parser & Syntaxbaum','Compiler vs. Interpreter']},
       {id:'formal-automaten',emoji:'🔄',title:'Reguläre Sprachen & Automaten',heft:'hefte/tgi06.html',complexity:5,time:90,
-        visual:'DEA = (Q, Σ, δ, q₀, F)  deterministisch\nNEA = (Q, Σ, δ, q₀, F)  δ→Potenzmenge\n\nDEA ↔ NEA ↔ RegEx  (äquivalent)\nPumping-Lemma: Regulär? Test!\n\nDEA-Minimierung: Äquivalenzklassen',
-        keywords:['DEA','NEA','RegEx','δ-Funktion','Pumping-Lemma','Minimierung'],
-        concepts:['DEA 5-Tupel','NEA & ε-Übergänge','NEA→DEA (Potenzmengenkonstruktion)','Reguläre Ausdrücke','Pumping-Lemma']},
+        exam:4,examLabel:'Sehr häufig',learnType:'kombiniert',memorize:['DEA = (Q, Σ, δ, q₀, F) 5-Tupel','NEA: δ liefert Menge von Zuständen','Potenzmengenkonstruktion: NEA→DEA','DEA ↔ NEA ↔ RegEx (äquivalent)','DEA-Minimierung: Äquivalenzklassen','Pumping-Lemma: ∃n ∀w mit |w|≥n: w=xyz…'],
+        visualHTML:`<div class="vis-compare"><div class="vis-side" style="border-color:rgba(34,197,94,.3)"><div class="vis-side-title" style="--nc:#22c55e">DEA</div><div class="vis-side-item">(Q, Σ, δ, q₀, F)<br>δ: Q×Σ → Q<br>deterministisch</div></div><div class="vis-side" style="border-color:rgba(251,146,60,.3)"><div class="vis-side-title" style="--nc:#fb923c">NEA</div><div class="vis-side-item">(Q, Σ, δ, q₀, F)<br>δ: Q×Σ → P(Q)<br>mehrere Wege</div></div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node accent" style="--nc:#22c55e">DEA</div><div class="vis-arrow">↔</div><div class="vis-node accent" style="--nc:#fb923c">NEA</div><div class="vis-arrow">↔</div><div class="vis-node accent" style="--nc:#f472b6">RegEx</div></div>`,
+        keywords:['DEA','NEA','RegEx','δ-Funktion','Pumping-Lemma','Minimierung','Potenzmenge'],
+        concepts:['DEA 5-Tupel','NEA & ε-Übergänge','NEA→DEA (Potenzmengenkonstruktion)','Reguläre Ausdrücke','Pumping-Lemma','DEA-Minimierung']},
       {id:'formal-keller',emoji:'📚',title:'Kellerautomaten & kfS',heft:'hefte/tgi07.html',complexity:5,time:90,
-        visual:'NKA = (Q, Σ, Γ, δ, q₀, Z₀, F)\nKeller = Stack (LIFO)\n\nkfS ↔ NKA (äquivalent)\nDKA ⊂ NKA (echt schwächer!)\n\nBeispiel: L = {aⁿbⁿ | n≥1}',
-        keywords:['NKA','DKA','Keller','kfS','kontextfrei','Stack','Γ'],
-        concepts:['NKA 7-Tupel','DKA vs. NKA','Kontextfreie Sprachen','Kelleroperationen (push/pop)']},
+        exam:2,examLabel:'Gelegentlich',learnType:'kombiniert',memorize:['NKA = (Q, Σ, Γ, δ, q₀, Z₀, F) 7-Tupel','Keller = Stack (LIFO)','kfS ↔ NKA (äquivalent)','DKA ⊂ NKA (echt schwächer!)','CNF: A→BC oder A→a (keine ε)'],
+        visualHTML:`<div class="vis-formula"><span class="hi">NKA</span> = (Q, Σ, <span class="lo">Γ</span>, δ, q₀, Z₀, F) <span class="sub">7-Tupel</span></div><div class="vis-compare" style="margin-top:.3rem"><div class="vis-side" style="border-color:rgba(244,114,182,.3)"><div class="vis-side-title" style="--nc:#f472b6">NKA (mächtig)</div><div class="vis-side-item">kfS ↔ NKA<br>L={aⁿbⁿ} ✓</div></div><div class="vis-side" style="border-color:rgba(251,146,60,.3)"><div class="vis-side-title" style="--nc:#fb923c">DKA (schwächer)</div><div class="vis-side-item">DKA ⊂ NKA<br>nicht äquivalent!</div></div></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node">Keller</div><div class="vis-arrow">=</div><div class="vis-node accent" style="--nc:#f472b6">Stack (LIFO)</div></div>`,
+        keywords:['NKA','DKA','Keller','kfS','kontextfrei','Stack','Γ','CNF'],
+        concepts:['NKA 7-Tupel','DKA vs. NKA','Kontextfreie Sprachen','Kelleroperationen (push/pop)','CNF-Umwandlung']},
       {id:'formal-ll',emoji:'⬇️',title:'LL(k)-Sprachen',heft:'hefte/tgi07.html',complexity:4,time:60,
-        visual:'LL(k): Left-to-right, Leftmost derivation\n  → Top-Down Parsing\n\nFIRST(α) ∩ FOLLOW(A) = ∅?\n  Ja → LL(1)-Grammatik\n\nParsetabelle → Recursive Descent',
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['LL = Left-to-right, Leftmost derivation','FIRST(α) = erste Terminale aus α ableitbar','FOLLOW(A) = was nach A kommen kann','LL(1)-Bedingung: FIRST ∩ FOLLOW = ∅','Parsetabelle: Zeile=Nichtterminal, Spalte=Terminal'],
+        visualHTML:`<div class="vis-formula"><div><span class="hi">LL(k)</span> = Left-to-right, <span class="lo">Leftmost</span></div><div class="sub">→ Top-Down Parsing</div></div><div class="vis-grid" style="margin-top:.3rem"><div class="vis-cell hi">FIRST(α)</div><div class="vis-cell">erste Terminale</div><div class="vis-cell hi">FOLLOW(A)</div><div class="vis-cell">was nach A folgt</div></div><div class="vis-formula" style="margin-top:.3rem"><div><span class="hi">LL(1)?</span> FIRST ∩ FOLLOW = <span class="lo">∅</span></div></div>`,
         keywords:['LL(1)','FIRST','FOLLOW','Top-Down','Parsetabelle','Recursive Descent'],
-        concepts:['LL(k)-Definition','FIRST- & FOLLOW-Mengen','LL(1)-Bedingung','Top-Down-Parser']},
+        concepts:['LL(k)-Definition','FIRST- & FOLLOW-Mengen','LL(1)-Bedingung','Top-Down-Parser','Parsetabelle aufstellen']},
       {id:'formal-lr',emoji:'⬆️',title:'LR(k)-Sprachen',heft:'hefte/tgi07.html',complexity:4,time:60,
-        visual:'LR(k): Left-to-right, Rightmost derivation\n  → Bottom-Up Parsing\n\nShift-Reduce-Parser:\n  Shift: Token auf Stack\n  Reduce: Handle → Nichtterminal\n\nSLR(1) ⊂ LALR(1) ⊂ LR(1)',
+        exam:2,examLabel:'Gelegentlich',learnType:'kombiniert',memorize:['LR = Left-to-right, Rightmost derivation','Shift: Token auf Stack legen','Reduce: Handle durch Nichtterminal ersetzen','SLR(1) ⊂ LALR(1) ⊂ LR(1)','LR(1) ⊃ LL(1) (mächtiger)'],
+        visualHTML:`<div class="vis-formula"><div><span class="hi">LR(k)</span> = Left-to-right, <span class="lo">Rightmost</span></div><div class="sub">→ Bottom-Up Parsing</div></div><div class="vis-compare" style="margin-top:.3rem"><div class="vis-side" style="border-color:rgba(245,197,66,.3)"><div class="vis-side-title" style="--nc:var(--amber)">Shift</div><div class="vis-side-item">Token → Stack</div></div><div class="vis-side" style="border-color:rgba(244,114,182,.3)"><div class="vis-side-title" style="--nc:#f472b6">Reduce</div><div class="vis-side-item">Handle → NT</div></div></div><div class="vis-layers" style="margin-top:.3rem"><div class="vis-layer" style="--lc:#22c55e"><span class="vis-num">⊂</span> SLR(1)</div><div class="vis-layer" style="--lc:#f5c542"><span class="vis-num">⊂</span> LALR(1)</div><div class="vis-layer" style="--lc:#f472b6"><span class="vis-num">⊂</span> LR(1)</div></div>`,
         keywords:['LR(1)','SLR','LALR','Shift','Reduce','Bottom-Up'],
         concepts:['LR(k)-Definition','Shift-Reduce-Parsing','SLR/LALR/LR(1)-Hierarchie','Handle-Erkennung']},
       {id:'formal-turing',emoji:'♾️',title:'Turing-Maschine',heft:'hefte/tgi07.html',complexity:5,time:90,
-        visual:'TM = (Q, Σ, Γ, δ, q₀, □, F)\nBand: unendlich, Lese-/Schreibkopf\n\nDTM · NTM · LBTM · UTM\n\nChurch-Turing-These:\n  Berechenbar = TM-berechenbar\n\nHalteproblem: UNENTSCHEIDBAR',
+        exam:3,examLabel:'Häufig',learnType:'kombiniert',memorize:['TM = (Q, Σ, Γ, δ, q₀, □, F) 7-Tupel','□ = Blank-Symbol','DTM: deterministisch, NTM: nichtdeterministisch','Church-Turing: Berechenbar = TM-berechenbar','Halteproblem: UNENTSCHEIDBAR','Sprachklassen: Typ3⊂Typ2⊂Typ1⊂Typ0⊂alle'],
+        visualHTML:`<div class="vis-formula"><span class="hi">TM</span> = (Q, Σ, Γ, δ, q₀, □, F) <span class="sub">7-Tupel</span></div><div class="vis-flow" style="margin-top:.3rem"><div class="vis-node">… □ □</div><div class="vis-node accent" style="--nc:#f472b6;font-size:.8rem">▼ Kopf</div><div class="vis-node">□ □ …</div></div><div class="vis-grid" style="margin-top:.3rem"><div class="vis-cell hi">DTM</div><div class="vis-cell">deterministisch</div><div class="vis-cell hi">NTM</div><div class="vis-cell">nichtdeterm.</div><div class="vis-cell hi">LBTM</div><div class="vis-cell">beschränkt</div><div class="vis-cell hi">UTM</div><div class="vis-cell">universell</div></div><div class="vis-formula" style="margin-top:.3rem"><div><span class="hi">Halteproblem:</span> <span style="color:#ef4444">UNENTSCHEIDBAR</span></div></div>`,
         keywords:['DTM','NTM','LBTM','UTM','Halteproblem','Church-Turing','Entscheidbar'],
         concepts:['TM 7-Tupel','DTM vs. NTM','Church-Turing-These','Halteproblem','Sprachklassen-Hierarchie']}
     ]
@@ -363,6 +450,7 @@ const CONNECTIONS = [
 
 /* ── STATE ────────────────────────────────────────── */
 let activeComplexity = 0; // 0 = all
+let activeExamFilter = 0; // 0=all, 1=sehr häufig (4+), 2=häufig (3+)
 let activeDomains = new Set(DOMAINS.map(d=>d.id));
 let searchTerm = '';
 let learned = JSON.parse(localStorage.getItem('lk-learned')||'{}');
@@ -407,11 +495,17 @@ function renderIslands(){
   });
 }
 
+const examIcons = {'Sehr häufig':'🔥','Häufig':'⚡','Gelegentlich':'📌','Selten':'·'};
+const examClass = {'Sehr häufig':'hot','Häufig':'warm','Gelegentlich':'mild','Selten':'mild'};
+const typeIcons = {'konzept':'📖','auswendig':'🧠','kombiniert':'🔄'};
+const typeLabels = {'konzept':'Konzept','auswendig':'Auswendig','kombiniert':'Kombiniert'};
+
 function renderCard(t, color){
   const isLearned = learned[t.id];
+  const memoHTML = t.memorize && t.memorize.length ? `<div class="memo-box"><div class="memo-title">🧠 Auswendig lernen</div><ul>${t.memorize.map(m=>`<li>${m}</li>`).join('')}</ul></div>` : '';
   return `
     <div class="topic-card${isLearned?' learned':''}" id="card-${t.id}" style="--card-color:${color}"
-         data-id="${t.id}" data-complexity="${t.complexity}" data-time="${t.time}"
+         data-id="${t.id}" data-complexity="${t.complexity}" data-time="${t.time}" data-exam="${t.exam||0}"
          data-search="${(t.title+' '+t.keywords.join(' ')).toLowerCase()}"
          onclick="toggleCard(this)" onmouseenter="highlightConnections('${t.id}')" onmouseleave="clearConnections()">
       <button class="check-btn" onclick="event.stopPropagation();toggleLearned('${t.id}',this)" title="Als gelernt markieren">
@@ -427,9 +521,12 @@ function renderCard(t, color){
       <div class="badges">
         <span class="badge badge-complexity">${renderDots(t.complexity)} <span class="clabel-${t.complexity}">${complexityLabels[t.complexity]}</span></span>
         <span class="badge badge-time">⏱ ${formatTime(t.time)}</span>
+        ${t.examLabel&&t.examLabel!=='Selten'?`<span class="badge badge-exam ${examClass[t.examLabel]}">${examIcons[t.examLabel]} ${t.examLabel}</span>`:''}
+        <span class="badge badge-type">${typeIcons[t.learnType]} ${typeLabels[t.learnType]}</span>
       </div>
       <div class="card-expand">
-        <div class="visual-box">${t.visual}</div>
+        <div class="visual-box">${t.visualHTML||''}</div>
+        ${memoHTML}
         <div class="keywords">${t.keywords.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
         <ul class="concepts-list">${t.concepts.map(c=>`<li>${c}</li>`).join('')}</ul>
         <a href="${t.heft}" target="_blank" class="heft-link" onclick="event.stopPropagation()">Heft öffnen →</a>
@@ -477,6 +574,12 @@ function toggleComplexity(level){
   applyFilters();
 }
 
+function toggleExam(level){
+  activeExamFilter = level;
+  document.querySelectorAll('.fbtn[data-e]').forEach(b=>b.classList.toggle('active', parseInt(b.dataset.e)===level));
+  applyFilters();
+}
+
 function applyFilters(){
   searchTerm = document.querySelector('.search').value.toLowerCase().trim();
   document.querySelectorAll('.island').forEach(island=>{
@@ -485,9 +588,11 @@ function applyFilters(){
   });
   document.querySelectorAll('.topic-card').forEach(card=>{
     const c = parseInt(card.dataset.complexity);
+    const e = parseInt(card.dataset.exam||'0');
     const matchC = activeComplexity===0 || c===activeComplexity;
     const matchS = !searchTerm || card.dataset.search.includes(searchTerm);
-    card.classList.toggle('hidden', !(matchC && matchS));
+    const matchE = activeExamFilter===0 || (activeExamFilter===1 && e>=4) || (activeExamFilter===2 && e>=3);
+    card.classList.toggle('hidden', !(matchC && matchS && matchE));
   });
   requestAnimationFrame(drawConnections);
   updateStats();
