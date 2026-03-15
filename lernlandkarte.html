@@ -74,8 +74,6 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 .topics{display:flex;flex-wrap:wrap;gap:.7rem}
 .topic-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem;width:calc(50% - .35rem);position:relative;cursor:pointer;transition:all .25s;border-top:3px solid var(--card-color)}
 .topic-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3);border-color:color-mix(in srgb,var(--card-color) 40%,var(--border))}
-.topic-card.learned{border-color:rgba(34,197,94,.3)}
-.topic-card.learned .check-btn{color:var(--c-info);opacity:1}
 .topic-card.hidden{display:none}
 
 .card-top{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.4rem}
@@ -95,9 +93,38 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 /* Complexity labels */
 .clabel-1{color:#22c55e} .clabel-2{color:#06b6d4} .clabel-3{color:#f5c542} .clabel-4{color:#fb923c} .clabel-5{color:#f472b6}
 
-/* Check button */
-.check-btn{position:absolute;top:.5rem;right:.5rem;background:none;border:none;color:var(--border);font-size:.9rem;cursor:pointer;opacity:.5;transition:all .2s;padding:2px}
-.check-btn:hover{color:var(--c-info);opacity:1}
+/* Progress button (3 stages) */
+.progress-btn{position:absolute;top:.45rem;right:.45rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.65rem;cursor:pointer;opacity:.7;transition:all .2s;padding:.15rem .35rem;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:.25rem;white-space:nowrap}
+.progress-btn:hover{opacity:1;border-color:var(--text);transform:scale(1.05)}
+.progress-btn .pip{display:inline-block;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--border);background:transparent;transition:all .2s}
+
+/* Stage-specific card styling */
+.topic-card[data-stage="1"]{border-left:3px solid rgba(96,165,250,.5)}
+.topic-card[data-stage="1"] .progress-btn{border-color:rgba(96,165,250,.4);color:#60a5fa;opacity:1}
+.topic-card[data-stage="1"] .pip.p1{background:#60a5fa;border-color:#60a5fa}
+
+.topic-card[data-stage="2"]{border-left:3px solid rgba(245,197,66,.5)}
+.topic-card[data-stage="2"] .progress-btn{border-color:rgba(245,197,66,.4);color:var(--amber);opacity:1}
+.topic-card[data-stage="2"] .pip.p1{background:#60a5fa;border-color:#60a5fa}
+.topic-card[data-stage="2"] .pip.p2{background:var(--amber);border-color:var(--amber)}
+
+.topic-card[data-stage="3"]{border-left:3px solid rgba(34,197,94,.5);background:rgba(34,197,94,.03)}
+.topic-card[data-stage="3"] .progress-btn{border-color:rgba(34,197,94,.4);color:#22c55e;opacity:1}
+.topic-card[data-stage="3"] .pip.p1{background:#60a5fa;border-color:#60a5fa}
+.topic-card[data-stage="3"] .pip.p2{background:var(--amber);border-color:var(--amber)}
+.topic-card[data-stage="3"] .pip.p3{background:#22c55e;border-color:#22c55e}
+
+/* Stage legend in stat bar */
+.stat-stages{display:flex;gap:.8rem;align-items:center}
+.stage-item{display:flex;align-items:center;gap:.3rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.stage-pip{width:8px;height:8px;border-radius:50%}
+
+/* Progress bar mini */
+.progress-mini{display:flex;gap:1px;height:3px;border-radius:2px;overflow:hidden;margin-top:.35rem;width:100%}
+.progress-mini span{flex:1;background:var(--border);border-radius:1px;transition:background .3s}
+.progress-mini span.filled-1{background:#60a5fa}
+.progress-mini span.filled-2{background:var(--amber)}
+.progress-mini span.filled-3{background:#22c55e}
 
 /* Expanded content */
 .card-expand{display:none;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)}
@@ -453,7 +480,18 @@ let activeComplexity = 0; // 0 = all
 let activeExamFilter = 0; // 0=all, 1=sehr häufig (4+), 2=häufig (3+)
 let activeDomains = new Set(DOMAINS.map(d=>d.id));
 let searchTerm = '';
-let learned = JSON.parse(localStorage.getItem('lk-learned')||'{}');
+/* Progress stages: 0=offen, 1=gelesen, 2=gefestigt, 3=gemeistert */
+let progress = JSON.parse(localStorage.getItem('lk-progress')||'{}');
+/* Migrate old boolean learned data */
+const oldLearned = JSON.parse(localStorage.getItem('lk-learned')||'{}');
+Object.keys(oldLearned).forEach(k=>{ if(oldLearned[k] && !progress[k]) progress[k]=3; });
+if(Object.keys(oldLearned).length){ localStorage.setItem('lk-progress',JSON.stringify(progress)); localStorage.removeItem('lk-learned'); }
+const STAGES = [
+  {icon:'○',label:'Offen',color:'var(--muted)'},
+  {icon:'📖',label:'Gelesen',color:'#60a5fa'},
+  {icon:'🔄',label:'Gefestigt',color:'#f5c542'},
+  {icon:'✅',label:'Gemeistert',color:'#22c55e'}
+];
 
 /* ── RENDER ───────────────────────────────────────── */
 const complexityLabels = ['','Leicht','Einfach','Mittel','Schwer','Experte'];
@@ -501,15 +539,16 @@ const typeIcons = {'konzept':'📖','auswendig':'🧠','kombiniert':'🔄'};
 const typeLabels = {'konzept':'Konzept','auswendig':'Auswendig','kombiniert':'Kombiniert'};
 
 function renderCard(t, color){
-  const isLearned = learned[t.id];
+  const stage = progress[t.id]||0;
   const memoHTML = t.memorize && t.memorize.length ? `<div class="memo-box"><div class="memo-title">🧠 Auswendig lernen</div><ul>${t.memorize.map(m=>`<li>${m}</li>`).join('')}</ul></div>` : '';
+  const pips = `<span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span>`;
   return `
-    <div class="topic-card${isLearned?' learned':''}" id="card-${t.id}" style="--card-color:${color}"
+    <div class="topic-card" id="card-${t.id}" style="--card-color:${color}" data-stage="${stage}"
          data-id="${t.id}" data-complexity="${t.complexity}" data-time="${t.time}" data-exam="${t.exam||0}"
          data-search="${(t.title+' '+t.keywords.join(' ')).toLowerCase()}"
          onclick="toggleCard(this)" onmouseenter="highlightConnections('${t.id}')" onmouseleave="clearConnections()">
-      <button class="check-btn" onclick="event.stopPropagation();toggleLearned('${t.id}',this)" title="Als gelernt markieren">
-        ${isLearned?'✅':'☐'}
+      <button class="progress-btn" onclick="event.stopPropagation();cycleStage('${t.id}',this)" title="Fortschritt: ${STAGES[stage].label}">
+        ${pips} ${STAGES[stage].label}
       </button>
       <div class="card-top">
         <span class="card-emoji">${t.emoji}</span>
@@ -523,6 +562,11 @@ function renderCard(t, color){
         <span class="badge badge-time">⏱ ${formatTime(t.time)}</span>
         ${t.examLabel&&t.examLabel!=='Selten'?`<span class="badge badge-exam ${examClass[t.examLabel]}">${examIcons[t.examLabel]} ${t.examLabel}</span>`:''}
         <span class="badge badge-type">${typeIcons[t.learnType]} ${typeLabels[t.learnType]}</span>
+      </div>
+      <div class="progress-mini">
+        <span class="${stage>=1?'filled-1':''}"></span>
+        <span class="${stage>=2?'filled-2':''}"></span>
+        <span class="${stage>=3?'filled-3':''}"></span>
       </div>
       <div class="card-expand">
         <div class="visual-box">${t.visualHTML||''}</div>
@@ -552,13 +596,27 @@ function toggleCard(el){
   requestAnimationFrame(drawConnections);
 }
 
-function toggleLearned(id, btn){
-  learned[id] = !learned[id];
-  if(!learned[id]) delete learned[id];
-  localStorage.setItem('lk-learned', JSON.stringify(learned));
+function cycleStage(id, btn){
+  const current = progress[id]||0;
+  const next = (current+1) % 4;
+  if(next===0) delete progress[id]; else progress[id]=next;
+  localStorage.setItem('lk-progress', JSON.stringify(progress));
   const card = btn.closest('.topic-card');
-  card.classList.toggle('learned', !!learned[id]);
-  btn.textContent = learned[id]?'✅':'☐';
+  card.dataset.stage = next;
+  /* Update pips label */
+  const label = btn.querySelector('.pip')?.parentElement;
+  if(label){
+    btn.innerHTML = `<span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span> ${STAGES[next].label}`;
+  }
+  btn.title = 'Fortschritt: '+STAGES[next].label;
+  /* Update progress bar */
+  const bar = card.querySelector('.progress-mini');
+  if(bar){
+    const spans = bar.querySelectorAll('span');
+    spans[0].className = next>=1?'filled-1':'';
+    spans[1].className = next>=2?'filled-2':'';
+    spans[2].className = next>=3?'filled-3':'';
+  }
   updateStats();
 }
 
@@ -656,13 +714,21 @@ function updateStats(){
     const card = document.getElementById('card-'+t.id);
     return card && !card.classList.contains('hidden');
   });
-  const learnedCount = visible.filter(t=>learned[t.id]).length;
+  const s1 = visible.filter(t=>(progress[t.id]||0)===1).length;
+  const s2 = visible.filter(t=>(progress[t.id]||0)===2).length;
+  const s3 = visible.filter(t=>(progress[t.id]||0)===3).length;
+  const offen = visible.length - s1 - s2 - s3;
   const totalTime = visible.reduce((s,t)=>s+t.time,0);
-  const remainTime = visible.filter(t=>!learned[t.id]).reduce((s,t)=>s+t.time,0);
+  const remainTime = visible.filter(t=>(progress[t.id]||0)<3).reduce((s,t)=>s+t.time,0);
   document.getElementById('statBar').innerHTML = `
-    <span>✅ Gelernt: <span class="val">${learnedCount} / ${visible.length}</span></span>
+    <div class="stat-stages">
+      <span class="stage-item"><span class="stage-pip" style="background:#60a5fa"></span>📖 <span class="val">${s1}</span></span>
+      <span class="stage-item"><span class="stage-pip" style="background:#f5c542"></span>🔄 <span class="val">${s2}</span></span>
+      <span class="stage-item"><span class="stage-pip" style="background:#22c55e"></span>✅ <span class="val">${s3}</span></span>
+      <span class="stage-item" style="color:var(--muted)">○ ${offen}</span>
+    </div>
     <span>⏱ Gesamt: <span class="val">${formatTime(totalTime)}</span></span>
-    <span>📋 Verbleibend: <span class="val">${formatTime(remainTime)}</span></span>
+    <span>📋 Offen: <span class="val">${formatTime(remainTime)}</span></span>
   `;
 }
 
