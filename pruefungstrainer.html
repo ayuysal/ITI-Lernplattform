@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prüfungstrainer – Quiz &amp; Übungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0e11;--surface:#18171d;--border:#1e2230;
+  --text:#e2e4ea;--muted:#6b7084;
+  --amber:#f5c542;--teal:#5ec4b6;
+  --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6;
+  --radius:12px;--correct:#22c55e;--wrong:#ef4444;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+a{color:inherit;text-decoration:none}
+
+.back{display:inline-block;padding:0.6rem 0;margin:0.8rem 1.5rem;font-size:.85rem;color:var(--muted);transition:color .2s}
+.back:hover{color:var(--text)}
+
+header{text-align:center;padding:0.5rem 1.5rem 1rem}
+header .tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;color:var(--amber);text-transform:uppercase}
+header h1{font-family:'Outfit',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin:.3rem 0}
+header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
+
+/* ── Toolbar ── */
+.toolbar{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;align-items:center;padding:.6rem 1.5rem;max-width:1000px;margin:0 auto}
+.filter-group{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
+.filter-group .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-right:.2rem}
+.fbtn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .55rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.65rem;cursor:pointer;transition:all .2s}
+.fbtn:hover{border-color:var(--text);color:var(--text)}
+.fbtn.active{border-color:var(--amber);color:var(--amber);background:rgba(245,197,66,.08)}
+
+/* ── Stats bar ── */
+.stats{display:flex;justify-content:center;gap:1.2rem;padding:.5rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted)}
+.stats .val{color:var(--amber)}
+.stats .correct-val{color:var(--correct)}
+.stats .wrong-val{color:var(--wrong)}
+
+/* ── Quiz container ── */
+.quiz-wrap{max-width:700px;margin:0 auto;padding:0 1rem 4rem}
+
+/* Progress bar */
+.progress{height:4px;background:var(--border);border-radius:2px;margin-bottom:1rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--amber);border-radius:2px;transition:width .4s}
+
+/* Question card */
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;position:relative}
+.q-meta{display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;flex-wrap:wrap}
+.q-num{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--amber);background:rgba(245,197,66,.08);padding:.15rem .45rem;border-radius:4px}
+.q-domain{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .45rem;border-radius:4px;border:1px solid var(--border)}
+.q-type{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);margin-left:auto}
+.q-difficulty{display:flex;gap:2px;align-items:center}
+.q-difficulty span{width:6px;height:6px;border-radius:50%;background:var(--border)}
+.q-difficulty span.filled{background:var(--amber)}
+
+.q-text{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:600;line-height:1.5;margin-bottom:1rem}
+.q-text code{font-family:'JetBrains Mono',monospace;background:rgba(245,197,66,.1);color:var(--amber);padding:.1rem .3rem;border-radius:3px;font-size:.9rem}
+
+/* ── MC Options ── */
+.mc-options{display:flex;flex-direction:column;gap:.5rem}
+.mc-opt{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius);padding:.7rem 1rem;cursor:pointer;transition:all .2s;font-size:.9rem;display:flex;align-items:center;gap:.6rem}
+.mc-opt:hover:not(.locked){border-color:var(--amber);background:rgba(245,197,66,.04)}
+.mc-opt .mc-letter{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.mc-opt.selected .mc-letter{border-color:var(--amber);color:var(--amber);background:rgba(245,197,66,.1)}
+.mc-opt.correct{border-color:var(--correct);background:rgba(34,197,94,.08)}
+.mc-opt.correct .mc-letter{border-color:var(--correct);color:var(--correct);background:rgba(34,197,94,.15)}
+.mc-opt.wrong{border-color:var(--wrong);background:rgba(239,68,68,.06)}
+.mc-opt.wrong .mc-letter{border-color:var(--wrong);color:var(--wrong);background:rgba(239,68,68,.1)}
+
+/* ── TF Buttons ── */
+.tf-wrap{display:flex;gap:.8rem;justify-content:center}
+.tf-btn{flex:1;max-width:200px;padding:1rem;border-radius:var(--radius);border:2px solid var(--border);background:var(--surface);cursor:pointer;font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;color:var(--text);transition:all .2s;text-align:center}
+.tf-btn:hover:not(.locked){border-color:var(--amber)}
+.tf-btn.correct{border-color:var(--correct);background:rgba(34,197,94,.1);color:var(--correct)}
+.tf-btn.wrong{border-color:var(--wrong);background:rgba(239,68,68,.08);color:var(--wrong)}
+
+/* ── Fill input ── */
+.fill-wrap{display:flex;gap:.5rem;align-items:center}
+.fill-input{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s}
+.fill-input:focus{border-color:var(--amber)}
+.fill-input.correct{border-color:var(--correct);color:var(--correct)}
+.fill-input.wrong{border-color:var(--wrong);color:var(--wrong)}
+.fill-submit{background:var(--amber);color:#000;border:none;border-radius:8px;padding:.6rem 1.2rem;font-family:'Outfit',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:opacity .2s}
+.fill-submit:hover{opacity:.85}
+
+/* ── Match ── */
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .8rem}
+.match-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;cursor:pointer;font-size:.8rem;font-family:'JetBrains Mono',monospace;transition:all .2s;text-align:center;user-select:none}
+.match-item:hover:not(.locked):not(.matched){border-color:var(--amber)}
+.match-item.sel{border-color:var(--amber);background:rgba(245,197,66,.08);color:var(--amber)}
+.match-item.matched{border-color:var(--correct);background:rgba(34,197,94,.06);color:var(--correct);cursor:default}
+.match-item.wrong-flash{border-color:var(--wrong);background:rgba(239,68,68,.08)}
+.match-hint{grid-column:1/-1;font-size:.65rem;color:var(--muted);text-align:center;font-family:'JetBrains Mono',monospace}
+
+/* ── Order ── */
+.order-pool{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
+.order-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.45rem .7rem;cursor:pointer;font-size:.78rem;font-family:'JetBrains Mono',monospace;transition:all .2s;user-select:none}
+.order-item:hover:not(.used){border-color:var(--amber)}
+.order-item.used{opacity:.3;cursor:default}
+.order-seq{display:flex;flex-wrap:wrap;gap:.3rem;min-height:2.5rem;border:1px dashed var(--border);border-radius:8px;padding:.4rem;margin-bottom:.4rem}
+.order-placed{background:rgba(245,197,66,.08);border:1px solid var(--amber);border-radius:6px;padding:.3rem .6rem;font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--amber);display:flex;align-items:center;gap:.3rem}
+.order-placed .seq-num{font-size:.55rem;color:var(--muted)}
+.order-correct .order-seq{border-color:var(--correct)}
+.order-wrong .order-seq{border-color:var(--wrong)}
+.order-reset{background:none;border:1px solid var(--border);border-radius:6px;padding:.25rem .6rem;color:var(--muted);font-size:.65rem;font-family:'JetBrains Mono',monospace;cursor:pointer}
+
+/* ── Calc ── */
+.calc-wrap{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.calc-input{width:160px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s}
+.calc-input:focus{border-color:var(--amber)}
+.calc-input.correct{border-color:var(--correct);color:var(--correct)}
+.calc-input.wrong{border-color:var(--wrong);color:var(--wrong)}
+.calc-unit{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted)}
+
+/* ── Feedback ── */
+.feedback{margin-top:.8rem;padding:.7rem 1rem;border-radius:var(--radius);font-size:.82rem;line-height:1.6;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);color:#86efac}
+.feedback.wrong{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);color:#fca5a5}
+.feedback strong{display:block;margin-bottom:.2rem}
+
+/* ── Buttons ── */
+.btn-row{display:flex;gap:.5rem;justify-content:center;margin-top:1rem}
+.btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem 1.2rem;color:var(--text);font-family:'Outfit',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.btn-primary{background:var(--amber);color:#000;border-color:var(--amber)}
+.btn-primary:hover{opacity:.85;color:#000}
+.btn:disabled{opacity:.3;cursor:default}
+
+/* ── Start screen ── */
+.start-screen{max-width:700px;margin:0 auto;padding:1rem}
+.domain-cards{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
+.d-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:all .2s;border-left:3px solid var(--dc)}
+.d-card:hover{border-color:var(--dc);transform:translateY(-2px)}
+.d-card.active{border-color:var(--dc);background:color-mix(in srgb,var(--dc) 5%,var(--surface))}
+.d-card-title{font-family:'Outfit',sans-serif;font-weight:700;font-size:.9rem;color:var(--dc)}
+.d-card-sub{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);margin-top:.15rem}
+.d-card-stats{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted);margin-top:.4rem;display:flex;gap:.6rem}
+
+/* ── End screen ── */
+.end-screen{text-align:center;padding:2rem}
+.end-score{font-family:'Outfit',sans-serif;font-size:3rem;font-weight:700;color:var(--amber)}
+.end-label{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted);margin-bottom:1rem}
+.end-breakdown{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin:1rem 0}
+.end-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.65rem}
+
+/* Toast */
+.toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--correct);color:#000;font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.5rem 1rem;border-radius:8px;opacity:0;transition:all .3s;z-index:200;pointer-events:none;font-weight:600}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Responsive */
+@media(max-width:600px){
+  .domain-cards{grid-template-columns:1fr}
+  .match-wrap{gap:.3rem .5rem}
+  .q-card{padding:1rem}
+  .tf-wrap{flex-direction:column;align-items:center}
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back">← Zurück zur Lernplattform</a>
+
+<header>
+  <div class="tag">Informatik-Studium</div>
+  <h1>Prüfungstrainer</h1>
+  <p>7 Fragetypen, 4 Schwierigkeitsstufen – von Multiple-Choice bis Berechnung. Progressiv aufgebaut nach Bloom's Taxonomie.</p>
+</header>
+
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   QUESTION DATABASE — ~200 questions, all domains
+   Format: d=domain, tp=topic, t=type, df=difficulty(1-4),
+   q=question, ...type-specific fields, e=explanation
+   Types: mc, tf, fill, match, order, calc
+   ═══════════════════════════════════════════════════════ */
+const Q = [
+// ━━━ NETZWERK-GRUNDLAGEN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// netz-internet
+{d:'netz',tp:'Internet & Organisation',t:'mc',df:1,q:'Welche Organisation verwaltet die globale Vergabe von IP-Adressen?',
+  o:['IANA','IETF','IEEE','ISO'],c:0,e:'IANA (Internet Assigned Numbers Authority) verwaltet die globale IP-Adressvergabe, delegiert an RIRs wie RIPE.'},
+{d:'netz',tp:'Internet & Organisation',t:'tf',df:1,q:'RFC steht für "Request for Comments" und beschreibt Internet-Standards.',
+  c:true,e:'Korrekt. RFCs sind die offiziellen Dokumente, die Internet-Standards und -Protokolle beschreiben.'},
+{d:'netz',tp:'Internet & Organisation',t:'fill',df:1,q:'Der größte Internet-Austauschknoten Europas heißt <code>___</code>.',
+  a:['DE-CIX','de-cix','DECIX'],e:'Der DE-CIX (Deutscher Commercial Internet Exchange) in Frankfurt ist der größte IXP Europas.'},
+
+// netz-grundlagen
+{d:'netz',tp:'Computernetz-Grundlagen',t:'mc',df:1,q:'Wie viele Verbundeffekte werden bei Computernetzen unterschieden?',
+  o:['5','7','9','11'],c:2,e:'Es gibt 9 Verbundeffekte: Kommunikation, Ressourcen, Last, Verfügbarkeit, Leistung, Daten, Kosten, Sicherheit, Funktionsverbund.'},
+{d:'netz',tp:'Computernetz-Grundlagen',t:'tf',df:1,q:'Ein Intranet ist ein öffentlich zugängliches Netzwerk.',
+  c:false,e:'Falsch. Ein Intranet ist ein privates, organisationsinternes Netzwerk. Öffentlich zugänglich ist das Internet.'},
+{d:'netz',tp:'Computernetz-Grundlagen',t:'fill',df:1,q:'Ein Computernetz besteht aus mindestens <code>___</code> autonomen Rechnern.',
+  a:['2','zwei'],e:'Per Definition besteht ein Computernetz aus mindestens 2 autonomen (eigenständig arbeitsfähigen) Rechnern.'},
+
+// netz-topo
+{d:'netz',tp:'Topologien & Klassifikation',t:'mc',df:1,q:'Welche Topologie bietet die höchste Ausfallsicherheit?',
+  o:['Stern','Bus','Ring','Vermascht (Mesh)'],c:3,e:'Eine vermaschte Topologie (Mesh) hat die höchste Redundanz – jeder Knoten ist mit mehreren anderen verbunden.'},
+{d:'netz',tp:'Topologien & Klassifikation',t:'order',df:2,q:'Sortiere die Netzreichweiten von klein nach groß:',
+  items:['PAN','LAN','MAN','WAN','GAN'],e:'Personal Area Network < Local AN < Metropolitan AN < Wide AN < Global AN.'},
+{d:'netz',tp:'Topologien & Klassifikation',t:'match',df:2,q:'Ordne die Vermittlungsart der Beschreibung zu:',
+  pairs:[['Circuit Switching','Fester Pfad, Ressourcen reserviert'],['Packet Switching','Pakete, flexibler Weg'],['Message Switching','Komplette Nachricht weitergeleitet']],e:'Circuit = Leitungsvermittlung (Telefon), Packet = Paketvermittlung (Internet), Message = Nachrichtenvermittlung (Store-and-Forward).'},
+{d:'netz',tp:'Topologien & Klassifikation',t:'tf',df:1,q:'Bei Simplex-Kommunikation können beide Seiten gleichzeitig senden und empfangen.',
+  c:false,e:'Falsch. Simplex = nur eine Richtung. Halbduplex = abwechselnd. Vollduplex = gleichzeitig beide Richtungen.'},
+
+// netz-kenn
+{d:'netz',tp:'Kenngrößen',t:'fill',df:2,q:'Latenz = t<sub>v</sub> + t<sub>w</sub> + <code>___</code> + t<sub>a</sub>',
+  a:['t_Ü','t_ü','tÜ','t_Ue'],e:'Die 4 Latenz-Komponenten: Verarbeitung (t_v), Warteschlange (t_w), Übertragung (t_Ü), Ausbreitung (t_a).'},
+{d:'netz',tp:'Kenngrößen',t:'calc',df:3,q:'Berechne die Übertragungszeit t_Ü für D = 10 Mbit und b = 100 Mbit/s.',
+  a:0.1,tol:0.01,unit:'Sekunden',e:'t_Ü = D/b = 10 Mbit / 100 Mbit/s = 0,1 Sekunden.'},
+{d:'netz',tp:'Kenngrößen',t:'mc',df:2,q:'Welche Basis wird für Übertragungsraten (kbit/s, Mbit/s) verwendet?',
+  o:['Basis 2 (1024)','Basis 10 (1000)','Basis 8 (512)','Basis 16'],c:1,e:'Übertragungsraten verwenden Basis 10: 1 kbit/s = 1000 bit/s. Speichergrößen verwenden Basis 2.'},
+{d:'netz',tp:'Kenngrößen',t:'tf',df:2,q:'Jitter beschreibt die Schwankung der Latenz.',
+  c:true,e:'Korrekt. Jitter = Varianz der Verzögerung. Problematisch bei Echtzeitanwendungen (VoIP, Video).'},
+
+// netz-osi
+{d:'netz',tp:'OSI- & TCP/IP-Modell',t:'order',df:1,q:'Sortiere die OSI-Schichten von unten (1) nach oben (7):',
+  items:['Physical','Data Link','Network','Transport','Session','Presentation','Application'],e:'Merkhilfe: "Please Do Not Throw Sausage Pizza Away" – Physical, Data Link, Network, Transport, Session, Presentation, Application.'},
+{d:'netz',tp:'OSI- & TCP/IP-Modell',t:'match',df:2,q:'Ordne die OSI-Schicht der PDU-Bezeichnung zu:',
+  pairs:[['Schicht 1','Bits'],['Schicht 2','Frames'],['Schicht 3','Pakete'],['Schicht 4','Segmente']],e:'Physical=Bits, Data Link=Frames, Network=Pakete, Transport=Segmente.'},
+{d:'netz',tp:'OSI- & TCP/IP-Modell',t:'mc',df:2,q:'Welche OSI-Schicht ist für das Routing zuständig?',
+  o:['Schicht 2 – Data Link','Schicht 3 – Network','Schicht 4 – Transport','Schicht 5 – Session'],c:1,e:'Routing findet auf Schicht 3 (Network Layer) statt – hier arbeiten Router mit IP-Adressen.'},
+{d:'netz',tp:'OSI- & TCP/IP-Modell',t:'tf',df:1,q:'Das TCP/IP-Modell hat 7 Schichten wie das OSI-Modell.',
+  c:false,e:'Falsch. TCP/IP hat nur 4 Schichten: Network Access, Internet, Transport, Application.'},
+{d:'netz',tp:'OSI- & TCP/IP-Modell',t:'fill',df:2,q:'Die PDU auf Schicht 2 (Data Link) heißt <code>___</code>.',
+  a:['Frame','Frames','frame','frames'],e:'Auf Schicht 2 werden Daten als Frames (Rahmen) übertragen.'},
+
+// ━━━ SIGNALE & ÜBERTRAGUNG ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// sig-entropie
+{d:'sig',tp:'Informationsgehalt & Entropie',t:'calc',df:3,q:'Berechne den Informationsgehalt eines Zeichens mit Wahrscheinlichkeit p(x) = 1/8.',
+  a:3,tol:0.01,unit:'Bit',e:'I(x) = -log₂(1/8) = -log₂(2⁻³) = 3 Bit.'},
+{d:'sig',tp:'Informationsgehalt & Entropie',t:'fill',df:2,q:'Shannon-Entropie: H(X) = -Σ p(xᵢ) · <code>___</code>',
+  a:['log₂(p(xᵢ))','log2(p(xi))','log₂(p(xi))','log2(p(x))'],e:'Die Shannon-Entropie ist H(X) = -Σ p(xᵢ) · log₂(p(xᵢ)).'},
+{d:'sig',tp:'Informationsgehalt & Entropie',t:'mc',df:2,q:'Wann ist die Entropie H(X) maximal?',
+  o:['Wenn alle Zeichen gleich wahrscheinlich sind','Wenn ein Zeichen Wahrscheinlichkeit 1 hat','Wenn die Redundanz maximal ist','Wenn das Alphabet nur 1 Zeichen hat'],c:0,e:'H_max = log₂(N) wird erreicht bei Gleichverteilung aller N Zeichen.'},
+{d:'sig',tp:'Informationsgehalt & Entropie',t:'calc',df:3,q:'Berechne H_max für ein Alphabet mit N = 16 Zeichen.',
+  a:4,tol:0.01,unit:'Bit',e:'H_max = log₂(16) = 4 Bit.'},
+
+// sig-kanal
+{d:'sig',tp:'Kanalkapazität',t:'fill',df:2,q:'Shannon-Hartley: C = B · log₂(1 + <code>___</code>)',
+  a:['S/N','SNR','s/n','snr'],e:'Die Shannon-Formel: C = B · log₂(1 + S/N), wobei S/N das Signal-Rausch-Verhältnis ist.'},
+{d:'sig',tp:'Kanalkapazität',t:'calc',df:3,q:'Berechne die Kanalkapazität nach Nyquist: B = 3000 Hz, M = 4 Stufen.',
+  a:12000,tol:100,unit:'bit/s',e:'C = 2B · log₂(M) = 2 · 3000 · log₂(4) = 6000 · 2 = 12.000 bit/s.'},
+{d:'sig',tp:'Kanalkapazität',t:'tf',df:2,q:'Die Shannon-Formel gilt nur für rauschfreie Kanäle.',
+  c:false,e:'Falsch. Shannon gilt FÜR verrauschte Kanäle (mit S/N). Nyquist gilt für rauschfreie Kanäle.'},
+{d:'sig',tp:'Kanalkapazität',t:'mc',df:2,q:'Was beschreibt der SNR-Wert in dB?',
+  o:['Das Signal-Rausch-Verhältnis','Die Bandbreite','Die Bitfehlerrate','Die Übertragungsrate'],c:0,e:'SNR (Signal-to-Noise Ratio) in dB = 10 · log₁₀(S/N) beschreibt die Signalqualität.'},
+
+// sig-code
+{d:'sig',tp:'Codierung',t:'order',df:2,q:'Bringe die Codierungskette in die richtige Reihenfolge:',
+  items:['Quellcodierung','Kanalcodierung','Leitungscodierung'],e:'Erst Kompression (Quell), dann Fehlerschutz (Kanal), dann physikalische Darstellung (Leitung).'},
+{d:'sig',tp:'Codierung',t:'mc',df:2,q:'Welcher Code hat eine minimale Hamming-Distanz von d_min = 3?',
+  o:['Hamming-Code','NRZ','Manchester','Huffman'],c:0,e:'Hamming-Code hat d_min = 3, kann 1-Bit-Fehler korrigieren und 2-Bit-Fehler erkennen.'},
+{d:'sig',tp:'Codierung',t:'tf',df:2,q:'Manchester-Code enthält Taktinformation im Signal.',
+  c:true,e:'Korrekt. Manchester hat in jeder Bitmitte eine Flanke – dadurch kann der Empfänger den Takt wiederherstellen.'},
+{d:'sig',tp:'Codierung',t:'fill',df:2,q:'Hamming-Code kann <code>___</code> Bit-Fehler korrigieren.',
+  a:['1','einen','ein'],e:'Mit d_min = 3 kann Hamming-Code genau 1 Bit-Fehler korrigieren (und 2 erkennen).'},
+{d:'sig',tp:'Codierung',t:'match',df:2,q:'Ordne den Codierungstyp dem Zweck zu:',
+  pairs:[['Quellcodierung','Kompression (Redundanz entfernen)'],['Kanalcodierung','Fehlerschutz (Redundanz hinzufügen)'],['Leitungscodierung','Physikalische Signaldarstellung']],e:'Quell = komprimiert, Kanal = schützt, Leitung = überträgt.'},
+
+// sig-medien
+{d:'sig',tp:'Übertragungsmedien',t:'mc',df:1,q:'Welcher Kabeltyp nutzt Lichtwellen zur Datenübertragung?',
+  o:['Twisted Pair','Koaxialkabel','Lichtwellenleiter (LWL)','Richtfunk'],c:2,e:'LWL/Glasfaser überträgt Daten als Lichtimpulse durch Glasfasern.'},
+{d:'sig',tp:'Übertragungsmedien',t:'tf',df:2,q:'Singlemode-Faser verwendet LEDs als Lichtquelle.',
+  c:false,e:'Falsch. Singlemode nutzt Laser (kohärentes Licht). Multimode nutzt LEDs.'},
+{d:'sig',tp:'Übertragungsmedien',t:'match',df:2,q:'Ordne den Kabeltyp der Eigenschaft zu:',
+  pairs:[['Cat5e','100 MHz, Gigabit Ethernet'],['Cat6','250 MHz, 10GBase-T (kurz)'],['Cat7','600 MHz, vollgeschirmt']],e:'Höhere Kategorie = höhere Frequenz und bessere Abschirmung.'},
+
+// sig-ethernet
+{d:'sig',tp:'Ethernet & Data Link',t:'order',df:2,q:'Bringe den CSMA/CD-Ablauf in die richtige Reihenfolge:',
+  items:['Kanal abhören (Listen)','Senden beginnen','Kollision erkannt?','Backoff-Zeit warten','Erneut versuchen'],e:'CSMA/CD: Listen → Send → Collision Detection → Backoff → Retry.'},
+{d:'sig',tp:'Ethernet & Data Link',t:'fill',df:1,q:'Die Broadcast-MAC-Adresse lautet <code>___</code>.',
+  a:['FF:FF:FF:FF:FF:FF','ff:ff:ff:ff:ff:ff','FFFFFFFFFFFF'],e:'FF:FF:FF:FF:FF:FF ist die Broadcast-Adresse – erreicht alle Geräte im lokalen Netz.'},
+{d:'sig',tp:'Ethernet & Data Link',t:'mc',df:2,q:'Was steht NICHT im Ethernet-Frame?',
+  o:['Source MAC','Destination MAC','TTL','FCS (Frame Check Sequence)'],c:2,e:'TTL (Time to Live) ist ein Feld im IP-Header (Schicht 3), nicht im Ethernet-Frame (Schicht 2).'},
+
+// sig-wlan
+{d:'sig',tp:'WLAN & Drahtlos',t:'mc',df:1,q:'Welcher WLAN-Standard wird als WiFi 6 bezeichnet?',
+  o:['802.11ac','802.11ax','802.11n','802.11g'],c:1,e:'802.11ax = WiFi 6 (2019), mit OFDMA und verbesserter Effizienz.'},
+{d:'sig',tp:'WLAN & Drahtlos',t:'tf',df:2,q:'CSMA/CA verwendet Kollisionserkennung wie CSMA/CD.',
+  c:false,e:'Falsch. CSMA/CA (Collision Avoidance) VERMEIDET Kollisionen präventiv, da WLAN Kollisionen nicht erkennen kann.'},
+{d:'sig',tp:'WLAN & Drahtlos',t:'fill',df:2,q:'Das Hidden-Station-Problem wird durch <code>___</code>/CTS gelöst.',
+  a:['RTS','rts'],e:'RTS/CTS (Request to Send / Clear to Send) löst das Hidden-Station-Problem bei WLAN.'},
+
+// ━━━ TCP/IP & NETZDESIGN ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// tcp-ip
+{d:'tcp',tp:'IP-Adressierung',t:'mc',df:2,q:'Welcher IP-Adressbereich gehört zu Klasse A?',
+  o:['1.0.0.0 – 126.x.x.x','128.0.0.0 – 191.x.x.x','192.0.0.0 – 223.x.x.x','224.0.0.0 – 239.x.x.x'],c:0,e:'Klasse A: 1.0.0.0 – 126.255.255.255, Subnetzmaske /8.'},
+{d:'tcp',tp:'IP-Adressierung',t:'calc',df:3,q:'Wie viele nutzbare Host-Adressen hat ein /24-Subnetz?',
+  a:254,tol:0,unit:'Hosts',e:'2^(32-24) - 2 = 256 - 2 = 254 (Netz- und Broadcast-Adresse abziehen).'},
+{d:'tcp',tp:'IP-Adressierung',t:'match',df:2,q:'Ordne den privaten IP-Bereich der Klasse zu:',
+  pairs:[['10.0.0.0/8','Klasse A (16M Adressen)'],['172.16.0.0/12','Klasse B (1M Adressen)'],['192.168.0.0/16','Klasse C (65k Adressen)']],e:'RFC 1918 definiert drei private Adressbereiche für interne Netze.'},
+{d:'tcp',tp:'IP-Adressierung',t:'fill',df:2,q:'NAT steht für Network Address <code>___</code>.',
+  a:['Translation','translation'],e:'NAT (Network Address Translation) übersetzt private in öffentliche IP-Adressen.'},
+{d:'tcp',tp:'IP-Adressierung',t:'tf',df:1,q:'IPv6-Adressen sind 64 Bit lang.',
+  c:false,e:'Falsch. IPv6-Adressen sind 128 Bit lang (8 Gruppen à 16 Bit). IPv4 = 32 Bit.'},
+{d:'tcp',tp:'IP-Adressierung',t:'order',df:2,q:'Bringe den DHCP-Ablauf (DORA) in die richtige Reihenfolge:',
+  items:['Discover','Offer','Request','Acknowledge'],e:'DHCP DORA: Client sendet Discover → Server antwortet Offer → Client Request → Server Acknowledge.'},
+
+// tcp-proto
+{d:'tcp',tp:'IP, ICMP & ARP',t:'order',df:2,q:'Wie läuft ARP ab? Sortiere die Schritte:',
+  items:['Host kennt Ziel-IP, braucht MAC','ARP-Request als Broadcast senden','Zielhost erkennt seine IP','ARP-Reply als Unicast zurück','MAC in ARP-Cache speichern'],e:'ARP: Broadcast-Anfrage → Unicast-Antwort → Cache speichern.'},
+{d:'tcp',tp:'IP, ICMP & ARP',t:'mc',df:2,q:'Was bewirkt das TTL-Feld im IP-Header?',
+  o:['Begrenzt die Lebensdauer eines Pakets','Verschlüsselt die Daten','Gibt den Port an','Definiert die Fragmentierung'],c:0,e:'TTL (Time to Live) wird pro Hop um 1 verringert. Bei 0 wird das Paket verworfen → verhindert Endlosschleifen.'},
+{d:'tcp',tp:'IP, ICMP & ARP',t:'fill',df:2,q:'TTL wird pro Hop um <code>___</code> verringert.',
+  a:['1','eins'],e:'Jeder Router verringert den TTL-Wert um 1. Bei TTL=0 wird das Paket verworfen.'},
+{d:'tcp',tp:'IP, ICMP & ARP',t:'tf',df:2,q:'ARP löst MAC-Adressen in IP-Adressen auf.',
+  c:false,e:'Falsch. ARP löst IP → MAC auf. Das Gegenteil (MAC → IP) wäre RARP.'},
+
+// tcp-routing
+{d:'tcp',tp:'Routing',t:'mc',df:2,q:'Welches Routing-Protokoll verwendet den Dijkstra-Algorithmus?',
+  o:['RIP','OSPF','BGP','EIGRP'],c:1,e:'OSPF (Open Shortest Path First) ist ein Link-State-Protokoll und nutzt Dijkstra.'},
+{d:'tcp',tp:'Routing',t:'match',df:2,q:'Ordne das Routing-Protokoll dem Typ zu:',
+  pairs:[['RIP','Distanz-Vektor'],['OSPF','Link-State'],['BGP','Pfad-Vektor']],e:'RIP zählt Hops, OSPF kennt komplette Topologie (Dijkstra), BGP routet zwischen AS.'},
+{d:'tcp',tp:'Routing',t:'fill',df:2,q:'RIP hat ein Maximum von <code>___</code> Hops.',
+  a:['15','fünfzehn'],e:'RIP erlaubt max. 15 Hops. Hop Count 16 = unreachable. Daher nur für kleine Netze geeignet.'},
+{d:'tcp',tp:'Routing',t:'tf',df:2,q:'BGP wird primär innerhalb eines Autonomen Systems (AS) eingesetzt.',
+  c:false,e:'Falsch. BGP ist ein Inter-AS-Protokoll (zwischen Autonomen Systemen). Innerhalb eines AS: OSPF oder IS-IS.'},
+{d:'tcp',tp:'Routing',t:'mc',df:3,q:'Was ist das "Count-to-Infinity"-Problem?',
+  o:['Routing-Schleifen bei Distanz-Vektor-Protokollen','Zu viele Hops bei OSPF','BGP-Konfigurationsfehler','DNS-Auflösungsschleifen'],c:0,e:'Count-to-Infinity tritt bei Distanz-Vektor-Protokollen (RIP) auf: Routingeinträge werden bei Ausfall immer weiter hochgezählt.'},
+
+// tcp-transport
+{d:'tcp',tp:'TCP & UDP',t:'order',df:1,q:'Sortiere den TCP 3-Way-Handshake:',
+  items:['SYN','SYN-ACK','ACK'],e:'Client → SYN → Server → SYN-ACK → Client → ACK. Danach ist die Verbindung aufgebaut.'},
+{d:'tcp',tp:'TCP & UDP',t:'match',df:2,q:'Ordne den Port dem Dienst zu:',
+  pairs:[['Port 80','HTTP'],['Port 443','HTTPS'],['Port 53','DNS'],['Port 25','SMTP']],e:'Well-Known Ports: HTTP=80, HTTPS=443, DNS=53, SMTP=25, FTP=21, SSH=22.'},
+{d:'tcp',tp:'TCP & UDP',t:'mc',df:2,q:'Welches Protokoll ist verbindungslos und hat keinen Handshake?',
+  o:['TCP','UDP','ICMP','ARP'],c:1,e:'UDP (User Datagram Protocol) ist verbindungslos, schnell, ohne Handshake – ideal für Streaming, DNS, VoIP.'},
+{d:'tcp',tp:'TCP & UDP',t:'fill',df:2,q:'TCP verwendet <code>___</code> Window für die Flusskontrolle.',
+  a:['Sliding','sliding','Sliding Window','sliding window'],e:'Sliding Window steuert, wie viele Segmente ohne Bestätigung gesendet werden dürfen.'},
+{d:'tcp',tp:'TCP & UDP',t:'tf',df:2,q:'Ein Socket ist definiert als IP-Adresse plus Portnummer.',
+  c:true,e:'Korrekt. Socket = IP:Port (z.B. 192.168.1.1:443). Identifiziert eine Kommunikationsendstelle eindeutig.'},
+
+// tcp-design
+{d:'tcp',tp:'Netzkomponenten & Design',t:'mc',df:1,q:'Auf welcher OSI-Schicht arbeitet ein Switch?',
+  o:['Schicht 1','Schicht 2','Schicht 3','Schicht 4'],c:1,e:'Ein Switch arbeitet auf Schicht 2 (Data Link) und vermittelt anhand von MAC-Adressen.'},
+{d:'tcp',tp:'Netzkomponenten & Design',t:'match',df:2,q:'Ordne das Gerät der OSI-Schicht zu:',
+  pairs:[['Hub','Schicht 1 (Physical)'],['Switch','Schicht 2 (Data Link)'],['Router','Schicht 3 (Network)']],e:'Hub = Schicht 1 (dumme Weiterleitung), Switch = Schicht 2 (MAC), Router = Schicht 3 (IP).'},
+{d:'tcp',tp:'Netzkomponenten & Design',t:'fill',df:2,q:'VLAN-Tagging verwendet den Standard IEEE <code>___</code>.',
+  a:['802.1Q','802.1q','802.1 Q'],e:'IEEE 802.1Q fügt ein 4-Byte-Tag in den Ethernet-Frame ein zur VLAN-Identifikation.'},
+{d:'tcp',tp:'Netzkomponenten & Design',t:'tf',df:2,q:'STP (Spanning Tree Protocol) verhindert Routing-Schleifen.',
+  c:false,e:'Nicht ganz korrekt: STP verhindert Switching-Schleifen (Loops) auf Schicht 2, nicht Routing-Schleifen (Schicht 3).'},
+{d:'tcp',tp:'Netzkomponenten & Design',t:'mc',df:2,q:'Was ist der Hauptzweck von Multiplexing?',
+  o:['Mehrere Signale über ein Medium übertragen','Daten verschlüsseln','IP-Adressen zuweisen','Fehler korrigieren'],c:0,e:'Multiplexing (FDM, TDM, WDM) ermöglicht die gleichzeitige Nutzung eines Mediums durch mehrere Sender.'},
+
+// tcp-sicherheit
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'mc',df:2,q:'Welcher Algorithmus ist symmetrisch (ein Schlüssel)?',
+  o:['RSA','AES','Diffie-Hellman','DSA'],c:1,e:'AES (Advanced Encryption Standard) ist symmetrisch: gleicher Schlüssel für Ver- und Entschlüsselung.'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'match',df:2,q:'Ordne die Verschlüsselungsart dem Verfahren zu:',
+  pairs:[['Symmetrisch','AES – ein gemeinsamer Schlüssel'],['Asymmetrisch','RSA – Public + Private Key'],['Hybrid','TLS – Asymm. für Schlüsselaustausch, Symm. für Daten']],e:'In der Praxis wird Hybrid verwendet: RSA für den Schlüsselaustausch, AES für die eigentliche Verschlüsselung.'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'fill',df:2,q:'SNMP steht für Simple Network <code>___</code> Protocol.',
+  a:['Management','management'],e:'SNMP (Simple Network Management Protocol) dient zur Überwachung und Verwaltung von Netzwerkgeräten.'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'tf',df:2,q:'RSA verwendet einen einzelnen Schlüssel für Ver- und Entschlüsselung.',
+  c:false,e:'Falsch. RSA ist asymmetrisch: Public Key zum Verschlüsseln, Private Key zum Entschlüsseln.'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'mc',df:2,q:'Welches VPN-Protokoll arbeitet auf OSI-Schicht 3?',
+  o:['SSL/TLS','IPsec','PPTP','L2TP'],c:1,e:'IPsec arbeitet auf Schicht 3 (Network Layer) und verschlüsselt IP-Pakete direkt.'},
+
+// ━━━ INFORMATIK-GRUNDLAGEN ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// info-eva
+{d:'info',tp:'EVA-Prinzip & Algorithmus',t:'fill',df:1,q:'EVA steht für Eingabe, <code>___</code>, Ausgabe.',
+  a:['Verarbeitung','verarbeitung'],e:'EVA-Prinzip: Eingabe → Verarbeitung → Ausgabe – Grundprinzip jeder Datenverarbeitung.'},
+{d:'info',tp:'EVA-Prinzip & Algorithmus',t:'mc',df:1,q:'Welche Eigenschaft muss ein Algorithmus NICHT haben?',
+  o:['Endlichkeit','Parallelität','Determiniertheit','Terminierung'],c:1,e:'Parallelität ist KEINE geforderte Eigenschaft. Algorithmus: endlich, determiniert, terminierend, effektiv.'},
+{d:'info',tp:'EVA-Prinzip & Algorithmus',t:'tf',df:1,q:'Ein determinierter Algorithmus liefert bei gleicher Eingabe immer das gleiche Ergebnis.',
+  c:true,e:'Korrekt. Determiniert = gleiche Eingabe → gleiche Ausgabe. Deterministisch = nächster Schritt eindeutig.'},
+{d:'info',tp:'EVA-Prinzip & Algorithmus',t:'match',df:2,q:'Ordne die Algorithmus-Eigenschaft der Definition zu:',
+  pairs:[['Endlichkeit','Endlich viele Schritte beschreibbar'],['Determiniertheit','Gleiche Eingabe → Gleiches Ergebnis'],['Terminierung','Hält nach endlich vielen Schritten'],['Effektivität','Jeder Schritt ist ausführbar']],e:'Alle 4 Eigenschaften sind notwendig für einen Algorithmus im klassischen Sinne.'},
+
+// info-rechner
+{d:'info',tp:'Rechnerarchitektur',t:'mc',df:1,q:'Welches Bauteil der CPU führt arithmetische und logische Berechnungen durch?',
+  o:['Steuerwerk','ALU (Rechenwerk)','Register','Cache'],c:1,e:'Die ALU (Arithmetic Logic Unit) führt alle Berechnungen und logischen Operationen durch.'},
+{d:'info',tp:'Rechnerarchitektur',t:'tf',df:1,q:'Die Harvard-Architektur trennt Daten- und Befehlsspeicher.',
+  c:true,e:'Korrekt. Harvard = getrennte Speicher für Daten und Befehle (parallel zugreifbar). Von-Neumann = gemeinsamer Speicher.'},
+{d:'info',tp:'Rechnerarchitektur',t:'fill',df:2,q:'Die Von-Neumann-Architektur hat einen gemeinsamen <code>___</code> für Daten und Befehle.',
+  a:['Speicher','speicher','Hauptspeicher'],e:'Von-Neumann-Flaschenhals: Daten und Befehle teilen sich den gleichen Speicher und Bus.'},
+
+// info-zahlen
+{d:'info',tp:'Zahlensysteme & Logik',t:'calc',df:2,q:'Wandle 42 dezimal in binär um. Gib die Binärzahl ein.',
+  a:101010,tol:0,unit:'(binär)',e:'42 ÷ 2 = 21 R0, 21 ÷ 2 = 10 R1, 10 ÷ 2 = 5 R0, 5 ÷ 2 = 2 R1, 2 ÷ 2 = 1 R0, 1 ÷ 2 = 0 R1 → 101010.'},
+{d:'info',tp:'Zahlensysteme & Logik',t:'calc',df:2,q:'Wandle 2A (hex) in dezimal um.',
+  a:42,tol:0,unit:'(dezimal)',e:'2A₁₆ = 2·16 + 10·1 = 32 + 10 = 42.'},
+{d:'info',tp:'Zahlensysteme & Logik',t:'fill',df:2,q:'De Morgan: ¬(A ∧ B) = <code>___</code>',
+  a:['¬A ∨ ¬B','¬A∨¬B','!A || !B','NOT A OR NOT B','¬A v ¬B'],e:'De Morgan: ¬(A∧B) = ¬A∨¬B und ¬(A∨B) = ¬A∧¬B.'},
+{d:'info',tp:'Zahlensysteme & Logik',t:'mc',df:2,q:'Was ergibt 1010 AND 1100 (binär)?',
+  o:['1000','1110','0110','1010'],c:0,e:'AND bitweise: 1∧1=1, 0∧1=0, 1∧0=0, 0∧0=0 → 1000.'},
+
+// info-daten
+{d:'info',tp:'Datenstrukturen & ADTs',t:'mc',df:1,q:'Nach welchem Prinzip arbeitet ein Stack?',
+  o:['FIFO','LIFO','FILO','Random Access'],c:1,e:'Stack = LIFO (Last In, First Out). Das zuletzt eingefügte Element wird zuerst entfernt.'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'match',df:2,q:'Ordne die Datenstruktur dem Prinzip zu:',
+  pairs:[['Stack','LIFO – push/pop'],['Queue','FIFO – enqueue/dequeue'],['Array','Wahlfreier Zugriff per Index'],['BST','Sortierter Binärbaum']],e:'Stack/Queue haben eingeschränkten Zugriff, Array direkten, BST logarithmischen.'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'fill',df:2,q:'Eine Äquivalenzrelation ist reflexiv, symmetrisch und <code>___</code>.',
+  a:['transitiv'],e:'Äquivalenzrelation = reflexiv (a~a) + symmetrisch (a~b→b~a) + transitiv (a~b∧b~c→a~c).'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'mc',df:2,q:'Welche Eigenschaft hat eine injektive Funktion?',
+  o:['Verschiedene Argumente → verschiedene Bilder','Jedes Bild hat ein Urbild','Bijektiv und surjektiv','Reflexiv und transitiv'],c:0,e:'Injektiv: f(a)=f(b) → a=b. Verschiedene Eingaben ergeben verschiedene Ausgaben.'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'tf',df:2,q:'Eine surjektive Funktion bildet auf jeden Wert des Zielbereichs ab.',
+  c:true,e:'Korrekt. Surjektiv: Jedes Element der Zielmenge hat mindestens ein Urbild.'},
+
+// info-sort
+{d:'info',tp:'Sortieralgorithmen',t:'mc',df:2,q:'Welcher Sortieralgorithmus hat O(n·log n) im WORST Case?',
+  o:['QuickSort','BubbleSort','MergeSort','InsertionSort'],c:2,e:'MergeSort hat immer O(n·log n). QuickSort hat O(n²) im Worst Case!'},
+{d:'info',tp:'Sortieralgorithmen',t:'fill',df:2,q:'QuickSort wählt ein <code>___</code>-Element und partitioniert das Array.',
+  a:['Pivot','pivot','Pivot-Element'],e:'QuickSort: Pivot wählen → Partition (kleiner links, größer rechts) → Rekursion auf beide Hälften.'},
+{d:'info',tp:'Sortieralgorithmen',t:'tf',df:2,q:'HeapSort ist ein stabiles Sortierverfahren.',
+  c:false,e:'Falsch. HeapSort ist NICHT stabil (gleiche Elemente können Reihenfolge tauschen). MergeSort ist stabil.'},
+{d:'info',tp:'Sortieralgorithmen',t:'mc',df:2,q:'Welcher Algorithmus ist stabil UND hat O(n·log n)?',
+  o:['HeapSort','QuickSort','MergeSort','SelectionSort'],c:2,e:'Nur MergeSort ist stabil mit garantiertem O(n·log n). Nachteil: zusätzlicher Speicher O(n).'},
+{d:'info',tp:'Sortieralgorithmen',t:'order',df:3,q:'BubbleSort: Sortiere [5, 3, 8, 1] – welche Reihenfolge nach dem 1. Durchlauf?',
+  items:['3','5','1','8'],e:'Durchlauf 1: (5,3)→3,5 | (5,8)→5,8 | (8,1)→1,8 → Ergebnis: [3, 5, 1, 8]. Die 8 ist am Ende.'},
+{d:'info',tp:'Sortieralgorithmen',t:'match',df:2,q:'Ordne den Algorithmus der Worst-Case-Komplexität zu:',
+  pairs:[['BubbleSort','O(n²)'],['QuickSort','O(n²)'],['MergeSort','O(n·log n)'],['HeapSort','O(n·log n)']],e:'Bubble/Quick = O(n²) im Worst Case. Merge/Heap = O(n·log n) immer.'},
+
+// info-hash
+{d:'info',tp:'Hashing & Pattern Matching',t:'calc',df:3,q:'Berechne h(42) mit Divisionsmethode, Tabellengröße m = 11.',
+  a:9,tol:0,unit:'',e:'h(42) = 42 mod 11 = 9 (42 = 3·11 + 9).'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'mc',df:2,q:'Was ist Chaining bei der Kollisionsbehandlung?',
+  o:['Verkettete Listen an jeder Position','Lineares Sondieren','Quadratisches Sondieren','Doppeltes Hashing'],c:0,e:'Chaining: Jede Hash-Position enthält eine verkettete Liste aller kollidierenden Elemente.'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'match',df:2,q:'Ordne die Sondierungsart der Methode zu:',
+  pairs:[['Lineares Sondieren','h + 1, h + 2, h + 3, …'],['Quadratisches Sond.','h + 1², h + 2², h + 3², …'],['Double Hashing','h₁(k) + i · h₂(k)']],e:'Linear = einfach aber Cluster-Bildung. Quadratisch = besser verteilt. Double = beste Verteilung.'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'fill',df:3,q:'Die Multiplikationsmethode: h(k) = ⌊m · (k · A mod 1)⌋, wobei A ≈ <code>___</code>.',
+  a:['0.618','0,618','0.6180'],e:'Knuth empfiehlt A ≈ (√5-1)/2 ≈ 0,618 (Goldener Schnitt) für gute Verteilung.'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'mc',df:2,q:'Welcher Pattern-Matching-Algorithmus nutzt eine Prefix-Tabelle?',
+  o:['Boyer-Moore','KMP','Brute-Force','Rabin-Karp'],c:1,e:'KMP (Knuth-Morris-Pratt) baut eine Prefix-Tabelle auf und erreicht damit O(n+m).'},
+
+// info-komplex
+{d:'info',tp:'Komplexitätsanalyse',t:'order',df:2,q:'Sortiere die Komplexitätsklassen von schnell nach langsam:',
+  items:['O(1)','O(log n)','O(n)','O(n·log n)','O(n²)','O(2ⁿ)'],e:'Konstant < Logarithmisch < Linear < Quasilinear < Quadratisch < Exponentiell.'},
+{d:'info',tp:'Komplexitätsanalyse',t:'fill',df:3,q:'Master-Theorem: T(n) = a · T(n/b) + <code>___</code>',
+  a:['f(n)','f (n)'],e:'Master-Theorem: T(n) = a·T(n/b) + f(n). a = Anzahl Teilprobleme, b = Verkleinerungsfaktor.'},
+{d:'info',tp:'Komplexitätsanalyse',t:'mc',df:3,q:'Master-Theorem Fall 2: Wenn f(n) ∈ Θ(n^(log_b a)), dann ist T(n) = ?',
+  o:['Θ(n^(log_b a))','Θ(n^(log_b a) · log n)','Θ(f(n))','Θ(n²)'],c:1,e:'Fall 2: f(n) wächst gleich schnell → T(n) = Θ(n^(log_b a) · log n).'},
+{d:'info',tp:'Komplexitätsanalyse',t:'tf',df:2,q:'O(n²) ist effizienter als O(n·log n).',
+  c:false,e:'Falsch. O(n·log n) wächst langsamer als O(n²). Für große n ist n·log n deutlich besser.'},
+{d:'info',tp:'Komplexitätsanalyse',t:'match',df:2,q:'Ordne den Algorithmus der typischen Komplexität zu:',
+  pairs:[['Binäre Suche','O(log n)'],['BubbleSort','O(n²)'],['MergeSort','O(n·log n)'],['Hash-Lookup','O(1)']],e:'Binäre Suche halbiert immer → log n. Bubble vergleicht alle Paare → n². Merge teilt und merged → n·log n.'},
+
+// ━━━ FORMALE SPRACHEN & AUTOMATEN ━━━━━━━━━━━━━━━━━━━━
+// formal-grund
+{d:'formal',tp:'Grundbegriffe',t:'fill',df:1,q:'Σ* enthält alle Wörter über dem Alphabet, inklusive des leeren Wortes <code>___</code>.',
+  a:['ε','epsilon','ε (epsilon)','Epsilon'],e:'Σ* = Kleene-Stern, enthält alle endlichen Wörter über Σ, einschließlich ε (leeres Wort mit Länge 0).'},
+{d:'formal',tp:'Grundbegriffe',t:'mc',df:1,q:'Was ist Σ⁺?',
+  o:['Alle Wörter ohne das leere Wort','Nur das leere Wort','Das Alphabet selbst','Alle unendlichen Wörter'],c:0,e:'Σ⁺ = Σ* \\ {ε} – alle nicht-leeren Wörter über dem Alphabet.'},
+{d:'formal',tp:'Grundbegriffe',t:'tf',df:1,q:'Das leere Wort ε hat die Länge 0.',
+  c:true,e:'Korrekt. |ε| = 0. Das leere Wort enthält keine Zeichen.'},
+
+// formal-grammar
+{d:'formal',tp:'Formale Grammatiken',t:'match',df:2,q:'Ordne den Chomsky-Typ dem zugehörigen Automaten zu:',
+  pairs:[['Typ 3 – Regulär','DEA / NEA'],['Typ 2 – Kontextfrei','Kellerautomat (KA)'],['Typ 1 – Kontextsensitiv','Linear beschränkter Automat (LBA)'],['Typ 0 – Unbeschränkt','Turingmaschine (TM)']],e:'Chomsky-Hierarchie: Jeder Sprachtyp hat einen äquivalenten Automatentyp.'},
+{d:'formal',tp:'Formale Grammatiken',t:'order',df:2,q:'Sortiere die Chomsky-Hierarchie von schwächster (Typ 3) zu mächtigster (Typ 0):',
+  items:['Typ 3 – Regulär','Typ 2 – Kontextfrei','Typ 1 – Kontextsensitiv','Typ 0 – Unbeschränkt'],e:'Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0. Jede höhere Stufe umfasst alle niedrigeren.'},
+{d:'formal',tp:'Formale Grammatiken',t:'fill',df:2,q:'Eine Grammatik in Chomsky-Normalform hat nur Produktionen der Form A → BC oder A → <code>___</code>.',
+  a:['a','terminal','Terminal','ein Terminal'],e:'CNF: Jede Produktion ist entweder A→BC (zwei Nichtterminale) oder A→a (ein Terminal).'},
+{d:'formal',tp:'Formale Grammatiken',t:'mc',df:2,q:'Welcher Chomsky-Typ sind rechtslineare Grammatiken?',
+  o:['Typ 0','Typ 1','Typ 2','Typ 3'],c:3,e:'Rechtslineare Grammatiken (A→aB oder A→a) erzeugen reguläre Sprachen = Typ 3.'},
+{d:'formal',tp:'Formale Grammatiken',t:'fill',df:2,q:'G = (N, T, <code>___</code>, S)',
+  a:['P','Produktionen','Produktionsmenge'],e:'G = (N, T, P, S): N = Nichtterminale, T = Terminale, P = Produktionen, S = Startsymbol.'},
+{d:'formal',tp:'Formale Grammatiken',t:'tf',df:2,q:'Typ-2-Grammatiken sind mächtiger als Typ-3-Grammatiken.',
+  c:true,e:'Korrekt. Typ 3 ⊂ Typ 2. Kontextfreie Sprachen umfassen alle regulären Sprachen und mehr (z.B. {aⁿbⁿ}).'},
+
+// formal-compiler
+{d:'formal',tp:'Compiler & Sprachübersetzer',t:'order',df:2,q:'Bringe die Compiler-Phasen in die richtige Reihenfolge:',
+  items:['Lexikalische Analyse (Scanner)','Syntaktische Analyse (Parser)','Semantische Analyse','Code-Generierung'],e:'Scanner zerlegt in Tokens → Parser baut Syntaxbaum → Semantik prüft Typen → Codegen erzeugt Maschinencode.'},
+{d:'formal',tp:'Compiler & Sprachübersetzer',t:'mc',df:2,q:'Was erzeugt der Scanner (Lexer)?',
+  o:['Tokens','Syntaxbaum','Maschinencode','Zwischencode'],c:0,e:'Der Scanner (lexikalische Analyse) zerlegt den Quellcode in Tokens (Schlüsselwörter, Bezeichner, Operatoren).'},
+{d:'formal',tp:'Compiler & Sprachübersetzer',t:'tf',df:1,q:'Ein Interpreter übersetzt das gesamte Programm vor der Ausführung in Maschinencode.',
+  c:false,e:'Falsch. Das tut ein Compiler. Ein Interpreter führt den Code Zeile für Zeile aus, ohne vorher komplett zu übersetzen.'},
+
+// formal-automaten
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'fill',df:2,q:'DEA = (Q, Σ, δ, q₀, <code>___</code>)',
+  a:['F','Endzustände','Endzustandsmenge'],e:'DEA 5-Tupel: Q = Zustände, Σ = Alphabet, δ = Übergangsfunktion, q₀ = Startzustand, F = Endzustände.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'mc',df:2,q:'Was ist die Potenzmengenkonstruktion?',
+  o:['NEA in DEA umwandeln','DEA minimieren','Regulären Ausdruck parsen','Grammatik in Automat wandeln'],c:0,e:'Die Potenzmengenkonstruktion wandelt einen NEA in einen äquivalenten DEA um. Zustandsmenge kann exponentiell wachsen.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'tf',df:2,q:'Jeder NEA kann in einen äquivalenten DEA umgewandelt werden.',
+  c:true,e:'Korrekt. NEA und DEA sind gleich mächtig – beide erkennen genau die regulären Sprachen.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'mc',df:3,q:'Wozu dient das Pumping-Lemma für reguläre Sprachen?',
+  o:['Zum Beweis, dass eine Sprache NICHT regulär ist','Zum Beweis, dass eine Sprache regulär ist','Zur Minimierung von DEAs','Zur Konstruktion von NEAs'],c:0,e:'Das Pumping-Lemma wird zum WIDERSPRUCHSBEWEIS verwendet: Zeige, dass eine Sprache nicht „pumpbar" ist → nicht regulär.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'fill',df:2,q:'Bei einem DEA liefert die Übergangsfunktion δ genau <code>___</code> Zustand(e).',
+  a:['1','einen','genau einen'],e:'DEA = deterministisch: δ(q,a) liefert genau EINEN Folgezustand. Beim NEA: eine MENGE von Zuständen.'},
+
+// formal-keller
+{d:'formal',tp:'Kellerautomaten & kfS',t:'fill',df:2,q:'NKA = (Q, Σ, Γ, δ, q₀, Z₀, <code>___</code>)',
+  a:['F','Endzustände','Endzustandsmenge'],e:'NKA 7-Tupel: Q, Σ, Γ (Kelleralphabet), δ, q₀, Z₀ (Anfangs-Kellersymbol), F (Endzustände).'},
+{d:'formal',tp:'Kellerautomaten & kfS',t:'mc',df:2,q:'Welche Sprache kann ein Kellerautomat erkennen, ein DEA aber nicht?',
+  o:['L = {aⁿbⁿ | n≥1}','L = {a*b*}','L = alle Binärzahlen','L = {w | w enthält "ab"}'],c:0,e:'{aⁿbⁿ} ist kontextfrei (Typ 2) – der KA zählt die a\'s auf dem Stack und matcht mit b\'s. Ein DEA kann nicht zählen.'},
+{d:'formal',tp:'Kellerautomaten & kfS',t:'tf',df:2,q:'DKA (deterministischer KA) und NKA sind gleich mächtig.',
+  c:false,e:'Falsch! DKA ⊂ NKA – der DKA ist ECHT schwächer. Es gibt kontextfreie Sprachen, die nur ein NKA erkennen kann.'},
+{d:'formal',tp:'Kellerautomaten & kfS',t:'mc',df:2,q:'Was beschreibt die Chomsky-Normalform (CNF)?',
+  o:['Produktionen A→BC oder A→a','Produktionen A→aB oder A→a','Produktionen A→ε','Produktionen αAβ→αγβ'],c:0,e:'CNF: Jede Produktion entweder A→BC (zwei Nichtterminale) oder A→a (ein Terminal). Wichtig für CYK-Parser.'},
+
+// formal-ll
+{d:'formal',tp:'LL(k)-Sprachen',t:'mc',df:2,q:'Wofür steht "LL" in LL(k)?',
+  o:['Left-to-right, Leftmost derivation','Left-to-right, Last derivation','Linked List','Linear Logic'],c:0,e:'LL = Left-to-right Eingabelesen, Leftmost derivation (Linksableitung) = Top-Down-Parsing.'},
+{d:'formal',tp:'LL(k)-Sprachen',t:'fill',df:3,q:'LL(1)-Bedingung: FIRST(α) ∩ FOLLOW(A) = <code>___</code> (für A→α|β)',
+  a:['∅','leer','leere Menge','{}'],e:'Damit ein Top-Down-Parser eindeutig entscheiden kann, müssen FIRST- und FOLLOW-Mengen disjunkt sein.'},
+{d:'formal',tp:'LL(k)-Sprachen',t:'tf',df:2,q:'LL-Parser arbeiten Bottom-Up.',
+  c:false,e:'Falsch. LL-Parser arbeiten Top-Down (vom Startsymbol nach unten). LR-Parser arbeiten Bottom-Up.'},
+{d:'formal',tp:'LL(k)-Sprachen',t:'match',df:3,q:'Ordne den Begriff der Definition zu:',
+  pairs:[['FIRST(α)','Menge der Terminale, die als Erstes aus α abgeleitet werden können'],['FOLLOW(A)','Menge der Terminale, die direkt nach A auftreten können']],e:'FIRST bestimmt den Anfang einer Ableitung, FOLLOW bestimmt den Kontext nach einem Nichtterminal.'},
+
+// formal-lr
+{d:'formal',tp:'LR(k)-Sprachen',t:'mc',df:2,q:'Was bedeutet "Shift" beim Shift-Reduce-Parsing?',
+  o:['Nächstes Token auf den Stack legen','Handle durch Nichtterminal ersetzen','Syntaxbaum aufbauen','Eingabe zurücksetzen'],c:0,e:'Shift = nächstes Eingabetoken auf den Stack legen. Reduce = Handle auf dem Stack durch Nichtterminal ersetzen.'},
+{d:'formal',tp:'LR(k)-Sprachen',t:'order',df:2,q:'Sortiere die LR-Parser-Hierarchie von schwach nach mächtig:',
+  items:['SLR(1)','LALR(1)','LR(1)'],e:'SLR(1) ⊂ LALR(1) ⊂ LR(1). LALR(1) ist der praktische Kompromiss (yacc/bison).'},
+{d:'formal',tp:'LR(k)-Sprachen',t:'fill',df:2,q:'LR steht für Left-to-right, <code>___</code> derivation.',
+  a:['Rightmost','rightmost','Rechtsableitung'],e:'LR = Left-to-right Lesen, Rightmost derivation (Rechtsableitung) = Bottom-Up-Parsing.'},
+{d:'formal',tp:'LR(k)-Sprachen',t:'tf',df:2,q:'LR(1)-Parser sind mächtiger als LL(1)-Parser.',
+  c:true,e:'Korrekt. LL(1) ⊂ LR(1). LR-Parser können mehr Grammatiken verarbeiten als LL-Parser.'},
+
+// formal-turing
+{d:'formal',tp:'Turing-Maschine',t:'fill',df:2,q:'TM = (Q, Σ, Γ, δ, q₀, <code>___</code>, F)',
+  a:['□','Blank','blank','B','⊔'],e:'TM 7-Tupel: □ (Blank-Symbol) markiert leere Bandfelder. Γ enthält □ und alle Bandsymbole.'},
+{d:'formal',tp:'Turing-Maschine',t:'mc',df:2,q:'Was besagt die Church-Turing-These?',
+  o:['Alles Berechenbare ist TM-berechenbar','Jede TM hält immer an','NTM ist mächtiger als DTM','P = NP'],c:0,e:'Church-Turing-These: Die Menge der berechenbaren Funktionen = die Menge der TM-berechenbaren Funktionen.'},
+{d:'formal',tp:'Turing-Maschine',t:'tf',df:2,q:'Das Halteproblem ist entscheidbar.',
+  c:false,e:'Falsch. Das Halteproblem ist UNENTSCHEIDBAR (Beweis durch Diagonalisierung). Es gibt keinen Algorithmus, der für jede TM entscheidet, ob sie hält.'},
+{d:'formal',tp:'Turing-Maschine',t:'match',df:2,q:'Ordne die TM-Variante der Eigenschaft zu:',
+  pairs:[['DTM','Deterministisch, ein Folgezustand'],['NTM','Nichtdeterministisch, mehrere Wege'],['LBTM','Band linear beschränkt'],['UTM','Simuliert jede andere TM']],e:'DTM/NTM gleich mächtig. LBTM erkennt Typ-1-Sprachen. UTM ist die „universelle" Maschine.'},
+{d:'formal',tp:'Turing-Maschine',t:'order',df:2,q:'Sortiere die Sprachklassen von eingeschränkt nach mächtig:',
+  items:['Regulär (Typ 3)','Kontextfrei (Typ 2)','Kontextsensitiv (Typ 1)','Rekursiv aufzählbar (Typ 0)'],e:'Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0 – jede Klasse umfasst alle darunterliegenden.'}
+];
+
+/* ═══════════════════════════════════════════════════════
+   DOMAIN METADATA
+   ═══════════════════════════════════════════════════════ */
+const DOMAINS = [
+  {id:'netz',label:'🌐 Netzwerk-Grundlagen',color:'#06b6d4'},
+  {id:'sig',label:'📡 Signale & Übertragung',color:'#a78bfa'},
+  {id:'tcp',label:'🔧 TCP/IP & Netzdesign',color:'#fb923c'},
+  {id:'info',label:'💻 Informatik-Grundlagen',color:'#22c55e'},
+  {id:'formal',label:'🤖 Formale Sprachen',color:'#f472b6'}
+];
+const TYPES = {mc:'Multiple Choice',tf:'Wahr / Falsch',fill:'Lückentext',match:'Zuordnung',order:'Reihenfolge',calc:'Berechnung'};
+const DIFF_LABELS = ['','Stufe 1 · Erinnern','Stufe 2 · Verstehen','Stufe 3 · Anwenden','Stufe 4 · Analysieren'];
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════ */
+let state = {
+  screen:'start', // start, quiz, end
+  filterDomain:'all',
+  filterDiff:0, // 0=all
+  filterType:'all',
+  questions:[], // filtered & shuffled
+  current:0,
+  score:0,
+  answered:0,
+  answered_ids:new Set(),
+  locked:false // prevent double-answer
+};
+let history = JSON.parse(localStorage.getItem('pt-history')||'{}');
+
+function saveHistory(){ localStorage.setItem('pt-history', JSON.stringify(history)); }
+
+/* ═══════════════════════════════════════════════════════
+   RENDER ENGINE
+   ═══════════════════════════════════════════════════════ */
+const app = document.getElementById('app');
+
+function render(){
+  if(state.screen==='start') renderStart();
+  else if(state.screen==='quiz') renderQuiz();
+  else renderEnd();
+}
+
+function renderStart(){
+  const domainStats = DOMAINS.map(d=>{
+    const qs = Q.filter(q=>q.d===d.id);
+    const done = qs.filter(q=>history[qId(q)]==='correct').length;
+    return {d, total:qs.length, done};
+  });
+  const totalQ = Q.length;
+  const totalDone = Object.values(history).filter(v=>v==='correct').length;
+
+  app.innerHTML = `
+    <div class="start-screen">
+      <div class="stats">
+        <span>📝 Fragen: <span class="val">${totalQ}</span></span>
+        <span>✅ Richtig: <span class="correct-val">${totalDone}</span></span>
+        <span>📊 Quote: <span class="val">${totalQ?Math.round(totalDone/totalQ*100):0}%</span></span>
+      </div>
+      <div class="toolbar">
+        <div class="filter-group">
+          <span class="label">Stufe</span>
+          <button class="fbtn${state.filterDiff===0?' active':''}" onclick="setDiff(0)">Alle</button>
+          <button class="fbtn${state.filterDiff===1?' active':''}" onclick="setDiff(1)">1 Erinnern</button>
+          <button class="fbtn${state.filterDiff===2?' active':''}" onclick="setDiff(2)">2 Verstehen</button>
+          <button class="fbtn${state.filterDiff===3?' active':''}" onclick="setDiff(3)">3 Anwenden</button>
+        </div>
+        <div class="filter-group">
+          <span class="label">Typ</span>
+          <button class="fbtn${state.filterType==='all'?' active':''}" onclick="setType('all')">Alle</button>
+          ${Object.keys(TYPES).map(t=>`<button class="fbtn${state.filterType===t?' active':''}" onclick="setType('${t}')">${TYPES[t].split(' ')[0]}</button>`).join('')}
+        </div>
+      </div>
+      <div class="domain-cards">
+        ${domainStats.map(({d,total,done})=>`
+          <div class="d-card${state.filterDomain===d.id?' active':''}" style="--dc:${d.color}" onclick="toggleDomain('${d.id}')">
+            <div class="d-card-title">${d.label}</div>
+            <div class="d-card-sub">${countFiltered(d.id)} Fragen verfügbar</div>
+            <div class="d-card-stats"><span>✅ ${done}/${total}</span><span>${total?Math.round(done/total*100):0}%</span></div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="startQuiz(false)">🎯 Alle starten (${countFiltered('all')})</button>
+        <button class="btn btn-primary" onclick="startQuiz(true)">🔥 Nur Fehler wiederholen (${countWrong()})</button>
+      </div>
+    </div>`;
+}
+
+function countFiltered(domain){
+  return Q.filter(q=>{
+    if(domain!=='all' && q.d!==domain) return false;
+    if(state.filterDomain!=='all' && q.d!==state.filterDomain) return false;
+    if(state.filterDiff && q.df!==state.filterDiff) return false;
+    if(state.filterType!=='all' && q.t!==state.filterType) return false;
+    return true;
+  }).length;
+}
+function countWrong(){
+  return Q.filter(q=>history[qId(q)]==='wrong').length;
+}
+
+function renderQuiz(){
+  if(state.current >= state.questions.length){ state.screen='end'; render(); return; }
+  const q = state.questions[state.current];
+  const dom = DOMAINS.find(d=>d.id===q.d);
+  const pct = ((state.current)/state.questions.length*100).toFixed(0);
+
+  let answerHTML = '';
+  if(q.t==='mc') answerHTML = renderMC(q);
+  else if(q.t==='tf') answerHTML = renderTF(q);
+  else if(q.t==='fill') answerHTML = renderFill(q);
+  else if(q.t==='match') answerHTML = renderMatch(q);
+  else if(q.t==='order') answerHTML = renderOrder(q);
+  else if(q.t==='calc') answerHTML = renderCalc(q);
+
+  app.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="stats">
+        <span>${state.current+1} / ${state.questions.length}</span>
+        <span>✅ <span class="correct-val">${state.score}</span></span>
+        <span>❌ <span class="wrong-val">${state.answered - state.score}</span></span>
+      </div>
+      <div class="q-card">
+        <div class="q-meta">
+          <span class="q-num">#${state.current+1}</span>
+          <span class="q-domain" style="border-color:${dom.color};color:${dom.color}">${q.tp}</span>
+          <span class="q-type">${TYPES[q.t]}</span>
+          <span class="q-difficulty">${[1,2,3,4].map(i=>`<span${i<=q.df?' class="filled"':''} title="${DIFF_LABELS[q.df]}"></span>`).join('')}</span>
+        </div>
+        <div class="q-text">${q.q}</div>
+        <div id="answer-area">${answerHTML}</div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="state.screen='start';render()">✕ Beenden</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Weiter →</button>
+      </div>
+    </div>`;
+  state.locked = false;
+  if(q.t==='match') initMatch(q);
+  if(q.t==='order') initOrder(q);
+}
+
+/* ── MC ── */
+function renderMC(q){
+  const letters = 'ABCD';
+  return `<div class="mc-options">${q.o.map((opt,i)=>`
+    <div class="mc-opt" data-i="${i}" onclick="answerMC(${i})">
+      <span class="mc-letter">${letters[i]}</span><span>${opt}</span>
+    </div>`).join('')}</div>`;
+}
+function answerMC(i){
+  if(state.locked) return;
+  state.locked = true;
+  const q = state.questions[state.current];
+  const correct = i === q.c;
+  document.querySelectorAll('.mc-opt').forEach((el,j)=>{
+    el.classList.add('locked');
+    if(j===q.c) el.classList.add('correct');
+    if(j===i && !correct) el.classList.add('wrong');
+  });
+  showFeedback(correct, q.e);
+}
+
+/* ── TF ── */
+function renderTF(q){
+  return `<div class="tf-wrap">
+    <button class="tf-btn" onclick="answerTF(true)">✓ Wahr</button>
+    <button class="tf-btn" onclick="answerTF(false)">✕ Falsch</button>
+  </div>`;
+}
+function answerTF(val){
+  if(state.locked) return;
+  state.locked = true;
+  const q = state.questions[state.current];
+  const correct = val === q.c;
+  document.querySelectorAll('.tf-btn').forEach(btn=>{
+    btn.classList.add('locked');
+    const isTrue = btn.textContent.includes('Wahr');
+    if(isTrue===q.c) btn.classList.add('correct');
+    if(isTrue===val && !correct) btn.classList.add('wrong');
+  });
+  showFeedback(correct, q.e);
+}
+
+/* ── Fill ── */
+function renderFill(q){
+  return `<div class="fill-wrap">
+    <input class="fill-input" id="fillInput" placeholder="Antwort eingeben…" onkeydown="if(event.key==='Enter')answerFill()">
+    <button class="fill-submit" onclick="answerFill()">Prüfen</button>
+  </div>`;
+}
+function answerFill(){
+  if(state.locked) return;
+  state.locked = true;
+  const q = state.questions[state.current];
+  const input = document.getElementById('fillInput');
+  const val = input.value.trim();
+  const correct = q.a.some(a=>a.toLowerCase()===val.toLowerCase());
+  input.classList.add(correct?'correct':'wrong');
+  if(!correct) input.value = val + '  →  ' + q.a[0];
+  showFeedback(correct, q.e);
+}
+
+/* ── Match ── */
+let matchState = {sel:null, matched:[], pairs:[]};
+function renderMatch(q){
+  return `<div class="match-wrap" id="matchArea">
+    <div class="match-hint">Klicke links, dann rechts zum Zuordnen</div>
+  </div>`;
+}
+function initMatch(q){
+  matchState = {sel:null, matched:[], pairs:q.pairs};
+  const area = document.getElementById('matchArea');
+  const left = q.pairs.map(p=>p[0]);
+  const right = shuffle([...q.pairs.map(p=>p[1])]);
+  let html = '<div class="match-hint">Klicke links, dann rechts zum Zuordnen</div>';
+  left.forEach((l,i)=>{ html += `<div class="match-item match-l" data-side="l" data-i="${i}" onclick="matchClick(this)">${l}</div><div class="match-item match-r" data-side="r" data-val="${q.pairs[i][1]}" onclick="matchClick(this)">${right[i]}</div>`; });
+  area.innerHTML = html;
+}
+function matchClick(el){
+  if(state.locked || el.classList.contains('matched')) return;
+  const side = el.dataset.side;
+  if(side==='l'){
+    document.querySelectorAll('.match-l.sel').forEach(e=>e.classList.remove('sel'));
+    el.classList.add('sel');
+    matchState.sel = {side:'l', i:parseInt(el.dataset.i), el};
+  } else if(matchState.sel && matchState.sel.side==='l'){
+    const leftIdx = matchState.sel.i;
+    const rightVal = el.textContent;
+    const expected = matchState.pairs[leftIdx][1];
+    if(rightVal === expected){
+      matchState.sel.el.classList.remove('sel');
+      matchState.sel.el.classList.add('matched');
+      el.classList.add('matched');
+      matchState.matched.push(leftIdx);
+      if(matchState.matched.length === matchState.pairs.length){
+        showFeedback(true, state.questions[state.current].e);
+        state.locked = true;
+      }
+    } else {
+      el.classList.add('wrong-flash');
+      setTimeout(()=>el.classList.remove('wrong-flash'),600);
+    }
+    matchState.sel = null;
+    document.querySelectorAll('.match-l.sel').forEach(e=>e.classList.remove('sel'));
+  }
+}
+
+/* ── Order ── */
+let orderState = {seq:[], items:[]};
+function renderOrder(q){
+  return `<div id="orderArea">
+    <div class="order-seq" id="orderSeq"></div>
+    <div class="order-pool" id="orderPool"></div>
+    <button class="order-reset" onclick="resetOrder()">↺ Reset</button>
+  </div>`;
+}
+function initOrder(q){
+  orderState = {seq:[], items:[...q.items]};
+  const shuffled = shuffle([...q.items]);
+  const pool = document.getElementById('orderPool');
+  pool.innerHTML = shuffled.map((item,i)=>`<div class="order-item" data-val="${item}" onclick="orderClick(this)">${item}</div>`).join('');
+}
+function orderClick(el){
+  if(state.locked || el.classList.contains('used')) return;
+  el.classList.add('used');
+  orderState.seq.push(el.dataset.val);
+  const seq = document.getElementById('orderSeq');
+  seq.innerHTML = orderState.seq.map((s,i)=>`<div class="order-placed"><span class="seq-num">${i+1}.</span> ${s}</div>`).join('');
+  if(orderState.seq.length === orderState.items.length){
+    state.locked = true;
+    const q = state.questions[state.current];
+    const correct = orderState.seq.every((s,i)=>s===q.items[i]);
+    const area = document.getElementById('orderArea');
+    area.classList.add(correct?'order-correct':'order-wrong');
+    if(!correct){
+      seq.innerHTML += `<div style="color:var(--wrong);font-size:.7rem;width:100%;margin-top:.3rem">Richtig: ${q.items.join(' → ')}</div>`;
+    }
+    showFeedback(correct, q.e);
+  }
+}
+function resetOrder(){
+  if(state.locked) return;
+  orderState.seq = [];
+  document.getElementById('orderSeq').innerHTML = '';
+  document.querySelectorAll('.order-item').forEach(el=>el.classList.remove('used'));
+}
+
+/* ── Calc ── */
+function renderCalc(q){
+  return `<div class="calc-wrap">
+    <input class="calc-input" id="calcInput" type="number" step="any" placeholder="Ergebnis…" onkeydown="if(event.key==='Enter')answerCalc()">
+    <span class="calc-unit">${q.unit||''}</span>
+    <button class="fill-submit" onclick="answerCalc()">Prüfen</button>
+  </div>`;
+}
+function answerCalc(){
+  if(state.locked) return;
+  state.locked = true;
+  const q = state.questions[state.current];
+  const input = document.getElementById('calcInput');
+  const val = parseFloat(input.value);
+  const correct = !isNaN(val) && Math.abs(val - q.a) <= (q.tol||0.01);
+  input.classList.add(correct?'correct':'wrong');
+  if(!correct) input.value = val + '  →  ' + q.a;
+  showFeedback(correct, q.e);
+}
+
+/* ── Feedback ── */
+function showFeedback(correct, explanation){
+  const q = state.questions[state.current];
+  const id = qId(q);
+  state.answered++;
+  if(correct) state.score++;
+  history[id] = correct?'correct':'wrong';
+  saveHistory();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct?'correct':'wrong');
+  fb.innerHTML = `<strong>${correct?'✅ Richtig!':'❌ Falsch!'}</strong>${explanation}`;
+  document.getElementById('nextBtn').disabled = false;
+  // update stats
+  document.querySelector('.stats').innerHTML = `
+    <span>${state.current+1} / ${state.questions.length}</span>
+    <span>✅ <span class="correct-val">${state.score}</span></span>
+    <span>❌ <span class="wrong-val">${state.answered - state.score}</span></span>`;
+}
+
+function nextQuestion(){
+  state.current++;
+  renderQuiz();
+}
+
+/* ── End screen ── */
+function renderEnd(){
+  const pct = state.answered ? Math.round(state.score/state.answered*100) : 0;
+  const grade = pct>=90?'🏆 Ausgezeichnet!':pct>=70?'👍 Gut!':pct>=50?'📖 Weiter üben!':'💪 Nicht aufgeben!';
+  // breakdown by domain
+  const byDomain = DOMAINS.map(d=>{
+    const qs = state.questions.filter(q=>q.d===d.id);
+    const right = qs.filter(q=>history[qId(q)]==='correct').length;
+    return {label:d.label.split(' ').slice(1).join(' '),color:d.color,right,total:qs.length};
+  }).filter(d=>d.total>0);
+
+  app.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="end-screen">
+        <div class="end-score">${pct}%</div>
+        <div class="end-label">${state.score} von ${state.answered} richtig · ${grade}</div>
+        <div class="end-breakdown">
+          ${byDomain.map(d=>`<div class="end-item" style="border-color:${d.color}"><span style="color:${d.color}">${d.label}</span><br>${d.right}/${d.total}</div>`).join('')}
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="state.screen='start';render()">← Zurück</button>
+          <button class="btn btn-primary" onclick="startQuiz(false)">🔄 Nochmal</button>
+          <button class="btn" onclick="startQuiz(true)">🔥 Fehler wiederholen</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACTIONS
+   ═══════════════════════════════════════════════════════ */
+function toggleDomain(id){
+  state.filterDomain = state.filterDomain===id ? 'all' : id;
+  render();
+}
+function setDiff(d){ state.filterDiff=d; render(); }
+function setType(t){ state.filterType=t; render(); }
+
+function startQuiz(onlyWrong){
+  let qs = [...Q];
+  if(onlyWrong) qs = qs.filter(q=>history[qId(q)]==='wrong');
+  else {
+    if(state.filterDomain!=='all') qs = qs.filter(q=>q.d===state.filterDomain);
+    if(state.filterDiff) qs = qs.filter(q=>q.df===state.filterDiff);
+    if(state.filterType!=='all') qs = qs.filter(q=>q.t===state.filterType);
+  }
+  if(!qs.length){ showToast('Keine Fragen mit diesen Filtern!'); return; }
+  state.questions = shuffle(qs);
+  state.current = 0;
+  state.score = 0;
+  state.answered = 0;
+  state.screen = 'quiz';
+  render();
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════════ */
+function qId(q){ return q.d+'|'+q.tp+'|'+q.q.substring(0,40); }
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+/* ── INIT ── */
+render();
+</script>
+</body>
+</html>
