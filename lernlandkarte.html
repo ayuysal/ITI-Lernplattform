@@ -189,8 +189,15 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 .heft-link:hover{background:var(--card-color);color:#000}
 
 /* Stat bar */
-.stat-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,14,17,.92);backdrop-filter:blur(8px);border-top:1px solid var(--border);padding:.5rem 1.5rem;display:flex;justify-content:center;gap:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);z-index:100}
+.stat-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,14,17,.92);backdrop-filter:blur(8px);border-top:1px solid var(--border);padding:.5rem 1.5rem;display:flex;justify-content:center;gap:1.5rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);z-index:100;align-items:center}
 .stat-bar .val{color:var(--amber)}
+
+/* Sync button */
+.sync-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.sync-btn:hover{border-color:var(--amber);color:var(--amber)}
+/* Toast notification */
+.toast{position:fixed;bottom:3.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:#22c55e;color:#000;font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.5rem 1rem;border-radius:8px;opacity:0;transition:all .3s;z-index:200;pointer-events:none;white-space:nowrap;font-weight:600}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* Legend */
 .legend{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;padding:.4rem 1rem;margin-bottom:.3rem}
@@ -255,6 +262,7 @@ body{padding-bottom:3rem}
 </div>
 
 <div class="stat-bar" id="statBar"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* ── DATA ─────────────────────────────────────────── */
@@ -486,6 +494,49 @@ let progress = JSON.parse(localStorage.getItem('lk-progress')||'{}');
 const oldLearned = JSON.parse(localStorage.getItem('lk-learned')||'{}');
 Object.keys(oldLearned).forEach(k=>{ if(oldLearned[k] && !progress[k]) progress[k]=3; });
 if(Object.keys(oldLearned).length){ localStorage.setItem('lk-progress',JSON.stringify(progress)); localStorage.removeItem('lk-learned'); }
+
+/* ── SYNC: Import from URL hash on load ── */
+(function importFromURL(){
+  const hash = window.location.hash;
+  if(!hash.startsWith('#sync=')) return;
+  try {
+    const data = JSON.parse(atob(decodeURIComponent(hash.slice(6))));
+    if(typeof data === 'object' && data !== null){
+      /* Merge: keep the HIGHER stage from either source */
+      Object.keys(data).forEach(k=>{
+        if((data[k]||0) > (progress[k]||0)) progress[k] = data[k];
+      });
+      localStorage.setItem('lk-progress', JSON.stringify(progress));
+      /* Clean URL without reload */
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      setTimeout(()=>showToast('✅ Fortschritt synchronisiert!'), 300);
+    }
+  } catch(e){ console.warn('Sync-Import fehlgeschlagen', e); }
+})();
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+function copySync(){
+  const encoded = btoa(JSON.stringify(progress));
+  const url = window.location.origin + window.location.pathname + '#sync=' + encoded;
+  /* Try clipboard API, fallback to textarea trick, fallback to prompt */
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>showToast('📋 Sync-Link kopiert!')).catch(()=>fallbackCopy(url));
+  } else { fallbackCopy(url); }
+}
+function fallbackCopy(url){
+  const ta = document.createElement('textarea');
+  ta.value = url; ta.style.cssText='position:fixed;left:-9999px';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); showToast('📋 Sync-Link kopiert!'); }
+  catch(e){ prompt('Sync-Link kopieren:', url); }
+  document.body.removeChild(ta);
+}
 const STAGES = [
   {icon:'○',label:'Offen',color:'var(--muted)'},
   {icon:'📖',label:'Gelesen',color:'#60a5fa'},
@@ -729,6 +780,7 @@ function updateStats(){
     </div>
     <span>⏱ Gesamt: <span class="val">${formatTime(totalTime)}</span></span>
     <span>📋 Offen: <span class="val">${formatTime(remainTime)}</span></span>
+    <button class="sync-btn" onclick="copySync()" title="Fortschritt als Link kopieren – auf anderem Gerät öffnen">🔗 Sync</button>
   `;
 }
 
