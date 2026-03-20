@@ -528,7 +528,203 @@ const Q = [
 {d:'formal',tp:'Turing-Maschine',t:'match',df:2,q:'Ordne die TM-Variante der Eigenschaft zu:',
   pairs:[['DTM','Deterministisch, ein Folgezustand'],['NTM','Nichtdeterministisch, mehrere Wege'],['LBTM','Band linear beschränkt'],['UTM','Simuliert jede andere TM']],e:'DTM/NTM gleich mächtig. LBTM erkennt Typ-1-Sprachen. UTM ist die „universelle" Maschine.'},
 {d:'formal',tp:'Turing-Maschine',t:'order',df:2,q:'Sortiere die Sprachklassen von eingeschränkt nach mächtig:',
-  items:['Regulär (Typ 3)','Kontextfrei (Typ 2)','Kontextsensitiv (Typ 1)','Rekursiv aufzählbar (Typ 0)'],e:'Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0 – jede Klasse umfasst alle darunterliegenden.'}
+  items:['Regulär (Typ 3)','Kontextfrei (Typ 2)','Kontextsensitiv (Typ 1)','Rekursiv aufzählbar (Typ 0)'],e:'Typ 3 ⊂ Typ 2 ⊂ Typ 1 ⊂ Typ 0 – jede Klasse umfasst alle darunterliegenden.'},
+
+// ━━━ LÜCKEN AUFFÜLLEN: Berechnungen, Abläufe, Details ━━━━━━━━━
+
+// ── SNMP/MIB (ausführlicher) ──
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'mc',df:2,q:'Welche Komponenten gehören zum SNMP-Modell?',
+  o:['Manager, Agent, MIB','Client, Server, DNS','Hub, Switch, Router','Sender, Empfänger, Kanal'],c:0,e:'SNMP: Manager (Überwachungsstation) fragt Agent (auf Gerät) ab, Daten stehen in der MIB (Management Information Base).'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'tf',df:2,q:'Die MIB ist eine Datenbank, die Geräteinformationen in einer Baumstruktur speichert.',
+  c:true,e:'Korrekt. MIB = hierarchische Baumstruktur (OID-basiert). Enthält Werte wie Interface-Status, Traffic-Counter, CPU-Last.'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'mc',df:2,q:'Welche SNMP-Operation holt Daten vom Agent?',
+  o:['GET','SET','TRAP','INFORM'],c:0,e:'GET = Manager fragt Wert ab. SET = Manager ändert Wert. TRAP = Agent meldet Ereignis unaufgefordert.'},
+
+// ── Multiplexing (ausführlicher) ──
+{d:'tcp',tp:'Netzkomponenten & Design',t:'match',df:2,q:'Ordne die Multiplexing-Art der Beschreibung zu:',
+  pairs:[['FDM','Frequenzbänder aufteilen'],['TDM','Zeitschlitze zuweisen'],['WDM','Wellenlängen im LWL aufteilen'],['STDM','Zeitschlitze dynamisch nach Bedarf']],e:'FDM=Frequency, TDM=Time, WDM=Wavelength (LWL), STDM=Statistical TDM (dynamisch).'},
+{d:'tcp',tp:'Netzkomponenten & Design',t:'mc',df:2,q:'Welches Multiplexing-Verfahren wird speziell bei Glasfaser eingesetzt?',
+  o:['FDM','TDM','WDM','CDM'],c:2,e:'WDM (Wavelength Division Multiplexing) nutzt verschiedene Wellenlängen im Lichtwellenleiter – Vielfaches der Kapazität.'},
+
+// ── Detaillierte Subnetting-Rechnungen ──
+{d:'tcp',tp:'IP-Adressierung',t:'calc',df:3,q:'Netzwerk 192.168.1.0/26 – wie viele nutzbare Hosts pro Subnetz?',
+  a:62,tol:0,unit:'Hosts',e:'/26 = 6 Host-Bits → 2⁶ - 2 = 62 nutzbare Hosts.'},
+{d:'tcp',tp:'IP-Adressierung',t:'calc',df:3,q:'Du brauchst 50 Hosts pro Subnetz. Welche Subnetzmaske (CIDR) ist die kleinste passende?',
+  a:26,tol:0,unit:'(/CIDR)',e:'50 Hosts → mind. 6 Host-Bits (2⁶=64, -2=62 ≥ 50). Also /26 (32-6=26).'},
+{d:'tcp',tp:'IP-Adressierung',t:'calc',df:3,q:'Wie viele Subnetze entstehen, wenn ein /24-Netz in /28 unterteilt wird?',
+  a:16,tol:0,unit:'Subnetze',e:'/24 → /28 = 4 zusätzliche Netz-Bits → 2⁴ = 16 Subnetze (je 14 Hosts).'},
+{d:'tcp',tp:'IP-Adressierung',t:'mc',df:3,q:'Was ist die Broadcast-Adresse von 10.0.0.0/22?',
+  o:['10.0.3.255','10.0.0.255','10.0.1.255','10.0.4.0'],c:0,e:'/22 = 10 Host-Bits → 2¹⁰ = 1024 Adressen. 10.0.0.0 bis 10.0.3.255. Broadcast = 10.0.3.255.'},
+{d:'tcp',tp:'IP-Adressierung',t:'fill',df:3,q:'Die Subnetzmaske /27 in Dezimal lautet 255.255.255.<code>___</code>.',
+  a:['224'],e:'/27 = 27 Einsen: 11111111.11111111.11111111.11100000 = 255.255.255.224.'},
+
+// ── Routing-Tabellen ──
+{d:'tcp',tp:'Routing',t:'mc',df:3,q:'Ein Router hat keinen Eintrag für 172.16.5.0/24. Was passiert mit dem Paket?',
+  o:['Wird an Default Gateway weitergeleitet','Wird verworfen (dropped)','Wird an den Absender zurückgeschickt','Wird geflutet'],c:0,e:'Wenn kein spezifischer Eintrag existiert, wird das Paket an die Default Route (0.0.0.0/0) weitergeleitet. Gibt es keine, wird es verworfen.'},
+{d:'tcp',tp:'Routing',t:'fill',df:2,q:'Die Default Route hat die Netzadresse <code>___</code>/0.',
+  a:['0.0.0.0'],e:'Default Route = 0.0.0.0/0 – matcht alle Pakete, die kein spezifischeres Ziel haben.'},
+{d:'tcp',tp:'Routing',t:'mc',df:3,q:'Distance-Vector: Router A kennt Netz X über B (Hop=3). C meldet Netz X mit Hop=2. Was tut A?',
+  o:['Übernimmt Route über C (Hop=3)','Behält Route über B (Hop=3)','Löscht beide Routen','Sendet Poison Reverse'],c:0,e:'A übernimmt den besseren Weg: über C mit Hop=2+1=3. Da gleich, könnte er wechseln. Bei besserem Hop → Update.'},
+
+// ── Hamming-Code Schritt für Schritt ──
+{d:'sig',tp:'Codierung',t:'calc',df:3,q:'Hamming-Code: Wie viele Prüfbits r braucht man für m=4 Datenbits? (2^r ≥ m+r+1)',
+  a:3,tol:0,unit:'Prüfbits',e:'2^r ≥ m+r+1 → 2³=8 ≥ 4+3+1=8 ✓. Also r=3 Prüfbits für 4 Datenbits → 7-Bit Codewort.'},
+{d:'sig',tp:'Codierung',t:'mc',df:3,q:'Hamming(7,4): An welchen Positionen stehen die Prüfbits?',
+  o:['1, 2, 4','1, 3, 5','2, 4, 6','1, 2, 3'],c:0,e:'Prüfbits stehen an 2er-Potenzen: Position 1, 2, 4 (bei Hamming 7,4). Datenbits an 3, 5, 6, 7.'},
+{d:'sig',tp:'Codierung',t:'tf',df:3,q:'Ein Hamming-Code mit d_min=3 kann 2-Bit-Fehler korrigieren.',
+  c:false,e:'Falsch. d_min=3 kann 1-Bit korrigieren ODER 2-Bit erkennen. Für 2-Bit-Korrektur bräuchte man d_min≥5.'},
+
+// ── Huffman-Baum aufbauen ──
+{d:'sig',tp:'Codierung',t:'order',df:3,q:'Huffman-Algorithmus: Bringe die Schritte in die richtige Reihenfolge:',
+  items:['Häufigkeiten aller Zeichen ermitteln','Die zwei niedrigsten Häufigkeiten zusammenfassen','Neuen Knoten mit Summe der Häufigkeiten erstellen','Wiederholen bis nur noch ein Wurzelknoten','Code ablesen: links=0, rechts=1'],e:'Huffman: Häufigkeiten → kleinstes Paar zusammenfassen → wiederholen → Baum → Codes ablesen.'},
+{d:'sig',tp:'Codierung',t:'mc',df:3,q:'Huffman-Code: Zeichen A hat Häufigkeit 50%, B=25%, C=15%, D=10%. Welches Zeichen bekommt den kürzesten Code?',
+  o:['A','B','C','D'],c:0,e:'Das häufigste Zeichen (A=50%) bekommt den kürzesten Code (z.B. "0"), seltene Zeichen längere Codes.'},
+
+// ── KMP Prefix-Tabelle ──
+{d:'info',tp:'Hashing & Pattern Matching',t:'mc',df:3,q:'KMP: Was gibt die Prefix-Tabelle (Failure Function) an?',
+  o:['Länge des längsten echten Präfix, der auch Suffix ist','Position des nächsten Zeichens','Hashwert des Teilstrings','Anzahl der Vergleiche'],c:0,e:'Die Prefix-Tabelle speichert für jede Position die Länge des längsten echten Präfix = Suffix. Ermöglicht "intelligentes" Zurückspringen.'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'tf',df:3,q:'Boyer-Moore ist in der Praxis oft schneller als KMP, weil er von rechts nach links vergleicht.',
+  c:true,e:'Korrekt. Boyer-Moore vergleicht von rechts nach links und kann dank Bad-Character/Good-Suffix-Regel ganze Blöcke überspringen.'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'fill',df:3,q:'KMP hat eine Zeitkomplexität von O(<code>___</code>).',
+  a:['n+m','n + m','O(n+m)'],e:'KMP: O(n+m) wobei n = Textlänge, m = Musterlänge. Kein Zurücksetzen im Text dank Prefix-Tabelle.'},
+
+// ── Master-Theorem Rechenaufgaben ──
+{d:'info',tp:'Komplexitätsanalyse',t:'calc',df:3,q:'Master-Theorem: T(n) = 2·T(n/2) + n. Berechne log_b(a) = log₂(2) = ?',
+  a:1,tol:0,unit:'',e:'a=2, b=2 → log₂(2) = 1. Da f(n)=n ∈ Θ(n¹) → Fall 2 → T(n) = Θ(n · log n).'},
+{d:'info',tp:'Komplexitätsanalyse',t:'mc',df:3,q:'T(n) = 2·T(n/2) + n → Welcher Fall des Master-Theorems?',
+  o:['Fall 1','Fall 2','Fall 3','Nicht anwendbar'],c:1,e:'f(n)=n, n^(log₂ 2) = n¹. f(n) ∈ Θ(n¹) → Fall 2 → T(n) = Θ(n · log n). (= MergeSort!)'},
+{d:'info',tp:'Komplexitätsanalyse',t:'calc',df:3,q:'T(n) = 8·T(n/2) + n². Berechne log_b(a) = log₂(8) = ?',
+  a:3,tol:0,unit:'',e:'a=8, b=2 → log₂(8) = 3. Da f(n)=n² und n^log₂(8)=n³ → f(n) ∈ O(n^(3-ε)) → Fall 1 → T(n) = Θ(n³).'},
+{d:'info',tp:'Komplexitätsanalyse',t:'mc',df:3,q:'T(n) = 4·T(n/2) + n³. Welche Gesamtkomplexität ergibt sich?',
+  o:['Θ(n²)','Θ(n² · log n)','Θ(n³)','Θ(n³ · log n)'],c:2,e:'a=4, b=2 → n^log₂(4)=n². f(n)=n³ ∈ Ω(n^(2+ε)) → Fall 3 → T(n) = Θ(f(n)) = Θ(n³).'},
+
+// ── Grammatik-Transformationen: ε-Freiheit, CNF ──
+{d:'formal',tp:'Formale Grammatiken',t:'order',df:3,q:'Bringe die Schritte zur CNF-Umwandlung in die richtige Reihenfolge:',
+  items:['ε-Produktionen eliminieren','Kettenregeln (A→B) eliminieren','Terminale in eigene Regeln auslagern','Rechte Seiten mit >2 NT aufteilen'],e:'CNF-Umwandlung: 1) ε-frei machen → 2) Kettenregeln weg → 3) Terminale isolieren → 4) Binär machen (max 2 NT rechts).'},
+{d:'formal',tp:'Formale Grammatiken',t:'mc',df:3,q:'Was bedeutet "ε-frei" bei einer Grammatik?',
+  o:['Keine Produktion A→ε (außer evtl. S→ε)','Keine Terminale','Keine Kettenregeln','Kein Startsymbol'],c:0,e:'ε-frei: Keine Regel erzeugt das leere Wort, außer S→ε falls ε∈L(G) und S kommt nicht rechts vor.'},
+{d:'formal',tp:'Formale Grammatiken',t:'tf',df:3,q:'Bei der CNF-Umwandlung muss man zuerst die Kettenregeln entfernen, dann die ε-Produktionen.',
+  c:false,e:'Falsch. Reihenfolge: ERST ε-Produktionen eliminieren, DANN Kettenregeln. Andersrum können neue ε-Produktionen entstehen.'},
+{d:'formal',tp:'Formale Grammatiken',t:'fill',df:3,q:'Eine Kettenregel hat die Form A → <code>___</code> (einzelnes Nichtterminal).',
+  a:['B','NT','Nichtterminal','ein Nichtterminal'],e:'Kettenregeln: A→B (ein einziges Nichtterminal rechts). Werden eliminiert durch Einsetzen der B-Produktionen.'},
+
+// ── NEA→DEA Potenzmengenkonstruktion ──
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'mc',df:3,q:'NEA hat 3 Zustände. Wie viele Zustände kann der äquivalente DEA maximal haben?',
+  o:['3','6','8','9'],c:2,e:'Potenzmengenkonstruktion: DEA kann bis zu 2ⁿ Zustände haben. 2³ = 8. In der Praxis oft weniger.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'order',df:3,q:'Potenzmengenkonstruktion: Bringe die Schritte in die richtige Reihenfolge:',
+  items:['Startzustand: ε-Hülle von q₀','Für jeden Zustandsmenge und Eingabe: Folgezustandsmengen berechnen','Neue Zustandsmengen als DEA-Zustände anlegen','Zustände mit NEA-Endzustand sind DEA-Endzustände','Unerreichbare Zustände entfernen'],e:'ε-Hülle → Übergänge berechnen → neue Mengen als Zustände → Endzustände markieren → aufräumen.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'fill',df:3,q:'Bei der Potenzmengenkonstruktion wird die NEA-Übergangsfunktion δ: Q×Σ → <code>___</code> zu einer DEA-Funktion.',
+  a:['P(Q)','2^Q','Potenzmenge von Q','Potenzmenge'],e:'NEA: δ liefert eine Menge (Potenzmenge P(Q)). Die Potenzmengen-Konstruktion macht daraus eine deterministische Funktion.'},
+
+// ── Token Ring ──
+{d:'sig',tp:'Ethernet & Data Link',t:'mc',df:2,q:'Wie funktioniert der Medienzugriff beim Token Ring?',
+  o:['Ein Token kreist, nur der Token-Besitzer darf senden','Alle senden gleichzeitig','CSMA/CD mit Backoff','Zufälliger Zugriff'],c:0,e:'Token Ring: Ein spezielles Token-Frame kreist im Ring. Nur die Station mit dem Token darf senden. Garantiert keine Kollisionen.'},
+{d:'sig',tp:'Ethernet & Data Link',t:'tf',df:2,q:'Beim Token Ring können Kollisionen auftreten.',
+  c:false,e:'Falsch. Token Ring ist kollisionsfrei, da nur der Token-Besitzer senden darf. Nachteil: Latenz durch Token-Wartezeit.'},
+
+// ── PDH/SDH ──
+{d:'sig',tp:'Übertragungsmedien',t:'mc',df:2,q:'Wofür steht SDH in der Nachrichtentechnik?',
+  o:['Synchrone Digitale Hierarchie','Simple Data Hub','Secure Data Handling','Structured Data Header'],c:0,e:'SDH (Synchrone Digitale Hierarchie) ist ein Standard für Datenübertragung im WAN. Nachfolger von PDH.'},
+{d:'sig',tp:'Übertragungsmedien',t:'tf',df:2,q:'PDH (Plesiochronous Digital Hierarchy) wird heute vollständig durch SDH ersetzt.',
+  c:false,e:'Nicht ganz. PDH wird noch genutzt, aber SDH (und SONET in den USA) ist der moderne Standard für synchrone Übertragung im Kernnetz.'},
+
+// ── Amplitudenspektrum / Signale ──
+{d:'sig',tp:'Informationsgehalt & Entropie',t:'mc',df:3,q:'Was zeigt das Amplitudenspektrum eines Signals?',
+  o:['Die Frequenzanteile und deren Stärke','Die Zeitdauer des Signals','Die Bitfehlerrate','Die Codierungsart'],c:0,e:'Das Amplitudenspektrum (Fourier) zeigt, welche Frequenzen mit welcher Amplitude im Signal enthalten sind.'},
+{d:'sig',tp:'Kanalkapazität',t:'calc',df:3,q:'Ein Signal hat Bandbreite B=4000Hz und SNR=30dB. Berechne zuerst den linearen SNR: 10^(30/10) = ?',
+  a:1000,tol:0,unit:'(linear)',e:'SNR[dB] = 10·log₁₀(S/N) → S/N = 10^(30/10) = 10³ = 1000.'},
+{d:'sig',tp:'Kanalkapazität',t:'calc',df:3,q:'Shannon: B=4000Hz, SNR=1000 (linear). C = B · log₂(1+SNR) = ?',
+  a:39864,tol:200,unit:'bit/s',e:'C = 4000 · log₂(1001) ≈ 4000 · 9.966 ≈ 39.864 bit/s.'},
+{d:'sig',tp:'Kanalkapazität',t:'calc',df:3,q:'Nyquist: B=6000Hz, M=8 Signalstufen. C = 2B·log₂(M) = ?',
+  a:36000,tol:100,unit:'bit/s',e:'C = 2·6000·log₂(8) = 12000·3 = 36.000 bit/s.'},
+
+// ── Manchester-Code Detail ──
+{d:'sig',tp:'Codierung',t:'mc',df:2,q:'Wie wird eine "1" im Manchester-Code dargestellt?',
+  o:['Übergang von High nach Low in der Bitmitte','Übergang von Low nach High in der Bitmitte','Konstant High','Konstant Low'],c:0,e:'Manchester (IEEE 802.3): 1 = High→Low Flanke in Bitmitte. 0 = Low→High. Immer eine Flanke = Taktrückgewinnung.'},
+{d:'sig',tp:'Codierung',t:'match',df:2,q:'Ordne den Leitungscode der Eigenschaft zu:',
+  pairs:[['NRZ','Kein Takt, Gleichstromanteil möglich'],['Manchester','Takt in Bitmitte, doppelte Bandbreite'],['4B5B','4 Bit → 5 Bit, min. 2 Flanken'],['MLT-3','3 Pegel, reduzierte Bandbreite']],e:'NRZ=einfach aber kein Takt. Manchester=Takt aber 2x Bandbreite. 4B5B+MLT-3=Kombination bei Fast Ethernet.'},
+
+// ── Detaillierte Hashing-Rechnungen ──
+{d:'info',tp:'Hashing & Pattern Matching',t:'calc',df:3,q:'Multiplikationsmethode: h(123) mit m=16, A=0.618. Berechne k·A mod 1 = 123·0.618 mod 1.',
+  a:0.014,tol:0.002,unit:'',e:'123 · 0.618 = 76.014 → mod 1 = 0.014 → h = ⌊16 · 0.014⌋ = ⌊0.224⌋ = 0.'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'calc',df:3,q:'Double Hashing: h₁(k)=k mod 11, h₂(k)=7-(k mod 7). Berechne h(15,0).',
+  a:4,tol:0,unit:'',e:'h(15,0) = h₁(15) = 15 mod 11 = 4. (Erst bei Kollision kommt h₂ ins Spiel.)'},
+{d:'info',tp:'Hashing & Pattern Matching',t:'calc',df:3,q:'Fortsetzung: h(15,1) bei Double Hashing mit h₁=4, h₂=7-(15 mod 7)=7-1=6. Position = (4+1·6) mod 11 = ?',
+  a:10,tol:0,unit:'',e:'h(15,1) = (h₁+1·h₂) mod m = (4+6) mod 11 = 10.'},
+
+// ── Sortieralgorithmen: Detail-Abläufe ──
+{d:'info',tp:'Sortieralgorithmen',t:'order',df:3,q:'InsertionSort: Sortiere [4, 1, 3, 2] – welche Reihenfolge nach dem 2. Durchlauf (Element 3 einsortiert)?',
+  items:['1','3','4','2'],e:'Durchlauf 1: [1, 4, 3, 2] (1 eingeordnet). Durchlauf 2: [1, 3, 4, 2] (3 eingeordnet). Die 2 kommt erst im 3. Durchlauf.'},
+{d:'info',tp:'Sortieralgorithmen',t:'mc',df:3,q:'QuickSort: Pivot=5 bei [3, 7, 5, 1, 8, 2]. Was sind die Partitionen?',
+  o:['[3, 1, 2] und [7, 8]','[3, 7, 1] und [8, 2]','[1, 2, 3] und [7, 8]','[3, 5] und [7, 1, 8, 2]'],c:0,e:'Partition um Pivot 5: Links alle <5: [3,1,2]. Rechts alle >5: [7,8]. Pivot 5 steht in der Mitte.'},
+{d:'info',tp:'Sortieralgorithmen',t:'order',df:3,q:'HeapSort: Bringe die Schritte in die richtige Reihenfolge:',
+  items:['Array in Max-Heap umwandeln (heapify)','Maximum (Wurzel) mit letztem Element tauschen','Heap-Größe um 1 verringern','Heap-Eigenschaft wiederherstellen (sift-down)','Wiederholen bis Heap leer'],e:'HeapSort: Build-Max-Heap → Extract-Max (tauschen + verkleinern + reparieren) → wiederholen.'},
+{d:'info',tp:'Sortieralgorithmen',t:'tf',df:2,q:'SelectionSort ist stabil.',
+  c:false,e:'Falsch. SelectionSort ist NICHT stabil (gleiche Elemente können Reihenfolge tauschen beim Swap). InsertionSort und MergeSort sind stabil.'},
+
+// ── Datenstrukturen: Bäume, Graphen ──
+{d:'info',tp:'Datenstrukturen & ADTs',t:'mc',df:2,q:'Was ist ein vollständiger binärer Baum?',
+  o:['Alle Ebenen voll besetzt, letzte Ebene von links gefüllt','Jeder Knoten hat genau 2 Kinder','Kein Knoten hat Kinder','Baum mit maximaler Tiefe'],c:0,e:'Vollständig: Alle Ebenen außer der letzten sind voll. Letzte Ebene ist von links nach rechts aufgefüllt.'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'calc',df:2,q:'Ein vollständiger Binärbaum hat Höhe h=4. Wie viele Knoten hat er maximal? (2^(h+1) - 1)',
+  a:31,tol:0,unit:'Knoten',e:'Max. Knoten = 2^(h+1) - 1 = 2⁵ - 1 = 31. Minimum bei Höhe 4: 16 Knoten.'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'match',df:2,q:'Ordne die Traversierung dem Ablauf zu:',
+  pairs:[['Inorder','Links → Wurzel → Rechts'],['Preorder','Wurzel → Links → Rechts'],['Postorder','Links → Rechts → Wurzel']],e:'In=LWR (sortiert bei BST), Pre=WLR, Post=LRW. Alle drei sind Tiefensuche.'},
+{d:'info',tp:'Datenstrukturen & ADTs',t:'mc',df:2,q:'Welche Relation ist KEINE Äquivalenzrelation?',
+  o:['≤ (kleiner gleich)','= (Gleichheit)','≡ (Kongruenz modulo n)','~ (gleiche Restklasse)'],c:0,e:'≤ ist NICHT symmetrisch: 3≤5 aber nicht 5≤3. Eine Äquivalenzrelation muss reflexiv, symmetrisch UND transitiv sein.'},
+
+// ── Formale Sprachen: Pumping-Lemma Anwendung ──
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'mc',df:3,q:'Pumping-Lemma: L = {aⁿbⁿ | n≥0}. Warum ist L nicht regulär?',
+  o:['Das gepumpte Wort y^i verlässt L, weil a\'s und b\'s nicht mehr gleich sind','L hat zu viele Wörter','L enthält das leere Wort','DEA bräuchte unendlich viele Zustände'],c:0,e:'Pumping: w=aⁿbⁿ, y⊆aaa... (nur a\'s). y² hat mehr a\'s als b\'s → nicht in L. Also L nicht regulär.'},
+{d:'formal',tp:'Reguläre Sprachen & Automaten',t:'tf',df:3,q:'Wenn das Pumping-Lemma erfüllt ist, beweist das, dass die Sprache regulär ist.',
+  c:false,e:'Falsch! Das Pumping-Lemma ist nur eine NOTWENDIGE Bedingung. Erfüllung beweist NICHT Regularität. Nur Verletzung beweist Nicht-Regularität.'},
+
+// ── Kellerautomaten: Detailaufgaben ──
+{d:'formal',tp:'Kellerautomaten & kfS',t:'order',df:3,q:'NKA für L={aⁿbⁿ}: Welche Aktionen für Eingabe "aabb"?',
+  items:['a lesen: a auf Keller pushen','a lesen: a auf Keller pushen','b lesen: a vom Keller poppen','b lesen: a vom Keller poppen, Keller leer → akzeptieren'],e:'Für jedes a wird ein a gepusht. Für jedes b wird ein a gepoppt. Wenn Keller am Ende leer → Wort akzeptiert.'},
+{d:'formal',tp:'Kellerautomaten & kfS',t:'fill',df:2,q:'Das Kelleralphabet wird mit dem griechischen Buchstaben <code>___</code> bezeichnet.',
+  a:['Γ','Gamma','gamma'],e:'Γ (Gamma) = Kelleralphabet. Enthält alle Symbole, die auf dem Stack stehen können.'},
+
+// ── LL(1) FIRST/FOLLOW Berechnung ──
+{d:'formal',tp:'LL(k)-Sprachen',t:'mc',df:3,q:'Grammatik: S→aB, B→b|ε. Was ist FIRST(S)?',
+  o:['{a}','{a, b}','{a, ε}','{b}'],c:0,e:'S→aB beginnt immer mit Terminal a. Also FIRST(S) = {a}.'},
+{d:'formal',tp:'LL(k)-Sprachen',t:'mc',df:3,q:'Grammatik: S→AB, A→a|ε, B→b. Was ist FIRST(S)?',
+  o:['{a, b}','{a}','{b}','{a, b, ε}'],c:0,e:'S→AB: FIRST(A)={a,ε}. Da ε∈FIRST(A), auch FIRST(B)={b} dazu. FIRST(S)={a,b}.'},
+{d:'formal',tp:'LL(k)-Sprachen',t:'fill',df:3,q:'FOLLOW(S) enthält immer das Zeichen <code>___</code> (Eingabeende).',
+  a:['$','EOF','#'],e:'FOLLOW des Startsymbols enthält immer $ (End-of-Input Marker). Basis jeder FOLLOW-Berechnung.'},
+
+// ── LR-Parsing: Shift-Reduce Detail ──
+{d:'formal',tp:'LR(k)-Sprachen',t:'mc',df:3,q:'Shift-Reduce-Konflikt: Was bedeutet ein "Reduce/Reduce-Konflikt"?',
+  o:['Zwei verschiedene Produktionen könnten reduziert werden','Shift und Reduce gleichzeitig möglich','Kein Handle gefunden','Eingabe ist ungültig'],c:0,e:'Reduce/Reduce: Parser kann nicht entscheiden, WELCHE Produktion er anwenden soll. Grammatik ist für diese Parser-Klasse nicht geeignet.'},
+{d:'formal',tp:'LR(k)-Sprachen',t:'mc',df:3,q:'Welcher Parser-Generator erzeugt typischerweise LALR(1)-Parser?',
+  o:['yacc / bison','gcc','javac','Python'],c:0,e:'yacc (Yet Another Compiler Compiler) und GNU bison erzeugen LALR(1)-Parser. Der praktische Kompromiss zwischen Mächtigkeit und Effizienz.'},
+
+// ── Turing-Maschine: Konfiguration ──
+{d:'formal',tp:'Turing-Maschine',t:'mc',df:3,q:'Eine TM-Konfiguration beschreibt:',
+  o:['Aktueller Zustand, Bandinhalt und Kopfposition','Nur den aktuellen Zustand','Die Übergangsfunktion','Das Eingabealphabet'],c:0,e:'Konfiguration = Momentaufnahme: (Bandinhalt, Kopfposition, aktueller Zustand). Beschreibt den kompletten Berechnungszustand.'},
+{d:'formal',tp:'Turing-Maschine',t:'fill',df:3,q:'Die Church-Turing-These besagt: Alles was intuitiv berechenbar ist, ist auch <code>___</code>-berechenbar.',
+  a:['Turing','turing','TM','Turingmaschinen'],e:'Church-Turing-These: Der informelle Begriff "berechenbar" = formal "Turing-berechenbar". Keine Maschine kann mehr als eine TM.'},
+
+// ── Netzwerk: VPN Details ──
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'match',df:2,q:'Ordne den VPN-Typ der Beschreibung zu:',
+  pairs:[['Site-to-Site VPN','Verbindet zwei Netzwerke (z.B. Filialen)'],['Remote Access VPN','Einzelner Nutzer verbindet sich zum Firmennetz'],['SSL-VPN','Über Browser/HTTPS, kein Client nötig']],e:'Site-to-Site für Standortvernetzung, Remote Access für Homeoffice, SSL-VPN für einfachen Webzugriff.'},
+{d:'tcp',tp:'Anwendungen & Sicherheit',t:'order',df:2,q:'DNS-Auflösung: Bringe die Schritte in die richtige Reihenfolge:',
+  items:['Client fragt lokalen DNS-Resolver','Resolver fragt Root-Nameserver','Root verweist auf TLD-Nameserver (.com)','TLD verweist auf autoritativen Nameserver','Autoritativer NS liefert IP-Adresse','Resolver cached und liefert an Client'],e:'Iterative DNS-Auflösung: Client→Resolver→Root→TLD→Autoritativ→zurück. Caching beschleunigt zukünftige Anfragen.'},
+
+// ── Zahlensysteme: Mehr Rechnung ──
+{d:'info',tp:'Zahlensysteme & Logik',t:'calc',df:2,q:'Wandle die Binärzahl 11001010 in Dezimal um.',
+  a:202,tol:0,unit:'(dezimal)',e:'11001010₂ = 128+64+8+2 = 202.'},
+{d:'info',tp:'Zahlensysteme & Logik',t:'calc',df:2,q:'Berechne das Zweierkomplement von 5 (8-Bit): invertieren und +1.',
+  a:11111011,tol:0,unit:'(binär)',e:'5 = 00000101. Invertiert = 11111010. +1 = 11111011 = -5 im Zweierkomplement.'},
+{d:'info',tp:'Zahlensysteme & Logik',t:'mc',df:2,q:'Was ergibt 1010 XOR 1100?',
+  o:['0110','1000','1110','0000'],c:0,e:'XOR: 1⊕1=0, 0⊕1=1, 1⊕0=1, 0⊕0=0 → 0110.'},
+
+// ── Netzwerk: DHCP, TTL, Sockets Detail ──
+{d:'tcp',tp:'IP, ICMP & ARP',t:'order',df:2,q:'ICMP Traceroute: Wie funktioniert es? Sortiere die Schritte:',
+  items:['Paket mit TTL=1 senden','Erster Router: TTL=0 → ICMP Time Exceeded zurück','TTL erhöhen auf 2, nächstes Paket senden','Zweiter Router antwortet mit Time Exceeded','Wiederholen bis Ziel erreicht (ICMP Echo Reply)'],e:'Traceroute: Schrittweises Erhöhen des TTL zeigt jeden Router auf dem Weg. Jeder Router mit TTL=0 meldet sich zurück.'},
+{d:'tcp',tp:'TCP & UDP',t:'match',df:2,q:'Ordne den Port dem Dienst zu (erweitert):',
+  pairs:[['Port 21','FTP'],['Port 22','SSH'],['Port 110','POP3'],['Port 143','IMAP']],e:'FTP=21 (Steuerkanal), SSH=22, POP3=110, IMAP=143. Alle Well-Known Ports (0-1023).'},
+{d:'tcp',tp:'TCP & UDP',t:'mc',df:2,q:'Was passiert bei einem TCP-Verbindungsabbau (4-Way Teardown)?',
+  o:['FIN → ACK → FIN → ACK','SYN → ACK → FIN → RST','ACK → FIN → SYN → ACK','RST → FIN → ACK → FIN'],c:0,e:'Ordentlicher Abbau: Seite A: FIN → Seite B: ACK → Seite B: FIN → Seite A: ACK. Beide Richtungen getrennt geschlossen.'}
 ];
 
 /* ═══════════════════════════════════════════════════════
