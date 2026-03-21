@@ -266,6 +266,7 @@ overlay.innerHTML = `
   <div class="sym-container">
     <div class="sym-header">
       <h2>Σ Symbole & Alphabet</h2>
+      <button class="sym-close" onclick="window.open((location.pathname.includes('/hefte/')?'../':'')+'symbole.html','_blank')" style="margin-right:.3rem">↗ Neues Fenster</button>
       <button class="sym-close" onclick="toggleSymbols()">ESC Schliessen</button>
     </div>
     <input class="sym-search" type="text" placeholder="Suchen… z.B. Alpha, Summe, Element, XOR" oninput="searchSymbols(this.value)">

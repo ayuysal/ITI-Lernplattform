@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Σ Symbole & Alphabet – Nachschlagewerk & Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a10;--surface:#12121a;--card:#16161f;--border:#1e2230;--muted:#6b7084;--text:#e2e4ea;--amber:#f5c542;--cyan:#5ec4b6;--correct:#22c55e;--wrong:#ef4444;--purple:#a78bfa}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,16,.9);backdrop-filter:blur(8px);z-index:10}
+.header h1{font-family:'Outfit',sans-serif;font-size:1.4rem;color:var(--amber)}
+.header-btns{display:flex;gap:.4rem}
+.hbtn{background:none;border:1px solid var(--border);border-radius:8px;padding:.35rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.hbtn:hover{border-color:var(--amber);color:var(--amber)}
+.hbtn.active{background:rgba(245,197,66,.1);border-color:var(--amber);color:var(--amber)}
+
+/* ── Tab Bar ── */
+.mode-bar{display:flex;gap:.4rem;padding:1rem 1.5rem .5rem;flex-wrap:wrap}
+.mode-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.4rem 1rem;font-family:'Outfit',sans-serif;font-size:.8rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.mode-btn:hover{border-color:var(--amber);color:var(--amber)}
+.mode-btn.active{background:rgba(245,197,66,.12);border-color:var(--amber);color:var(--amber);font-weight:600}
+
+/* ── Search ── */
+.search-wrap{padding:.5rem 1.5rem}
+.search{width:100%;padding:.5rem .8rem;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s}
+.search:focus{border-color:var(--amber)}
+
+/* ── Filter Tabs ── */
+.filter-bar{display:flex;gap:.3rem;padding:.5rem 1.5rem;flex-wrap:wrap}
+.ftab{background:rgba(24,23,29,.8);border:1px solid var(--border);border-radius:6px;padding:.25rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);cursor:pointer;transition:all .2s}
+.ftab:hover{border-color:var(--amber);color:var(--amber)}
+.ftab.active{background:rgba(245,197,66,.1);border-color:var(--amber);color:var(--amber)}
+
+/* ── Content Area ── */
+.content{padding:.5rem 1.5rem 3rem}
+
+/* ── Reference Tables ── */
+.ref-section{margin-bottom:1.5rem}
+.ref-section h3{font-family:'Outfit',sans-serif;font-size:.95rem;color:var(--text);margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+.ref-table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.7rem}
+.ref-table th{text-align:left;padding:.35rem .5rem;color:var(--muted);font-weight:400;font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.ref-table td{padding:.35rem .5rem;border-bottom:1px solid rgba(30,34,48,.5);color:var(--text);vertical-align:top}
+.ref-table tr:hover td{background:rgba(245,197,66,.03)}
+.ref-table tr.hidden{display:none}
+.ref-table td:first-child{font-size:1rem;color:var(--amber);text-align:center;width:3rem;text-shadow:0 0 8px rgba(245,197,66,.3)}
+.ref-table td:nth-child(2){color:var(--cyan);font-weight:600}
+.ref-table td:nth-child(3){color:#a0a4b8}
+.ref-table td:nth-child(4){color:var(--muted);font-size:.65rem}
+
+/* ═══════════════════════════════════════
+   QUIZ MODE
+   ═══════════════════════════════════════ */
+.quiz-container{max-width:700px;margin:0 auto}
+
+/* ── Quiz Stats ── */
+.quiz-stats{display:flex;gap:.8rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.qstat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;text-align:center;min-width:80px}
+.qstat-num{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700}
+.qstat-label{font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.1rem}
+
+/* ── Quiz Card ── */
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1rem}
+.quiz-prompt{font-family:'Outfit',sans-serif;font-size:1rem;color:var(--muted);margin-bottom:.8rem}
+.quiz-symbol{font-size:3rem;text-align:center;color:var(--amber);margin:1rem 0;text-shadow:0 0 20px rgba(245,197,66,.3)}
+.quiz-name-display{font-size:1.5rem;text-align:center;color:var(--cyan);font-family:'Outfit',sans-serif;font-weight:600;margin:1rem 0}
+
+/* ── Match Grid ── */
+.match-grid{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+.match-col{display:flex;flex-direction:column;gap:.4rem;min-width:120px}
+.match-col-title{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:.3rem}
+.match-item{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:.5rem .8rem;text-align:center;cursor:pointer;transition:all .15s;font-family:'JetBrains Mono',monospace;font-size:.85rem;user-select:none}
+.match-item:hover{border-color:var(--amber);transform:translateY(-1px)}
+.match-item.selected{border-color:var(--amber);background:rgba(245,197,66,.08);box-shadow:0 0 10px rgba(245,197,66,.15)}
+.match-item.correct{border-color:var(--correct);background:rgba(34,197,94,.1);color:var(--correct);pointer-events:none}
+.match-item.wrong{border-color:var(--wrong);background:rgba(239,68,68,.1);animation:shake .3s}
+.match-item.matched{opacity:.4;pointer-events:none}
+.match-item.symbol{font-size:1.2rem;color:var(--amber)}
+
+/* ── MC Options ── */
+.mc-options{display:flex;flex-direction:column;gap:.4rem;margin-top:1rem}
+.mc-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:.6rem 1rem;cursor:pointer;transition:all .15s;font-size:.85rem}
+.mc-opt:hover{border-color:var(--amber);transform:translateX(4px)}
+.mc-opt.correct{border-color:var(--correct);background:rgba(34,197,94,.1);color:var(--correct)}
+.mc-opt.wrong{border-color:var(--wrong);background:rgba(239,68,68,.1);color:var(--wrong)}
+
+/* ── Feedback ── */
+.quiz-feedback{text-align:center;padding:.8rem;border-radius:10px;margin-top:1rem;font-size:.85rem;font-weight:600}
+.quiz-feedback.correct{background:rgba(34,197,94,.1);color:var(--correct);border:1px solid rgba(34,197,94,.3)}
+.quiz-feedback.wrong{background:rgba(239,68,68,.1);color:var(--wrong);border:1px solid rgba(239,68,68,.3)}
+
+/* ── Buttons ── */
+.btn-row{display:flex;gap:.5rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--text);cursor:pointer;transition:all .2s}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.btn-primary{background:linear-gradient(135deg,#b8960c,#f5c542);color:#000;border:none;font-weight:600}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(245,197,66,.3)}
+
+/* ── End Screen ── */
+.end-screen{text-align:center;padding:2rem 0}
+.end-score{font-family:'JetBrains Mono',monospace;font-size:3rem;font-weight:700;color:var(--amber)}
+.end-label{color:var(--muted);margin:.5rem 0 1.5rem}
+
+/* ── Quiz Category Selector ── */
+.cat-selector{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
+.cat-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .6rem;font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted);cursor:pointer;transition:all .2s}
+.cat-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.cat-btn.active{background:rgba(94,196,182,.1);border-color:var(--cyan);color:var(--cyan)}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media(max-width:600px){
+  .match-grid{flex-direction:column;align-items:center}
+  .quiz-symbol{font-size:2.5rem}
+  .header h1{font-size:1.1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Σ Symbole & Alphabet</h1>
+  <div class="header-btns">
+    <a href="index.html" class="hbtn">← Lernplattform</a>
+  </div>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-btn active" onclick="switchMode('ref')">📖 Nachschlagewerk</button>
+  <button class="mode-btn" onclick="switchMode('quiz-mc')">🎯 Quiz: Multiple Choice</button>
+  <button class="mode-btn" onclick="switchMode('quiz-match')">🔗 Quiz: Zuordnung</button>
+</div>
+
+<div id="app"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════════ */
+const SECTIONS = [
+  {
+    title: 'Griechisches Alphabet', id:'greek',
+    cols: ['Gross','Klein','Name','Aussprache'],
+    rows: [
+      ['Α','α','Alpha','al-fa'],['Β','β','Beta','bay-ta'],['Γ','γ','Gamma','gam-ma'],
+      ['Δ','δ','Delta','del-ta'],['Ε','ε','Epsilon','ep-si-lon'],['Ζ','ζ','Zeta','zay-ta'],
+      ['Η','η','Eta','ay-ta'],['Θ','θ','Theta','tay-ta'],['Ι','ι','Iota','yo-ta'],
+      ['Κ','κ','Kappa','kap-pa'],['Λ','λ','Lambda','lam-da'],['Μ','μ','My','mü'],
+      ['Ν','ν','Ny','nü'],['Ξ','ξ','Xi','ksi'],['Ο','ο','Omikron','o-mi-kron'],
+      ['Π','π','Pi','pi'],['Ρ','ρ','Rho','ro'],['Σ','σ/ς','Sigma','sig-ma'],
+      ['Τ','τ','Tau','tau'],['Υ','υ','Ypsilon','üp-si-lon'],['Φ','φ','Phi','fi'],
+      ['Χ','χ','Chi','chi (wie Bach)'],['Ψ','ψ','Psi','psi'],['Ω','ω','Omega','o-may-ga']
+    ]
+  },
+  {
+    title: 'Logik & Aussagenlogik', id:'logic',
+    cols: ['Symbol','Name','Bedeutung','Beispiel'],
+    rows: [
+      ['∧','Konjunktion','UND (and)','p ∧ q'],['∨','Disjunktion','ODER (or)','p ∨ q'],
+      ['¬','Negation','NICHT (not)','¬p'],['→','Implikation','WENN…DANN','p → q'],
+      ['↔','Bikonditional','GENAU DANN WENN','p ↔ q'],['⊕','XOR','Exklusiv-ODER','p ⊕ q'],
+      ['⊤','Tautologie','Immer wahr',''],['⊥','Kontradiktion','Immer falsch',''],
+      ['⊨','Modell / Erfüllt','Semantisch gültig','M ⊨ φ'],['⊢','Ableitung','Syntaktisch ableitbar','Γ ⊢ φ']
+    ]
+  },
+  {
+    title: 'Mengen & Relationen', id:'sets',
+    cols: ['Symbol','Name','Bedeutung','Beispiel'],
+    rows: [
+      ['∈','Element von','ist in Menge enthalten','x ∈ A'],['∉','Nicht Element','ist nicht enthalten','x ∉ A'],
+      ['⊂','Echte Teilmenge','enthalten, aber nicht gleich','A ⊂ B'],['⊆','Teilmenge','enthalten oder gleich','A ⊆ B'],
+      ['⊃','Echte Obermenge','enthält, aber nicht gleich','B ⊃ A'],['⊇','Obermenge','enthält oder gleich','B ⊇ A'],
+      ['∪','Vereinigung','ODER (union)','A ∪ B'],['∩','Schnitt','UND (intersection)','A ∩ B'],
+      ['∅','Leere Menge','Menge ohne Elemente','A ∩ B = ∅'],['\\','Differenz','In A aber nicht in B','A \\ B'],
+      ['×','Kreuzprodukt','Kartesisches Produkt','A × B'],['|A|','Kardinalität','Anzahl Elemente','|{1,2,3}| = 3'],
+      ['℘(A)','Potenzmenge','Alle Teilmengen','℘({1,2})'],['ℕ','Natürliche Zahlen','0, 1, 2, 3, …','n ∈ ℕ'],
+      ['ℤ','Ganze Zahlen','…, -2, -1, 0, 1, 2, …','z ∈ ℤ'],['ℝ','Reelle Zahlen','Alle Dezimalzahlen','x ∈ ℝ'],
+      ['ℚ','Rationale Zahlen','Alle Brüche','q ∈ ℚ']
+    ]
+  },
+  {
+    title: 'Quantoren & Beweise', id:'quant',
+    cols: ['Symbol','Name','Bedeutung','Beispiel'],
+    rows: [
+      ['∀','Allquantor','Für alle','∀x: P(x)'],['∃','Existenzquantor','Es gibt mindestens ein','∃x: P(x)'],
+      ['∃!','Eindeutigkeitsquantor','Es gibt genau ein','∃!x: P(x)'],['≡','Äquivalent','Logisch gleich','a ≡ b'],
+      ['≠','Ungleich','Nicht gleich','a ≠ b'],['≈','Ungefähr gleich','Annähernd','π ≈ 3.14'],
+      ['≤','Kleiner gleich','','x ≤ y'],['≥','Grösser gleich','','x ≥ y'],
+      ['≪','Viel kleiner','','ε ≪ 1'],['≫','Viel grösser','','n ≫ 1'],
+      ['∴','Daraus folgt','Therefore','∴ x = 5'],['∵','Weil / Da','Because','∵ x > 0'],
+      ['□','QED / Beweis Ende','Ende des Beweises','□']
+    ]
+  },
+  {
+    title: 'Analysis & Algebra', id:'analysis',
+    cols: ['Symbol','Name','Bedeutung','Beispiel'],
+    rows: [
+      ['Σ','Summe','Summenzeichen','Σᵢ₌₁ⁿ aᵢ'],['Π','Produkt','Produktzeichen','Πᵢ₌₁ⁿ aᵢ'],
+      ['∫','Integral','Fläche unter Kurve','∫f(x)dx'],['∂','Partielle Ableitung','Partielle Ableitung','∂f/∂x'],
+      ['∞','Unendlich','Infinity','lim n→∞'],['√','Wurzel','Quadratwurzel','√4 = 2'],
+      ['∝','Proportional','Proportional zu','y ∝ x'],['°','Grad','Winkelgrad','90°'],
+      ['‖','Norm','Betrag / Länge','‖v‖'],['⌈x⌉','Aufrundung','Ceiling','⌈3.2⌉ = 4'],
+      ['⌊x⌋','Abrundung','Floor','⌊3.8⌋ = 3'],['n!','Fakultät','n × (n-1) × … × 1','5! = 120'],
+      ['(n k)','Binomialkoeffizient','n über k','(5 2) = 10'],['log','Logarithmus','Umkehrung der Potenz','log₂ 8 = 3'],
+      ['ln','Natürl. Logarithmus','Basis e','ln e = 1'],['mod','Modulo','Rest bei Division','7 mod 3 = 1']
+    ]
+  },
+  {
+    title: 'Informatik & Automaten', id:'cs',
+    cols: ['Symbol','Name','Bedeutung','Beispiel'],
+    rows: [
+      ['Σ','Alphabet','Endliche Zeichenmenge','Σ = {0, 1}'],['Σ*','Kleene-Stern','Alle Wörter über Σ','Σ* = {ε,0,1,00,…}'],
+      ['ε','Epsilon','Leeres Wort','L = {ε}'],['δ','Delta','Übergangsfunktion','δ(q₀, a) = q₁'],
+      ['λ','Lambda','Anonyme Funktion','λx.x+1'],['→','Produktion','Grammatikregel','S → aB'],
+      ['⇒','Ableitung','Direkte Ableitung','S ⇒ aB'],['⇒*','Mehrfachableitung','Mehrere Schritte','S ⇒* aabb'],
+      ['|w|','Wortlänge','Anzahl Zeichen','|abc| = 3'],['L(G)','Sprache','Von G erzeugte Sprache',''],
+      ['O(n)','Landau-Notation','Obere Schranke','O(n²)'],['Θ(n)','Theta','Exakte Schranke','Θ(n log n)'],
+      ['Ω(n)','Omega','Untere Schranke','Ω(n)'],['⊥','Bottom / Undefiniert','Nicht definiert','f(x) = ⊥'],
+      ['⊤','Top','Definiert / Wahr',''],['≺','Präfix','Wort-Präfix','ab ≺ abc']
+    ]
+  },
+  {
+    title: 'Netzwerk & Zahlensysteme', id:'net',
+    cols: ['Symbol','Name','Bedeutung','Beispiel'],
+    rows: [
+      ['0b','Binär-Präfix','Binärzahl','0b1010 = 10'],['0x','Hex-Präfix','Hexadezimalzahl','0xFF = 255'],
+      ['⊕','XOR','Bitweise XOR','1010 ⊕ 0110'],['&','AND','Bitweise UND','1010 & 0110'],
+      ['|','OR','Bitweise ODER','1010 | 0110'],['~','NOT','Bitweise Negation','~1010'],
+      ['<<','Shift links','Bits nach links','4 << 1 = 8'],['>>','Shift rechts','Bits nach rechts','8 >> 1 = 4'],
+      ['/24','CIDR','Subnetzmaske','192.168.1.0/24'],['MSB','Most Significant Bit','Höchstwertiges Bit',''],
+      ['LSB','Least Significant Bit','Niedrigstwertiges Bit',''],['TTL','Time to Live','Lebensdauer Paket','TTL=64'],
+      ['MTU','Max Transfer Unit','Max. Paketgrösse','MTU=1500']
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════ */
+let mode = 'ref';          // 'ref' | 'quiz-mc' | 'quiz-match'
+let activeCats = SECTIONS.map((_,i) => i); // all selected
+let filterIdx = 'all';
+let searchTerm = '';
+
+// Quiz state
+let quizItems = [];
+let quizIdx = 0;
+let quizScore = 0;
+let quizTotal = 0;
+let quizAnswered = false;
+let matchState = { leftSel: null, pairs: [], items: [] };
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════ */
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function getAllQuizPairs(){
+  const pairs = [];
+  SECTIONS.forEach((sec, si) => {
+    if(!activeCats.includes(si)) return;
+    sec.rows.forEach(r => {
+      const symbol = si === 0 ? r[1] : r[0]; // Greek: use lowercase, others: symbol
+      const name = si === 0 ? r[2] : r[1];
+      const hint = si === 0 ? r[3] : r[2];
+      if(symbol && name) pairs.push({ symbol, name, hint, section: sec.title });
+    });
+  });
+  return pairs;
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODE SWITCH
+   ═══════════════════════════════════════════════════════ */
+function switchMode(m){
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach((b,i) => {
+    const modes = ['ref','quiz-mc','quiz-match'];
+    b.classList.toggle('active', modes[i] === m);
+  });
+  if(m === 'ref') renderRef();
+  else renderQuizStart();
+}
+
+/* ═══════════════════════════════════════════════════════
+   REFERENCE MODE
+   ═══════════════════════════════════════════════════════ */
+function renderRef(){
+  const app = document.getElementById('app');
+  const tabsHTML = SECTIONS.map((s,i) =>
+    `<span class="ftab${filterIdx==='all'||(filterIdx===String(i))?' active':''}" data-idx="${i}" onclick="setFilter(${i})">${s.title.split(' ')[0]}</span>`
+  ).join('');
+
+  const sectionsHTML = SECTIONS.map((sec, si) => {
+    if(filterIdx !== 'all' && filterIdx !== String(si)) return '';
+    const headerRow = sec.cols.map(c => `<th>${c}</th>`).join('');
+    const bodyRows = sec.rows.map(r => {
+      const searchable = r.join(' ').toLowerCase();
+      const hidden = searchTerm && !searchable.includes(searchTerm) ? ' hidden' : '';
+      return `<tr class="${hidden}" data-search="${searchable}">${r.map(c=>`<td>${c}</td>`).join('')}</tr>`;
+    }).join('');
+    const visibleRows = sec.rows.filter(r => !searchTerm || r.join(' ').toLowerCase().includes(searchTerm));
+    if(searchTerm && visibleRows.length === 0) return '';
+    return `<div class="ref-section"><h3>${sec.title}</h3><table class="ref-table"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table></div>`;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="search-wrap">
+      <input class="search" type="text" placeholder="Suchen… z.B. Alpha, Summe, Element, XOR" value="${searchTerm}" oninput="searchRef(this.value)">
+    </div>
+    <div class="filter-bar">
+      <span class="ftab${filterIdx==='all'?' active':''}" onclick="setFilter('all')">Alle</span>
+      ${tabsHTML}
+    </div>
+    <div class="content">${sectionsHTML}</div>`;
+}
+
+function setFilter(idx){
+  filterIdx = String(idx);
+  renderRef();
+}
+
+function searchRef(term){
+  searchTerm = term.toLowerCase().trim();
+  // Update visibility without full re-render
+  document.querySelectorAll('.ref-table tr[data-search]').forEach(tr => {
+    tr.classList.toggle('hidden', searchTerm && !tr.dataset.search.includes(searchTerm));
+  });
+  document.querySelectorAll('.ref-section').forEach(sec => {
+    if(searchTerm){
+      const visible = sec.querySelectorAll('tr[data-search]:not(.hidden)').length;
+      sec.style.display = visible ? '' : 'none';
+    } else {
+      sec.style.display = '';
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   QUIZ START SCREEN
+   ═══════════════════════════════════════════════════════ */
+function renderQuizStart(){
+  const app = document.getElementById('app');
+  const catBtns = SECTIONS.map((s,i) =>
+    `<span class="cat-btn${activeCats.includes(i)?' active':''}" onclick="toggleCat(${i})">${s.title.split(' ')[0]}</span>`
+  ).join('');
+  const total = getAllQuizPairs().length;
+
+  app.innerHTML = `
+    <div class="content">
+      <div class="quiz-container">
+        <div style="text-align:center;margin:2rem 0 1rem">
+          <div style="font-size:2.5rem;margin-bottom:.5rem">${mode==='quiz-mc'?'🎯':'🔗'}</div>
+          <h2 style="font-family:'Outfit',sans-serif;font-size:1.2rem;color:var(--text)">${mode==='quiz-mc'?'Multiple Choice':'Zuordnung (Drag & Drop)'}</h2>
+          <p style="color:var(--muted);font-size:.8rem;margin-top:.3rem">${mode==='quiz-mc'?'Welcher Name gehört zum Symbol?':'Ordne Symbole ihren Namen zu'}</p>
+        </div>
+        <div class="cat-selector">${catBtns}</div>
+        <p style="text-align:center;color:var(--muted);font-size:.75rem;margin:.5rem 0">${total} Symbole ausgewählt</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="startQuiz()">${mode==='quiz-mc'?'🎯 Quiz starten':'🔗 Zuordnung starten'}</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleCat(i){
+  const idx = activeCats.indexOf(i);
+  if(idx >= 0 && activeCats.length > 1) activeCats.splice(idx, 1);
+  else if(idx < 0) activeCats.push(i);
+  renderQuizStart();
+}
+
+/* ═══════════════════════════════════════════════════════
+   QUIZ ENGINE
+   ═══════════════════════════════════════════════════════ */
+function startQuiz(){
+  const pairs = shuffle(getAllQuizPairs());
+  if(pairs.length === 0) return;
+
+  if(mode === 'quiz-mc'){
+    quizItems = pairs;
+    quizIdx = 0;
+    quizScore = 0;
+    quizTotal = Math.min(pairs.length, 20); // max 20 per round
+    quizAnswered = false;
+    renderMC();
+  } else {
+    // Match mode: take 6 random pairs per round
+    const roundPairs = pairs.slice(0, Math.min(6, pairs.length));
+    matchState = {
+      pairs: roundPairs,
+      leftSel: null,
+      matched: [],
+      wrong: null,
+      total: roundPairs.length,
+      score: 0,
+      rounds: 0,
+      maxRounds: Math.ceil(pairs.length / 6),
+      allPairs: pairs,
+      currentStart: 0
+    };
+    renderMatch();
+  }
+}
+
+/* ── MC QUIZ ── */
+function renderMC(){
+  if(quizIdx >= quizTotal) return renderEnd();
+  const app = document.getElementById('app');
+  const item = quizItems[quizIdx];
+  quizAnswered = false;
+
+  // Generate 3 wrong answers + 1 correct
+  const allNames = getAllQuizPairs().map(p => p.name).filter(n => n !== item.name);
+  const wrongNames = shuffle(allNames).slice(0, 3);
+  const options = shuffle([item.name, ...wrongNames]);
+
+  app.innerHTML = `
+    <div class="content">
+      <div class="quiz-container">
+        <div class="quiz-stats">
+          <div class="qstat"><div class="qstat-num" style="color:var(--muted)">${quizIdx+1}/${quizTotal}</div><div class="qstat-label">Frage</div></div>
+          <div class="qstat"><div class="qstat-num" style="color:var(--correct)">${quizScore}</div><div class="qstat-label">Richtig</div></div>
+          <div class="qstat"><div class="qstat-num" style="color:var(--wrong)">${quizIdx - quizScore}</div><div class="qstat-label">Falsch</div></div>
+        </div>
+        <div class="quiz-card">
+          <div class="quiz-prompt">Welcher Name gehört zu diesem Symbol?</div>
+          <div class="quiz-symbol">${item.symbol}</div>
+          <div style="text-align:center;color:var(--muted);font-size:.65rem;margin-bottom:.5rem">${item.section}</div>
+          <div class="mc-options" id="mcOpts">
+            ${options.map((o,i) => `<div class="mc-opt" onclick="answerMC(${i},'${o.replace(/'/g,"\\'")}','${item.name.replace(/'/g,"\\'")}')">${o}</div>`).join('')}
+          </div>
+          <div id="mcFeedback"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="renderQuizStart()">✕ Beenden</button>
+          <button class="btn btn-primary" id="mcNext" style="display:none" onclick="quizIdx++;renderMC()">Weiter →</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function answerMC(idx, chosen, correct){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const opts = document.querySelectorAll('.mc-opt');
+  const isCorrect = chosen === correct;
+  if(isCorrect) quizScore++;
+
+  opts.forEach(o => {
+    if(o.textContent === correct) o.classList.add('correct');
+    else if(o.textContent === chosen && !isCorrect) o.classList.add('wrong');
+    o.style.pointerEvents = 'none';
+  });
+
+  const item = quizItems[quizIdx];
+  const fb = document.getElementById('mcFeedback');
+  fb.innerHTML = isCorrect
+    ? `<div class="quiz-feedback correct">✓ Richtig!</div>`
+    : `<div class="quiz-feedback wrong">✗ Falsch — ${item.symbol} = ${correct}${item.hint ? ' ('+item.hint+')' : ''}</div>`;
+  document.getElementById('mcNext').style.display = '';
+}
+
+/* ── MATCH QUIZ ── */
+function renderMatch(){
+  const app = document.getElementById('app');
+  const ms = matchState;
+  const remaining = ms.pairs.filter((_,i) => !ms.matched.includes(i));
+
+  if(remaining.length === 0){
+    // Round complete — next round or end
+    ms.currentStart += 6;
+    if(ms.currentStart >= ms.allPairs.length) return renderMatchEnd();
+    const nextPairs = ms.allPairs.slice(ms.currentStart, ms.currentStart + 6);
+    ms.pairs = nextPairs;
+    ms.matched = [];
+    ms.leftSel = null;
+    ms.rounds++;
+  }
+
+  const leftItems = shuffle(ms.pairs.map((p,i) => ({...p, idx: i})).filter(p => !ms.matched.includes(p.idx)));
+  const rightItems = shuffle(ms.pairs.map((p,i) => ({...p, idx: i})).filter(p => !ms.matched.includes(p.idx)));
+
+  const totalMatched = ms.currentStart + ms.matched.length;
+  const totalAll = ms.allPairs.length;
+
+  app.innerHTML = `
+    <div class="content">
+      <div class="quiz-container">
+        <div class="quiz-stats">
+          <div class="qstat"><div class="qstat-num" style="color:var(--muted)">${totalMatched}/${totalAll}</div><div class="qstat-label">Zugeordnet</div></div>
+          <div class="qstat"><div class="qstat-num" style="color:var(--correct)">${ms.score}</div><div class="qstat-label">Richtig</div></div>
+        </div>
+        <div class="quiz-card">
+          <div class="quiz-prompt">Klicke links ein Symbol, dann rechts den passenden Namen</div>
+          <div class="match-grid">
+            <div class="match-col">
+              <div class="match-col-title">Symbol</div>
+              ${leftItems.map(p => `<div class="match-item symbol${ms.leftSel===p.idx?' selected':''}" onclick="matchClick('left',${p.idx})">${p.symbol}</div>`).join('')}
+            </div>
+            <div class="match-col">
+              <div class="match-col-title">Name</div>
+              ${rightItems.map(p => `<div class="match-item" data-midx="${p.idx}" onclick="matchClick('right',${p.idx})">${p.name}</div>`).join('')}
+            </div>
+          </div>
+          <div id="matchFeedback"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="renderQuizStart()">✕ Beenden</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function matchClick(side, idx){
+  const ms = matchState;
+  if(ms.matched.includes(idx) && side === 'left') return;
+
+  if(side === 'left'){
+    ms.leftSel = idx;
+    // Highlight selected
+    document.querySelectorAll('.match-col:first-child .match-item').forEach(el => el.classList.remove('selected'));
+    event.target.classList.add('selected');
+  } else if(side === 'right' && ms.leftSel !== null){
+    const isCorrect = ms.leftSel === idx;
+    const fb = document.getElementById('matchFeedback');
+
+    if(isCorrect){
+      ms.score++;
+      ms.matched.push(idx);
+      fb.innerHTML = `<div class="quiz-feedback correct" style="margin-top:.8rem">✓ Richtig!</div>`;
+      ms.leftSel = null;
+      setTimeout(() => renderMatch(), 600);
+    } else {
+      const correctName = ms.pairs[ms.leftSel].name;
+      fb.innerHTML = `<div class="quiz-feedback wrong" style="margin-top:.8rem">✗ Falsch — das war: ${correctName}</div>`;
+      event.target.classList.add('wrong');
+      setTimeout(() => {
+        event.target.classList.remove('wrong');
+        fb.innerHTML = '';
+      }, 1200);
+    }
+  }
+}
+
+/* ── END SCREENS ── */
+function renderEnd(){
+  const pct = Math.round((quizScore / quizTotal) * 100);
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="content">
+      <div class="quiz-container end-screen">
+        <div class="end-score">${pct}%</div>
+        <div class="end-label">${quizScore} von ${quizTotal} richtig</div>
+        <div class="btn-row">
+          <button class="btn" onclick="renderQuizStart()">← Zurück</button>
+          <button class="btn btn-primary" onclick="startQuiz()">🔄 Nochmal</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderMatchEnd(){
+  const ms = matchState;
+  const total = ms.allPairs.length;
+  const pct = Math.round((ms.score / total) * 100);
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="content">
+      <div class="quiz-container end-screen">
+        <div class="end-score">${pct}%</div>
+        <div class="end-label">${ms.score} von ${total} richtig zugeordnet</div>
+        <div class="btn-row">
+          <button class="btn" onclick="renderQuizStart()">← Zurück</button>
+          <button class="btn btn-primary" onclick="startQuiz()">🔄 Nochmal</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ── INIT ── */
+renderRef();
+</script>
+</body>
+</html>
