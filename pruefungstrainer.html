@@ -162,8 +162,9 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
   .tf-wrap{flex-direction:column;align-items:center}
   .slot-reel{min-width:70px;padding:.3rem .4rem}
   .slot-num{font-size:1.3rem}
-  .quiz-slot{min-width:55px}
-  .quiz-slot .slot-num{font-size:1rem}
+  .quiz-slot{min-width:48px;padding:.25rem .35rem}
+  .quiz-slot .slot-num{font-size:.95rem}
+  .quiz-slot .slot-label{font-size:.4rem}
 }
 /* ── Slot Machine Score ── */
 .score-overview{background:linear-gradient(180deg,#1a1924 0%,#13121a 100%);border:1px solid #2a2840;border-radius:16px;padding:1rem 1.2rem;margin-bottom:1rem;box-shadow:0 4px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.04)}
@@ -829,6 +830,14 @@ function globalStats(){
   });
   return {offen, inArbeit, unsicher, gelernt, total:Q.length};
 }
+function quizSlotsHTML(remaining){
+  const gs = globalStats();
+  return `
+    <div class="quiz-slot"><div class="slot-num c-muted">${remaining}</div><div class="slot-label">📋 Übrig</div></div>
+    <div class="quiz-slot"><div class="slot-num c-amber">${gs.inArbeit}</div><div class="slot-label">🔄 In Arbeit</div></div>
+    <div class="quiz-slot"><div class="slot-num c-wrong">${gs.unsicher}</div><div class="slot-label">❌ Unsicher</div></div>
+    <div class="quiz-slot"><div class="slot-num c-correct">${gs.gelernt}</div><div class="slot-label">✅ Gelernt</div></div>`;
+}
 
 /* ═══════════════════════════════════════════════════════
    RENDER ENGINE
@@ -947,18 +956,7 @@ function renderQuiz(){
     <div class="quiz-wrap">
       <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
       <div class="quiz-slots" id="quizStats">
-        <div class="quiz-slot">
-          <div class="slot-num c-muted">${remaining}</div>
-          <div class="slot-label">📋 Übrig</div>
-        </div>
-        <div class="quiz-slot">
-          <div class="slot-num c-correct">${state.sessionLearned}</div>
-          <div class="slot-label">✅ Gelernt</div>
-        </div>
-        <div class="quiz-slot">
-          <div class="slot-num c-wrong">${state.answered - state.score}</div>
-          <div class="slot-label">❌ Falsch</div>
-        </div>
+        ${quizSlotsHTML(remaining)}
       </div>
       <div class="q-card">
         <div class="q-meta">
@@ -1187,10 +1185,7 @@ function showFeedback(correct, explanation){
   // update live stats
   const remaining = state.queue.length - 1;
   const statsEl = document.getElementById('quizStats');
-  if(statsEl) statsEl.innerHTML = `
-    <div class="quiz-slot"><div class="slot-num c-muted">${remaining}</div><div class="slot-label">📋 Übrig</div></div>
-    <div class="quiz-slot"><div class="slot-num c-correct">${state.sessionLearned}</div><div class="slot-label">✅ Gelernt</div></div>
-    <div class="quiz-slot"><div class="slot-num c-wrong">${state.answered - state.score}</div><div class="slot-label">❌ Falsch</div></div>`;
+  if(statsEl) statsEl.innerHTML = quizSlotsHTML(remaining);
 }
 
 function nextQuestion(){
