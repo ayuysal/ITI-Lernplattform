@@ -161,7 +161,7 @@ const SECTIONS = [
 /* ── Inject CSS ── */
 const style = document.createElement('style');
 style.textContent = `
-.sym-btn{position:fixed;top:.8rem;right:.8rem;z-index:500;width:36px;height:36px;border-radius:50%;background:rgba(24,23,29,.9);border:1px solid #2a2840;color:#f5c542;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px);box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.sym-btn{position:fixed;bottom:1.5rem;left:1.5rem;z-index:500;width:42px;height:42px;border-radius:50%;background:rgba(24,23,29,.9);border:1px solid #2a2840;color:#f5c542;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px);box-shadow:0 2px 10px rgba(0,0,0,.3)}
 .sym-btn:hover{background:#f5c542;color:#000;transform:scale(1.1);box-shadow:0 2px 15px rgba(245,197,66,.4)}
 .sym-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;overflow-y:auto;backdrop-filter:blur(6px);opacity:0;transition:opacity .2s;display:none}
 .sym-overlay.show{display:block;opacity:1}
@@ -190,7 +190,7 @@ style.textContent = `
 @media(max-width:600px){
   .sym-table{font-size:.6rem}
   .sym-table td:first-child{font-size:.85rem;width:2.5rem}
-  .sym-btn{top:auto;bottom:4rem;right:.8rem}
+  .sym-btn{bottom:1rem;left:1rem}
 }
 `;
 document.head.appendChild(style);
