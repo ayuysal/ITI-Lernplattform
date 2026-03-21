@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Prüfungstrainer – Quiz &amp; Übungen</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -206,6 +207,26 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 .sync-modal .btn-row{margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
 .sync-modal label.btn{margin:0 auto;justify-content:center}
 
+/* ── Auth UI ── */
+.auth-bar{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.3rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.auth-bar .user-info{color:var(--amber);display:flex;align-items:center;gap:.3rem}
+.auth-bar .user-info .dot{width:6px;height:6px;border-radius:50%;background:var(--correct);display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.auth-bar button{background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s}
+.auth-bar button:hover{border-color:var(--amber);color:var(--amber)}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center}
+.auth-modal h3{font-family:'Outfit',sans-serif;font-size:1.2rem;margin-bottom:.3rem}
+.auth-modal p{font-size:.75rem;color:var(--muted);margin-bottom:1.2rem}
+.auth-modal input{width:100%;padding:.6rem .8rem;background:#0a0a10;border:1px solid #2a2840;border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;margin-bottom:.6rem;outline:none;transition:border-color .2s}
+.auth-modal input:focus{border-color:var(--amber)}
+.auth-modal .btn-primary{width:100%;margin-top:.3rem}
+.auth-modal .auth-toggle{font-size:.7rem;color:var(--muted);margin-top:.8rem;cursor:pointer}
+.auth-modal .auth-toggle span{color:var(--amber);cursor:pointer}
+.auth-modal .auth-toggle span:hover{text-decoration:underline}
+.auth-modal .auth-error{font-size:.7rem;color:var(--wrong);margin-top:.5rem;min-height:1rem}
+.sync-status{font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--muted);text-align:center;padding:.2rem}
+
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -213,7 +234,10 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 </head>
 <body>
 
-<a href="index.html" class="back">← Zurück zur Lernplattform</a>
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap">
+  <a href="index.html" class="back">← Zurück zur Lernplattform</a>
+  <div class="auth-bar" id="authBar"></div>
+</div>
 
 <header>
   <div class="tag">Informatik-Studium</div>
@@ -822,7 +846,10 @@ let history = (function(){
   return raw;
 })();
 
-function saveHistory(){ localStorage.setItem('pt-history', JSON.stringify(history)); }
+function saveHistory(){
+  localStorage.setItem('pt-history', JSON.stringify(history));
+  if(typeof debouncedCloudSave === 'function') debouncedCloudSave();
+}
 
 function getBox(q){
   const h = history[qId(q)];
@@ -932,7 +959,7 @@ function renderStart(){
       <div class="btn-row">
         <button class="btn" onclick="startQuiz(false)">🎯 Alle starten (${countFiltered('all')})</button>
         <button class="btn btn-primary" onclick="startQuiz(true)">🔥 Nur Fehler wiederholen (${countWrong()})</button>
-        <button class="btn" onclick="openSyncModal()" title="Fortschritt als Link kopieren – auf anderem Gerät öffnen">🔗 Sync</button>
+        <button class="btn" onclick="currentUser ? saveProgressToCloud().then(()=>showToast('☁️ Cloud synchronisiert!')) : showAuthModal()">☁️ ${currentUser ? 'Cloud Sync' : 'Anmelden'}</button>
       </div>
     </div>`;
 }
@@ -1316,105 +1343,163 @@ function showToast(msg){
 }
 
 /* ═══════════════════════════════════════════════════════
-   CROSS-DEVICE SYNC
+   SUPABASE – Cloud Sync & Auth
    ═══════════════════════════════════════════════════════ */
-(function importFromURL(){
-  const hash = window.location.hash;
-  if(!hash.startsWith('#sync=')) return;
-  try {
-    const data = JSON.parse(atob(decodeURIComponent(hash.slice(6))));
-    if(typeof data === 'object' && data !== null){
-      /* Merge: keep the higher box/streak from either source */
-      Object.keys(data).forEach(k=>{
-        const incoming = data[k];
-        const local = history[k];
-        if(!local || incoming.box > local.box || (incoming.box === local.box && incoming.streak > local.streak)){
-          history[k] = incoming;
-        }
-      });
-      saveHistory();
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-      setTimeout(()=>showToast('✅ Fortschritt synchronisiert!'), 300);
-    }
-  } catch(e){ console.warn('Sync-Import fehlgeschlagen', e); }
-})();
+const SUPABASE_URL = 'https://hhedpirqdxarjkxbygwf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoZWRwaXJxZHhhcmpreGJ5Z3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwOTUzNDcsImV4cCI6MjA4OTY3MTM0N30.qe0mvET4aLjHloGmdIukjWsiKi9c8Edh2Ar77MVYeP0';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function openSyncModal(){
-  const gs = globalStats();
-  const hasData = Object.keys(history).length > 0;
+let currentUser = null;
+let _saveTimeout = null;
+
+/* ── Auth UI ── */
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(currentUser){
+    bar.innerHTML = `
+      <span class="user-info"><span class="dot"></span> ${currentUser.email}</span>
+      <button onclick="doLogout()">Abmelden</button>`;
+  } else {
+    bar.innerHTML = `<button onclick="showAuthModal()">🔐 Anmelden für Cloud-Sync</button>`;
+  }
+}
+
+function showAuthModal(mode='login'){
+  let existing = document.getElementById('authOverlay');
+  if(existing) existing.remove();
+  const isLogin = mode === 'login';
   const overlay = document.createElement('div');
-  overlay.className = 'sync-overlay';
-  overlay.id = 'syncOverlay';
+  overlay.className = 'auth-overlay';
+  overlay.id = 'authOverlay';
   overlay.innerHTML = `
-    <div class="sync-modal">
-      <h3>🔗 Geräte-Sync</h3>
-      <p style="text-align:center;font-size:.7rem;color:var(--amber);margin-bottom:.8rem">
-        ${gs.gelernt} gelernt · ${gs.inArbeit} in Arbeit · ${gs.unsicher} unsicher
-      </p>
-      <div class="step"><span class="step-num">1</span><span><strong>Exportieren:</strong> Lade deinen Fortschritt als Datei herunter</span></div>
-      <div class="step"><span class="step-num">2</span><span><strong>Übertragen:</strong> Schick die Datei ans andere Gerät (AirDrop, Cloud, E-Mail, USB…)</span></div>
-      <div class="step"><span class="step-num">3</span><span><strong>Importieren:</strong> Lade die Datei auf dem anderen Gerät hoch</span></div>
-      <div class="btn-row" style="margin-top:1rem">
-        <button class="btn btn-primary" onclick="exportProgress()" ${!hasData?'disabled title="Kein Fortschritt vorhanden"':''}>💾 Fortschritt speichern</button>
-      </div>
-      <p style="text-align:center;font-size:.65rem;margin-top:1rem;color:var(--muted)">— oder Fortschritt von anderem Gerät laden —</p>
-      <label class="btn" style="cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;margin-top:.3rem">
-        📂 Datei auswählen
-        <input type="file" id="syncFileInput" accept=".json" style="display:none" onchange="importProgressFile(this)">
-      </label>
-      <div class="btn-row" style="margin-top:.8rem">
-        <button class="btn" onclick="closeSyncModal()">Schliessen</button>
-      </div>
+    <div class="auth-modal">
+      <h3>${isLogin ? '🔐 Anmelden' : '📝 Registrieren'}</h3>
+      <p>${isLogin ? 'Melde dich an um deinen Fortschritt auf allen Geräten zu synchronisieren.' : 'Erstelle ein Konto für Cloud-Sync auf allen Geräten.'}</p>
+      <input type="email" id="authEmail" placeholder="E-Mail" autocomplete="email">
+      <input type="password" id="authPass" placeholder="Passwort (min. 6 Zeichen)" autocomplete="${isLogin?'current-password':'new-password'}">
+      <button class="btn btn-primary" onclick="${isLogin?'doLogin':'doSignup'}()">${isLogin?'Anmelden':'Registrieren'}</button>
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-toggle">${isLogin
+        ? 'Noch kein Konto? <span onclick="showAuthModal(\'signup\')">Registrieren</span>'
+        : 'Bereits ein Konto? <span onclick="showAuthModal(\'login\')">Anmelden</span>'}</div>
     </div>`;
   document.body.appendChild(overlay);
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) closeSyncModal(); });
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('authEmail').focus();
+  // Enter key to submit
+  overlay.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') document.querySelector('.auth-modal .btn-primary').click(); });
+  });
 }
 
-function closeSyncModal(){
-  const o = document.getElementById('syncOverlay');
-  if(o) o.remove();
+async function doLogin(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  errEl.textContent='Anmelden...';
+  const {data,error} = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  currentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Angemeldet!');
+  renderAuthBar();
+  await loadProgressFromCloud();
+  render();
 }
 
-function exportProgress(){
-  const data = JSON.stringify(history, null, 2);
-  const blob = new Blob([data], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const date = new Date().toISOString().slice(0,10);
-  a.href = url;
-  a.download = `pruefungstrainer-fortschritt-${date}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('💾 Fortschritt gespeichert!');
+async function doSignup(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  if(pass.length<6){ errEl.textContent='Passwort muss mindestens 6 Zeichen haben'; return; }
+  errEl.textContent='Registrieren...';
+  const {data,error} = await sb.auth.signUp({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  if(data.user && !data.user.email_confirmed_at){
+    errEl.innerHTML='<span style="color:var(--amber)">📧 Bestätigungs-E-Mail gesendet! Bitte prüfe dein Postfach und melde dich dann an.</span>';
+    return;
+  }
+  currentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Registriert & angemeldet!');
+  renderAuthBar();
+  await saveProgressToCloud();
+  render();
 }
 
-function importProgressFile(input){
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try {
-      const data = JSON.parse(e.target.result);
-      if(typeof data !== 'object' || data === null) throw new Error('Ungültiges Format');
-      let imported = 0;
-      Object.keys(data).forEach(k=>{
-        const incoming = data[k];
-        const local = history[k];
-        if(!local || incoming.box > local.box || (incoming.box === local.box && incoming.streak > local.streak)){
-          history[k] = incoming;
-          imported++;
-        }
-      });
-      saveHistory();
-      closeSyncModal();
-      showToast(`✅ ${imported} Einträge importiert!`);
-      render();
-    } catch(err){ showToast('❌ Ungültige Datei'); console.warn(err); }
-  };
-  reader.readAsText(file);
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser = null;
+  renderAuthBar();
+  showToast('Abgemeldet — Fortschritt bleibt lokal gespeichert');
 }
+
+/* ── Cloud Load / Save ── */
+async function loadProgressFromCloud(){
+  if(!currentUser) return;
+  const {data,error} = await sb
+    .from('quiz_progress')
+    .select('history')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+  if(error){ console.warn('Cloud-Load Fehler:', error); return; }
+  if(data && data.history){
+    const cloud = data.history;
+    let merged = 0;
+    /* Merge: keep the higher box/streak from either source */
+    Object.keys(cloud).forEach(k=>{
+      const incoming = cloud[k];
+      const local = history[k];
+      if(!local || incoming.box > local.box || (incoming.box === local.box && (incoming.streak||0) > (local.streak||0))){
+        history[k] = incoming;
+        merged++;
+      }
+    });
+    if(merged > 0){
+      saveHistory(); // save merged to localStorage
+      showToast(`☁️ ${merged} Einträge aus Cloud synchronisiert`);
+    }
+  } else {
+    // No cloud data yet → push local to cloud
+    await saveProgressToCloud();
+  }
+}
+
+async function saveProgressToCloud(){
+  if(!currentUser) return;
+  const {error} = await sb
+    .from('quiz_progress')
+    .upsert({
+      user_id: currentUser.id,
+      history: history,
+      updated_at: new Date().toISOString()
+    }, {onConflict:'user_id'});
+  if(error) console.warn('Cloud-Save Fehler:', error);
+}
+
+/* Debounced cloud save — called after every answer */
+function debouncedCloudSave(){
+  if(!currentUser) return;
+  clearTimeout(_saveTimeout);
+  _saveTimeout = setTimeout(()=> saveProgressToCloud(), 1500);
+}
+
+/* ── Auto-Login from stored session ── */
+async function initAuth(){
+  const {data} = await sb.auth.getSession();
+  if(data.session){
+    currentUser = data.session.user;
+    renderAuthBar();
+    await loadProgressFromCloud();
+    render();
+  } else {
+    renderAuthBar();
+  }
+}
+
+initAuth();
 
 /* ── INIT ── */
 render();
