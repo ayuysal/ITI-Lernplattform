@@ -1358,6 +1358,7 @@ function renderAuthBar(){
   if(currentUser){
     bar.innerHTML = `
       <span class="user-info"><span class="dot"></span> ${currentUser.email}</span>
+      <button onclick="forceCloudOverwrite()" title="Lokalen Stand komplett mit Cloud-Daten überschreiben">☁️ Cloud laden</button>
       <button onclick="doLogout()">Abmelden</button>`;
   } else {
     bar.innerHTML = `<button onclick="showAuthModal()">🔐 Anmelden für Cloud-Sync</button>`;
@@ -1447,23 +1448,49 @@ async function loadProgressFromCloud(){
   if(error){ console.warn('Cloud-Load Fehler:', error); return; }
   if(data && data.history){
     const cloud = data.history;
-    let merged = 0;
-    /* Merge: keep the higher box/streak from either source */
-    Object.keys(cloud).forEach(k=>{
-      const incoming = cloud[k];
+    /* Cloud is source of truth: start from cloud, then merge local improvements */
+    const merged = Object.assign({}, cloud);
+    let localBetter = 0;
+    Object.keys(history).forEach(k=>{
       const local = history[k];
-      if(!local || incoming.box > local.box || (incoming.box === local.box && (incoming.streak||0) > (local.streak||0))){
-        history[k] = incoming;
-        merged++;
+      const remote = cloud[k];
+      if(remote){
+        // Keep whichever is further along
+        if(local.box > remote.box || (local.box === remote.box && (local.streak||0) > (remote.streak||0))){
+          merged[k] = local;
+          localBetter++;
+        }
+      } else {
+        // Local entry not in cloud → add it
+        merged[k] = local;
+        localBetter++;
       }
     });
-    if(merged > 0){
-      saveHistory(); // save merged to localStorage
-      showToast(`☁️ ${merged} Einträge aus Cloud synchronisiert`);
-    }
+    history = merged;
+    localStorage.setItem('pt-history', JSON.stringify(history));
+    if(localBetter > 0) await saveProgressToCloud(); // push local improvements to cloud
+    showToast('☁️ Cloud-Fortschritt geladen');
   } else {
     // No cloud data yet → push local to cloud
     await saveProgressToCloud();
+  }
+}
+
+async function forceCloudOverwrite(){
+  if(!currentUser){ showToast('❌ Nicht angemeldet'); return; }
+  const {data,error} = await sb
+    .from('quiz_progress')
+    .select('history')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+  if(error){ showToast('❌ Cloud-Fehler'); return; }
+  if(data && data.history){
+    history = data.history;
+    localStorage.setItem('pt-history', JSON.stringify(history));
+    showToast('☁️ Lokaler Stand mit Cloud überschrieben');
+    render();
+  } else {
+    showToast('☁️ Keine Cloud-Daten vorhanden');
   }
 }
 
