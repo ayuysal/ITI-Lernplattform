@@ -918,6 +918,7 @@ function renderStart(){
       <div class="btn-row">
         <button class="btn" onclick="startQuiz(false)">🎯 Alle starten (${countFiltered('all')})</button>
         <button class="btn btn-primary" onclick="startQuiz(true)">🔥 Nur Fehler wiederholen (${countWrong()})</button>
+        <button class="btn" onclick="copySync()" title="Fortschritt als Link kopieren – auf anderem Gerät öffnen">🔗 Sync</button>
       </div>
     </div>`;
 }
@@ -1298,6 +1299,46 @@ function shuffle(arr){
 function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+/* ═══════════════════════════════════════════════════════
+   CROSS-DEVICE SYNC
+   ═══════════════════════════════════════════════════════ */
+(function importFromURL(){
+  const hash = window.location.hash;
+  if(!hash.startsWith('#sync=')) return;
+  try {
+    const data = JSON.parse(atob(decodeURIComponent(hash.slice(6))));
+    if(typeof data === 'object' && data !== null){
+      /* Merge: keep the higher box/streak from either source */
+      Object.keys(data).forEach(k=>{
+        const incoming = data[k];
+        const local = history[k];
+        if(!local || incoming.box > local.box || (incoming.box === local.box && incoming.streak > local.streak)){
+          history[k] = incoming;
+        }
+      });
+      saveHistory();
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      setTimeout(()=>showToast('✅ Fortschritt synchronisiert!'), 300);
+    }
+  } catch(e){ console.warn('Sync-Import fehlgeschlagen', e); }
+})();
+
+function copySync(){
+  const encoded = btoa(JSON.stringify(history));
+  const url = window.location.origin + window.location.pathname + '#sync=' + encoded;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(()=>showToast('📋 Sync-Link kopiert!')).catch(()=>fallbackCopy(url));
+  } else { fallbackCopy(url); }
+}
+function fallbackCopy(url){
+  const ta = document.createElement('textarea');
+  ta.value = url; ta.style.cssText='position:fixed;left:-9999px';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); showToast('📋 Sync-Link kopiert!'); }
+  catch(e){ prompt('Sync-Link kopieren:', url); }
+  document.body.removeChild(ta);
 }
 
 /* ── INIT ── */
