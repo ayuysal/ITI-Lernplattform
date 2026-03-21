@@ -1084,7 +1084,8 @@ function answerFill(){
   const q = state.queue[0];
   const input = document.getElementById('fillInput');
   const val = input.value.trim();
-  const correct = q.a.some(a=>a.toLowerCase()===val.toLowerCase());
+  const norm = s => s.toLowerCase().replace(/[\s\-→>·.,;:()]/g,'');
+  const correct = q.a.some(a => norm(val) === norm(a));
   input.classList.add(correct?'correct':'wrong');
   if(!correct) input.value = val + '  →  ' + q.a[0];
   showFeedback(correct, q.e);
