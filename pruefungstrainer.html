@@ -161,6 +161,20 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
   .q-card{padding:1rem}
   .tf-wrap{flex-direction:column;align-items:center}
 }
+/* ── Score Overview ── */
+.score-overview{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.8rem 1rem;margin-bottom:.8rem}
+.score-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.5rem}
+.score-item{display:flex;align-items:center;gap:.25rem}
+.score-item strong{color:var(--text)}
+.score-icon{font-size:.85rem}
+.score-bar-wrap{display:flex;align-items:center;gap:.5rem}
+.score-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.score-bar-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--correct));border-radius:3px;transition:width .5s}
+.score-pct{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--amber);min-width:2rem;text-align:right}
+
+/* ── Streak Badge ── */
+.streak-badge{font-family:'JetBrains Mono',monospace;font-size:.55rem;background:rgba(245,197,66,.1);color:var(--amber);padding:.1rem .35rem;border-radius:4px;border:1px solid rgba(245,197,66,.2)}
+
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
@@ -743,21 +757,62 @@ const DIFF_LABELS = ['','Stufe 1 · Erinnern','Stufe 2 · Verstehen','Stufe 3 ·
 /* ═══════════════════════════════════════════════════════
    STATE
    ═══════════════════════════════════════════════════════ */
+const TYPE_PRIO = {mc:1,tf:1,match:2,order:2,fill:3,calc:3};
+const REINSERT_WRONG = 3;   // re-insert after N questions when wrong
+const REINSERT_KNOWN = 7;   // re-insert after N questions when 1-2x correct
+const MASTERED_STREAK = 3;  // 3x correct = learned
+
 let state = {
-  screen:'start', // start, quiz, end
+  screen:'start',
   filterDomain:'all',
-  filterDiff:0, // 0=all
+  filterDiff:0,
   filterType:'all',
-  questions:[], // filtered & shuffled
-  current:0,
+  queue:[],       // adaptive queue of question refs
+  current:0,      // index into queue (always 0, we shift)
   score:0,
   answered:0,
-  answered_ids:new Set(),
-  locked:false // prevent double-answer
+  totalUnique:0,  // how many unique questions in this session
+  sessionLearned:0, // newly learned in this session
+  locked:false
 };
-let history = JSON.parse(localStorage.getItem('pt-history')||'{}');
+
+/* ── History: { qId: { streak, last, box } } ── */
+let history = (function(){
+  const raw = JSON.parse(localStorage.getItem('pt-history')||'{}');
+  // migrate old format ("correct"/"wrong" strings → objects)
+  for(const k in raw){
+    if(typeof raw[k]==='string'){
+      raw[k] = raw[k]==='correct'
+        ? {streak:1, last:'correct', box:2}
+        : {streak:0, last:'wrong', box:1};
+    }
+  }
+  localStorage.setItem('pt-history', JSON.stringify(raw));
+  return raw;
+})();
 
 function saveHistory(){ localStorage.setItem('pt-history', JSON.stringify(history)); }
+
+function getBox(q){
+  const h = history[qId(q)];
+  if(!h) return 0;
+  return h.box;
+}
+function getStreak(q){
+  const h = history[qId(q)];
+  return h ? h.streak : 0;
+}
+function globalStats(){
+  let offen=0, inArbeit=0, unsicher=0, gelernt=0;
+  Q.forEach(q=>{
+    const b = getBox(q);
+    if(b===0) offen++;
+    else if(b===1) unsicher++;
+    else if(b===2) inArbeit++;
+    else gelernt++;
+  });
+  return {offen, inArbeit, unsicher, gelernt, total:Q.length};
+}
 
 /* ═══════════════════════════════════════════════════════
    RENDER ENGINE
@@ -771,20 +826,30 @@ function render(){
 }
 
 function renderStart(){
+  const gs = globalStats();
+  const pct = gs.total ? Math.round(gs.gelernt/gs.total*100) : 0;
   const domainStats = DOMAINS.map(d=>{
     const qs = Q.filter(q=>q.d===d.id);
-    const done = qs.filter(q=>history[qId(q)]==='correct').length;
-    return {d, total:qs.length, done};
+    const learned = qs.filter(q=>getBox(q)===3).length;
+    const unsicher = qs.filter(q=>getBox(q)===1).length;
+    return {d, total:qs.length, learned, unsicher};
   });
-  const totalQ = Q.length;
-  const totalDone = Object.values(history).filter(v=>v==='correct').length;
 
   app.innerHTML = `
     <div class="start-screen">
-      <div class="stats">
-        <span>📝 Fragen: <span class="val">${totalQ}</span></span>
-        <span>✅ Richtig: <span class="correct-val">${totalDone}</span></span>
-        <span>📊 Quote: <span class="val">${totalQ?Math.round(totalDone/totalQ*100):0}%</span></span>
+      <div class="score-overview">
+        <div class="score-row">
+          <span class="score-item"><span class="score-icon">📋</span> Offen: <strong>${gs.offen}</strong></span>
+          <span class="score-item"><span class="score-icon">🔄</span> In Arbeit: <strong>${gs.inArbeit}</strong></span>
+          <span class="score-item"><span class="score-icon">❌</span> Unsicher: <strong class="wrong-val">${gs.unsicher}</strong></span>
+          <span class="score-item"><span class="score-icon">✅</span> Gelernt: <strong class="correct-val">${gs.gelernt}</strong></span>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar">
+            <div class="score-bar-fill" style="width:${pct}%"></div>
+          </div>
+          <span class="score-pct">${pct}%</span>
+        </div>
       </div>
       <div class="toolbar">
         <div class="filter-group">
@@ -801,11 +866,15 @@ function renderStart(){
         </div>
       </div>
       <div class="domain-cards">
-        ${domainStats.map(({d,total,done})=>`
+        ${domainStats.map(({d,total,learned,unsicher})=>`
           <div class="d-card${state.filterDomain===d.id?' active':''}" style="--dc:${d.color}" onclick="toggleDomain('${d.id}')">
             <div class="d-card-title">${d.label}</div>
             <div class="d-card-sub">${countFiltered(d.id)} Fragen verfügbar</div>
-            <div class="d-card-stats"><span>✅ ${done}/${total}</span><span>${total?Math.round(done/total*100):0}%</span></div>
+            <div class="d-card-stats">
+              <span>✅ ${learned}/${total}</span>
+              ${unsicher?`<span style="color:var(--wrong)">❌ ${unsicher}</span>`:''}
+              <span>${total?Math.round(learned/total*100):0}%</span>
+            </div>
           </div>
         `).join('')}
       </div>
@@ -826,14 +895,17 @@ function countFiltered(domain){
   }).length;
 }
 function countWrong(){
-  return Q.filter(q=>history[qId(q)]==='wrong').length;
+  return Q.filter(q=>getBox(q)===1).length;
 }
 
 function renderQuiz(){
-  if(state.current >= state.questions.length){ state.screen='end'; render(); return; }
-  const q = state.questions[state.current];
+  if(!state.queue.length){ state.screen='end'; render(); return; }
+  const q = state.queue[0]; // peek at front
   const dom = DOMAINS.find(d=>d.id===q.d);
-  const pct = ((state.current)/state.questions.length*100).toFixed(0);
+  const streak = getStreak(q);
+  const isRepeat = streak > 0 || getBox(q) === 1;
+  const remaining = state.queue.length;
+  const pct = state.totalUnique ? Math.round((state.totalUnique - remaining) / state.totalUnique * 100) : 0;
 
   let answerHTML = '';
   if(q.t==='mc') answerHTML = renderMC(q);
@@ -846,17 +918,18 @@ function renderQuiz(){
   app.innerHTML = `
     <div class="quiz-wrap">
       <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="stats">
-        <span>${state.current+1} / ${state.questions.length}</span>
-        <span>✅ <span class="correct-val">${state.score}</span></span>
-        <span>❌ <span class="wrong-val">${state.answered - state.score}</span></span>
+      <div class="stats" id="quizStats">
+        <span>📋 ${remaining} übrig</span>
+        <span>✅ <span class="correct-val">${state.sessionLearned} gelernt</span></span>
+        <span>❌ <span class="wrong-val">${state.answered - state.score} falsch</span></span>
       </div>
       <div class="q-card">
         <div class="q-meta">
-          <span class="q-num">#${state.current+1}</span>
+          <span class="q-num">${isRepeat?'🔄 Wiederholung':'Frage'}</span>
           <span class="q-domain" style="border-color:${dom.color};color:${dom.color}">${q.tp}</span>
           <span class="q-type">${TYPES[q.t]}</span>
           <span class="q-difficulty">${[1,2,3,4].map(i=>`<span${i<=q.df?' class="filled"':''} title="${DIFF_LABELS[q.df]}"></span>`).join('')}</span>
+          ${streak>0?`<span class="streak-badge">${streak}/${MASTERED_STREAK}</span>`:''}
         </div>
         <div class="q-text">${q.q}</div>
         <div id="answer-area">${answerHTML}</div>
@@ -883,7 +956,7 @@ function renderMC(q){
 function answerMC(i){
   if(state.locked) return;
   state.locked = true;
-  const q = state.questions[state.current];
+  const q = state.queue[0];
   const correct = i === q.c;
   document.querySelectorAll('.mc-opt').forEach((el,j)=>{
     el.classList.add('locked');
@@ -903,7 +976,7 @@ function renderTF(q){
 function answerTF(val){
   if(state.locked) return;
   state.locked = true;
-  const q = state.questions[state.current];
+  const q = state.queue[0];
   const correct = val === q.c;
   document.querySelectorAll('.tf-btn').forEach(btn=>{
     btn.classList.add('locked');
@@ -924,7 +997,7 @@ function renderFill(q){
 function answerFill(){
   if(state.locked) return;
   state.locked = true;
-  const q = state.questions[state.current];
+  const q = state.queue[0];
   const input = document.getElementById('fillInput');
   const val = input.value.trim();
   const correct = q.a.some(a=>a.toLowerCase()===val.toLowerCase());
@@ -966,7 +1039,7 @@ function matchClick(el){
       el.classList.add('matched');
       matchState.matched.push(leftIdx);
       if(matchState.matched.length === matchState.pairs.length){
-        showFeedback(true, state.questions[state.current].e);
+        showFeedback(true, state.queue[0].e);
         state.locked = true;
       }
     } else {
@@ -1001,7 +1074,7 @@ function orderClick(el){
   seq.innerHTML = orderState.seq.map((s,i)=>`<div class="order-placed"><span class="seq-num">${i+1}.</span> ${s}</div>`).join('');
   if(orderState.seq.length === orderState.items.length){
     state.locked = true;
-    const q = state.questions[state.current];
+    const q = state.queue[0];
     const correct = orderState.seq.every((s,i)=>s===q.items[i]);
     const area = document.getElementById('orderArea');
     area.classList.add(correct?'order-correct':'order-wrong');
@@ -1029,7 +1102,7 @@ function renderCalc(q){
 function answerCalc(){
   if(state.locked) return;
   state.locked = true;
-  const q = state.questions[state.current];
+  const q = state.queue[0];
   const input = document.getElementById('calcInput');
   const val = parseFloat(input.value);
   const correct = !isNaN(val) && Math.abs(val - q.a) <= (q.tol||0.01);
@@ -1040,25 +1113,64 @@ function answerCalc(){
 
 /* ── Feedback ── */
 function showFeedback(correct, explanation){
-  const q = state.questions[state.current];
+  const q = state.queue[0];
   const id = qId(q);
   state.answered++;
   if(correct) state.score++;
-  history[id] = correct?'correct':'wrong';
+
+  // update history with streak/box
+  const prev = history[id] || {streak:0, last:'', box:0};
+  if(correct){
+    prev.streak++;
+    prev.last = 'correct';
+    if(prev.streak >= MASTERED_STREAK){
+      prev.box = 3; // learned!
+      state.sessionLearned++;
+    } else {
+      prev.box = 2; // known but not mastered
+    }
+  } else {
+    prev.streak = 0;
+    prev.last = 'wrong';
+    prev.box = 1; // unsicher
+  }
+  history[id] = prev;
   saveHistory();
+
+  // feedback badge for streak
+  let streakHint = '';
+  if(correct && prev.box === 3) streakHint = ' 🏆 Gelernt!';
+  else if(correct) streakHint = ` (${prev.streak}/${MASTERED_STREAK})`;
+
   const fb = document.getElementById('feedback');
   fb.className = 'feedback show ' + (correct?'correct':'wrong');
-  fb.innerHTML = `<strong>${correct?'✅ Richtig!':'❌ Falsch!'}</strong>${explanation}`;
+  fb.innerHTML = `<strong>${correct?'✅ Richtig!'+streakHint:'❌ Falsch – kommt gleich nochmal!'}</strong>${explanation}`;
   document.getElementById('nextBtn').disabled = false;
-  // update stats
-  document.querySelector('.stats').innerHTML = `
-    <span>${state.current+1} / ${state.questions.length}</span>
-    <span>✅ <span class="correct-val">${state.score}</span></span>
-    <span>❌ <span class="wrong-val">${state.answered - state.score}</span></span>`;
+
+  // update live stats
+  const remaining = state.queue.length - 1; // current will be shifted
+  const statsEl = document.getElementById('quizStats');
+  if(statsEl) statsEl.innerHTML = `
+    <span>📋 ${remaining} übrig</span>
+    <span>✅ <span class="correct-val">${state.sessionLearned} gelernt</span></span>
+    <span>❌ <span class="wrong-val">${state.answered - state.score} falsch</span></span>`;
 }
 
 function nextQuestion(){
-  state.current++;
+  const q = state.queue.shift(); // remove current from front
+  const h = history[qId(q)];
+  if(h){
+    if(h.box === 1){
+      // wrong → re-insert after REINSERT_WRONG positions
+      const pos = Math.min(REINSERT_WRONG, state.queue.length);
+      state.queue.splice(pos, 0, q);
+    } else if(h.box === 2){
+      // known but not mastered → re-insert after REINSERT_KNOWN positions
+      const pos = Math.min(REINSERT_KNOWN, state.queue.length);
+      state.queue.splice(pos, 0, q);
+    }
+    // box 3 (learned) → don't re-insert
+  }
   renderQuiz();
 }
 
@@ -1066,12 +1178,8 @@ function nextQuestion(){
 function renderEnd(){
   const pct = state.answered ? Math.round(state.score/state.answered*100) : 0;
   const grade = pct>=90?'🏆 Ausgezeichnet!':pct>=70?'👍 Gut!':pct>=50?'📖 Weiter üben!':'💪 Nicht aufgeben!';
-  // breakdown by domain
-  const byDomain = DOMAINS.map(d=>{
-    const qs = state.questions.filter(q=>q.d===d.id);
-    const right = qs.filter(q=>history[qId(q)]==='correct').length;
-    return {label:d.label.split(' ').slice(1).join(' '),color:d.color,right,total:qs.length};
-  }).filter(d=>d.total>0);
+  const gs = globalStats();
+  const wrongCount = countWrong();
 
   app.innerHTML = `
     <div class="quiz-wrap">
@@ -1079,12 +1187,14 @@ function renderEnd(){
         <div class="end-score">${pct}%</div>
         <div class="end-label">${state.score} von ${state.answered} richtig · ${grade}</div>
         <div class="end-breakdown">
-          ${byDomain.map(d=>`<div class="end-item" style="border-color:${d.color}"><span style="color:${d.color}">${d.label}</span><br>${d.right}/${d.total}</div>`).join('')}
+          <div class="end-item" style="border-color:var(--correct)"><span style="color:var(--correct)">🏆 Neu gelernt</span><br><strong>${state.sessionLearned}</strong></div>
+          <div class="end-item" style="border-color:var(--wrong)"><span style="color:var(--wrong)">❌ Noch unsicher</span><br><strong>${wrongCount}</strong></div>
+          <div class="end-item" style="border-color:var(--amber)"><span style="color:var(--amber)">📊 Gesamt gelernt</span><br><strong>${gs.gelernt}/${gs.total}</strong></div>
         </div>
         <div class="btn-row">
           <button class="btn" onclick="state.screen='start';render()">← Zurück</button>
           <button class="btn btn-primary" onclick="startQuiz(false)">🔄 Nochmal</button>
-          <button class="btn" onclick="startQuiz(true)">🔥 Fehler wiederholen</button>
+          ${wrongCount?`<button class="btn" onclick="startQuiz(true)">🔥 Fehler wiederholen (${wrongCount})</button>`:''}
         </div>
       </div>
     </div>`;
@@ -1102,17 +1212,45 @@ function setType(t){ state.filterType=t; render(); }
 
 function startQuiz(onlyWrong){
   let qs = [...Q];
-  if(onlyWrong) qs = qs.filter(q=>history[qId(q)]==='wrong');
-  else {
+  if(onlyWrong){
+    qs = qs.filter(q=>getBox(q)===1);
+  } else {
     if(state.filterDomain!=='all') qs = qs.filter(q=>q.d===state.filterDomain);
     if(state.filterDiff) qs = qs.filter(q=>q.df===state.filterDiff);
     if(state.filterType!=='all') qs = qs.filter(q=>q.t===state.filterType);
+    // exclude already mastered (box 3)
+    qs = qs.filter(q=>getBox(q)<3);
   }
   if(!qs.length){ showToast('Keine Fragen mit diesen Filtern!'); return; }
-  state.questions = shuffle(qs);
-  state.current = 0;
+
+  // sort by type priority, shuffle within each group
+  const groups = {};
+  qs.forEach(q=>{
+    const p = TYPE_PRIO[q.t] || 2;
+    if(!groups[p]) groups[p] = [];
+    groups[p].push(q);
+  });
+  const sorted = [];
+  [1,2,3].forEach(p=>{
+    if(groups[p]) sorted.push(...shuffle(groups[p]));
+  });
+
+  // move unsicher (box 1) questions to the front of their type group
+  // so they get repeated early
+  const unsicher = sorted.filter(q=>getBox(q)===1);
+  const rest = sorted.filter(q=>getBox(q)!==1);
+  // interleave: put each unsicher item near the front
+  const queue = [...rest];
+  unsicher.forEach((q,i)=>{
+    const pos = Math.min(i * 2, queue.length);
+    queue.splice(pos, 0, q);
+  });
+
+  state.queue = queue;
+  state.totalUnique = queue.length;
   state.score = 0;
   state.answered = 0;
+  state.sessionLearned = 0;
   state.screen = 'quiz';
   render();
 }
