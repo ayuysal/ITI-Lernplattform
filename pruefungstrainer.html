@@ -871,13 +871,21 @@ function globalStats(){
   });
   return {offen, inArbeit, unsicher, gelernt, total:Q.length};
 }
+function globalPct(){
+  const gs = globalStats();
+  return gs.total ? Math.round(gs.gelernt / gs.total * 100) : 0;
+}
 function quizSlotsHTML(remaining){
   const gs = globalStats();
   return `
     <div class="quiz-slot"><div class="slot-num c-muted">${remaining}</div><div class="slot-label">📋 Übrig</div></div>
     <div class="quiz-slot"><div class="slot-num c-amber">${gs.inArbeit}</div><div class="slot-label">🔄 In Arbeit</div></div>
     <div class="quiz-slot"><div class="slot-num c-wrong">${gs.unsicher}</div><div class="slot-label">❌ Unsicher</div></div>
-    <div class="quiz-slot"><div class="slot-num c-correct">${gs.gelernt}</div><div class="slot-label">✅ Gelernt</div></div>`;
+    <div class="quiz-slot"><div class="slot-num c-correct">${gs.gelernt}</div><div class="slot-label">✅ Gelernt</div></div>
+    <div style="width:100%;display:flex;align-items:center;gap:.5rem;margin-top:.3rem">
+      <div class="score-bar"><div class="score-bar-fill" style="width:${globalPct()}%"></div></div>
+      <span class="score-pct">${globalPct()}%</span>
+    </div>`;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -996,7 +1004,6 @@ function renderQuiz(){
 
   app.innerHTML = `
     <div class="quiz-wrap">
-      <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
       <div class="quiz-slots" id="quizStats">
         ${quizSlotsHTML(remaining)}
       </div>
