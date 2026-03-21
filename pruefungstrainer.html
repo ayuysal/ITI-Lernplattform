@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Prüfungstrainer – Quiz &amp; Übungen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -201,7 +204,7 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 .sync-modal .step{display:flex;gap:.5rem;align-items:flex-start;margin:.5rem 0;font-size:.75rem;color:var(--text)}
 .sync-modal .step-num{background:var(--amber);color:#000;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;width:1.3rem;height:1.3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sync-modal .btn-row{margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
-.sync-modal input{width:100%;padding:.5rem;background:#0a0a10;border:1px solid #2a2840;border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.65rem;margin:.5rem 0}
+.sync-modal label.btn{margin:0 auto;justify-content:center}
 
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -1337,9 +1340,8 @@ function showToast(msg){
 })();
 
 function openSyncModal(){
-  const encoded = btoa(JSON.stringify(history));
-  const url = window.location.origin + window.location.pathname + '#sync=' + encoded;
   const gs = globalStats();
+  const hasData = Object.keys(history).length > 0;
   const overlay = document.createElement('div');
   overlay.className = 'sync-overlay';
   overlay.id = 'syncOverlay';
@@ -1349,23 +1351,23 @@ function openSyncModal(){
       <p style="text-align:center;font-size:.7rem;color:var(--amber);margin-bottom:.8rem">
         ${gs.gelernt} gelernt · ${gs.inArbeit} in Arbeit · ${gs.unsicher} unsicher
       </p>
-      <div class="step"><span class="step-num">1</span><span><strong>Exportieren:</strong> Klicke "Link kopieren" um deinen Fortschritt als Link zu kopieren</span></div>
-      <div class="step"><span class="step-num">2</span><span><strong>Übertragen:</strong> Öffne den Link auf deinem anderen Gerät (per Chat, E-Mail, etc.)</span></div>
-      <div class="step"><span class="step-num">3</span><span><strong>Importieren:</strong> Oder füge einen Sync-Link unten ein und klicke "Importieren"</span></div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="copySyncLink()">📋 Link kopieren</button>
+      <div class="step"><span class="step-num">1</span><span><strong>Exportieren:</strong> Lade deinen Fortschritt als Datei herunter</span></div>
+      <div class="step"><span class="step-num">2</span><span><strong>Übertragen:</strong> Schick die Datei ans andere Gerät (AirDrop, Cloud, E-Mail, USB…)</span></div>
+      <div class="step"><span class="step-num">3</span><span><strong>Importieren:</strong> Lade die Datei auf dem anderen Gerät hoch</span></div>
+      <div class="btn-row" style="margin-top:1rem">
+        <button class="btn btn-primary" onclick="exportProgress()" ${!hasData?'disabled title="Kein Fortschritt vorhanden"':''}>💾 Fortschritt speichern</button>
       </div>
-      <p style="text-align:center;font-size:.65rem;margin-top:.8rem;color:var(--muted)">— oder Link von anderem Gerät einfügen —</p>
-      <input type="text" id="syncImportInput" placeholder="Sync-Link hier einfügen...">
-      <div class="btn-row">
-        <button class="btn" onclick="importSyncLink()">📥 Importieren</button>
+      <p style="text-align:center;font-size:.65rem;margin-top:1rem;color:var(--muted)">— oder Fortschritt von anderem Gerät laden —</p>
+      <label class="btn" style="cursor:pointer;display:inline-flex;align-items:center;gap:.3rem;margin-top:.3rem">
+        📂 Datei auswählen
+        <input type="file" id="syncFileInput" accept=".json" style="display:none" onchange="importProgressFile(this)">
+      </label>
+      <div class="btn-row" style="margin-top:.8rem">
         <button class="btn" onclick="closeSyncModal()">Schliessen</button>
       </div>
     </div>`;
   document.body.appendChild(overlay);
   overlay.addEventListener('click', e=>{ if(e.target===overlay) closeSyncModal(); });
-  // Store URL for copy function
-  window._syncURL = url;
 }
 
 function closeSyncModal(){
@@ -1373,31 +1375,29 @@ function closeSyncModal(){
   if(o) o.remove();
 }
 
-function copySyncLink(){
-  const url = window._syncURL;
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(()=>showToast('📋 Sync-Link kopiert!')).catch(()=>fallbackCopy(url));
-  } else { fallbackCopy(url); }
+function exportProgress(){
+  const data = JSON.stringify(history, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `pruefungstrainer-fortschritt-${date}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('💾 Fortschritt gespeichert!');
 }
 
-function fallbackCopy(url){
-  const ta = document.createElement('textarea');
-  ta.value = url; ta.style.cssText='position:fixed;left:-9999px';
-  document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); showToast('📋 Sync-Link kopiert!'); }
-  catch(e){ prompt('Sync-Link kopieren:', url); }
-  document.body.removeChild(ta);
-}
-
-function importSyncLink(){
-  const input = document.getElementById('syncImportInput');
-  const val = (input && input.value || '').trim();
-  if(!val){ showToast('❌ Kein Link eingefügt'); return; }
-  try {
-    const hashIdx = val.indexOf('#sync=');
-    if(hashIdx === -1) throw new Error('Kein sync-Hash');
-    const data = JSON.parse(atob(decodeURIComponent(val.slice(hashIdx + 6))));
-    if(typeof data === 'object' && data !== null){
+function importProgressFile(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      const data = JSON.parse(e.target.result);
+      if(typeof data !== 'object' || data === null) throw new Error('Ungültiges Format');
       let imported = 0;
       Object.keys(data).forEach(k=>{
         const incoming = data[k];
@@ -1409,10 +1409,11 @@ function importSyncLink(){
       });
       saveHistory();
       closeSyncModal();
-      showToast(`✅ ${imported} Einträge synchronisiert!`);
+      showToast(`✅ ${imported} Einträge importiert!`);
       render();
-    }
-  } catch(e){ showToast('❌ Ungültiger Sync-Link'); console.warn(e); }
+    } catch(err){ showToast('❌ Ungültige Datei'); console.warn(err); }
+  };
+  reader.readAsText(file);
 }
 
 /* ── INIT ── */
