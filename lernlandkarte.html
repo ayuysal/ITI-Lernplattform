@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lernlandkarte – Visuelles Lernen</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -223,11 +227,33 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 body{padding-bottom:3rem}
+
+/* Auth UI */
+.auth-bar{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.3rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.auth-bar .user-info{color:var(--amber);display:flex;align-items:center;gap:.3rem}
+.auth-bar .user-info .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.auth-bar button{background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s}
+.auth-bar button:hover{border-color:var(--amber);color:var(--amber)}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center}
+.auth-modal h3{font-family:'Outfit',sans-serif;font-size:1.2rem;margin-bottom:.3rem}
+.auth-modal p{font-size:.75rem;color:var(--muted);margin-bottom:1.2rem}
+.auth-modal input{width:100%;padding:.6rem .8rem;background:#0a0a10;border:1px solid #2a2840;border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;margin-bottom:.6rem;outline:none;transition:border-color .2s}
+.auth-modal input:focus{border-color:var(--amber)}
+.auth-modal .btn-primary{width:100%;margin-top:.3rem;background:var(--amber);color:#000;border:none;padding:.6rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:.85rem}
+.auth-modal .auth-toggle{font-size:.7rem;color:var(--muted);margin-top:.8rem}
+.auth-modal .auth-toggle span{color:var(--amber);cursor:pointer}
+.auth-modal .auth-toggle span:hover{text-decoration:underline}
+.auth-modal .auth-error{font-size:.7rem;color:#ef4444;margin-top:.5rem;min-height:1rem}
 </style>
 </head>
 <body>
 
-<a href="index.html" class="back">← Zurück zur Lernplattform</a>
+<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap">
+  <a href="index.html" class="back">← Zurück zur Lernplattform</a>
+  <div class="auth-bar" id="authBar"></div>
+</div>
 
 <header>
   <div class="tag">Informatik-Studium</div>
@@ -495,25 +521,6 @@ const oldLearned = JSON.parse(localStorage.getItem('lk-learned')||'{}');
 Object.keys(oldLearned).forEach(k=>{ if(oldLearned[k] && !progress[k]) progress[k]=3; });
 if(Object.keys(oldLearned).length){ localStorage.setItem('lk-progress',JSON.stringify(progress)); localStorage.removeItem('lk-learned'); }
 
-/* ── SYNC: Import from URL hash on load ── */
-(function importFromURL(){
-  const hash = window.location.hash;
-  if(!hash.startsWith('#sync=')) return;
-  try {
-    const data = JSON.parse(atob(decodeURIComponent(hash.slice(6))));
-    if(typeof data === 'object' && data !== null){
-      /* Merge: keep the HIGHER stage from either source */
-      Object.keys(data).forEach(k=>{
-        if((data[k]||0) > (progress[k]||0)) progress[k] = data[k];
-      });
-      localStorage.setItem('lk-progress', JSON.stringify(progress));
-      /* Clean URL without reload */
-      history.replaceState(null, '', window.location.pathname + window.location.search);
-      setTimeout(()=>showToast('✅ Fortschritt synchronisiert!'), 300);
-    }
-  } catch(e){ console.warn('Sync-Import fehlgeschlagen', e); }
-})();
-
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -521,21 +528,9 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'), 2500);
 }
 
-function copySync(){
-  const encoded = btoa(JSON.stringify(progress));
-  const url = window.location.origin + window.location.pathname + '#sync=' + encoded;
-  /* Try clipboard API, fallback to textarea trick, fallback to prompt */
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(url).then(()=>showToast('📋 Sync-Link kopiert!')).catch(()=>fallbackCopy(url));
-  } else { fallbackCopy(url); }
-}
-function fallbackCopy(url){
-  const ta = document.createElement('textarea');
-  ta.value = url; ta.style.cssText='position:fixed;left:-9999px';
-  document.body.appendChild(ta); ta.select();
-  try{ document.execCommand('copy'); showToast('📋 Sync-Link kopiert!'); }
-  catch(e){ prompt('Sync-Link kopieren:', url); }
-  document.body.removeChild(ta);
+function saveProgress(){
+  localStorage.setItem('lk-progress', JSON.stringify(progress));
+  if(typeof debouncedCloudSave === 'function') debouncedCloudSave();
 }
 const STAGES = [
   {icon:'○',label:'Offen',color:'var(--muted)'},
@@ -651,7 +646,7 @@ function cycleStage(id, btn){
   const current = progress[id]||0;
   const next = (current+1) % 4;
   if(next===0) delete progress[id]; else progress[id]=next;
-  localStorage.setItem('lk-progress', JSON.stringify(progress));
+  saveProgress();
   const card = btn.closest('.topic-card');
   card.dataset.stage = next;
   /* Update pips label */
@@ -780,9 +775,182 @@ function updateStats(){
     </div>
     <span>⏱ Gesamt: <span class="val">${formatTime(totalTime)}</span></span>
     <span>📋 Offen: <span class="val">${formatTime(remainTime)}</span></span>
-    <button class="sync-btn" onclick="copySync()" title="Fortschritt als Link kopieren – auf anderem Gerät öffnen">🔗 Sync</button>
+    <button class="sync-btn" onclick="lkCurrentUser ? saveLkToCloud().then(()=>showToast('☁️ Cloud synchronisiert!')) : showLkAuthModal()">☁️ ${lkCurrentUser ? 'Cloud Sync' : 'Anmelden'}</button>
   `;
 }
+
+/* ═══════════════════════════════════════════════════════
+   SUPABASE – Cloud Sync & Auth
+   ═══════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://hhedpirqdxarjkxbygwf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoZWRwaXJxZHhhcmpreGJ5Z3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwOTUzNDcsImV4cCI6MjA4OTY3MTM0N30.qe0mvET4aLjHloGmdIukjWsiKi9c8Edh2Ar77MVYeP0';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let lkCurrentUser = null;
+let _lkSaveTimeout = null;
+
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(lkCurrentUser){
+    bar.innerHTML = `
+      <span class="user-info"><span class="dot"></span> ${lkCurrentUser.email}</span>
+      <button onclick="forceLkCloudOverwrite()" title="Lokalen Stand mit Cloud überschreiben">☁️ Cloud laden</button>
+      <button onclick="lkLogout()">Abmelden</button>`;
+  } else {
+    bar.innerHTML = `<button onclick="showLkAuthModal()">🔐 Anmelden für Cloud-Sync</button>`;
+  }
+}
+
+function showLkAuthModal(mode='login'){
+  let existing = document.getElementById('authOverlay');
+  if(existing) existing.remove();
+  const isLogin = mode === 'login';
+  const overlay = document.createElement('div');
+  overlay.className = 'auth-overlay';
+  overlay.id = 'authOverlay';
+  overlay.innerHTML = `
+    <div class="auth-modal">
+      <h3>${isLogin ? '🔐 Anmelden' : '📝 Registrieren'}</h3>
+      <p>${isLogin ? 'Melde dich an um deinen Fortschritt auf allen Geräten zu synchronisieren.' : 'Erstelle ein Konto für Cloud-Sync auf allen Geräten.'}</p>
+      <input type="email" id="authEmail" placeholder="E-Mail" autocomplete="email">
+      <input type="password" id="authPass" placeholder="Passwort (min. 6 Zeichen)" autocomplete="${isLogin?'current-password':'new-password'}">
+      <button class="btn-primary" onclick="${isLogin?'lkLogin':'lkSignup'}()">${isLogin?'Anmelden':'Registrieren'}</button>
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-toggle">${isLogin
+        ? 'Noch kein Konto? <span onclick="showLkAuthModal(\'signup\')">Registrieren</span>'
+        : 'Bereits ein Konto? <span onclick="showLkAuthModal(\'login\')">Anmelden</span>'}</div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('authEmail').focus();
+  overlay.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') document.querySelector('.auth-modal .btn-primary').click(); });
+  });
+}
+
+async function lkLogin(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  errEl.textContent='Anmelden...';
+  const {data,error} = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  lkCurrentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Angemeldet!');
+  renderAuthBar();
+  await loadLkFromCloud();
+  updateStats();
+}
+
+async function lkSignup(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  if(pass.length<6){ errEl.textContent='Passwort muss mindestens 6 Zeichen haben'; return; }
+  errEl.textContent='Registrieren...';
+  const {data,error} = await sb.auth.signUp({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  if(data.user && !data.user.email_confirmed_at){
+    errEl.innerHTML='<span style="color:var(--amber)">📧 Bestätigungs-E-Mail gesendet! Bitte prüfe dein Postfach.</span>';
+    return;
+  }
+  lkCurrentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Registriert & angemeldet!');
+  renderAuthBar();
+  await saveLkToCloud();
+}
+
+async function lkLogout(){
+  await sb.auth.signOut();
+  lkCurrentUser = null;
+  renderAuthBar();
+  showToast('Abgemeldet');
+}
+
+async function loadLkFromCloud(){
+  if(!lkCurrentUser) return;
+  const {data,error} = await sb
+    .from('lernlandkarte_progress')
+    .select('progress')
+    .eq('user_id', lkCurrentUser.id)
+    .maybeSingle();
+  if(error){ console.warn('Cloud-Load Fehler:', error); return; }
+  if(data && data.progress){
+    const cloud = data.progress;
+    /* Cloud is source of truth, merge local improvements */
+    const merged = Object.assign({}, cloud);
+    let localBetter = 0;
+    Object.keys(progress).forEach(k=>{
+      if((progress[k]||0) > (cloud[k]||0)){
+        merged[k] = progress[k];
+        localBetter++;
+      }
+    });
+    progress = merged;
+    localStorage.setItem('lk-progress', JSON.stringify(progress));
+    if(localBetter > 0) await saveLkToCloud();
+    showToast('☁️ Cloud-Fortschritt geladen');
+    renderIslands(); // re-render with cloud data
+  } else {
+    await saveLkToCloud();
+  }
+}
+
+async function saveLkToCloud(){
+  if(!lkCurrentUser) return;
+  const {error} = await sb
+    .from('lernlandkarte_progress')
+    .upsert({
+      user_id: lkCurrentUser.id,
+      progress: progress,
+      updated_at: new Date().toISOString()
+    }, {onConflict:'user_id'});
+  if(error) console.warn('Cloud-Save Fehler:', error);
+}
+
+function debouncedCloudSave(){
+  if(!lkCurrentUser) return;
+  clearTimeout(_lkSaveTimeout);
+  _lkSaveTimeout = setTimeout(()=> saveLkToCloud(), 1500);
+}
+
+async function forceLkCloudOverwrite(){
+  if(!lkCurrentUser){ showToast('❌ Nicht angemeldet'); return; }
+  const {data,error} = await sb
+    .from('lernlandkarte_progress')
+    .select('progress')
+    .eq('user_id', lkCurrentUser.id)
+    .maybeSingle();
+  if(error){ showToast('❌ Cloud-Fehler'); return; }
+  if(data && data.progress){
+    progress = data.progress;
+    localStorage.setItem('lk-progress', JSON.stringify(progress));
+    showToast('☁️ Lokaler Stand mit Cloud überschrieben');
+    renderIslands();
+    updateStats();
+  } else {
+    showToast('☁️ Keine Cloud-Daten vorhanden');
+  }
+}
+
+async function initLkAuth(){
+  const {data} = await sb.auth.getSession();
+  if(data.session){
+    lkCurrentUser = data.session.user;
+    renderAuthBar();
+    await loadLkFromCloud();
+    renderIslands();
+    updateStats();
+  } else {
+    renderAuthBar();
+  }
+}
+
+initLkAuth();
 
 /* ── INIT ─────────────────────────────────────────── */
 renderIslands();
