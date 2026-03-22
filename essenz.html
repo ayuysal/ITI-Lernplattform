@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Essenz – Was du wirklich wissen musst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0e11;--surface:#18171d;--border:#1e2230;
+  --text:#e2e4ea;--muted:#6b7084;
+  --amber:#f5c542;--teal:#5ec4b6;
+  --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6;
+  --radius:12px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.5}
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+a{color:inherit;text-decoration:none}
+
+.back{display:inline-block;padding:0.6rem 0;margin:0.8rem 1.5rem;font-size:.85rem;color:var(--muted);transition:color .2s}
+.back:hover{color:var(--text)}
+
+header{text-align:center;padding:0.5rem 1.5rem 1rem}
+header .tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;color:var(--amber);text-transform:uppercase}
+header h1{font-family:'Outfit',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin:.3rem 0}
+header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
+
+/* Tabs */
+.tabs{display:flex;gap:.5rem;justify-content:center;margin:1rem 0 .8rem}
+.tab-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem 1.2rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s}
+.tab-btn:hover{border-color:var(--text);color:var(--text)}
+.tab-btn.active{border-color:var(--amber);color:var(--amber);background:rgba(245,197,66,.08)}
+
+/* Filter pills */
+.filters{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;padding:0 1rem;margin-bottom:1.5rem}
+.fbtn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .6rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.65rem;cursor:pointer;transition:all .2s}
+.fbtn:hover{border-color:var(--text);color:var(--text)}
+.fbtn.active{border-color:var(--amber);color:var(--amber);background:rgba(245,197,66,.08)}
+
+/* Content area */
+.content{max-width:900px;margin:0 auto;padding:0 1rem 4rem}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── Flip Cards Grid ── */
+.flip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+
+.flip-card-wrapper{perspective:800px;min-height:220px}
+.flip-card{width:100%;height:100%;min-height:220px;position:relative;transform-style:preserve-3d;transition:transform .5s ease;cursor:pointer}
+.flip-card.flipped{transform:rotateY(180deg)}
+
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);padding:1.2rem;display:flex;flex-direction:column}
+.flip-front{background:var(--surface);border:1px solid var(--border);justify-content:center;align-items:center;text-align:center}
+.flip-front:hover{border-color:rgba(245,197,66,.3);box-shadow:0 0 20px rgba(245,197,66,.06)}
+.flip-back{background:linear-gradient(135deg,#13131a,#1a1424);border:1px solid rgba(245,197,66,.25);transform:rotateY(180deg);overflow-y:auto;box-shadow:0 0 25px rgba(245,197,66,.08)}
+
+.flip-front .card-domain{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;padding:.15rem .5rem;border-radius:4px;border:1px solid var(--border)}
+.flip-front h3{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;color:#fff;line-height:1.4}
+.flip-front .hint{font-size:.7rem;color:var(--muted);margin-top:.8rem;font-style:italic}
+
+.flip-back .back-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--amber);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem}
+.flip-back ul{list-style:none;padding:0;margin:0}
+.flip-back li{font-size:.8rem;color:var(--text);line-height:1.6;margin-bottom:.5rem;padding-left:.8rem;position:relative}
+.flip-back li::before{content:'›';position:absolute;left:0;color:var(--amber);font-weight:700}
+.flip-back code{font-family:'JetBrains Mono',monospace;background:rgba(245,197,66,.1);color:var(--amber);padding:.1rem .25rem;border-radius:3px;font-size:.75rem}
+
+/* ── Concept Cards ── */
+.concept-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.2rem;transition:border-color .2s}
+.concept-card:hover{border-color:rgba(245,197,66,.3)}
+.concept-card .c-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.concept-card .c-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.concept-card .c-title{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;color:#fff}
+.concept-card .c-subtitle{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em}
+.concept-card .c-desc{font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6}
+.concept-card pre{background:#0a0a10;border:1px solid #1e2230;border-radius:8px;padding:1rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.7;color:var(--text);margin:0}
+.concept-card pre .hl{color:var(--amber)}
+.concept-card pre .hl2{color:var(--teal)}
+.concept-card pre .hl3{color:#a78bfa}
+.concept-card pre .dim{color:#5a5a72}
+
+/* Counter badge */
+.count-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);text-align:center;margin-bottom:1rem}
+.count-badge span{color:var(--amber)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+@media(max-width:600px){
+  .flip-grid{grid-template-columns:1fr}
+  .flip-card-wrapper{min-height:200px}
+  .flip-card{min-height:200px}
+  .flip-front,.flip-back{min-height:200px}
+  .concept-card pre{font-size:.65rem;padding:.7rem}
+}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back">&larr; Zur&uuml;ck zur Lernplattform</a>
+
+<header>
+  <div class="tag">Informatik-Studium</div>
+  <h1>ESSENZ</h1>
+  <p>Was du wirklich wissen musst &mdash; kompakt auf einen Blick. Klick zum Aufdecken.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="auswendig">&#129504; Auswendig</button>
+  <button class="tab-btn" data-tab="konzepte">&#128279; Konzepte</button>
+</div>
+
+<div class="filters" id="filters"></div>
+
+<div class="content">
+  <div class="count-badge" id="countBadge"></div>
+
+  <!-- ════════════════════════════════════════════
+       AUSWENDIG TAB
+       ════════════════════════════════════════════ -->
+  <div class="tab-content active" id="tab-auswendig">
+    <div class="flip-grid" id="flipGrid"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       KONZEPTE TAB
+       ════════════════════════════════════════════ -->
+  <div class="tab-content" id="tab-konzepte">
+    <div id="conceptGrid"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════════════════ */
+const DOMAINS = [
+  {id:'all',label:'Alle',color:'#f5c542'},
+  {id:'formal',label:'Automaten & Sprachen',color:'#f472b6'},
+  {id:'grammar',label:'Grammatiken & Compiler',color:'#a78bfa'},
+  {id:'netz',label:'Netzwerk-Grundlagen',color:'#06b6d4'},
+  {id:'subnet',label:'Subnetting',color:'#fb923c'},
+  {id:'sig',label:'Signale & \u00dcbertragung',color:'#22c55e'},
+  {id:'algo',label:'Algorithmen & DS',color:'#eab308'},
+  {id:'code',label:'Codierung & Fehler',color:'#ef4444'}
+];
+
+const CARDS = [
+  // ── Automaten & Formale Sprachen ──
+  {domain:'formal',title:'DKA \u2014 5-Tupel',facts:[
+    '<code>(Q, \u03a3, \u03b4, q\u2080, F)</code>',
+    'Q = Zustandsmenge',
+    '\u03a3 = Eingabealphabet',
+    '\u03b4: Q \u00d7 \u03a3 \u2192 Q (deterministisch)',
+    'q\u2080 = Startzustand',
+    'F \u2286 Q = Endzust\u00e4nde'
+  ]},
+  {domain:'formal',title:'NKA \u2014 5-Tupel',facts:[
+    '<code>(Q, \u03a3, \u03b4, q\u2080, F)</code>',
+    '\u03b4: Q \u00d7 (\u03a3 \u222a {\u03b5}) \u2192 \u2118(Q)',
+    'Kann mehrere Folgezust\u00e4nde haben',
+    '\u03b5-\u00dcberg\u00e4nge (ohne Eingabe) m\u00f6glich',
+    'Akzeptiert wenn mind. 1 Pfad zu F f\u00fchrt'
+  ]},
+  {domain:'formal',title:'Kellerautomat (PDA) \u2014 7-Tupel',facts:[
+    '<code>(Q, \u03a3, \u0393, \u03b4, q\u2080, Z\u2080, F)</code>',
+    '\u0393 = Kelleralphabet',
+    'Z\u2080 = Anfangs-Kellersymbol',
+    '\u03b4: Q \u00d7 (\u03a3\u222a{\u03b5}) \u00d7 \u0393 \u2192 endliche Teilmengen von Q \u00d7 \u0393*',
+    'Erkennt kontextfreie Sprachen (Typ 2)'
+  ]},
+  {domain:'formal',title:'Turingmaschine \u2014 7-Tupel',facts:[
+    '<code>(Q, \u03a3, \u0393, \u03b4, q\u2080, \u25a1, F)</code>',
+    '\u25a1 = Blank-Symbol',
+    '\u03b4: Q \u00d7 \u0393 \u2192 Q \u00d7 \u0393 \u00d7 {L, R, N}',
+    'Unendliches Band, lesen + schreiben',
+    'Erkennt Typ-0-Sprachen (rekursiv aufz\u00e4hlbar)'
+  ]},
+  {domain:'formal',title:'Chomsky-Hierarchie',facts:[
+    'Typ 0 = Rekursiv aufz\u00e4hlbar \u2194 Turingmaschine',
+    'Typ 1 = Kontextsensitiv \u2194 Linear beschr. Automat',
+    'Typ 2 = Kontextfrei \u2194 Kellerautomat (PDA)',
+    'Typ 3 = Regul\u00e4r \u2194 DKA / NKA',
+    'Jeder Typ ist Teilmenge des dar\u00fcber'
+  ]},
+  {domain:'formal',title:'Regul\u00e4re Ausdr\u00fccke',facts:[
+    '<code>\u2205</code> = leere Menge',
+    '<code>\u03b5</code> = leeres Wort',
+    '<code>a</code> = einzelnes Zeichen',
+    '<code>(r\u2081|r\u2082)</code> = Alternative',
+    '<code>r\u2081\u00b7r\u2082</code> = Konkatenation',
+    '<code>r*</code> = Kleene-Stern (0+ Wiederholungen)'
+  ]},
+  {domain:'formal',title:'Pumping-Lemma (regul\u00e4r)',facts:[
+    '\u2203n \u2200w\u2208L, |w|\u2265n',
+    '\u2203xyz = w mit:',
+    '|y| > 0',
+    '|xy| \u2264 n',
+    '\u2200i\u22650: xy<sup>i</sup>z \u2208 L',
+    'Dient zum Beweis: L ist NICHT regul\u00e4r'
+  ]},
+
+  // ── Grammatiken & Compiler ──
+  {domain:'grammar',title:'Grammatik \u2014 4-Tupel',facts:[
+    '<code>G = (V, \u03a3, P, S)</code>',
+    'V = Variablen (Nichtterminale)',
+    '\u03a3 = Terminale',
+    'P = Produktionsregeln',
+    'S = Startsymbol (S \u2208 V)'
+  ]},
+  {domain:'grammar',title:'CNF & GNF',facts:[
+    '<b>Chomsky-Normalform (CNF):</b>',
+    'A \u2192 BC oder A \u2192 a',
+    'Genau 2 Variablen oder 1 Terminal',
+    '<b>Greibach-Normalform (GNF):</b>',
+    'A \u2192 a\u03b1 (a\u2208\u03a3, \u03b1\u2208V*)',
+    'Beginnt immer mit Terminal'
+  ]},
+  {domain:'grammar',title:'FIRST, FOLLOW & LL(1)',facts:[
+    '<b>FIRST(\u03b1):</b> Terminale, die \u03b1 beginnen k\u00f6nnen',
+    '<b>FOLLOW(A):</b> Terminale, die nach A stehen k\u00f6nnen',
+    '<b>LL(1)-Bedingung:</b>',
+    'F\u00fcr A\u2192\u03b1|\u03b2: FIRST(\u03b1) \u2229 FIRST(\u03b2) = \u2205',
+    'Wenn \u03b5\u2208FIRST(\u03b1): FIRST(\u03b2) \u2229 FOLLOW(A) = \u2205',
+    'Erm\u00f6glicht deterministisches Top-Down-Parsing'
+  ]},
+
+  // ── Netzwerk-Grundlagen ──
+  {domain:'netz',title:'OSI-Modell \u2014 7 Schichten',facts:[
+    '7 = Application (Anwendung)',
+    '6 = Presentation (Darstellung)',
+    '5 = Session (Sitzung)',
+    '4 = Transport',
+    '3 = Network (Vermittlung)',
+    '2 = Data Link (Sicherung)',
+    '1 = Physical (Bit\u00fcbertragung)'
+  ]},
+  {domain:'netz',title:'TCP/IP-Modell \u2014 4 Schichten',facts:[
+    '4 = Anwendungsschicht (Application)',
+    '3 = Transportschicht (Transport)',
+    '2 = Internetschicht (Internet)',
+    '1 = Netzzugangsschicht (Network Access)',
+    'Fasst OSI 5-7 zu Anwendung zusammen',
+    'Fasst OSI 1-2 zu Netzzugang zusammen'
+  ]},
+  {domain:'netz',title:'Wichtige Ports',facts:[
+    'HTTP = <code>80</code>, HTTPS = <code>443</code>',
+    'FTP = <code>20/21</code>, SSH = <code>22</code>',
+    'DNS = <code>53</code>, SMTP = <code>25</code>',
+    'DHCP = <code>67/68</code>, SNMP = <code>161</code>',
+    'Telnet = <code>23</code>, POP3 = <code>110</code>',
+    'IMAP = <code>143</code>'
+  ]},
+  {domain:'netz',title:'TCP vs UDP',facts:[
+    '<b>TCP:</b> verbindungsorientiert, zuverl\u00e4ssig',
+    '3-Way-Handshake (SYN \u2192 SYN-ACK \u2192 ACK)',
+    'Flusskontrolle, Fehlererkennung, Reihenfolge',
+    '<b>UDP:</b> verbindungslos, schnell',
+    'Kein Handshake, kein Retransmit',
+    'F\u00fcr Streaming, DNS, VoIP'
+  ]},
+  {domain:'netz',title:'TCP Handshake & Teardown',facts:[
+    '<b>3-Way-Handshake:</b> SYN \u2192 SYN-ACK \u2192 ACK',
+    '<b>4-Way-Teardown:</b>',
+    'FIN \u2192 ACK \u2192 FIN \u2192 ACK',
+    'IPv4: 32 Bit, 4 Oktette (z.B. 192.168.1.1)',
+    'IPv6: 128 Bit, 8 Hexbl\u00f6cke'
+  ]},
+
+  // ── Subnetting ──
+  {domain:'subnet',title:'Subnetting Formeln',facts:[
+    'Hosts = 2<sup>(32\u2212prefix)</sup> \u2212 2',
+    '/24 = 256 Adr., <b>254 Hosts</b>, Maske 255.255.255.0',
+    '/25 = 128, /26 = 64, /27 = 32',
+    '/28 = 16, /29 = 8, /30 = 4 (2 Hosts)',
+    'Netzadresse = erste Adresse (Host-Teil = 0)',
+    'Broadcast = letzte Adresse (Host-Teil = 1)'
+  ]},
+  {domain:'subnet',title:'VLSM',facts:[
+    'Variable Length Subnet Mask',
+    'Unterschiedlich gro\u00dfe Subnetze m\u00f6glich',
+    'Gr\u00f6\u00dftes Subnetz zuerst zuweisen',
+    'Jedes Subnetz hat eigene Pr\u00e4fixl\u00e4nge',
+    'Spart IP-Adressen gegen\u00fcber fixer Subnetzgr\u00f6\u00dfe'
+  ]},
+
+  // ── Signale & Übertragung ──
+  {domain:'sig',title:'Shannon & Nyquist',facts:[
+    '<b>Shannon:</b> <code>C = B \u00b7 log\u2082(1 + S/N)</code> [bit/s]',
+    'C = Kanalkapazit\u00e4t, B = Bandbreite, S/N = SNR',
+    '<b>Nyquist:</b> <code>f\u209b \u2265 2 \u00b7 f<sub>max</sub></code>',
+    'Abtastfrequenz muss mind. doppelt so hoch sein',
+    'Sonst Aliasing-Effekt'
+  ]},
+  {domain:'sig',title:'Bitrate & Codierung',facts:[
+    '<code>Bitrate = Baudrate \u00d7 log\u2082(Stufenzahl)</code>',
+    '<b>Manchester-Code:</b> Taktflanke in Bitmitte',
+    '0 = \u2191 (steigend), 1 = \u2193 (fallend) oder umgekehrt',
+    'Selbsttaktend, keine separate Taktleitung n\u00f6tig'
+  ]},
+  {domain:'sig',title:'Multiplexing',facts:[
+    '<b>FDM</b> = Frequenzmultiplex',
+    '<b>TDM</b> = Zeitmultiplex',
+    '<b>WDM</b> = Wellenl\u00e4ngenmultiplex (Glasfaser)',
+    '<b>STDM</b> = Statistisches Zeitmultiplex',
+    'Ziel: Mehrere Signale \u00fcber ein Medium'
+  ]},
+
+  // ── Algorithmen & Datenstrukturen ──
+  {domain:'algo',title:'Sortier-Komplexit\u00e4ten',facts:[
+    'BubbleSort: <code>O(n\u00b2)</code> avg/worst',
+    'InsertionSort: <code>O(n\u00b2)</code> avg/worst, O(n) best',
+    'MergeSort: <code>O(n log n)</code> immer, stabil',
+    'QuickSort: <code>O(n log n)</code> avg, <code>O(n\u00b2)</code> worst',
+    'HeapSort: <code>O(n log n)</code> immer, in-place'
+  ]},
+  {domain:'algo',title:'Master-Theorem',facts:[
+    '<code>T(n) = a\u00b7T(n/b) + f(n)</code>',
+    '<b>Fall 1:</b> f \u2208 O(n<sup>log<sub>b</sub>(a)\u2212\u03b5</sup>) \u2192 \u0398(n<sup>log<sub>b</sub>(a)</sup>)',
+    '<b>Fall 2:</b> f \u2208 \u0398(n<sup>log<sub>b</sub>(a)</sup>) \u2192 \u0398(n<sup>log<sub>b</sub>(a)</sup>\u00b7log n)',
+    '<b>Fall 3:</b> f \u2208 \u03a9(n<sup>log<sub>b</sub>(a)+\u03b5</sup>) \u2192 \u0398(f(n))',
+    'Vergleiche f(n) mit n<sup>log<sub>b</sub>(a)</sup>'
+  ]},
+  {domain:'algo',title:'Hashing',facts:[
+    '<code>h(k) = k mod m</code>',
+    '<b>Verkettung:</b> Kollisionen in Listen',
+    '<b>Offene Adressierung:</b>',
+    'Linear Probing: h(k,i) = (h(k)+i) mod m',
+    'Quadratisch: h(k,i) = (h(k)+c\u2081i+c\u2082i\u00b2) mod m',
+    'Double Hashing: h(k,i) = (h\u2081(k)+i\u00b7h\u2082(k)) mod m'
+  ]},
+  {domain:'algo',title:'BST Traversals & Heaps',facts:[
+    '<b>Inorder:</b> Links \u2192 Wurzel \u2192 Rechts (sortiert!)',
+    '<b>Preorder:</b> Wurzel \u2192 Links \u2192 Rechts',
+    '<b>Postorder:</b> Links \u2192 Rechts \u2192 Wurzel',
+    '<b>MaxHeap:</b> Eltern \u2265 Kinder',
+    '<b>MinHeap:</b> Eltern \u2264 Kinder',
+    'Heap = vollst\u00e4ndiger Bin\u00e4rbaum'
+  ]},
+
+  // ── Codierung & Fehlerkorrektur ──
+  {domain:'code',title:'Hamming-Distanz',facts:[
+    'd(x,y) = Anzahl unterschiedlicher Bits',
+    '<b>Fehlererkennung:</b> d<sub>min</sub> \u2265 e + 1',
+    '<b>Fehlerkorrektur:</b> d<sub>min</sub> \u2265 2t + 1',
+    'e = erkennbare Fehler, t = korrigierbare Fehler',
+    'Beispiel: d<sub>min</sub>=3 \u2192 1 Fehler korrigierbar'
+  ]},
+  {domain:'code',title:'Huffman & Zeichenkodierung',facts:[
+    '<b>Huffman:</b> H\u00e4ufigste Zeichen = k\u00fcrzester Code',
+    'Pr\u00e4fixfrei (kein Code ist Pr\u00e4fix eines anderen)',
+    'Optimale variable L\u00e4nge',
+    '<b>ASCII:</b> 7 Bit, 128 Zeichen',
+    '<b>UTF-8:</b> 1\u20134 Bytes, variabel',
+    'R\u00fcckw\u00e4rtskompatibel mit ASCII'
+  ]}
+];
+
+const CONCEPTS = [
+  {domain:'formal',title:'Chomsky-Hierarchie Zusammenhang',icon:'\ud83c\udfd7\ufe0f',color:'#f472b6',
+   desc:'Jeder Sprachtyp ist eine echte Teilmenge des dar\u00fcberliegenden. Jeder Automat erkennt genau seinen Sprachtyp.',
+   diagram:`<span class="hl">Typ 0</span> (Rekursiv aufz\u00e4hlbar)  <span class="dim">\u2283</span>  <span class="hl">Typ 1</span> (Kontextsensitiv)  <span class="dim">\u2283</span>  <span class="hl">Typ 2</span> (Kontextfrei)  <span class="dim">\u2283</span>  <span class="hl">Typ 3</span> (Regul\u00e4r)
+  <span class="dim">\u2195</span>                              <span class="dim">\u2195</span>                            <span class="dim">\u2195</span>                       <span class="dim">\u2195</span>
+<span class="hl2">Turingmaschine</span>              <span class="hl2">Lin. beschr. Automat</span>        <span class="hl2">Kellerautomat</span>           <span class="hl2">DKA / NKA</span>
+
+<span class="dim">\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510</span>
+<span class="dim">\u2502</span>  Typ 0                                              <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  Typ 1                                          <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  Typ 2                                    <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="hl">Typ 3 (Regul\u00e4r) \u2194 DKA/NKA</span>          <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2502</span>  <span class="dim">\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</span>  <span class="dim">\u2502</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2502</span>  <span class="dim">\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</span>  <span class="dim">\u2502</span>
+<span class="dim">\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</span>`},
+
+  {domain:'netz',title:'DNS-Aufl\u00f6sung Ablauf',icon:'\ud83c\udf10',color:'#06b6d4',
+   desc:'Iterative Aufl\u00f6sung: Der Resolver fragt nacheinander bei verschiedenen Nameservern an.',
+   diagram:`<span class="hl">Client</span> \u2500\u2500\u2500\u25b6 <span class="hl2">Resolver</span> \u2500\u2500\u2500\u25b6 <span class="hl3">Root-NS</span> \u2500\u2500\u2500\u25b6 <span class="hl3">TLD-NS</span> (.com) \u2500\u2500\u2500\u25b6 <span class="hl3">Autoritativer NS</span>
+                    <span class="dim">\u2502</span>                                                    <span class="dim">\u2502</span>
+                    <span class="dim">\u2502</span>                     IP-Adresse                      <span class="dim">\u2502</span>
+                    <span class="dim">\u25c0\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518</span>
+
+<span class="hl">Iterativ:</span>   Resolver fragt selbst bei jedem NS
+<span class="hl2">Rekursiv:</span>  Jeder NS fragt den n\u00e4chsten weiter`},
+
+  {domain:'netz',title:'TCP 3-Way-Handshake + Teardown',icon:'\ud83e\udd1d',color:'#06b6d4',
+   desc:'Verbindungsaufbau mit 3 Paketen, Abbau mit 4 Paketen.',
+   diagram:`    <span class="hl">Client</span>                    <span class="hl2">Server</span>
+       <span class="dim">\u2502</span>                          <span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>\u2500\u2500\u2500\u2500 <span class="hl">SYN</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6<span class="dim">\u2502</span>      Verbindungsaufbau
+       <span class="dim">\u2502</span>\u25c0\u2500\u2500\u2500 <span class="hl2">SYN-ACK</span> \u2500\u2500\u2500\u2500\u2500\u2500<span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>\u2500\u2500\u2500\u2500 <span class="hl">ACK</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6<span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>                          <span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>    <span class="dim">\u2550\u2550 Daten\u00fcbertragung \u2550\u2550</span>   <span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>                          <span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>\u2500\u2500\u2500\u2500 <span class="hl">FIN</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6<span class="dim">\u2502</span>      Verbindungsabbau
+       <span class="dim">\u2502</span>\u25c0\u2500\u2500\u2500 <span class="hl2">ACK</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500<span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>\u25c0\u2500\u2500\u2500 <span class="hl2">FIN</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500<span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>\u2500\u2500\u2500\u2500 <span class="hl">ACK</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6<span class="dim">\u2502</span>
+       <span class="dim">\u2502</span>                          <span class="dim">\u2502</span>`},
+
+  {domain:'subnet',title:'Subnetting Logik',icon:'\ud83e\udde9',color:'#fb923c',
+   desc:'Beispielrechnung: Wie findet man Netz, Broadcast und Host-Range?',
+   diagram:`<span class="hl">IP:</span>        192.168.1.130  <span class="hl2">/26</span>
+<span class="hl">Maske:</span>     255.255.255.<span class="hl2">192</span>    (= 11000000\u2082)
+
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+130 = <span class="hl3">10</span><span class="hl">000010</span>\u2082
+       <span class="hl3">\u2514\u2500</span> Netz    <span class="hl">\u2514\u2500\u2500\u2500\u2500\u2500</span> Host (6 Bit)
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+
+<span class="hl2">Netzadresse:</span>    192.168.1.<span class="hl">128</span>   (Host-Teil = 000000)
+<span class="hl2">Broadcast:</span>      192.168.1.<span class="hl">191</span>   (Host-Teil = 111111)
+<span class="hl2">Nutzbar:</span>        192.168.1.129 \u2013 190  (<span class="hl">62 Hosts</span>)
+<span class="hl2">Berechnung:</span>     2\u2076 \u2212 2 = <span class="hl">62</span>`},
+
+  {domain:'netz',title:'OSI vs TCP/IP Mapping',icon:'\ud83d\udcca',color:'#06b6d4',
+   desc:'Wie die 7 OSI-Schichten auf die 4 TCP/IP-Schichten abgebildet werden.',
+   diagram:`<span class="hl">OSI-Modell</span>                     <span class="hl2">TCP/IP-Modell</span>
+<span class="dim">\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550</span>
+7  Application   <span class="dim">\u2500\u2510</span>
+6  Presentation  <span class="dim">\u2500\u253c\u2500\u2500\u2500\u25b6</span>  <span class="hl2">Anwendung</span>
+5  Session       <span class="dim">\u2500\u2518</span>
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+4  Transport     <span class="dim">\u2500\u2500\u2500\u2500\u2500\u25b6</span>  <span class="hl2">Transport</span>
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+3  Network       <span class="dim">\u2500\u2500\u2500\u2500\u2500\u25b6</span>  <span class="hl2">Internet</span>
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+2  Data Link     <span class="dim">\u2500\u2510</span>
+1  Physical      <span class="dim">\u2500\u2534\u2500\u2500\u2500\u25b6</span>  <span class="hl2">Netzzugang</span>
+<span class="dim">\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550</span>`},
+
+  {domain:'formal',title:'Automaten-Kette: Regex \u2192 min. DKA',icon:'\u2699\ufe0f',color:'#f472b6',
+   desc:'Der Standardweg von einem regul\u00e4ren Ausdruck zum minimalen deterministischen Automaten.',
+   diagram:`<span class="hl">Regul\u00e4rer Ausdruck</span>
+       <span class="dim">\u2502</span>
+       <span class="dim">\u25bc</span>  Thompson-Konstruktion
+<span class="hl2">NKA</span> (Nichtdeterministisch)
+       <span class="dim">\u2502</span>
+       <span class="dim">\u25bc</span>  Potenzmengenkonstruktion
+<span class="hl2">DKA</span> (Deterministisch)
+       <span class="dim">\u2502</span>
+       <span class="dim">\u25bc</span>  Minimierung (z.B. Hopcroft)
+<span class="hl">Minimaler DKA</span>
+
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+<span class="hl3">Wichtig:</span> Jeder Schritt ist konstruktiv!
+  NKA \u2192 DKA kann exponentiell wachsen
+  Minimaler DKA ist <span class="hl">eindeutig</span>`},
+
+  {domain:'algo',title:'Sortierverfahren Vergleich',icon:'\ud83d\udcca',color:'#eab308',
+   desc:'Die wichtigsten Sortieralgorithmen im direkten Vergleich.',
+   diagram:`<span class="hl">Verfahren</span>       <span class="hl2">Best</span>      <span class="hl2">Avg</span>       <span class="hl2">Worst</span>     <span class="hl2">Stabil</span>  <span class="hl2">In-place</span>
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+BubbleSort      O(n)      O(n\u00b2)     O(n\u00b2)     <span class="hl2">\u2713</span>       <span class="hl2">\u2713</span>
+InsertionSort   O(n)      O(n\u00b2)     O(n\u00b2)     <span class="hl2">\u2713</span>       <span class="hl2">\u2713</span>
+MergeSort       O(nlogn)  O(nlogn)  O(nlogn)  <span class="hl2">\u2713</span>       <span class="hl">\u2717</span>
+QuickSort       O(nlogn)  O(nlogn)  O(n\u00b2)     <span class="hl">\u2717</span>       <span class="hl2">\u2713</span>
+HeapSort        O(nlogn)  O(nlogn)  O(nlogn)  <span class="hl">\u2717</span>       <span class="hl2">\u2713</span>
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+<span class="hl3">Merke:</span> O(n log n) ist die untere Schranke
+       f\u00fcr vergleichsbasiertes Sortieren!`}
+];
+
+/* ═══════════════════════════════════════════════════════
+   STATE & RENDERING
+   ═══════════════════════════════════════════════════════ */
+let activeTab = 'auswendig';
+let activeDomain = 'all';
+
+function getDomainMeta(id) {
+  return DOMAINS.find(d => d.id === id) || DOMAINS[0];
+}
+
+function renderFilters() {
+  const el = document.getElementById('filters');
+  el.innerHTML = DOMAINS.map(d =>
+    `<button class="fbtn${d.id===activeDomain?' active':''}" data-domain="${d.id}" style="${d.id!=='all'?'border-color:'+d.color+'33;':''}${d.id===activeDomain?'border-color:'+d.color+';color:'+d.color+';background:'+d.color+'14;':''}">${d.label}</button>`
+  ).join('');
+  el.querySelectorAll('.fbtn').forEach(btn => {
+    btn.onclick = () => { activeDomain = btn.dataset.domain; render(); };
+  });
+}
+
+function renderFlipCards() {
+  const grid = document.getElementById('flipGrid');
+  const filtered = activeDomain === 'all' ? CARDS : CARDS.filter(c => c.domain === activeDomain);
+  grid.innerHTML = filtered.map((card, i) => {
+    const dm = getDomainMeta(card.domain);
+    return `<div class="flip-card-wrapper">
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-front">
+          <div class="card-domain" style="color:${dm.color};border-color:${dm.color}44">${dm.label}</div>
+          <h3>${card.title}</h3>
+          <div class="hint">Klick zum Aufdecken</div>
+        </div>
+        <div class="flip-back">
+          <div class="back-title">${card.title}</div>
+          <ul>${card.facts.map(f => `<li>${f}</li>`).join('')}</ul>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return filtered.length;
+}
+
+function renderConcepts() {
+  const grid = document.getElementById('conceptGrid');
+  const filtered = activeDomain === 'all' ? CONCEPTS : CONCEPTS.filter(c => c.domain === activeDomain);
+  grid.innerHTML = filtered.map(c => {
+    const dm = getDomainMeta(c.domain);
+    return `<div class="concept-card">
+      <div class="c-header">
+        <div class="c-icon" style="background:${dm.color}15;color:${dm.color}">${c.icon}</div>
+        <div>
+          <div class="c-title">${c.title}</div>
+          <div class="c-subtitle" style="color:${dm.color}">${dm.label}</div>
+        </div>
+      </div>
+      <div class="c-desc">${c.desc}</div>
+      <pre>${c.diagram}</pre>
+    </div>`;
+  }).join('');
+  return filtered.length;
+}
+
+function render() {
+  renderFilters();
+  const flipCount = renderFlipCards();
+  const conceptCount = renderConcepts();
+  const badge = document.getElementById('countBadge');
+  if (activeTab === 'auswendig') {
+    badge.innerHTML = `<span>${flipCount}</span> Karten`;
+  } else {
+    badge.innerHTML = `<span>${conceptCount}</span> Konzept-Diagramme`;
+  }
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeTab = btn.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + activeTab).classList.add('active');
+    render();
+  };
+});
+
+// Initial render
+render();
+</script>
+<script src="symbole.js"></script>
+</body>
+</html>
