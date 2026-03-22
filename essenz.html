@@ -85,6 +85,29 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 .count-badge{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);text-align:center;margin-bottom:1rem}
 .count-badge span{color:var(--amber)}
 
+/* Status badges on cards */
+.card-status{position:absolute;top:.6rem;right:.6rem;display:flex;gap:.25rem;z-index:2}
+.card-status .st{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;opacity:.4}
+.card-status .st:hover{transform:scale(1.4);opacity:1}
+.card-status .st.active{opacity:1;box-shadow:0 0 6px currentColor}
+.card-status .st[data-st="1"]{color:#60a5fa;border-color:#60a5fa}
+.card-status .st[data-st="1"].active{background:#60a5fa}
+.card-status .st[data-st="2"]{color:#f5c542;border-color:#f5c542}
+.card-status .st[data-st="2"].active{background:#f5c542}
+.card-status .st[data-st="3"]{color:#22c55e;border-color:#22c55e}
+.card-status .st[data-st="3"].active{background:#22c55e}
+.card-status-legend{display:flex;gap:.8rem;justify-content:center;align-items:center;margin-bottom:.5rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted)}
+.card-status-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:.2rem}
+
+/* Alle aufdecken/schliessen button */
+.toggle-all-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.4rem 1rem;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.65rem;cursor:pointer;transition:all .2s;margin-left:.5rem}
+.toggle-all-btn:hover{border-color:var(--amber);color:var(--amber)}
+
+/* Stats bar */
+.essenz-stats{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.essenz-stat{display:flex;align-items:center;gap:.25rem;padding:.2rem .5rem;border-radius:6px;background:var(--surface);border:1px solid var(--border)}
+.essenz-stat .num{font-weight:700}
+
 /* Scrollbar */
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -985,6 +1008,21 @@ DFS: <span class="hl">O(V+E)</span> Zeit, <span class="hl">O(V)</span> Speicher`
    ═══════════════════════════════════════════════════════ */
 let activeTab = 'auswendig';
 let activeDomain = 'all';
+let allFlipped = false;
+
+/* ── Card Status Persistence ── */
+const STATUS_KEY = 'essenz-status';
+let cardStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
+function saveStatus(){ localStorage.setItem(STATUS_KEY, JSON.stringify(cardStatus)); }
+function cardId(card){ return card.domain + '|' + card.title; }
+function getStatus(card){ return cardStatus[cardId(card)] || 0; }
+function setStatus(card, st){
+  const id = cardId(card);
+  cardStatus[id] = (cardStatus[id] === st) ? st - 1 : st; // toggle: click same = go back one
+  if(cardStatus[id] <= 0) delete cardStatus[id];
+  saveStatus();
+  render();
+}
 
 function getDomainMeta(id) {
   return DOMAINS.find(d => d.id === id) || DOMAINS[0];
@@ -1003,16 +1041,27 @@ function renderFilters() {
 function renderFlipCards() {
   const grid = document.getElementById('flipGrid');
   const filtered = activeDomain === 'all' ? CARDS : CARDS.filter(c => c.domain === activeDomain);
-  grid.innerHTML = filtered.map((card, i) => {
+  grid.innerHTML = filtered.map((card, idx) => {
     const dm = getDomainMeta(card.domain);
+    const st = getStatus(card);
     return `<div class="flip-card-wrapper">
-      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card${allFlipped?' flipped':''}" onclick="this.classList.toggle('flipped')">
         <div class="flip-front">
+          <div class="card-status" onclick="event.stopPropagation()">
+            <span class="st${st>=1?' active':''}" data-st="1" title="Gelesen" onclick="setCardStatus(${idx},'filtered',1)"></span>
+            <span class="st${st>=2?' active':''}" data-st="2" title="Bearbeitet" onclick="setCardStatus(${idx},'filtered',2)"></span>
+            <span class="st${st>=3?' active':''}" data-st="3" title="Auswendig" onclick="setCardStatus(${idx},'filtered',3)"></span>
+          </div>
           <div class="card-domain" style="color:${dm.color};border-color:${dm.color}44">${dm.label}</div>
           <h3>${card.title}</h3>
           <div class="hint">Klick zum Aufdecken</div>
         </div>
         <div class="flip-back">
+          <div class="card-status" onclick="event.stopPropagation()">
+            <span class="st${st>=1?' active':''}" data-st="1" title="Gelesen" onclick="setCardStatus(${idx},'filtered',1)"></span>
+            <span class="st${st>=2?' active':''}" data-st="2" title="Bearbeitet" onclick="setCardStatus(${idx},'filtered',2)"></span>
+            <span class="st${st>=3?' active':''}" data-st="3" title="Auswendig" onclick="setCardStatus(${idx},'filtered',3)"></span>
+          </div>
           <div class="back-title">${card.title}</div>
           <ul>${card.facts.map(f => `<li>${f}</li>`).join('')}</ul>
         </div>
@@ -1021,6 +1070,12 @@ function renderFlipCards() {
   }).join('');
   return filtered.length;
 }
+
+/* Bridge from inline onclick to CARDS array */
+window.setCardStatus = function(filteredIdx, type, st) {
+  const filtered = activeDomain === 'all' ? CARDS : CARDS.filter(c => c.domain === activeDomain);
+  if(filtered[filteredIdx]) setStatus(filtered[filteredIdx], st);
+};
 
 function renderConcepts() {
   const grid = document.getElementById('conceptGrid');
@@ -1048,10 +1103,45 @@ function render() {
   const conceptCount = renderConcepts();
   const badge = document.getElementById('countBadge');
   if (activeTab === 'auswendig') {
-    badge.innerHTML = `<span>${flipCount}</span> Karten`;
+    const filtered = activeDomain === 'all' ? CARDS : CARDS.filter(c => c.domain === activeDomain);
+    const stats = {offen:0, gelesen:0, bearbeitet:0, auswendig:0};
+    filtered.forEach(c => {
+      const s = getStatus(c);
+      if(s===0) stats.offen++;
+      else if(s===1) stats.gelesen++;
+      else if(s===2) stats.bearbeitet++;
+      else if(s>=3) stats.auswendig++;
+    });
+    badge.innerHTML = `
+      <div class="essenz-stats">
+        <div class="essenz-stat"><span style="color:var(--muted)">○</span> <span class="num">${stats.offen}</span> Offen</div>
+        <div class="essenz-stat"><span style="color:#60a5fa">●</span> <span class="num" style="color:#60a5fa">${stats.gelesen}</span> Gelesen</div>
+        <div class="essenz-stat"><span style="color:#f5c542">●</span> <span class="num" style="color:#f5c542">${stats.bearbeitet}</span> Bearbeitet</div>
+        <div class="essenz-stat"><span style="color:#22c55e">●</span> <span class="num" style="color:#22c55e">${stats.auswendig}</span> Auswendig</div>
+      </div>
+      <div style="margin-top:.4rem">
+        <span>${flipCount}</span> Karten
+        <button class="toggle-all-btn" onclick="toggleAllCards()">${allFlipped?'🔒 Alle schliessen':'👁 Alle aufdecken'}</button>
+      </div>
+      <div class="card-status-legend">
+        <span><span class="dot" style="background:#60a5fa"></span>Gelesen</span>
+        <span><span class="dot" style="background:#f5c542"></span>Bearbeitet</span>
+        <span><span class="dot" style="background:#22c55e"></span>Auswendig</span>
+      </div>`;
   } else {
     badge.innerHTML = `<span>${conceptCount}</span> Konzept-Diagramme`;
   }
+}
+
+function toggleAllCards(){
+  allFlipped = !allFlipped;
+  document.querySelectorAll('.flip-card').forEach(c => {
+    if(allFlipped) c.classList.add('flipped');
+    else c.classList.remove('flipped');
+  });
+  /* Update button text */
+  const btn = document.querySelector('.toggle-all-btn');
+  if(btn) btn.innerHTML = allFlipped ? '🔒 Alle schliessen' : '👁 Alle aufdecken';
 }
 
 // Tab switching
