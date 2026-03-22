@@ -1104,12 +1104,11 @@ function initMatch(q){
   const left = q.pairs.map(p=>p[0]);
   const right = shuffle([...q.pairs.map(p=>p[1])]);
   let html = '<div class="match-hint">Klicke links, dann rechts zum Zuordnen</div>';
-  left.forEach((l,i)=>{ html += `<div class="match-item match-l" data-side="l" data-i="${i}">${l}</div><div class="match-item match-r" data-side="r" data-val="${q.pairs[i][1]}">${right[i]}</div>`; });
+  left.forEach((l,i)=>{ html += `<div class="match-item match-l" data-side="l" data-i="${i}" role="button" tabindex="0">${l}</div><div class="match-item match-r" data-side="r" data-val="${q.pairs[i][1]}" role="button" tabindex="0">${right[i]}</div>`; });
   area.innerHTML = html;
-  /* Event delegation for Safari/Mac compatibility */
-  area.addEventListener('click', function(e){
-    const el = e.target.closest('.match-item');
-    if(el) matchClick(el);
+  /* Event delegation — works on Chrome, Safari, Firefox */
+  area.querySelectorAll('.match-item').forEach(el => {
+    el.addEventListener('click', function(){ matchClick(this); });
   });
 }
 function matchClick(el){
@@ -1154,11 +1153,10 @@ function initOrder(q){
   orderState = {seq:[], items:[...q.items]};
   const shuffled = shuffle([...q.items]);
   const pool = document.getElementById('orderPool');
-  pool.innerHTML = shuffled.map((item,i)=>`<div class="order-item" data-val="${item}">${item}</div>`).join('');
-  /* Event delegation for Safari/Mac compatibility */
-  pool.addEventListener('click', function(e){
-    const el = e.target.closest('.order-item');
-    if(el) orderClick(el);
+  pool.innerHTML = shuffled.map((item,i)=>`<div class="order-item" data-val="${item}" role="button" tabindex="0">${item}</div>`).join('');
+  /* Individual listeners — works on Chrome, Safari, Firefox */
+  pool.querySelectorAll('.order-item').forEach(el => {
+    el.addEventListener('click', function(){ orderClick(this); });
   });
 }
 function orderClick(el){
