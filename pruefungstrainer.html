@@ -95,7 +95,7 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 
 /* ── Match ── */
 .match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .8rem}
-.match-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;cursor:pointer;font-size:.8rem;font-family:'JetBrains Mono',monospace;transition:all .2s;text-align:center;user-select:none}
+.match-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;cursor:pointer;font-size:.8rem;font-family:'JetBrains Mono',monospace;transition:all .2s;text-align:center;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:rgba(245,197,66,.2)}
 .match-item:hover:not(.locked):not(.matched){border-color:var(--amber)}
 .match-item.sel{border-color:var(--amber);background:rgba(245,197,66,.08);color:var(--amber)}
 .match-item.matched{border-color:var(--correct);background:rgba(34,197,94,.06);color:var(--correct);cursor:default}
@@ -104,7 +104,7 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
 
 /* ── Order ── */
 .order-pool{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
-.order-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.45rem .7rem;cursor:pointer;font-size:.78rem;font-family:'JetBrains Mono',monospace;transition:all .2s;user-select:none}
+.order-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.45rem .7rem;cursor:pointer;font-size:.78rem;font-family:'JetBrains Mono',monospace;transition:all .2s;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:rgba(245,197,66,.2)}
 .order-item:hover:not(.used){border-color:var(--amber)}
 .order-item.used{opacity:.3;cursor:default}
 .order-seq{display:flex;flex-wrap:wrap;gap:.3rem;min-height:2.5rem;border:1px dashed var(--border);border-radius:8px;padding:.4rem;margin-bottom:.4rem}
@@ -1104,8 +1104,13 @@ function initMatch(q){
   const left = q.pairs.map(p=>p[0]);
   const right = shuffle([...q.pairs.map(p=>p[1])]);
   let html = '<div class="match-hint">Klicke links, dann rechts zum Zuordnen</div>';
-  left.forEach((l,i)=>{ html += `<div class="match-item match-l" data-side="l" data-i="${i}" onclick="matchClick(this)">${l}</div><div class="match-item match-r" data-side="r" data-val="${q.pairs[i][1]}" onclick="matchClick(this)">${right[i]}</div>`; });
+  left.forEach((l,i)=>{ html += `<div class="match-item match-l" data-side="l" data-i="${i}">${l}</div><div class="match-item match-r" data-side="r" data-val="${q.pairs[i][1]}">${right[i]}</div>`; });
   area.innerHTML = html;
+  /* Event delegation for Safari/Mac compatibility */
+  area.addEventListener('click', function(e){
+    const el = e.target.closest('.match-item');
+    if(el) matchClick(el);
+  });
 }
 function matchClick(el){
   if(state.locked || el.classList.contains('matched')) return;
@@ -1149,7 +1154,12 @@ function initOrder(q){
   orderState = {seq:[], items:[...q.items]};
   const shuffled = shuffle([...q.items]);
   const pool = document.getElementById('orderPool');
-  pool.innerHTML = shuffled.map((item,i)=>`<div class="order-item" data-val="${item}" onclick="orderClick(this)">${item}</div>`).join('');
+  pool.innerHTML = shuffled.map((item,i)=>`<div class="order-item" data-val="${item}">${item}</div>`).join('');
+  /* Event delegation for Safari/Mac compatibility */
+  pool.addEventListener('click', function(e){
+    const el = e.target.closest('.order-item');
+    if(el) orderClick(el);
+  });
 }
 function orderClick(el){
   if(state.locked || el.classList.contains('used')) return;
