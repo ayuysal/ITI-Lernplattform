@@ -6,6 +6,7 @@
 <title>Essenz – Was du wirklich wissen musst</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -120,10 +121,28 @@ header p{color:var(--muted);font-size:.9rem;max-width:600px;margin:0 auto}
   .flip-front,.flip-back{min-height:200px}
   .concept-card pre{font-size:.65rem;padding:.7rem}
 }
+.auth-bar{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.3rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.auth-bar .user-info{color:var(--amber);display:flex;align-items:center;gap:.3rem}
+.auth-bar .user-info .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.auth-bar button{background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s}
+.auth-bar button:hover{border-color:var(--amber);color:var(--amber)}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center}
+.auth-modal h3{font-family:'Outfit',sans-serif;font-size:1.2rem;margin-bottom:.3rem}
+.auth-modal p{font-size:.75rem;color:var(--muted);margin-bottom:1.2rem}
+.auth-modal input{width:100%;padding:.6rem .8rem;background:#0a0a10;border:1px solid #2a2840;border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;margin-bottom:.6rem;outline:none;transition:border-color .2s}
+.auth-modal input:focus{border-color:var(--amber)}
+.auth-modal .btn-primary{width:100%;margin-top:.3rem;padding:.6rem;background:var(--amber);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+.auth-modal .auth-toggle{font-size:.7rem;color:var(--muted);margin-top:.8rem}
+.auth-modal .auth-toggle span{color:var(--amber);cursor:pointer}
+.auth-modal .auth-toggle span:hover{text-decoration:underline}
+.auth-modal .auth-error{font-size:.7rem;color:#ef4444;margin-top:.5rem;min-height:1rem}
 </style>
 </head>
 <body>
 
+<div class="auth-bar" id="authBar"></div>
 <a href="index.html" class="back">&larr; Zur&uuml;ck zur Lernplattform</a>
 
 <header>
@@ -1013,7 +1032,7 @@ let allFlipped = false;
 /* ── Card Status Persistence ── */
 const STATUS_KEY = 'essenz-status';
 let cardStatus = JSON.parse(localStorage.getItem(STATUS_KEY) || '{}');
-function saveStatus(){ localStorage.setItem(STATUS_KEY, JSON.stringify(cardStatus)); }
+function saveStatus(){ localStorage.setItem(STATUS_KEY, JSON.stringify(cardStatus)); if(typeof debouncedCloudSave==='function') debouncedCloudSave(); }
 function cardId(card){ return card.domain + '|' + card.title; }
 function getStatus(card){ return cardStatus[cardId(card)] || 0; }
 function setStatus(card, st){
@@ -1153,6 +1172,181 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 // Initial render
 render();
+
+/* ═══════════════════════════════════════════════════════
+   SUPABASE – Cloud Sync & Auth
+   ═══════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://hhedpirqdxarjkxbygwf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoZWRwaXJxZHhhcmpreGJ5Z3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwOTUzNDcsImV4cCI6MjA4OTY3MTM0N30.qe0mvET4aLjHloGmdIukjWsiKi9c8Edh2Ar77MVYeP0';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let _saveTimeout = null;
+
+/* ── Auth UI ── */
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(currentUser){
+    bar.innerHTML = `
+      <span class="user-info"><span class="dot"></span> ${currentUser.email}</span>
+      <button onclick="forceCloudOverwrite()" title="Lokalen Stand komplett mit Cloud-Daten überschreiben">☁️ Cloud laden</button>
+      <button onclick="doLogout()">Abmelden</button>`;
+  } else {
+    bar.innerHTML = `<button onclick="showAuthModal()">🔐 Anmelden für Cloud-Sync</button>`;
+  }
+}
+
+function showAuthModal(mode='login'){
+  let existing = document.getElementById('authOverlay');
+  if(existing) existing.remove();
+  const isLogin = mode === 'login';
+  const overlay = document.createElement('div');
+  overlay.className = 'auth-overlay';
+  overlay.id = 'authOverlay';
+  overlay.innerHTML = `
+    <div class="auth-modal">
+      <h3>${isLogin ? '🔐 Anmelden' : '📝 Registrieren'}</h3>
+      <p>${isLogin ? 'Melde dich an um deinen Fortschritt auf allen Geräten zu synchronisieren.' : 'Erstelle ein Konto für Cloud-Sync auf allen Geräten.'}</p>
+      <input type="email" id="authEmail" placeholder="E-Mail" autocomplete="email">
+      <input type="password" id="authPass" placeholder="Passwort (min. 6 Zeichen)" autocomplete="${isLogin?'current-password':'new-password'}">
+      <button class="btn-primary" onclick="${isLogin?'doLogin':'doSignup'}()">${isLogin?'Anmelden':'Registrieren'}</button>
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-toggle">${isLogin
+        ? 'Noch kein Konto? <span onclick="showAuthModal(\'signup\')">Registrieren</span>'
+        : 'Bereits ein Konto? <span onclick="showAuthModal(\'login\')">Anmelden</span>'}</div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('authEmail').focus();
+  overlay.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') document.querySelector('.auth-modal .btn-primary').click(); });
+  });
+}
+
+async function doLogin(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  errEl.textContent='Anmelden...';
+  const {data,error} = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  currentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Angemeldet!');
+  renderAuthBar();
+  await loadFromCloud();
+  render();
+}
+
+async function doSignup(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  if(pass.length<6){ errEl.textContent='Passwort muss mindestens 6 Zeichen haben'; return; }
+  errEl.textContent='Registrieren...';
+  const {data,error} = await sb.auth.signUp({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  if(data.user && !data.user.email_confirmed_at){
+    errEl.innerHTML='<span style="color:var(--amber)">📧 Bestätigungs-E-Mail gesendet!</span>';
+    return;
+  }
+  currentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Registriert & angemeldet!');
+  renderAuthBar();
+  await saveToCloud();
+  render();
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser = null;
+  renderAuthBar();
+  showToast('Abgemeldet — Fortschritt bleibt lokal gespeichert');
+}
+
+/* ── Cloud Load / Save ── */
+async function loadFromCloud(){
+  if(!currentUser) return;
+  const {data,error} = await sb
+    .from('essenz_progress')
+    .select('history')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+  if(error){ console.warn('Cloud-Load Fehler:', error); return; }
+  if(data && data.history){
+    const cloud = data.history;
+    const merged = Object.assign({}, cloud);
+    let localBetter = 0;
+    Object.keys(cardStatus).forEach(k=>{
+      const local = cardStatus[k];
+      const remote = cloud[k];
+      if(!remote || local > remote){
+        merged[k] = local;
+        localBetter++;
+      }
+    });
+    cardStatus = merged;
+    localStorage.setItem(STATUS_KEY, JSON.stringify(cardStatus));
+    if(localBetter > 0) await saveToCloud();
+    showToast('☁️ Cloud-Fortschritt geladen');
+  } else {
+    await saveToCloud();
+  }
+}
+
+async function forceCloudOverwrite(){
+  if(!currentUser){ showToast('❌ Nicht angemeldet'); return; }
+  const {data,error} = await sb
+    .from('essenz_progress')
+    .select('history')
+    .eq('user_id', currentUser.id)
+    .maybeSingle();
+  if(error){ showToast('❌ Cloud-Fehler'); return; }
+  if(data && data.history){
+    cardStatus = data.history;
+    localStorage.setItem(STATUS_KEY, JSON.stringify(cardStatus));
+    showToast('☁️ Lokaler Stand mit Cloud überschrieben');
+    render();
+  } else {
+    showToast('☁️ Keine Cloud-Daten vorhanden');
+  }
+}
+
+async function saveToCloud(){
+  if(!currentUser) return;
+  const {error} = await sb
+    .from('essenz_progress')
+    .upsert({
+      user_id: currentUser.id,
+      history: cardStatus,
+      updated_at: new Date().toISOString()
+    }, {onConflict:'user_id'});
+  if(error) console.warn('Cloud-Save Fehler:', error);
+}
+
+function debouncedCloudSave(){
+  if(!currentUser) return;
+  clearTimeout(_saveTimeout);
+  _saveTimeout = setTimeout(()=> saveToCloud(), 1500);
+}
+
+/* ── Auto-Login from stored session ── */
+async function initAuth(){
+  const {data} = await sb.auth.getSession();
+  if(data.session){
+    currentUser = data.session.user;
+    renderAuthBar();
+    await loadFromCloud();
+    render();
+  } else {
+    renderAuthBar();
+  }
+}
+
+initAuth();
 </script>
 <script src="symbole.js"></script>
 </body>
