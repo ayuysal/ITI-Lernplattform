@@ -12,7 +12,7 @@
   --bg:#0f0e11;--surface:#18171d;--border:#1e2230;
   --text:#e2e4ea;--muted:#6b7084;
   --amber:#f5c542;--teal:#5ec4b6;
-  --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6;
+  --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6;--c-grund:#22d3ee;
   --radius:12px;
 }
 html{scroll-behavior:smooth}
@@ -146,7 +146,8 @@ const DOMAINS = [
   {id:'subnet',label:'Subnetting',color:'#fb923c'},
   {id:'sig',label:'Signale & \u00dcbertragung',color:'#22c55e'},
   {id:'algo',label:'Algorithmen & DS',color:'#eab308'},
-  {id:'code',label:'Codierung & Fehler',color:'#ef4444'}
+  {id:'code',label:'Codierung & Fehler',color:'#ef4444'},
+  {id:'grundlagen',label:'Informatik-Grundlagen',color:'#22d3ee'}
 ];
 
 const CARDS = [
@@ -357,6 +358,390 @@ const CARDS = [
     '<b>ASCII:</b> 7 Bit, 128 Zeichen',
     '<b>UTF-8:</b> 1\u20134 Bytes, variabel',
     'R\u00fcckw\u00e4rtskompatibel mit ASCII'
+  ]},
+
+  // ── Automaten & Sprachen (Erweiterung) ──
+  {domain:'formal',title:'Minimierung DKA',facts:[
+    '\u00c4quivalenzklassen-Verfahren (Hopcroft)',
+    'Tabellenmethode: Paare (p,q) auf Unterscheidbarkeit pr\u00fcfen',
+    'Nicht-unterscheidbare Zust\u00e4nde verschmelzen',
+    'Start: Endzust\u00e4nde vs. Nicht-Endzust\u00e4nde trennen',
+    'Iterativ verfeinern bis stabil',
+    'Ergebnis ist <b>eindeutig</b> (bis auf Isomorphie)'
+  ]},
+  {domain:'formal',title:'NEA\u2192DEA: Potenzmengenkonstruktion',facts:[
+    'Neue Zustandsmenge = <code>\u2118(Q)</code> (Potenzmenge)',
+    'Neuer Startzustand = \u03b5-H\u00fclle({q\u2080})',
+    'Neuer Endzustand: enth\u00e4lt mind. einen alten Endzustand',
+    '\u03b4\'(S, a) = \u03b5-H\u00fclle(\u222a \u03b4(q,a) f\u00fcr alle q\u2208S)',
+    'Kann exponentiell wachsen: |Q\'| \u2264 2<sup>|Q|</sup>',
+    'Unerreichbare Zust\u00e4nde weglassen'
+  ]},
+  {domain:'formal',title:'\u03b5-H\u00fclle',facts:[
+    'Menge aller Zust\u00e4nde erreichbar \u00fcber \u03b5-\u00dcberg\u00e4nge',
+    '<code>\u03b5-H\u00fclle(q)</code> = {q} \u222a alle via \u03b5 erreichbaren',
+    'Transitiv: auch \u03b5-Ketten werden verfolgt',
+    'Wichtig f\u00fcr NEA\u2192DEA Konstruktion',
+    'Berechnung: BFS/DFS nur \u00fcber \u03b5-Kanten'
+  ]},
+  {domain:'formal',title:'Regul\u00e4re Ausdr\u00fccke \u2014 \u00c4quivalenzen',facts:[
+    '<code>r|r = r</code> (Idempotenz)',
+    '<code>r\u00b7\u03b5 = r</code> (Neutrales Element Konkat.)',
+    '<code>r|\u2205 = r</code> (Neutrales Element Alternative)',
+    '<code>(r*)* = r*</code> (Stern-Idempotenz)',
+    '<code>\u03b5* = \u03b5</code>',
+    '<code>\u2205* = \u03b5</code>',
+    '<code>r\u00b7\u2205 = \u2205</code> (Annihilation)'
+  ]},
+
+  // ── Grammatiken & Compiler (Erweiterung) ──
+  {domain:'grammar',title:'LR-Parsing',facts:[
+    '<b>Bottom-Up</b> Analyseverfahren',
+    '<b>Shift:</b> N\u00e4chstes Token auf Stack legen',
+    '<b>Reduce:</b> Handle durch Nichtterminal ersetzen',
+    'Handle = rechte Seite einer Produktion auf Stack-Top',
+    'LR(0), SLR(1), LALR(1), LR(1) \u2014 steigende M\u00e4chtigkeit',
+    'Nutzt Parsing-Tabelle (Action + Goto)'
+  ]},
+  {domain:'grammar',title:'Shift-Reduce-Konflikte',facts:[
+    '<b>SR-Konflikt:</b> Shift oder Reduce m\u00f6glich',
+    'Parser wei\u00df nicht: weiterlesen oder reduzieren?',
+    '<b>RR-Konflikt:</b> Mehrere Reduces m\u00f6glich',
+    'Verschiedene Produktionen anwendbar',
+    'L\u00f6sung: Lookahead erh\u00f6hen (SLR\u2192LALR\u2192LR(1))',
+    'Oder: Grammatik umschreiben'
+  ]},
+  {domain:'grammar',title:'Lexer vs Parser',facts:[
+    '<b>Lexer (Scanner):</b> Tokenisierung',
+    'Erkennt Terminale (Schl\u00fcsselw\u00f6rter, Zahlen, IDs)',
+    'Basiert auf <b>regul\u00e4ren Ausdr\u00fccken</b> (Typ 3)',
+    '<b>Parser:</b> Syntaxanalyse',
+    'Pr\u00fcft Struktur gem\u00e4\u00df Grammatik',
+    'Basiert auf <b>kontextfreier Grammatik</b> (Typ 2)',
+    'Lexer liefert Token-Stream an Parser'
+  ]},
+  {domain:'grammar',title:'Syntaxbaum vs Parsebaum',facts:[
+    '<b>Parsebaum (Concrete Syntax Tree):</b>',
+    'Zeigt alle Ableitungsschritte',
+    'Enth\u00e4lt alle Nichtterminale + Terminale',
+    '<b>Syntaxbaum (Abstract Syntax Tree / AST):</b>',
+    'Abstrakt/vereinfacht',
+    'Nur semantisch relevante Knoten',
+    'Keine Klammern, keine Hilfssymbole'
+  ]},
+  {domain:'grammar',title:'\u03b5-Elimination',facts:[
+    'Finde alle <b>nullable</b> Variablen (A \u21d2* \u03b5)',
+    'F\u00fcr jede Produktion mit nullable Variablen:',
+    'Erstelle neue Produktionen ohne diese Variablen',
+    'Alle Kombinationen ber\u00fccksichtigen',
+    'Anschlie\u00dfend alle \u03b5-Produktionen entfernen',
+    'Ausnahme: S\u2192\u03b5 erlaubt wenn \u03b5\u2208L(G)'
+  ]},
+  {domain:'grammar',title:'Links-Rekursion entfernen',facts:[
+    '<b>Direkt:</b> A\u2192A\u03b1|\u03b2',
+    'Wird zu: <code>A\u2192\u03b2A\'</code>, <code>A\'\u2192\u03b1A\'|\u03b5</code>',
+    '<b>Indirekt:</b> A\u2192B\u03b1, B\u2192A\u03b2',
+    'Erst indirekte aufl\u00f6sen, dann direkte entfernen',
+    'N\u00f6tig f\u00fcr <b>LL-Parser</b> (Top-Down)',
+    'LR-Parser k\u00f6nnen Links-Rekursion verarbeiten'
+  ]},
+  {domain:'grammar',title:'Links-Faktorisierung',facts:[
+    '<b>Problem:</b> A\u2192\u03b1\u03b2\u2081 | \u03b1\u03b2\u2082',
+    'Gemeinsamer Pr\u00e4fix \u03b1 verhindert LL(1)',
+    '<b>L\u00f6sung:</b> <code>A\u2192\u03b1A\'</code>, <code>A\'\u2192\u03b2\u2081|\u03b2\u2082</code>',
+    'Entscheidung wird auf A\' verschoben',
+    'N\u00f6tig f\u00fcr deterministisches Top-Down-Parsing'
+  ]},
+
+  // ── Netzwerk (Erweiterung) ──
+  {domain:'netz',title:'ARP \u2014 Address Resolution Protocol',facts:[
+    'IP\u2192MAC Aufl\u00f6sung (Layer 2/3 Br\u00fccke)',
+    '<b>ARP-Request:</b> Broadcast (\"Wer hat IP x.x.x.x?\")',
+    '<b>ARP-Reply:</b> Unicast (\"Ich! Meine MAC ist ...\")',
+    'ARP-Cache speichert Zuordnungen temporar',
+    'Gratuitous ARP: Ank\u00fcndigung eigener IP/MAC',
+    'Nur im lokalen LAN (nicht routbar)'
+  ]},
+  {domain:'netz',title:'DHCP \u2014 Ablauf (DORA)',facts:[
+    '<b>D</b>iscover \u2192 Client sendet Broadcast',
+    '<b>O</b>ffer \u2192 Server bietet IP an (Unicast)',
+    '<b>R</b>equest \u2192 Client akzeptiert Angebot (Broadcast)',
+    '<b>A</b>cknowledge \u2192 Server best\u00e4tigt (Unicast)',
+    'Client erh\u00e4lt: IP, Subnetzmaske, Gateway, DNS',
+    'Lease-Zeit: IP wird nur tempor\u00e4r vergeben'
+  ]},
+  {domain:'netz',title:'NAT \u2014 Network Address Translation',facts:[
+    'Private IP \u2194 \u00d6ffentliche IP Umsetzung',
+    '<b>Static NAT:</b> 1:1 Zuordnung',
+    '<b>Dynamic NAT:</b> Pool \u00f6ffentlicher IPs',
+    '<b>PAT (Port-basiert):</b> Viele Private \u2192 1 \u00d6ffentliche',
+    'Unterscheidung \u00fcber Portnummern',
+    'NAT-Tabelle speichert Zuordnungen'
+  ]},
+  {domain:'netz',title:'VLAN \u2014 Virtual LAN',facts:[
+    'Logische Trennung auf Layer 2',
+    '<b>802.1Q Tag:</b> 12 Bit = max. 4096 VLANs',
+    '<b>Access Port:</b> geh\u00f6rt zu einem VLAN',
+    '<b>Trunk Port:</b> tr\u00e4gt mehrere VLANs (getaggt)',
+    'Broadcast-Dom\u00e4ne wird begrenzt',
+    'Inter-VLAN-Routing: Layer-3-Switch oder Router'
+  ]},
+  {domain:'netz',title:'Routing-Protokolle',facts:[
+    '<b>Distanzvektor (RIP):</b>',
+    'Bellman-Ford Algorithmus, max. 15 Hops',
+    'Austausch ganzer Routing-Tabellen mit Nachbarn',
+    '<b>Link-State (OSPF):</b>',
+    'Dijkstra Algorithmus, Netzwerk-Topologie-Karte',
+    'LSAs (Link-State Advertisements) an alle',
+    'Schnellere Konvergenz als Distanzvektor'
+  ]},
+  {domain:'netz',title:'DNS Record-Typen',facts:[
+    '<b>A</b> = IPv4-Adresse',
+    '<b>AAAA</b> = IPv6-Adresse',
+    '<b>CNAME</b> = Alias (Weiterleitung auf anderen Namen)',
+    '<b>MX</b> = Mail-Server (mit Priorit\u00e4t)',
+    '<b>NS</b> = Zust\u00e4ndiger Nameserver',
+    '<b>PTR</b> = Reverse-Lookup (IP\u2192Name)',
+    '<b>SOA</b> = Start of Authority (Zonen-Info)',
+    '<b>TXT</b> = Freitext (SPF, DKIM, etc.)'
+  ]},
+  {domain:'netz',title:'Firewall-Typen',facts:[
+    '<b>Paketfilter (Layer 3/4):</b>',
+    'Pr\u00fcft IP-Adressen, Ports, Protokoll',
+    'Stateless \u2014 jedes Paket einzeln',
+    '<b>Stateful Firewall:</b>',
+    'Kennt Verbindungsstatus (TCP-State)',
+    '<b>Application Firewall (Layer 7):</b>',
+    'Pr\u00fcft Inhalt (HTTP, DNS, etc.)',
+    'Auch: Proxy-Firewall, WAF'
+  ]},
+  {domain:'netz',title:'VPN \u2014 Virtual Private Network',facts:[
+    '<b>Site-to-Site:</b> Verbindet ganze Netzwerke',
+    '<b>Remote Access:</b> Einzelner Client \u2192 Netzwerk',
+    '<b>IPSec Tunnel Mode:</b> Gesamtes Paket verschl\u00fcsselt',
+    '<b>IPSec Transport Mode:</b> Nur Payload verschl\u00fcsselt',
+    '<b>SSL/TLS VPN:</b> \u00dcber Browser/HTTPS',
+    'Schl\u00fcsselprotokolle: IKE, ESP, AH'
+  ]},
+
+  // ── Subnetting (Erweiterung) ──
+  {domain:'subnet',title:'Supernetting / CIDR',facts:[
+    'Zusammenfassen mehrerer Netze zu einem gr\u00f6\u00dferen',
+    'Gemeinsamen Pr\u00e4fix der Netze finden',
+    'Pr\u00e4fixl\u00e4nge wird <b>k\u00fcrzer</b> (z.B. 2\u00d7/24 = /23)',
+    'CIDR = Classless Inter-Domain Routing',
+    'Ersetzt klassenbas. Adressierung (A/B/C)',
+    'Reduziert Routing-Tabellen-Gr\u00f6\u00dfe'
+  ]},
+  {domain:'subnet',title:'Private IP-Bereiche (RFC 1918)',facts:[
+    '<code>10.0.0.0/8</code> \u2014 Klasse A (16.7 Mio. Hosts)',
+    '<code>172.16.0.0/12</code> \u2014 Klasse B (1 Mio. Hosts)',
+    '<code>192.168.0.0/16</code> \u2014 Klasse C (65.534 Hosts)',
+    'Nicht im Internet routbar',
+    'F\u00fcr lokale Netzwerke reserviert',
+    'Ben\u00f6tigen NAT f\u00fcr Internetzugang'
+  ]},
+  {domain:'subnet',title:'Spezielle IP-Adressen',facts:[
+    '<code>127.0.0.1</code> = Loopback (localhost)',
+    '<code>0.0.0.0</code> = Default / unspezifiziert',
+    '<code>255.255.255.255</code> = Limited Broadcast',
+    '<code>169.254.x.x</code> = APIPA (kein DHCP)',
+    '<code>224.0.0.0/4</code> = Multicast',
+    '<code>fe80::/10</code> = IPv6 Link-Local'
+  ]},
+
+  // ── Signale & Übertragung (Erweiterung) ──
+  {domain:'sig',title:'Dezibel (dB)',facts:[
+    '<code>dB = 10\u00b7log\u2081\u2080(P\u2082/P\u2081)</code>',
+    '<b>+3 dB</b> = Verdopplung der Leistung',
+    '<b>\u22123 dB</b> = Halbierung der Leistung',
+    '<b>+10 dB</b> = Verzehnfachung',
+    'Kaskade: dB-Werte einfach <b>addieren</b>',
+    'Beispiel: Verst\u00e4rker +20dB, Kabel \u221210dB = +10dB'
+  ]},
+  {domain:'sig',title:'D\u00e4mpfung & Verst\u00e4rkung',facts:[
+    '<b>D\u00e4mpfung:</b> Signalverlust auf dem Medium',
+    'Abh\u00e4ngig von Frequenz und Entfernung',
+    '<b>Verst\u00e4rker:</b> Kompensiert D\u00e4mpfung',
+    '<b>Kaskade:</b> dB-Werte addieren',
+    'Beispiel: +20dB + (\u221215dB) + (+10dB) = +15dB',
+    'SNR = Signal-Rausch-Verh\u00e4ltnis in dB'
+  ]},
+  {domain:'sig',title:'PDH / SDH',facts:[
+    '<b>PDH:</b> Plesiochronous Digital Hierarchy',
+    'E1 = 2.048 Mbit/s (30 Kan\u00e4le + 2 Steuerung)',
+    'E3 = 34.368 Mbit/s',
+    '<b>SDH:</b> Synchronous Digital Hierarchy',
+    'STM-1 = 155.52 Mbit/s',
+    'STM-4 = 622.08 Mbit/s, STM-16 = 2.5 Gbit/s',
+    'SDH l\u00f6st PDH-Synchronisationsprobleme'
+  ]},
+  {domain:'sig',title:'Fehlererkennung',facts:[
+    '<b>Parit\u00e4t:</b> 1 Bit, erkennt 1-Bit-Fehler',
+    'Gerade/Ungerade Parit\u00e4t',
+    '<b>CRC:</b> Polynomdivision im GF(2)',
+    'Erkennt Burst-Fehler bis Grad des Polynoms',
+    '<b>Checksumme:</b> Einerkomplement-Addition',
+    'Verwendet bei IP, TCP, UDP Header'
+  ]},
+  {domain:'sig',title:'Token Ring',facts:[
+    'Token kreist im Ring (logisch)',
+    'Station mit Token darf senden',
+    'Nach Senden: Token weitergeben',
+    'Priorit\u00e4tssystem: Priority + Reservation Bits',
+    'Deterministische Zugangssteuerung (kein Kollision)',
+    'IEEE 802.5, abgel\u00f6st durch Ethernet'
+  ]},
+
+  // ── Algorithmen & DS (Erweiterung) ──
+  {domain:'algo',title:'AVL-Baum',facts:[
+    'Balancierter Bin\u00e4rer Suchbaum (BST)',
+    'Balance-Faktor \u2208 {-1, 0, +1} f\u00fcr jeden Knoten',
+    '<b>Links-Rotation:</b> Rechts-lastiger Teilbaum',
+    '<b>Rechts-Rotation:</b> Links-lastiger Teilbaum',
+    '<b>Links-Rechts:</b> Doppelrotation',
+    '<b>Rechts-Links:</b> Doppelrotation',
+    'Suche, Einf\u00fcgen, L\u00f6schen: <code>O(log n)</code>'
+  ]},
+  {domain:'algo',title:'B-Baum',facts:[
+    'Ordnung m: max. m Kinder pro Knoten',
+    'Min. <code>\u2308m/2\u2309</code> Kinder (au\u00dfer Wurzel)',
+    'Alle Bl\u00e4tter auf gleicher Tiefe',
+    'Knoten speichern sortierte Schl\u00fcssel',
+    'Einf\u00fcgen: Split bei \u00dcberlauf',
+    'L\u00f6schen: Merge/Rebalance bei Unterlauf',
+    'Optimal f\u00fcr Festplatten/Datenbanken'
+  ]},
+  {domain:'algo',title:'Graph-Algorithmen',facts:[
+    '<b>BFS (Breitensuche):</b> Queue',
+    'K\u00fcrzester Weg in ungewichteten Graphen',
+    '<b>DFS (Tiefensuche):</b> Stack/Rekursion',
+    'Zyklen finden, Topologische Sortierung',
+    '<b>Dijkstra:</b> Priority Queue (Min-Heap)',
+    'K\u00fcrzester Weg in gewichteten Graphen (keine neg. Kanten)',
+    '<b>Bellman-Ford:</b> Auch negative Kanten, O(V\u00b7E)'
+  ]},
+  {domain:'algo',title:'Dynamische Programmierung',facts:[
+    'Teilprobleme \u00fcberlappen sich',
+    '<b>Tabellierung (Bottom-Up):</b>',
+    'Alle Teilprobleme iterativ l\u00f6sen',
+    '<b>Memoisation (Top-Down):</b>',
+    'Rekursiv mit Cache f\u00fcr gel\u00f6ste Teilprobleme',
+    'Optimale Teilstruktur erforderlich',
+    'Beispiele: Fibonacci, Rucksack, LCS'
+  ]},
+  {domain:'algo',title:'Amortisierte Analyse',facts:[
+    'Durchschnittskosten \u00fcber n Operationen',
+    'Nicht Worst-Case einzeln betrachten',
+    '<b>Aggregat-Methode:</b> Gesamtkosten / n',
+    '<b>Bankkonto-Methode:</b> Operationen zahlen Guthaben ein',
+    '<b>Potential-Methode:</b> Potential-Funktion \u03a6',
+    'Beispiel: ArrayList-Verdopplung: amortisiert O(1)'
+  ]},
+  {domain:'algo',title:'Stack vs Queue vs Deque',facts:[
+    '<b>Stack = LIFO:</b> push/pop am Top',
+    'Anwendung: Funktionsaufrufe, DFS, Undo',
+    '<b>Queue = FIFO:</b> enqueue/dequeue',
+    'Anwendung: BFS, Druckerwarteschlange',
+    '<b>Deque = Double-Ended Queue:</b>',
+    'Einf\u00fcgen/Entfernen an beiden Enden',
+    'Alle Operationen: <code>O(1)</code>'
+  ]},
+  {domain:'algo',title:'Heap-Operationen',facts:[
+    '<b>Insert:</b> Anf\u00fcgen + siftUp \u2014 <code>O(log n)</code>',
+    '<b>Extract-Min/Max:</b> Wurzel entfernen + siftDown \u2014 <code>O(log n)</code>',
+    '<b>Build-Heap:</b> Bottom-Up \u2014 <code>O(n)</code>',
+    '<b>Decrease-Key:</b> Wert \u00e4ndern + siftUp \u2014 <code>O(log n)</code>',
+    'Heap-Eigenschaft: Eltern \u2264 Kinder (MinHeap)',
+    'Array-Darstellung: Kinder von i bei 2i+1, 2i+2'
+  ]},
+
+  // ── Codierung & Fehler (Erweiterung) ──
+  {domain:'code',title:'CRC Berechnung',facts:[
+    'Polynomdivision im <b>GF(2)</b> (XOR statt Subtraktion)',
+    'Generator-Polynom G(x) festgelegt (z.B. CRC-32)',
+    'Daten um Grad(G) Nullen erweitern',
+    'XOR-Division durchf\u00fchren',
+    'Rest = CRC-Pr\u00fcfsumme',
+    'Senden: Daten + Pr\u00fcfsumme',
+    'Empf\u00e4nger: Division muss Rest 0 ergeben'
+  ]},
+  {domain:'code',title:'Hamming-Code Konstruktion',facts:[
+    'Pr\u00fcfbits an Positionen 2<sup>k</sup> (1, 2, 4, 8, ...)',
+    'Jedes Pr\u00fcfbit pr\u00fcft bestimmte Positionen',
+    'Pr\u00fcfbit p<sub>i</sub> pr\u00fcft Pos. mit Bit i gesetzt',
+    'Kann <b>1 Fehler korrigieren</b> (d<sub>min</sub>=3)',
+    'SECDED: +1 Gesamtparit\u00e4tsbit \u2192 2 Fehler erkennen',
+    'Syndrome: XOR aller fehlerhaften Pr\u00fcfbits = Fehlerposition'
+  ]},
+  {domain:'code',title:'Zweierkomplement',facts:[
+    '<b>Positiv:</b> Normale Bin\u00e4rdarstellung',
+    '<b>Negativ:</b> Alle Bits invertieren + 1',
+    'Bereich bei n Bit: <code>\u22122<sup>(n\u22121)</sup></code> bis <code>2<sup>(n\u22121)</sup>\u22121</code>',
+    '8 Bit: \u2212128 bis +127',
+    '16 Bit: \u221232768 bis +32767',
+    'MSB = Vorzeichenbit (1 = negativ)',
+    'Vorteil: Nur ein Null-Wert, Addition funktioniert direkt'
+  ]},
+  {domain:'code',title:'IEEE 754 Float (32 Bit)',facts:[
+    '<b>1 Bit</b> Vorzeichen (S)',
+    '<b>8 Bit</b> Exponent (E) mit Bias 127',
+    '<b>23 Bit</b> Mantisse (M) mit impliziter 1',
+    'Wert = (\u22121)<sup>S</sup> \u00d7 1.M \u00d7 2<sup>(E\u2212127)</sup>',
+    'Spezialwerte: E=0 (denormalisiert), E=255 (Inf/NaN)',
+    '64 Bit (Double): 1+11+52, Bias 1023'
+  ]},
+  {domain:'code',title:'Base64 Kodierung',facts:[
+    '6 Bit pro Zeichen (2<sup>6</sup> = 64 Zeichen)',
+    '3 Bytes Input \u2192 4 Zeichen Output',
+    'Alphabet: A\u2013Z, a\u2013z, 0\u20139, +, /',
+    'Padding mit <code>=</code> am Ende',
+    'Overhead: 33% gr\u00f6\u00dfer als Original',
+    'Anwendung: E-Mail-Anh\u00e4nge, Data-URIs, JWT'
+  ]},
+
+  // ── Informatik-Grundlagen (NEU) ──
+  {domain:'grundlagen',title:'Zahlensysteme Umrechnung',facts:[
+    '<b>Dez\u2192Bin:</b> Fortgesetzt durch 2 teilen, Reste r\u00fcckw\u00e4rts',
+    '<b>Bin\u2192Hex:</b> 4-Bit-Gruppen \u2192 Hex-Ziffer',
+    '<b>Hex\u2192Dez:</b> Stellenwert \u00d7 16<sup>i</sup> summieren',
+    '<b>Bin\u2192Dez:</b> Stellenwert \u00d7 2<sup>i</sup> summieren',
+    'Oktal: 3-Bit-Gruppen',
+    'Tipp: Hex-Tabelle 0\u20139, A=10, B=11, ..., F=15'
+  ]},
+  {domain:'grundlagen',title:'Boolesche Algebra',facts:[
+    '<b>Kommutativ:</b> A\u2227B = B\u2227A, A\u2228B = B\u2228A',
+    '<b>Assoziativ:</b> (A\u2227B)\u2227C = A\u2227(B\u2227C)',
+    '<b>Distributiv:</b> A\u2227(B\u2228C) = (A\u2227B)\u2228(A\u2227C)',
+    '<b>De Morgan:</b> \u00ac(A\u2227B) = \u00acA\u2228\u00acB',
+    '<b>De Morgan:</b> \u00ac(A\u2228B) = \u00acA\u2227\u00acB',
+    'Absorption: A\u2228(A\u2227B) = A',
+    'Komplement: A\u2227\u00acA = 0, A\u2228\u00acA = 1'
+  ]},
+  {domain:'grundlagen',title:'KV-Diagramm (Karnaugh-Veitch)',facts:[
+    'Benachbarte 1-Felder zusammenfassen',
+    'Gruppen m\u00fcssen 2<sup>n</sup> Felder gro\u00df sein (1,2,4,8,...)',
+    'Gray-Code-Anordnung: nur 1 Bit \u00c4nderung',
+    'R\u00e4nder sind zyklisch verbunden',
+    'Gr\u00f6\u00dftm\u00f6gliche Gruppen bilden',
+    'Ergebnis: minimaler boolescher Ausdruck (DNF/KNF)'
+  ]},
+  {domain:'grundlagen',title:'Endliche K\u00f6rper GF(2)',facts:[
+    'Galois Field mit 2 Elementen: {0, 1}',
+    '<b>Addition = XOR:</b> 0+0=0, 0+1=1, 1+1=0',
+    '<b>Multiplikation = AND:</b> 0\u00b70=0, 1\u00b71=1',
+    'Keine Subtraktion n\u00f6tig (Addition = Subtraktion)',
+    'Grundlage f\u00fcr CRC, Hamming-Code, AES',
+    'GF(2<sup>n</sup>): Polynome \u00fcber GF(2) modulo irreduziblem Polynom'
+  ]},
+  {domain:'grundlagen',title:'Komplexit\u00e4tsklassen',facts:[
+    '<b>P:</b> In polynomieller Zeit l\u00f6sbar (effizient)',
+    '<b>NP:</b> In polynomieller Zeit <b>verifizierbar</b>',
+    '<b>NP-vollst\u00e4ndig:</b> H\u00e4rteste Probleme in NP',
+    'Wenn eines in P \u2192 P = NP',
+    '<b>NP-schwer:</b> Mindestens so schwer wie NP-vollst.',
+    'Offenes Problem: P = NP oder P \u2260 NP?',
+    'Beispiele NP-vollst.: SAT, TSP, Clique, Rucksack'
   ]}
 ];
 
@@ -466,7 +851,133 @@ QuickSort       O(nlogn)  O(nlogn)  O(n\u00b2)     <span class="hl">\u2717</span
 HeapSort        O(nlogn)  O(nlogn)  O(nlogn)  <span class="hl">\u2717</span>       <span class="hl2">\u2713</span>
 <span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
 <span class="hl3">Merke:</span> O(n log n) ist die untere Schranke
-       f\u00fcr vergleichsbasiertes Sortieren!`}
+       f\u00fcr vergleichsbasiertes Sortieren!`},
+
+  {domain:'netz',title:'DHCP DORA-Ablauf',icon:'\ud83d\udce1',color:'#06b6d4',
+   desc:'Die vier Schritte der dynamischen IP-Vergabe: Discover, Offer, Request, Acknowledge.',
+   diagram:`<span class="hl">Client</span>                         <span class="hl2">Server</span>
+   <span class="dim">\u2502</span>                                <span class="dim">\u2502</span>
+   <span class="dim">\u2502</span>\u2500\u2500\u2500 <span class="hl">DISCOVER</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6<span class="dim">\u2502</span>     (Broadcast: "Gibt es einen DHCP-Server?")
+   <span class="dim">\u2502</span>                                <span class="dim">\u2502</span>
+   <span class="dim">\u2502</span>\u25c0\u2500\u2500\u2500 <span class="hl2">OFFER</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500<span class="dim">\u2502</span>     (Unicast: "Hier, nimm 192.168.1.100")
+   <span class="dim">\u2502</span>                                <span class="dim">\u2502</span>
+   <span class="dim">\u2502</span>\u2500\u2500\u2500 <span class="hl">REQUEST</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6<span class="dim">\u2502</span>     (Broadcast: "Ich nehme das Angebot!")
+   <span class="dim">\u2502</span>                                <span class="dim">\u2502</span>
+   <span class="dim">\u2502</span>\u25c0\u2500\u2500\u2500 <span class="hl2">ACK</span> \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500<span class="dim">\u2502</span>     (Unicast: "Best\u00e4tigt!")
+   <span class="dim">\u2502</span>                                <span class="dim">\u2502</span>
+
+<span class="hl3">\u2192 Client erh\u00e4lt:</span> IP, Subnetzmaske, Gateway, DNS, Lease-Zeit`},
+
+  {domain:'netz',title:'ARP-Aufl\u00f6sung',icon:'\ud83d\udd0d',color:'#06b6d4',
+   desc:'Wie eine IP-Adresse zur MAC-Adresse aufgel\u00f6st wird \u2014 nur im lokalen Netz.',
+   diagram:`<span class="hl">"Wer hat IP 192.168.1.1?"</span>
+
+  PC \u2500\u2500<span class="hl">Broadcast</span>\u2500\u2500\u25b6 alle Ger\u00e4te im LAN
+                      <span class="dim">\u2502</span>
+                      <span class="hl2">Router:</span> "Ich! MAC=AA:BB:CC:DD:EE:FF"
+                      <span class="dim">\u2502</span>
+  PC \u25c0\u2500\u2500<span class="hl2">Unicast</span>\u2500\u2500\u2500 Router
+
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+<span class="hl3">\u2192 ARP-Cache</span> speichert Zuordnung IP \u2194 MAC
+<span class="hl3">\u2192 ARP-Request</span> = Broadcast (FF:FF:FF:FF:FF:FF)
+<span class="hl3">\u2192 ARP-Reply</span> = Unicast (direkt an Anfragenden)`},
+
+  {domain:'algo',title:'Huffman-Baum Konstruktion',icon:'\ud83c\udf33',color:'#eab308',
+   desc:'Optimale pr\u00e4fixfreie Kodierung: H\u00e4ufige Zeichen erhalten kurze Codes.',
+   diagram:`<span class="hl">Zeichen:</span>  A(5)  B(3)  C(2)  D(1)
+
+<span class="hl2">Schritt 1:</span> Kleinste verbinden: C+D = (3)
+<span class="hl2">Schritt 2:</span> B + CD = (6)
+<span class="hl2">Schritt 3:</span> A + BCD = Wurzel (11)
+
+           <span class="hl">(11)</span>
+          /    \\
+       <span class="hl2">A(5)</span>   <span class="hl2">(6)</span>
+              /   \\
+           <span class="hl2">B(3)</span>  <span class="hl2">(3)</span>
+                 /   \\
+              <span class="hl2">C(2)</span>  <span class="hl2">D(1)</span>
+
+<span class="hl3">Codes:</span> A=<span class="hl">0</span>, B=<span class="hl">10</span>, C=<span class="hl">110</span>, D=<span class="hl">111</span>
+<span class="dim">Links=0, Rechts=1 (Konvention)</span>`},
+
+  {domain:'code',title:'Zweierkomplement Berechnung',icon:'\ud83d\udd22',color:'#ef4444',
+   desc:'Negative Zahlen in Bin\u00e4rdarstellung: Invertieren und 1 addieren.',
+   diagram:`<span class="hl">Beispiel: -42 in 8 Bit</span>
+
+   42  = <span class="hl2">00101010</span>
+   Inv = <span class="hl3">11010101</span>       (alle Bits invertieren)
+   +1  = <span class="hl">11010110</span>       \u2190 das ist -42
+
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+<span class="hl">Bereiche:</span>
+   8 Bit:  <span class="hl2">-128</span> bis <span class="hl2">+127</span>
+  16 Bit:  <span class="hl2">-32768</span> bis <span class="hl2">+32767</span>
+  32 Bit:  <span class="hl2">-2.147.483.648</span> bis <span class="hl2">+2.147.483.647</span>
+
+<span class="hl3">Formel:</span> n Bit \u2192 -2\u207f\u207b\u00b9 bis 2\u207f\u207b\u00b9-1`},
+
+  {domain:'code',title:'CRC-Berechnung Beispiel',icon:'\u2699\ufe0f',color:'#ef4444',
+   desc:'Cyclic Redundancy Check: XOR-Division zur Fehlererkennung.',
+   diagram:`<span class="hl">Daten:</span>        1101011
+<span class="hl">Generator:</span>    1011 <span class="dim">(Grad 3 \u2192 3 Nullen anh\u00e4ngen)</span>
+
+<span class="hl2">Berechnung:</span>   1101011<span class="hl3">000</span> \u00f7 1011
+
+  1101011000
+  <span class="hl">1011</span>
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+   110011000     <span class="dim">(XOR)</span>
+   <span class="hl">1011</span>
+   \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    01111000
+     <span class="hl">1011</span>
+     \u2500\u2500\u2500\u2500\u2500\u2500\u2500
+      100000
+      <span class="hl">1011</span>
+      \u2500\u2500\u2500\u2500\u2500\u2500
+       01100
+        <span class="hl">1011</span>
+        \u2500\u2500\u2500\u2500
+         <span class="hl3">111</span>  \u2190 Rest = CRC
+
+<span class="hl">\u2192 Senden:</span> 1101011<span class="hl3">111</span>`},
+
+  {domain:'algo',title:'Graph-Traversierung: BFS vs DFS',icon:'\ud83d\udcca',color:'#eab308',
+   desc:'Breitensuche (Queue) vs. Tiefensuche (Stack) im Vergleich.',
+   diagram:`        <span class="hl">A</span>
+       / \\
+      <span class="hl2">B</span>   <span class="hl2">C</span>
+     / \\   \\
+    <span class="hl3">D</span>   <span class="hl3">E</span>   <span class="hl3">F</span>
+
+<span class="hl">BFS (Queue):</span>  A \u2192 B, C \u2192 D, E, F
+<span class="dim">Ebene f\u00fcr Ebene, k\u00fcrzester Weg (ungewichtet)</span>
+
+<span class="hl2">DFS (Stack):</span>  A \u2192 B \u2192 D \u2192 E \u2192 C \u2192 F
+<span class="dim">Tiefe zuerst, gut f\u00fcr Zyklen + Topologische Sort.</span>
+
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+BFS: <span class="hl">O(V+E)</span> Zeit, <span class="hl">O(V)</span> Speicher
+DFS: <span class="hl">O(V+E)</span> Zeit, <span class="hl">O(V)</span> Speicher`},
+
+  {domain:'netz',title:'NAT / PAT \u00dcbersetzung',icon:'\ud83d\udd00',color:'#06b6d4',
+   desc:'Network Address Translation: Wie private IPs auf \u00f6ffentliche abgebildet werden.',
+   diagram:`<span class="hl">LAN</span>                      <span class="hl3">Router (NAT)</span>              <span class="hl2">Internet</span>
+192.168.1.10:5000  \u2192  203.0.113.1:<span class="hl">40001</span>  \u2192  Server
+192.168.1.11:5000  \u2192  203.0.113.1:<span class="hl">40002</span>  \u2192  Server
+192.168.1.12:3000  \u2192  203.0.113.1:<span class="hl">40003</span>  \u2192  Server
+
+<span class="hl3">NAT-Tabelle:</span>
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+  <span class="hl">Intern</span>                <span class="hl2">Extern</span>
+  192.168.1.10:5000  \u2194  203.0.113.1:40001
+  192.168.1.11:5000  \u2194  203.0.113.1:40002
+  192.168.1.12:3000  \u2194  203.0.113.1:40003
+<span class="dim">\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500</span>
+<span class="hl3">PAT:</span> Unterscheidung \u00fcber <span class="hl">Portnummer</span>
+     Viele private IPs \u2192 eine \u00f6ffentliche IP`}
 ];
 
 /* ═══════════════════════════════════════════════════════
