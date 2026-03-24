@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wissensbaum &ndash; Informatik Studium</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
   :root{--bg:#0c0e13;--surface:#14171e;--border:#1e2230;--text:#e2e4ea;--muted:#6b7084;--accent:#6c63ff;
     --c-netz:#06b6d4;--c-sig:#a78bfa;--c-tcp:#fb923c;--c-info:#22c55e;--c-formal:#f472b6}
@@ -88,6 +89,16 @@
   .deep-item{display:flex;align-items:center;gap:8px;padding:5px 12px;margin-left:8px;border-radius:6px;font-size:11px;color:var(--muted);font-weight:300}
   .deep-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:.5}
   .deep-item strong{color:var(--text);font-weight:600;margin-right:3px}
+  /* Checkboxes */
+  .wb-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);background:transparent;cursor:pointer;flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;padding:0}
+  .wb-check:hover{border-color:var(--accent)}
+  .wb-check.checked{background:var(--accent);border-color:var(--accent);color:#fff}
+  .wb-check.checked::after{content:'✓'}
+  .topic-header .wb-check{margin-left:auto;margin-right:4px}
+  .concept-item .wb-check{margin-left:auto;margin-top:2px}
+  .wb-stats{display:flex;gap:12px;align-items:center}
+  .wb-stats .ws{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .wb-stats .ws strong{color:var(--accent)}
   /* Progress */
   .progress-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;background:var(--border)}
   .progress-fill{height:100%;background:linear-gradient(90deg,var(--c-netz),var(--c-sig),var(--c-tcp),var(--c-info),var(--c-formal));width:0%;transition:width .5s ease}
@@ -97,6 +108,25 @@
   .stat-dot{width:8px;height:8px;border-radius:3px}
   /* Animations */
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .auth-bar{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.3rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+  .auth-bar .user-info{color:var(--accent);display:flex;align-items:center;gap:.3rem}
+  .auth-bar .user-info .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .auth-bar button{background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s}
+  .auth-bar button:hover{border-color:var(--accent);color:var(--accent)}
+  .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+  .auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center}
+  .auth-modal h3{font-family:'Outfit',sans-serif;font-size:1.2rem;margin-bottom:.3rem}
+  .auth-modal p{font-size:.75rem;color:var(--muted);margin-bottom:1.2rem}
+  .auth-modal input{width:100%;padding:.6rem .8rem;background:#0a0a10;border:1px solid #2a2840;border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.85rem;margin-bottom:.6rem;outline:none;transition:border-color .2s}
+  .auth-modal input:focus{border-color:var(--accent)}
+  .auth-modal .btn-primary{width:100%;margin-top:.3rem;padding:.6rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+  .auth-modal .auth-toggle{font-size:.7rem;color:var(--muted);margin-top:.8rem}
+  .auth-modal .auth-toggle span{color:var(--accent);cursor:pointer}
+  .auth-modal .auth-toggle span:hover{text-decoration:underline}
+  .auth-modal .auth-error{font-size:.7rem;color:#ef4444;margin-top:.5rem;min-height:1rem}
+  .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text);opacity:0;transition:all .3s;z-index:500;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .branch{animation:fadeUp .4s ease both}
   .branch:nth-child(1){animation-delay:.05s}
   .branch:nth-child(2){animation-delay:.1s}
@@ -108,6 +138,7 @@
 </style>
 </head>
 <body>
+<div class="auth-bar" id="authBar"></div>
 <div class="noise"></div>
 <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 <div class="container">
@@ -140,8 +171,34 @@
   <div class="stat-item"><div class="stat-dot" style="background:var(--c-formal)"></div>Automaten</div>
   <span style="color:var(--border)">&vert;</span>
   <div class="stat-item">Ge&ouml;ffnet: <strong style="color:var(--text)" id="stat-open">0</strong> / <span id="stat-total">0</span></div>
+  <span style="color:var(--border)">&vert;</span>
+  <div class="stat-item">&#9745; Gelernt: <strong style="color:var(--accent)" id="stat-checked">0</strong> / <span id="stat-checkable">0</span></div>
 </div>
+<div class="toast" id="toast"></div>
 <script>
+// ═══════════════════════════════════════
+// CHECKBOX STATE
+// ═══════════════════════════════════════
+const WB_KEY = 'wb-checked';
+let wbChecked = JSON.parse(localStorage.getItem(WB_KEY) || '{}');
+function saveWB(){ localStorage.setItem(WB_KEY, JSON.stringify(wbChecked)); if(typeof debouncedCloudSave==='function') debouncedCloudSave(); }
+function toggleCheck(nodeId, btn){
+  if(wbChecked[nodeId]){ delete wbChecked[nodeId]; btn.classList.remove('checked'); }
+  else { wbChecked[nodeId] = 1; btn.classList.add('checked'); }
+  saveWB();
+  updateCheckStats();
+}
+function updateCheckStats(){
+  const total = document.querySelectorAll('.wb-check').length;
+  const checked = Object.keys(wbChecked).length;
+  document.getElementById('stat-checked').textContent = checked;
+  document.getElementById('stat-checkable').textContent = total;
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
 // ═══════════════════════════════════════
 // TREE DATA – Alle 11 Hefte
 // ═══════════════════════════════════════
@@ -482,6 +539,7 @@ function renderTree() {
   TREE.forEach(branch => treeEl.appendChild(createBranch(branch)));
   document.getElementById('stat-total').textContent = totalNodes;
   updateStats();
+  updateCheckStats();
 }
 
 function createBranch(data) {
@@ -504,7 +562,7 @@ function createBranch(data) {
   const cw = document.createElement('div');
   cw.className = 'branch-children';
   cw.style.borderColor = data.color.replace('var(--c-','').replace(')','') ? data.color + '30' : 'rgba(255,255,255,.06)';
-  if (data.children) data.children.forEach(t => cw.appendChild(createTopic(t, data.color)));
+  if (data.children) data.children.forEach(t => cw.appendChild(createTopic(t, data.color, data.id)));
   el.appendChild(cw);
   el.querySelector('.branch-header').addEventListener('click', function() {
     const h = this, c = el.querySelector('.branch-children');
@@ -516,9 +574,11 @@ function createBranch(data) {
   return el;
 }
 
-function createTopic(data, parentColor) {
+function createTopic(data, parentColor, branchId) {
   totalNodes++;
   const color = data.color || parentColor;
+  const nodeId = branchId + '|' + data.title;
+  const isChecked = wbChecked[nodeId] ? ' checked' : '';
   const el = document.createElement('div');
   el.className = 'topic';
   el.dataset.searchText = getSearchText(data);
@@ -534,6 +594,7 @@ function createTopic(data, parentColor) {
         '<div class="topic-sub">' + data.sub + '</div>' +
       '</div>' +
       linkHTML +
+      '<button class="wb-check' + isChecked + '" data-nid="' + nodeId.replace(/'/g,'&#39;') + '" onclick="event.stopPropagation();toggleCheck(this.dataset.nid,this)" title="Als gelernt markieren"></button>' +
       (hasChildren || data.desc ? '<div class="topic-chevron">&#9656;</div>' : '') +
     '</div>';
   if (hasChildren || data.desc) {
@@ -545,7 +606,7 @@ function createTopic(data, parentColor) {
       d.innerHTML = '<p>' + data.desc + '</p>';
       cw.appendChild(d);
     }
-    if (data.children) data.children.forEach(c => cw.appendChild(createConcept(c, color)));
+    if (data.children) data.children.forEach(c => cw.appendChild(createConcept(c, color, branchId, data.title)));
     el.appendChild(cw);
     el.querySelector('.topic-header').addEventListener('click', function() {
       const h = this, c = el.querySelector('.topic-children');
@@ -560,8 +621,10 @@ function createTopic(data, parentColor) {
   return el;
 }
 
-function createConcept(data, color) {
+function createConcept(data, color, branchId, topicTitle) {
   totalNodes++;
+  const nodeId = branchId + '|' + topicTitle + '|' + data.title;
+  const isChecked = wbChecked[nodeId] ? ' checked' : '';
   const el = document.createElement('div');
   el.className = 'concept';
   el.dataset.searchText = (data.title + ' ' + data.sub + ' ' + (data.tags||[]).join(' ')).toLowerCase();
@@ -580,6 +643,7 @@ function createConcept(data, color) {
         '<div class="concept-sub">' + data.sub + '</div>' +
         tagsHTML + deepHTML +
       '</div>' +
+      '<button class="wb-check' + isChecked + '" data-nid="' + nodeId.replace(/'/g,'&#39;') + '" onclick="event.stopPropagation();toggleCheck(this.dataset.nid,this)" title="Als gelernt markieren"></button>' +
     '</div>';
   return el;
 }
@@ -652,6 +716,114 @@ function updateStats() {
 
 // Init
 renderTree();
+
+// ═══════════════════════════════════════
+// SUPABASE – Cloud Sync & Auth
+// ═══════════════════════════════════════
+const SUPABASE_URL = 'https://hhedpirqdxarjkxbygwf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoZWRwaXJxZHhhcmpreGJ5Z3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwOTUzNDcsImV4cCI6MjA4OTY3MTM0N30.qe0mvET4aLjHloGmdIukjWsiKi9c8Edh2Ar77MVYeP0';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const WB_TABLE = 'wissensbaum_progress';
+let currentUser = null;
+let _saveTimeout = null;
+
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(currentUser){
+    bar.innerHTML = '<span class="user-info"><span class="dot"></span> '+currentUser.email+'</span>'
+      +'<button onclick="forceCloudOverwrite()" title="Lokalen Stand mit Cloud überschreiben">☁️ Cloud laden</button>'
+      +'<button onclick="doLogout()">Abmelden</button>';
+  } else {
+    bar.innerHTML = '<button onclick="showAuthModal()">🔐 Anmelden für Cloud-Sync</button>';
+  }
+}
+function showAuthModal(mode){
+  mode = mode || 'login';
+  var existing = document.getElementById('authOverlay');
+  if(existing) existing.remove();
+  var isLogin = mode === 'login';
+  var overlay = document.createElement('div');
+  overlay.className = 'auth-overlay'; overlay.id = 'authOverlay';
+  overlay.innerHTML = '<div class="auth-modal">'
+    +'<h3>'+(isLogin?'🔐 Anmelden':'📝 Registrieren')+'</h3>'
+    +'<p>'+(isLogin?'Melde dich an um deinen Fortschritt auf allen Geräten zu synchronisieren.':'Erstelle ein Konto für Cloud-Sync.')+'</p>'
+    +'<input type="email" id="authEmail" placeholder="E-Mail" autocomplete="email">'
+    +'<input type="password" id="authPass" placeholder="Passwort (min. 6 Zeichen)" autocomplete="'+(isLogin?'current-password':'new-password')+'">'
+    +'<button class="btn-primary" onclick="'+(isLogin?'doLogin':'doSignup')+'()">'+(isLogin?'Anmelden':'Registrieren')+'</button>'
+    +'<div class="auth-error" id="authError"></div>'
+    +'<div class="auth-toggle">'+(isLogin
+      ?'Noch kein Konto? <span onclick="showAuthModal(\'signup\')">Registrieren</span>'
+      :'Bereits ein Konto? <span onclick="showAuthModal(\'login\')">Anmelden</span>')+'</div></div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('authEmail').focus();
+  overlay.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter') document.querySelector('.auth-modal .btn-primary').click(); });
+  });
+}
+async function doLogin(){
+  var email=document.getElementById('authEmail').value.trim(), pass=document.getElementById('authPass').value, err=document.getElementById('authError');
+  if(!email||!pass){err.textContent='Bitte E-Mail und Passwort eingeben';return;}
+  err.textContent='Anmelden...';
+  var r=await sb.auth.signInWithPassword({email:email,password:pass});
+  if(r.error){err.textContent=r.error.message;return;}
+  currentUser=r.data.user; document.getElementById('authOverlay').remove();
+  showToast('✅ Angemeldet!'); renderAuthBar(); await loadFromCloud(); renderTree();
+}
+async function doSignup(){
+  var email=document.getElementById('authEmail').value.trim(), pass=document.getElementById('authPass').value, err=document.getElementById('authError');
+  if(!email||!pass){err.textContent='Bitte E-Mail und Passwort eingeben';return;}
+  if(pass.length<6){err.textContent='Passwort muss mindestens 6 Zeichen haben';return;}
+  err.textContent='Registrieren...';
+  var r=await sb.auth.signUp({email:email,password:pass});
+  if(r.error){err.textContent=r.error.message;return;}
+  if(r.data.user&&!r.data.user.email_confirmed_at){err.innerHTML='<span style="color:var(--accent)">📧 Bestätigungs-E-Mail gesendet!</span>';return;}
+  currentUser=r.data.user; document.getElementById('authOverlay').remove();
+  showToast('✅ Registriert!'); renderAuthBar(); await saveToCloud(); renderTree();
+}
+async function doLogout(){
+  await sb.auth.signOut(); currentUser=null; renderAuthBar();
+  showToast('Abgemeldet — Fortschritt bleibt lokal');
+}
+async function loadFromCloud(){
+  if(!currentUser) return;
+  var r=await sb.from(WB_TABLE).select('history').eq('user_id',currentUser.id).maybeSingle();
+  if(r.error){console.warn('Cloud-Load:',r.error);return;}
+  if(r.data&&r.data.history){
+    var cloud=r.data.history, merged=Object.assign({},cloud), localBetter=0;
+    Object.keys(wbChecked).forEach(function(k){ if(!cloud[k]){merged[k]=1;localBetter++;} });
+    wbChecked=merged; localStorage.setItem(WB_KEY,JSON.stringify(wbChecked));
+    if(localBetter>0) await saveToCloud();
+    showToast('☁️ Cloud-Fortschritt geladen');
+  } else { await saveToCloud(); }
+}
+async function forceCloudOverwrite(){
+  if(!currentUser){showToast('❌ Nicht angemeldet');return;}
+  var r=await sb.from(WB_TABLE).select('history').eq('user_id',currentUser.id).maybeSingle();
+  if(r.error){showToast('❌ Cloud-Fehler');return;}
+  if(r.data&&r.data.history){
+    wbChecked=r.data.history; localStorage.setItem(WB_KEY,JSON.stringify(wbChecked));
+    showToast('☁️ Lokaler Stand mit Cloud überschrieben'); renderTree();
+  } else { showToast('☁️ Keine Cloud-Daten'); }
+}
+async function saveToCloud(){
+  if(!currentUser) return;
+  var r=await sb.from(WB_TABLE).upsert({user_id:currentUser.id,history:wbChecked,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  if(r.error) console.warn('Cloud-Save:',r.error);
+}
+function debouncedCloudSave(){
+  if(!currentUser) return;
+  clearTimeout(_saveTimeout);
+  _saveTimeout=setTimeout(function(){saveToCloud();},1500);
+}
+async function initAuth(){
+  var r=await sb.auth.getSession();
+  if(r.data.session){
+    currentUser=r.data.session.user; renderAuthBar();
+    await loadFromCloud(); renderTree();
+  } else { renderAuthBar(); }
+}
+initAuth();
 </script>
 <script src="symbole.js"></script>
 </body>
