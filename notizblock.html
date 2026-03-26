@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Notizblock – Informatik Studium</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ── Theme variables ── */
+:root{
+  --bg:#0f0e11;--surface:#18171d;--surface2:#1e2230;--border:#2a2840;
+  --text:#e2e4ea;--text2:#6b7084;--accent:#6c63ff;--accent2:#4fc3f7;
+  --correct:#22c55e;--wrong:#ef4444;--amber:#f5c542;
+}
+.light{
+  --bg:#f5f5f7;--surface:#fff;--surface2:#e8e8ec;--border:#d1d1d6;
+  --text:#1a1a1a;--text2:#6b6b6b;--accent:#6c63ff;--accent2:#0091ea;
+}
+
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;transition:background .3s,color .3s}
+
+/* ── Sidebar ── */
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:background .3s,border-color .3s}
+.sidebar-header{padding:1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sidebar-header h2{font-family:'Outfit',sans-serif;font-size:1rem;color:var(--accent)}
+.sidebar-header .note-count{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);background:var(--surface2);padding:2px 8px;border-radius:4px}
+.new-note-btn{width:100%;padding:.6rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;margin:0;transition:opacity .2s}
+.new-note-btn:hover{opacity:.85}
+.sidebar-actions{padding:.6rem 1rem}
+.note-list{flex:1;overflow-y:auto;padding:.3rem}
+.note-item{padding:.6rem .8rem;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:2px;border:1px solid transparent}
+.note-item:hover{background:var(--surface2)}
+.note-item.active{background:var(--accent)11;border-color:var(--accent)44}
+.note-item .ni-title{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.note-item .ni-date{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--text2);margin-top:2px}
+.note-item .ni-preview{font-size:.65rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.note-item .ni-delete{float:right;background:none;border:none;color:var(--text2);cursor:pointer;font-size:.7rem;opacity:0;transition:opacity .15s}
+.note-item:hover .ni-delete{opacity:1}
+.note-item .ni-delete:hover{color:var(--wrong)}
+
+/* ── Main editor area ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.toolbar{display:flex;align-items:center;gap:.4rem;padding:.5rem .8rem;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap;flex-shrink:0;transition:background .3s}
+.tb-group{display:flex;align-items:center;gap:.25rem;padding:0 .3rem;border-right:1px solid var(--border);margin-right:.2rem}
+.tb-group:last-child{border-right:none}
+.tb-btn{background:none;border:1px solid transparent;color:var(--text2);width:30px;height:28px;border-radius:5px;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;transition:all .12s;font-family:'JetBrains Mono',monospace}
+.tb-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.tb-btn.active{background:var(--accent)18;color:var(--accent);border-color:var(--accent)44}
+.tb-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:3px 6px;border-radius:5px;cursor:pointer;outline:none;height:28px}
+.tb-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--text2);margin:0 .15rem}
+
+/* Color picker row */
+.color-dots{display:flex;gap:3px;align-items:center}
+.color-dot{width:18px;height:18px;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:all .12s}
+.color-dot:hover{transform:scale(1.15)}
+.color-dot.active{border-color:var(--text)}
+
+/* ── Title input ── */
+.title-input{width:100%;padding:.6rem 1rem;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:700;outline:none;flex-shrink:0}
+.title-input::placeholder{color:var(--text2)}
+
+/* ── Editor ── */
+.editor{flex:1;padding:1rem;overflow-y:auto;outline:none;line-height:1.7;min-height:200px;font-size:.9rem;cursor:text}
+.editor:empty::before{content:attr(data-placeholder);color:var(--text2);pointer-events:none}
+.editor ul,.editor ol{padding-left:1.5rem;margin:.3rem 0}
+.editor li{margin:.1rem 0}
+
+/* ── Status bar ── */
+.statusbar{display:flex;align-items:center;justify-content:space-between;padding:.35rem .8rem;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--text2);background:var(--surface);flex-shrink:0;transition:background .3s}
+.statusbar .left{display:flex;gap:1rem}
+
+/* ── Special chars panel ── */
+.chars-panel{display:none;padding:.4rem .6rem;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:3px;max-height:80px;overflow-y:auto;flex-shrink:0}
+.chars-panel.show{display:flex}
+.char-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.75rem;width:30px;height:26px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.char-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── Back link for standalone ── */
+.back-link{position:absolute;top:.5rem;left:.8rem;color:var(--text2);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.65rem;z-index:10;transition:color .15s}
+.back-link:hover{color:var(--accent)}
+.popup-mode .back-link{display:none}
+.popup-mode .sidebar{width:220px}
+
+/* ── Responsive ── */
+@media(max-width:700px){
+  body{flex-direction:column}
+  .sidebar{width:100%;max-height:200px;border-right:none;border-bottom:1px solid var(--border)}
+  .note-list{display:flex;overflow-x:auto;padding:.3rem .5rem;gap:.3rem}
+  .note-item{min-width:140px;flex-shrink:0}
+}
+
+/* ── Highlighted text ── */
+mark[data-color]{border-radius:2px;padding:0 2px}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-link">&larr; Zur&uuml;ck</a>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h2>📝 Notizen</h2>
+    <span class="note-count" id="noteCount">0</span>
+  </div>
+  <div class="sidebar-actions">
+    <button class="new-note-btn" onclick="newNote()">+ Neue Notiz</button>
+  </div>
+  <div class="note-list" id="noteList"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="tb-group">
+      <button class="tb-btn" onclick="execCmd('bold')" title="Fett (Ctrl+B)"><b>B</b></button>
+      <button class="tb-btn" onclick="execCmd('italic')" title="Kursiv (Ctrl+I)"><i>I</i></button>
+      <button class="tb-btn" onclick="execCmd('underline')" title="Unterstrichen (Ctrl+U)"><u>U</u></button>
+      <button class="tb-btn" onclick="execCmd('strikeThrough')" title="Durchgestrichen"><s>S</s></button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Aufzählung">•</button>
+      <button class="tb-btn" onclick="execCmd('insertOrderedList')" title="Nummerierung">1.</button>
+    </div>
+    <div class="tb-group">
+      <span class="tb-label">Schrift</span>
+      <select class="tb-select" id="fontSelect" onchange="changeFont(this.value)">
+        <option value="'DM Sans',sans-serif">DM Sans</option>
+        <option value="'JetBrains Mono',monospace">JetBrains Mono</option>
+        <option value="'Merriweather',serif">Merriweather</option>
+      </select>
+    </div>
+    <div class="tb-group">
+      <span class="tb-label">Gr&ouml;sse</span>
+      <button class="tb-btn" onclick="changeFontSize(-1)" title="Kleiner">A-</button>
+      <span class="tb-label" id="fontSizeLabel">16</span>
+      <button class="tb-btn" onclick="changeFontSize(1)" title="Grösser">A+</button>
+    </div>
+    <div class="tb-group">
+      <span class="tb-label">Farbe</span>
+      <div class="color-dots">
+        <div class="color-dot" style="background:#f5c542" onclick="highlightText('#f5c542')" title="Gelb"></div>
+        <div class="color-dot" style="background:#4fc3f7" onclick="highlightText('#4fc3f7')" title="Blau"></div>
+        <div class="color-dot" style="background:#81c784" onclick="highlightText('#81c784')" title="Grün"></div>
+        <div class="color-dot" style="background:#ef5350" onclick="highlightText('#ef5350')" title="Rot"></div>
+        <div class="color-dot" style="background:#ce93d8" onclick="highlightText('#ce93d8')" title="Lila"></div>
+        <div class="color-dot" style="background:transparent;border:1px solid var(--text2)" onclick="removeHighlight()" title="Entfernen">✕</div>
+      </div>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" onclick="toggleChars()" title="Sonderzeichen">Σ</button>
+      <button class="tb-btn" onclick="toggleTheme()" title="Hell/Dunkel" id="themeBtn">☀</button>
+      <button class="tb-btn" onclick="popOut()" title="In neuem Fenster öffnen">↗</button>
+    </div>
+  </div>
+
+  <!-- Special chars -->
+  <div class="chars-panel" id="charsPanel"></div>
+
+  <!-- Title -->
+  <input class="title-input" type="text" id="noteTitle" placeholder="Titel der Notiz …" oninput="autoSave()">
+
+  <!-- Editor -->
+  <div class="editor" id="editor" contenteditable="true" data-placeholder="Schreibe hier deine Notizen …" oninput="autoSave()"></div>
+
+  <!-- Status bar -->
+  <div class="statusbar">
+    <div class="left">
+      <span id="charCount">0 Zeichen</span>
+      <span id="wordCount">0 W&ouml;rter</span>
+    </div>
+    <span id="saveStatus">Gespeichert</span>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'nb-notes';
+let notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let activeNoteId = null;
+let fontSize = parseInt(localStorage.getItem('nb-fontsize') || '16');
+let currentFont = localStorage.getItem('nb-font') || "'DM Sans',sans-serif";
+let isDark = localStorage.getItem('nb-theme') !== 'light';
+let _saveTimeout = null;
+
+/* ═══════════════════════════════════════════════════════
+   SPECIAL CHARACTERS
+   ═══════════════════════════════════════════════════════ */
+const CHARS = 'α β γ δ ε λ μ π σ Σ Ω φ Δ θ ≤ ≥ ≠ ≈ ± · × ÷ √ ∞ ∑ ∏ ∫ ∧ ∨ ¬ ⊕ → ← ↔ ⇒ ⇔ ∈ ∉ ⊂ ∅ ⁰ ¹ ² ³ ⁴ ⁵ ⁿ ₀ ₁ ₂ ₃ ₙ ℕ ℤ ℝ ℂ ∀ ∃'.split(' ');
+const charsPanel = document.getElementById('charsPanel');
+CHARS.forEach(ch => {
+  const btn = document.createElement('button');
+  btn.className = 'char-btn';
+  btn.textContent = ch;
+  btn.onclick = () => insertAtCursor(ch);
+  charsPanel.appendChild(btn);
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════ */
+function init(){
+  // Apply saved settings
+  applyTheme();
+  applyFont();
+  applyFontSize();
+  document.getElementById('fontSelect').value = currentFont;
+
+  // Detect popup mode
+  if(window.opener || window.location.search.includes('popup=1')){
+    document.body.classList.add('popup-mode');
+  }
+
+  // Create default note if none exist
+  if(notes.length === 0) newNote();
+  else {
+    renderNoteList();
+    selectNote(notes[0].id);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   NOTES CRUD
+   ═══════════════════════════════════════════════════════ */
+function newNote(){
+  const note = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    title: '',
+    content: '',
+    created: new Date().toISOString(),
+    updated: new Date().toISOString()
+  };
+  notes.unshift(note);
+  saveAll();
+  renderNoteList();
+  selectNote(note.id);
+  document.getElementById('noteTitle').focus();
+}
+
+function deleteNote(id, e){
+  if(e) e.stopPropagation();
+  if(notes.length <= 1){ return; } // keep at least one
+  notes = notes.filter(n => n.id !== id);
+  saveAll();
+  renderNoteList();
+  if(activeNoteId === id){
+    selectNote(notes[0].id);
+  }
+}
+
+function selectNote(id){
+  activeNoteId = id;
+  const note = notes.find(n => n.id === id);
+  if(!note) return;
+  document.getElementById('noteTitle').value = note.title;
+  document.getElementById('editor').innerHTML = note.content;
+  renderNoteList();
+  updateCounts();
+}
+
+function getActiveNote(){
+  return notes.find(n => n.id === activeNoteId);
+}
+
+function autoSave(){
+  const note = getActiveNote();
+  if(!note) return;
+  note.title = document.getElementById('noteTitle').value;
+  note.content = document.getElementById('editor').innerHTML;
+  note.updated = new Date().toISOString();
+  document.getElementById('saveStatus').textContent = 'Speichern…';
+  clearTimeout(_saveTimeout);
+  _saveTimeout = setTimeout(() => {
+    saveAll();
+    renderNoteList();
+    document.getElementById('saveStatus').textContent = 'Gespeichert';
+  }, 500);
+  updateCounts();
+}
+
+function saveAll(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER NOTE LIST
+   ═══════════════════════════════════════════════════════ */
+function renderNoteList(){
+  const list = document.getElementById('noteList');
+  list.innerHTML = notes.map(n => {
+    const title = n.title || 'Unbenannt';
+    const d = new Date(n.updated);
+    const date = d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' ' + d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    const preview = stripHTML(n.content).substring(0,50);
+    const isActive = n.id === activeNoteId;
+    return `<div class="note-item${isActive?' active':''}" onclick="selectNote('${n.id}')">
+      <button class="ni-delete" onclick="deleteNote('${n.id}',event)" title="Löschen">🗑</button>
+      <div class="ni-title">${escHTML(title)}</div>
+      <div class="ni-date">${date}</div>
+      <div class="ni-preview">${escHTML(preview)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('noteCount').textContent = notes.length;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOOLBAR COMMANDS
+   ═══════════════════════════════════════════════════════ */
+function execCmd(cmd, val){
+  document.execCommand(cmd, false, val || null);
+  document.getElementById('editor').focus();
+  autoSave();
+}
+
+function highlightText(color){
+  const sel = window.getSelection();
+  if(!sel.rangeCount || sel.isCollapsed) return;
+  // Remove existing highlight first
+  const range = sel.getRangeAt(0);
+  const mark = document.createElement('mark');
+  mark.setAttribute('data-color', color);
+  mark.style.background = color + '40';
+  mark.style.color = 'inherit';
+  try {
+    range.surroundContents(mark);
+  } catch(e) {
+    // If selection spans multiple elements, use execCommand fallback
+    document.execCommand('hiliteColor', false, color + '40');
+  }
+  autoSave();
+}
+
+function removeHighlight(){
+  const sel = window.getSelection();
+  if(!sel.rangeCount) return;
+  const node = sel.anchorNode.parentElement;
+  if(node && node.tagName === 'MARK'){
+    const parent = node.parentNode;
+    while(node.firstChild) parent.insertBefore(node.firstChild, node);
+    parent.removeChild(node);
+    autoSave();
+  } else {
+    document.execCommand('removeFormat', false, null);
+    autoSave();
+  }
+}
+
+function changeFont(font){
+  currentFont = font;
+  localStorage.setItem('nb-font', font);
+  applyFont();
+}
+
+function applyFont(){
+  document.getElementById('editor').style.fontFamily = currentFont;
+}
+
+function changeFontSize(delta){
+  fontSize = Math.max(10, Math.min(28, fontSize + delta));
+  localStorage.setItem('nb-fontsize', fontSize);
+  applyFontSize();
+}
+
+function applyFontSize(){
+  document.getElementById('editor').style.fontSize = fontSize + 'px';
+  document.getElementById('fontSizeLabel').textContent = fontSize;
+}
+
+function toggleChars(){
+  document.getElementById('charsPanel').classList.toggle('show');
+}
+
+function toggleTheme(){
+  isDark = !isDark;
+  localStorage.setItem('nb-theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+
+function applyTheme(){
+  document.body.classList.toggle('light', !isDark);
+  document.getElementById('themeBtn').textContent = isDark ? '☀' : '🌙';
+}
+
+function popOut(){
+  window.open('notizblock.html?popup=1', 'notizblock', 'width=900,height=650,menubar=no,toolbar=no');
+}
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════ */
+function insertAtCursor(text){
+  const editor = document.getElementById('editor');
+  editor.focus();
+  document.execCommand('insertText', false, text);
+  autoSave();
+}
+
+function updateCounts(){
+  const text = document.getElementById('editor').innerText || '';
+  const chars = text.replace(/\n/g,'').length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('charCount').textContent = chars + ' Zeichen';
+  document.getElementById('wordCount').textContent = words + ' Wörter';
+}
+
+function stripHTML(html){
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return div.textContent || '';
+}
+
+function escHTML(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ═══════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS IN EDITOR
+   ═══════════════════════════════════════════════════════ */
+document.getElementById('editor').addEventListener('keydown', function(e){
+  // Tab for indent
+  if(e.key === 'Tab'){
+    e.preventDefault();
+    document.execCommand('insertText', false, '    ');
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>

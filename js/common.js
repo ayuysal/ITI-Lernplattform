@@ -136,6 +136,7 @@ function initQuiz(data) {
     <div class="notepad-titlebar">
       <span>📝 NOTIZBLOCK</span>
       <div class="notepad-titlebar-btns">
+        <button class="np-popout" title="In neuem Fenster öffnen">↗</button>
         <button class="np-minimize" title="Minimieren">─</button>
         <button class="np-close" title="Schließen">✕</button>
       </div>
@@ -192,6 +193,11 @@ function initQuiz(data) {
   panel.querySelector('.np-minimize').addEventListener('click', () => {
     isOpen = false;
     panel.classList.remove('open');
+  });
+  panel.querySelector('.np-popout').addEventListener('click', () => {
+    isOpen = false;
+    panel.classList.remove('open');
+    window.open('notizblock.html?popup=1', 'notizblock', 'width=900,height=650,menubar=no,toolbar=no');
   });
 
   // Copy & Clear
