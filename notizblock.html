@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Notizblock – Informatik Studium</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
 /* ── Theme variables ── */
 :root{
   --bg:#0f0e11;--surface:#18171d;--surface2:#1e2230;--border:#2a2840;
-  --text:#e2e4ea;--text2:#6b7084;--accent:#6c63ff;--accent2:#4fc3f7;
-  --correct:#22c55e;--wrong:#ef4444;--amber:#f5c542;
+  --text:#e2e4ea;--text2:#6b7084;--accent:#00e5ff;--accent2:#39ff14;
+  --correct:#39ff14;--wrong:#ff1744;--amber:#ffea00;
 }
 .light{
   --bg:#f5f5f7;--surface:#fff;--surface2:#e8e8ec;--border:#d1d1d6;
-  --text:#1a1a1a;--text2:#6b6b6b;--accent:#6c63ff;--accent2:#0091ea;
+  --text:#1a1a1a;--text2:#6b6b6b;--accent:#00b8d4;--accent2:#00c853;
 }
 
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;transition:background .3s,color .3s}
@@ -26,8 +27,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .sidebar-header{padding:1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .sidebar-header h2{font-family:'Outfit',sans-serif;font-size:1rem;color:var(--accent)}
 .sidebar-header .note-count{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2);background:var(--surface2);padding:2px 8px;border-radius:4px}
-.new-note-btn{width:100%;padding:.6rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;margin:0;transition:opacity .2s}
-.new-note-btn:hover{opacity:.85}
+.new-note-btn{width:100%;padding:.6rem;background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.8rem;cursor:pointer;margin:0;transition:all .2s}
+.new-note-btn:hover{background:var(--accent);color:#0f0e11}
 .sidebar-actions{padding:.6rem 1rem}
 .note-list{flex:1;overflow-y:auto;padding:.3rem}
 .note-item{padding:.6rem .8rem;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:2px;border:1px solid transparent}
@@ -39,6 +40,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .note-item .ni-delete{float:right;background:none;border:none;color:var(--text2);cursor:pointer;font-size:.7rem;opacity:0;transition:opacity .15s}
 .note-item:hover .ni-delete{opacity:1}
 .note-item .ni-delete:hover{color:var(--wrong)}
+
+/* ── Sidebar resize handle ── */
+.sidebar-resizer{width:5px;cursor:col-resize;background:transparent;flex-shrink:0;transition:background .2s;position:relative;z-index:5}
+.sidebar-resizer:hover,.sidebar-resizer.dragging{background:var(--accent)}
 
 /* ── Main editor area ── */
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
@@ -62,9 +67,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .title-input::placeholder{color:var(--text2)}
 
 /* ── Editor ── */
-.editor{flex:1;padding:1rem;overflow-y:auto;outline:none;line-height:1.7;min-height:200px;font-size:.9rem;cursor:text}
+.editor{flex:1;padding:1rem 1rem 1rem 2rem;overflow-y:auto;outline:none;line-height:1.7;min-height:200px;font-size:.9rem;cursor:text}
 .editor:empty::before{content:attr(data-placeholder);color:var(--text2);pointer-events:none}
-.editor ul,.editor ol{padding-left:1.5rem;margin:.3rem 0}
+.editor ul,.editor ol{padding-left:1.8rem;margin:.3rem 0}
 .editor li{margin:.1rem 0}
 
 /* ── Status bar ── */
@@ -93,6 +98,28 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 /* ── Highlighted text ── */
 mark[data-color]{border-radius:2px;padding:0 2px}
+
+/* Auth */
+.auth-bar{display:flex;align-items:center;gap:.5rem;padding:.4rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;border-bottom:1px solid var(--border);background:var(--surface);transition:background .3s}
+.auth-bar .user-info{color:var(--accent);display:flex;align-items:center;gap:.3rem}
+.auth-bar .user-info .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.auth-bar button{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s}
+.auth-bar button:hover{border-color:var(--accent);color:var(--accent)}
+.auth-bar .sync-status{margin-left:auto;font-size:.5rem;color:var(--text2)}
+.auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.5);text-align:center}
+.auth-modal h3{font-family:'Outfit',sans-serif;font-size:1.2rem;margin-bottom:.3rem}
+.auth-modal p{font-size:.75rem;color:var(--text2);margin-bottom:1.2rem}
+.auth-modal input{width:100%;padding:.6rem .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;margin-bottom:.6rem;outline:none;transition:border-color .2s}
+.auth-modal input:focus{border-color:var(--accent)}
+.auth-modal .btn-primary{width:100%;margin-top:.3rem;padding:.6rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+.auth-modal .auth-toggle{font-size:.7rem;color:var(--text2);margin-top:.8rem}
+.auth-modal .auth-toggle span{color:var(--accent);cursor:pointer}
+.auth-modal .auth-toggle span:hover{text-decoration:underline}
+.auth-modal .auth-error{font-size:.7rem;color:#ef5350;margin-top:.5rem;min-height:1rem}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text);opacity:0;transition:all .3s;z-index:500;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -101,6 +128,7 @@ mark[data-color]{border-radius:2px;padding:0 2px}
 
 <!-- SIDEBAR -->
 <div class="sidebar">
+  <div class="auth-bar" id="authBar"></div>
   <div class="sidebar-header">
     <h2>📝 Notizen</h2>
     <span class="note-count" id="noteCount">0</span>
@@ -110,6 +138,11 @@ mark[data-color]{border-radius:2px;padding:0 2px}
   </div>
   <div class="note-list" id="noteList"></div>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<!-- RESIZE HANDLE -->
+<div class="sidebar-resizer" id="sidebarResizer"></div>
 
 <!-- MAIN -->
 <div class="main">
@@ -237,6 +270,7 @@ function newNote(){
   };
   notes.unshift(note);
   saveAll();
+  saveNoteToCloud(note);
   renderNoteList();
   selectNote(note.id);
   document.getElementById('noteTitle').focus();
@@ -247,6 +281,7 @@ function deleteNote(id, e){
   if(notes.length <= 1){ return; } // keep at least one
   notes = notes.filter(n => n.id !== id);
   saveAll();
+  deleteNoteFromCloud(id);
   renderNoteList();
   if(activeNoteId === id){
     selectNote(notes[0].id);
@@ -279,6 +314,7 @@ function autoSave(){
     saveAll();
     renderNoteList();
     document.getElementById('saveStatus').textContent = 'Gespeichert';
+    debouncedCloudSave();
   }, 500);
   updateCounts();
 }
@@ -320,18 +356,9 @@ function execCmd(cmd, val){
 function highlightText(color){
   const sel = window.getSelection();
   if(!sel.rangeCount || sel.isCollapsed) return;
-  // Remove existing highlight first
-  const range = sel.getRangeAt(0);
-  const mark = document.createElement('mark');
-  mark.setAttribute('data-color', color);
-  mark.style.background = color + '40';
-  mark.style.color = 'inherit';
-  try {
-    range.surroundContents(mark);
-  } catch(e) {
-    // If selection spans multiple elements, use execCommand fallback
-    document.execCommand('hiliteColor', false, color + '40');
-  }
+  // Use execCommand backColor — most reliable cross-browser
+  document.execCommand('backColor', false, color + '60');
+  document.getElementById('editor').focus();
   autoSave();
 }
 
@@ -361,7 +388,7 @@ function applyFont(){
 }
 
 function changeFontSize(delta){
-  fontSize = Math.max(10, Math.min(28, fontSize + delta));
+  fontSize = Math.max(10, Math.min(36, fontSize + delta));
   localStorage.setItem('nb-fontsize', fontSize);
   applyFontSize();
 }
@@ -430,9 +457,289 @@ document.getElementById('editor').addEventListener('keydown', function(e){
 });
 
 /* ═══════════════════════════════════════════════════════
+   SIDEBAR RESIZE
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  const resizer = document.getElementById('sidebarResizer');
+  const sidebar = document.querySelector('.sidebar');
+  let isResizing = false;
+
+  resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    resizer.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if(!isResizing) return;
+    let w = Math.max(160, Math.min(500, e.clientX));
+    sidebar.style.width = w + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if(isResizing){
+      isResizing = false;
+      resizer.classList.remove('dragging');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+  });
+
+  // Touch support
+  resizer.addEventListener('touchstart', (e) => {
+    isResizing = true;
+    resizer.classList.add('dragging');
+  }, {passive:true});
+
+  document.addEventListener('touchmove', (e) => {
+    if(!isResizing) return;
+    let w = Math.max(160, Math.min(500, e.touches[0].clientX));
+    sidebar.style.width = w + 'px';
+  }, {passive:true});
+
+  document.addEventListener('touchend', () => {
+    isResizing = false;
+    resizer.classList.remove('dragging');
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════
+   SUPABASE – Cloud Sync & Auth
+   ═══════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://hhedpirqdxarjkxbygwf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhoZWRwaXJxZHhhcmpreGJ5Z3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwOTUzNDcsImV4cCI6MjA4OTY3MTM0N30.qe0mvET4aLjHloGmdIukjWsiKi9c8Edh2Ar77MVYeP0';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let _cloudSaveTimeout = null;
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2500);
+}
+
+/* ── Auth UI ── */
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(currentUser){
+    bar.innerHTML = `
+      <span class="user-info"><span class="dot"></span> ${currentUser.email}</span>
+      <button onclick="forceCloudOverwrite()" title="Lokalen Stand komplett mit Cloud-Daten überschreiben">☁️ Cloud laden</button>
+      <button onclick="doLogout()">Abmelden</button>`;
+  } else {
+    bar.innerHTML = `<button onclick="showAuthModal()">🔐 Anmelden für Cloud-Sync</button>`;
+  }
+}
+
+function showAuthModal(mode='login'){
+  let existing = document.getElementById('authOverlay');
+  if(existing) existing.remove();
+  const isLogin = mode === 'login';
+  const overlay = document.createElement('div');
+  overlay.className = 'auth-overlay';
+  overlay.id = 'authOverlay';
+  overlay.innerHTML = `
+    <div class="auth-modal">
+      <h3>${isLogin ? '🔐 Anmelden' : '📝 Registrieren'}</h3>
+      <p>${isLogin ? 'Melde dich an um deine Notizen auf allen Geräten zu synchronisieren.' : 'Erstelle ein Konto für Cloud-Sync auf allen Geräten.'}</p>
+      <input type="email" id="authEmail" placeholder="E-Mail" autocomplete="email">
+      <input type="password" id="authPass" placeholder="Passwort (min. 6 Zeichen)" autocomplete="${isLogin?'current-password':'new-password'}">
+      <button class="btn-primary" onclick="${isLogin?'doLogin':'doSignup'}()">${isLogin?'Anmelden':'Registrieren'}</button>
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-toggle">${isLogin
+        ? 'Noch kein Konto? <span onclick="showAuthModal(\'signup\')">Registrieren</span>'
+        : 'Bereits ein Konto? <span onclick="showAuthModal(\'login\')">Anmelden</span>'}</div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.getElementById('authEmail').focus();
+  overlay.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') document.querySelector('.auth-modal .btn-primary').click(); });
+  });
+}
+
+async function doLogin(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  errEl.textContent='Anmelden...';
+  const {data,error} = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  currentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Angemeldet!');
+  renderAuthBar();
+  await loadNotesFromCloud();
+}
+
+async function doSignup(){
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  if(!email||!pass){ errEl.textContent='Bitte E-Mail und Passwort eingeben'; return; }
+  if(pass.length<6){ errEl.textContent='Passwort muss mindestens 6 Zeichen haben'; return; }
+  errEl.textContent='Registrieren...';
+  const {data,error} = await sb.auth.signUp({email, password:pass});
+  if(error){ errEl.textContent=error.message; return; }
+  if(data.user && !data.user.email_confirmed_at){
+    errEl.innerHTML='<span style="color:var(--amber)">📧 Bestätigungs-E-Mail gesendet!</span>';
+    return;
+  }
+  currentUser = data.user;
+  document.getElementById('authOverlay').remove();
+  showToast('✅ Registriert & angemeldet!');
+  renderAuthBar();
+  await syncAllNotesToCloud();
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser = null;
+  renderAuthBar();
+  showToast('Abgemeldet — Notizen bleiben lokal gespeichert');
+}
+
+/* ── Cloud Load: merge cloud notes with local ── */
+async function loadNotesFromCloud(){
+  if(!currentUser) return;
+  const {data,error} = await sb
+    .from('notizen')
+    .select('*')
+    .eq('user_id', currentUser.id);
+  if(error){ console.warn('Cloud-Load Fehler:', error); return; }
+  if(!data || data.length === 0){
+    // No cloud data yet — push local notes up
+    await syncAllNotesToCloud();
+    showToast('☁️ Lokale Notizen in Cloud gespeichert');
+    return;
+  }
+  // Merge: cloud notes + local notes by note_id
+  const localMap = {};
+  notes.forEach(n => { localMap[n.id] = n; });
+  const cloudMap = {};
+  data.forEach(row => {
+    cloudMap[row.note_id] = {
+      id: row.note_id,
+      title: row.title || '',
+      content: row.content || '',
+      created: row.created_at,
+      updated: row.updated_at
+    };
+  });
+  // Merge: keep the newer version of each note
+  const merged = {};
+  const allIds = new Set([...Object.keys(localMap), ...Object.keys(cloudMap)]);
+  allIds.forEach(id => {
+    const local = localMap[id];
+    const cloud = cloudMap[id];
+    if(local && cloud){
+      // Keep whichever was updated more recently
+      merged[id] = new Date(local.updated) >= new Date(cloud.updated) ? local : cloud;
+    } else {
+      merged[id] = local || cloud;
+    }
+  });
+  notes = Object.values(merged).sort((a,b) => new Date(b.updated) - new Date(a.updated));
+  saveAll();
+  renderNoteList();
+  if(notes.length > 0) selectNote(activeNoteId && notes.find(n=>n.id===activeNoteId) ? activeNoteId : notes[0].id);
+  // Push merged state back to cloud
+  await syncAllNotesToCloud();
+  showToast('☁️ Notizen synchronisiert');
+}
+
+/* ── Force overwrite local with cloud ── */
+async function forceCloudOverwrite(){
+  if(!currentUser){ showToast('❌ Nicht angemeldet'); return; }
+  const {data,error} = await sb
+    .from('notizen')
+    .select('*')
+    .eq('user_id', currentUser.id);
+  if(error){ showToast('❌ Cloud-Fehler'); return; }
+  if(!data || data.length === 0){
+    showToast('☁️ Keine Cloud-Daten vorhanden');
+    return;
+  }
+  notes = data.map(row => ({
+    id: row.note_id,
+    title: row.title || '',
+    content: row.content || '',
+    created: row.created_at,
+    updated: row.updated_at
+  })).sort((a,b) => new Date(b.updated) - new Date(a.updated));
+  saveAll();
+  renderNoteList();
+  if(notes.length > 0) selectNote(notes[0].id);
+  showToast('☁️ Lokaler Stand mit Cloud überschrieben');
+}
+
+/* ── Save single note to cloud ── */
+async function saveNoteToCloud(note){
+  if(!currentUser) return;
+  const {error} = await sb
+    .from('notizen')
+    .upsert({
+      user_id: currentUser.id,
+      note_id: note.id,
+      title: note.title,
+      content: note.content,
+      created_at: note.created,
+      updated_at: note.updated
+    }, {onConflict:'user_id,note_id'});
+  if(error) console.warn('Cloud-Save Fehler:', error);
+}
+
+/* ── Delete note from cloud ── */
+async function deleteNoteFromCloud(noteId){
+  if(!currentUser) return;
+  const {error} = await sb
+    .from('notizen')
+    .delete()
+    .eq('user_id', currentUser.id)
+    .eq('note_id', noteId);
+  if(error) console.warn('Cloud-Delete Fehler:', error);
+}
+
+/* ── Sync all local notes to cloud ── */
+async function syncAllNotesToCloud(){
+  if(!currentUser) return;
+  for(const note of notes){
+    await saveNoteToCloud(note);
+  }
+}
+
+/* ── Debounced cloud save for active note ── */
+function debouncedCloudSave(){
+  if(!currentUser) return;
+  clearTimeout(_cloudSaveTimeout);
+  _cloudSaveTimeout = setTimeout(()=>{
+    const note = getActiveNote();
+    if(note) saveNoteToCloud(note);
+  }, 1500);
+}
+
+/* ── Auto-Login from stored session ── */
+async function initAuth(){
+  const {data} = await sb.auth.getSession();
+  if(data.session){
+    currentUser = data.session.user;
+    renderAuthBar();
+    await loadNotesFromCloud();
+  } else {
+    renderAuthBar();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
    INIT
    ═══════════════════════════════════════════════════════ */
 init();
+initAuth();
 </script>
 </body>
 </html>
