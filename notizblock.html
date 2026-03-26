@@ -96,8 +96,24 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   .note-item{min-width:140px;flex-shrink:0}
 }
 
-/* ── Highlighted text ── */
-mark[data-color]{border-radius:2px;padding:0 2px}
+/* ── Auto-Highlight Kategorien ── */
+[data-auto-hl]{border-radius:2px;padding:0 1px}
+.hl-formula{color:#ff6b6b}
+.hl-network{color:#4ecdc4}
+.hl-code{color:#ffd93d;font-family:'JetBrains Mono',monospace}
+.hl-definition{color:#6bcb77;font-style:italic}
+.hl-acronym{color:#c084fc;font-weight:600}
+.hl-value{color:#f8a978}
+.light .hl-formula{color:#d63031}
+.light .hl-network{color:#00897b}
+.light .hl-code{color:#e67e22;font-family:'JetBrains Mono',monospace}
+.light .hl-definition{color:#2e7d32;font-style:italic}
+.light .hl-acronym{color:#7c3aed;font-weight:600}
+.light .hl-value{color:#d35400}
+
+/* ── Legend toolbar items ── */
+.hl-legend-item{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;cursor:help;padding:2px 5px;border-radius:3px;background:var(--surface2);transition:all .12s}
+.hl-legend-item:hover{transform:scale(1.1)}
 
 /* Auth */
 .auth-bar{display:flex;align-items:center;gap:.5rem;padding:.4rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;border-bottom:1px solid var(--border);background:var(--surface);transition:background .3s}
@@ -173,15 +189,14 @@ mark[data-color]{border-radius:2px;padding:0 2px}
       <button class="tb-btn" onclick="changeFontSize(1)" title="Grösser">A+</button>
     </div>
     <div class="tb-group">
-      <span class="tb-label">Farbe</span>
-      <div class="color-dots">
-        <div class="color-dot" style="background:#f5c542" onclick="highlightText('#f5c542')" title="Gelb"></div>
-        <div class="color-dot" style="background:#4fc3f7" onclick="highlightText('#4fc3f7')" title="Blau"></div>
-        <div class="color-dot" style="background:#81c784" onclick="highlightText('#81c784')" title="Grün"></div>
-        <div class="color-dot" style="background:#ef5350" onclick="highlightText('#ef5350')" title="Rot"></div>
-        <div class="color-dot" style="background:#ce93d8" onclick="highlightText('#ce93d8')" title="Lila"></div>
-        <div class="color-dot" style="background:transparent;border:1px solid var(--text2)" onclick="removeHighlight()" title="Entfernen">✕</div>
-      </div>
+      <span class="tb-label">Auto</span>
+      <span class="hl-legend-item" style="color:#ff6b6b" title="Formeln / Mathematik">F</span>
+      <span class="hl-legend-item" style="color:#4ecdc4" title="Netzwerk / Adressen">N</span>
+      <span class="hl-legend-item" style="color:#ffd93d" title="Code / Technisch">C</span>
+      <span class="hl-legend-item" style="color:#6bcb77" title="Definitionen">D</span>
+      <span class="hl-legend-item" style="color:#c084fc" title="Abkürzungen">A</span>
+      <span class="hl-legend-item" style="color:#f8a978" title="Werte / Einheiten">W</span>
+      <button class="tb-btn" id="hlToggle" onclick="toggleAutoHL()" title="Auto-Farben an/aus">🎨</button>
     </div>
     <div class="tb-group">
       <button class="tb-btn" onclick="toggleChars()" title="Sonderzeichen">Σ</button>
@@ -197,7 +212,7 @@ mark[data-color]{border-radius:2px;padding:0 2px}
   <input class="title-input" type="text" id="noteTitle" placeholder="Titel der Notiz …" oninput="autoSave()">
 
   <!-- Editor -->
-  <div class="editor" id="editor" contenteditable="true" data-placeholder="Schreibe hier deine Notizen …" oninput="autoSave()"></div>
+  <div class="editor" id="editor" contenteditable="true" data-placeholder="Schreibe hier deine Notizen …"></div>
 
   <!-- Status bar -->
   <div class="statusbar">
@@ -296,6 +311,7 @@ function selectNote(id){
   document.getElementById('editor').innerHTML = note.content;
   renderNoteList();
   updateCounts();
+  scheduleAutoHL();
 }
 
 function getActiveNote(){
@@ -303,6 +319,7 @@ function getActiveNote(){
 }
 
 function autoSave(){
+  if(_hlRunning) return; // skip saves triggered by auto-highlight DOM changes
   const note = getActiveNote();
   if(!note) return;
   note.title = document.getElementById('noteTitle').value;
@@ -317,6 +334,7 @@ function autoSave(){
     debouncedCloudSave();
   }, 500);
   updateCounts();
+  scheduleAutoHL();
 }
 
 function saveAll(){
@@ -353,29 +371,6 @@ function execCmd(cmd, val){
   autoSave();
 }
 
-function highlightText(color){
-  const sel = window.getSelection();
-  if(!sel.rangeCount || sel.isCollapsed) return;
-  // Use execCommand backColor — most reliable cross-browser
-  document.execCommand('backColor', false, color + '60');
-  document.getElementById('editor').focus();
-  autoSave();
-}
-
-function removeHighlight(){
-  const sel = window.getSelection();
-  if(!sel.rangeCount) return;
-  const node = sel.anchorNode.parentElement;
-  if(node && node.tagName === 'MARK'){
-    const parent = node.parentNode;
-    while(node.firstChild) parent.insertBefore(node.firstChild, node);
-    parent.removeChild(node);
-    autoSave();
-  } else {
-    document.execCommand('removeFormat', false, null);
-    autoSave();
-  }
-}
 
 function changeFont(font){
   currentFont = font;
@@ -455,6 +450,160 @@ document.getElementById('editor').addEventListener('keydown', function(e){
     document.execCommand('insertText', false, '    ');
   }
 });
+
+document.getElementById('editor').addEventListener('input', function(){
+  if(!_hlRunning) autoSave();
+});
+
+/* ═══════════════════════════════════════════════════════
+   AUTO-HIGHLIGHT ENGINE
+   ═══════════════════════════════════════════════════════ */
+let autoHLEnabled = localStorage.getItem('nb-autohl') !== 'false';
+let _hlTimeout = null;
+let _hlRunning = false; // guard against re-entrant calls
+
+// Update toggle button state
+if(autoHLEnabled && document.getElementById('hlToggle')) document.getElementById('hlToggle').classList.add('active');
+
+const HL_PATTERNS = [
+  { cls:'hl-formula', rx:/(?:O\([^)]+\)|\b\d+\s*[\+\-\*\/\^]\s*\d+|log[₂2]?\([^)]*\)|[a-z]\([a-z]\)|\b\d+!|[²³ⁿ√∑∏∫≤≥≠≈±∞Σ∀∃∈∉⊂∅⇒⇔∧∨¬⊕ΔΩαβγδελμπσφθ]+|\b\d+\s*[=<>≤≥]+\s*\d+)/g },
+  { cls:'hl-network', rx:/(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?:\/\d{1,2})?|(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|[Pp]ort\s*\d{2,5}|:\d{2,5}\b)/g },
+  { cls:'hl-code', rx:/(?:`[^`]+`|(?<![A-Za-zÄÖÜäöü])[a-z]+[A-Z]\w*|[a-z_]\w*\(\)|(?:\/[\w.]+){2,}|\b(?:if|else|return|for|while|class|function|SELECT|FROM|WHERE|INSERT|DELETE|UPDATE|JOIN|CREATE|DROP|int|void|char|float|double|bool|null|true|false|import|export|const|let|var|def|print|printf|malloc|sizeof|strlen|strcmp|strcpy|ping|traceroute|nslookup|ipconfig|ifconfig|netstat|chmod|mkdir|sudo|grep|awk|sed|cat)\b)/g },
+  { cls:'hl-definition', rx:/\b[A-ZÄÖÜ]\w+\s+(?:ist|sind|bedeutet|bezeichnet|beschreibt|definiert|heißt)\s/g },
+  { cls:'hl-value', rx:/(?:\b0x[0-9a-fA-F]+\b|\b0b[01]+\b|\b\d+[\.,]?\d*\s*(?:%|KB|MB|GB|TB|kB|Bit|Byte|Bytes|Hz|GHz|MHz|kHz|ms|μs|ns|Mbit\/s|Gbit\/s|px|dpi|bps|Kbps|Mbps|km|m|cm|mm)\b)/g },
+  { cls:'hl-acronym', rx:/\b[A-Z]{2,6}\b(?![\w.])/g }
+];
+
+// Common German/English words to NOT highlight as acronyms
+const ACRONYM_SKIP = new Set(['IN','AN','AM','UM','AUS','EIN','AUF','DAS','DER','DIE','MIT','VON','VOR','WIR','SIE','MAN','NUR','WAS','WER','WIE','UND','HAT','IST','THE','AND','FOR','NOT','BUT','YOU','ALL','CAN','HER','WAS','ONE','OUR','OUT','ARE','HAS','HIS','HOW','ITS','MAY','NEW','NOW','OLD','SEE','WAY','WHO','DID','GET','HIM','LET','SAY','SHE','TOO','USE']);
+
+/* ── Cursor save / restore ── */
+function saveCursorOffset(){
+  const sel = window.getSelection();
+  if(!sel.rangeCount) return null;
+  const range = sel.getRangeAt(0);
+  const editor = document.getElementById('editor');
+  const pre = document.createRange();
+  pre.selectNodeContents(editor);
+  pre.setEnd(range.startContainer, range.startOffset);
+  return pre.toString().length;
+}
+
+function restoreCursorOffset(offset){
+  if(offset === null) return;
+  const editor = document.getElementById('editor');
+  const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+  let charCount = 0;
+  while(walker.nextNode()){
+    const node = walker.currentNode;
+    const len = node.textContent.length;
+    if(charCount + len >= offset){
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.setStart(node, offset - charCount);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      return;
+    }
+    charCount += len;
+  }
+}
+
+/* ── Strip all auto-highlights ── */
+function stripAllAutoHL(){
+  const editor = document.getElementById('editor');
+  editor.querySelectorAll('[data-auto-hl]').forEach(span => {
+    const parent = span.parentNode;
+    while(span.firstChild) parent.insertBefore(span.firstChild, span);
+    parent.removeChild(span);
+  });
+  editor.normalize();
+}
+
+/* ── Main auto-highlight function ── */
+function autoHighlight(){
+  if(!autoHLEnabled || _hlRunning) return;
+  const editor = document.getElementById('editor');
+  if(!editor.textContent.trim()) return;
+  _hlRunning = true;
+
+  const cursorOff = saveCursorOffset();
+
+  // Strip existing auto-HL
+  stripAllAutoHL();
+
+  // Walk text nodes
+  const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while(walker.nextNode()) textNodes.push(walker.currentNode);
+
+  for(const node of textNodes){
+    const text = node.textContent;
+    if(!text.trim()) continue;
+
+    // Collect all matches across all patterns
+    const matches = [];
+    for(const pat of HL_PATTERNS){
+      pat.rx.lastIndex = 0;
+      let m;
+      while((m = pat.rx.exec(text)) !== null){
+        // Skip common words for acronyms
+        if(pat.cls === 'hl-acronym' && ACRONYM_SKIP.has(m[0])) continue;
+        matches.push({ start: m.index, end: m.index + m[0].length, cls: pat.cls, text: m[0] });
+      }
+    }
+    if(matches.length === 0) continue;
+
+    // Sort by start position; first pattern wins on overlap
+    matches.sort((a,b) => a.start - b.start || HL_PATTERNS.findIndex(p=>p.cls===a.cls) - HL_PATTERNS.findIndex(p=>p.cls===b.cls));
+
+    // Remove overlaps (greedy: first match wins)
+    const filtered = [];
+    let lastEnd = 0;
+    for(const m of matches){
+      if(m.start >= lastEnd){
+        filtered.push(m);
+        lastEnd = m.end;
+      }
+    }
+    if(filtered.length === 0) continue;
+
+    // Build fragment
+    const frag = document.createDocumentFragment();
+    let pos = 0;
+    for(const m of filtered){
+      if(m.start > pos) frag.appendChild(document.createTextNode(text.slice(pos, m.start)));
+      const span = document.createElement('span');
+      span.className = m.cls;
+      span.setAttribute('data-auto-hl','1');
+      span.textContent = m.text;
+      frag.appendChild(span);
+      pos = m.end;
+    }
+    if(pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
+
+    node.parentNode.replaceChild(frag, node);
+  }
+
+  restoreCursorOffset(cursorOff);
+  _hlRunning = false;
+}
+
+/* ── Schedule / Toggle ── */
+function scheduleAutoHL(){
+  if(!autoHLEnabled || _hlRunning) return;
+  clearTimeout(_hlTimeout);
+  _hlTimeout = setTimeout(autoHighlight, 800);
+}
+
+function toggleAutoHL(){
+  autoHLEnabled = !autoHLEnabled;
+  localStorage.setItem('nb-autohl', autoHLEnabled);
+  document.getElementById('hlToggle').classList.toggle('active', autoHLEnabled);
+  if(autoHLEnabled) autoHighlight();
+  else { stripAllAutoHL(); autoSave(); }
+}
 
 /* ═══════════════════════════════════════════════════════
    SIDEBAR RESIZE
