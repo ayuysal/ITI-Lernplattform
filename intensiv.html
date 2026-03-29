@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intensiv — Deep-Dive Lernen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+/* ═══ RESET & THEME ═══ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0f14;--surface:#161a24;--surface2:#1e2436;--border:#2a2f42;
+  --text:#e2e8f0;--text2:#94a3b8;--muted:#64748b;
+  --accent:#00e5ff;--accent2:#7c3aed;--amber:#f5c542;
+  --green:#22c55e;--red:#ef4444;--teal:#06b6d4;--pink:#f472b6;
+  --purple:#a78bfa;--orange:#fb923c;
+  --radius:12px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+/* ═══ AUTH BAR ═══ */
+.auth-bar{position:fixed;top:8px;right:12px;z-index:1000;display:flex;align-items:center;gap:.4rem;font-family:'JetBrains Mono',monospace;font-size:.65rem}
+.auth-bar button{background:var(--surface);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:inherit;transition:all .2s}
+.auth-bar button:hover{border-color:var(--accent);color:var(--accent)}
+.auth-bar .user-name{color:var(--green);margin-right:.3rem}
+.auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;justify-content:center;align-items:center}
+.auth-overlay.show{display:flex}
+.auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;width:320px;max-width:90vw}
+.auth-modal h3{font-family:'Outfit',sans-serif;margin-bottom:1rem;color:var(--accent)}
+.auth-modal input{width:100%;padding:.5rem;margin-bottom:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit}
+.auth-modal .auth-btns{display:flex;gap:.5rem;margin-top:.5rem}
+.auth-modal .auth-btns button{flex:1;padding:.5rem;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.7rem;transition:all .2s}
+.auth-modal .auth-btns button:first-child{background:var(--accent);color:#000;border-color:var(--accent)}
+.auth-modal .auth-btns button:last-child{background:var(--surface2);color:var(--text2)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.5rem 1.2rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;z-index:3000;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ═══ LAYOUT ═══ */
+.back{display:inline-block;color:var(--text2);text-decoration:none;font-size:.8rem;padding:1rem 1.5rem;transition:color .2s}
+.back:hover{color:var(--accent)}
+header{text-align:center;padding:0 1rem 1rem}
+header .tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
+header h1{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem}
+header p{color:var(--text2);font-size:.85rem;max-width:600px;margin:0 auto}
+.content{max-width:960px;margin:0 auto;padding:0 1rem 4rem}
+
+/* ═══ PRIMARY TABS ═══ */
+.tabs{display:flex;gap:.5rem;justify-content:center;margin:1rem 0 .5rem}
+.tab-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem 1.5rem;color:var(--muted);font-family:'Outfit',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.tab-btn:hover{border-color:var(--accent);color:var(--text)}
+.tab-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,.06)}
+
+/* ═══ SUB NAVIGATION ═══ */
+.sub-nav{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;padding:0 1rem;margin-bottom:1rem}
+.sub-btn{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .7rem;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.6rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.sub-btn:hover{border-color:var(--accent);color:var(--text)}
+.sub-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,.06)}
+
+/* ═══ SECTION PILLS (Theorie / Uebungen / Simulation) ═══ */
+.section-pills{display:flex;gap:.3rem;justify-content:center;margin-bottom:1.2rem}
+.pill{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:.3rem .9rem;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.6rem;cursor:pointer;transition:all .2s}
+.pill:hover{border-color:var(--accent);color:var(--text)}
+.pill.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,.06)}
+
+/* ═══ PROGRESS BAR ═══ */
+.topic-progress{display:flex;align-items:center;gap:.5rem;justify-content:center;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text2)}
+.prog-bar{width:200px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width .3s}
+
+/* ═══ CONCEPT BOXES ═══ */
+.concept{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:1rem}
+.concept.def{border-left-color:var(--teal)}
+.concept.warn{border-left-color:var(--amber)}
+.concept.formula{border-left-color:var(--green)}
+.concept.example{border-left-color:var(--purple)}
+.concept.tip{border-left-color:var(--pink)}
+.concept-label{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem;opacity:.7}
+.concept.def .concept-label{color:var(--teal)}
+.concept.warn .concept-label{color:var(--amber)}
+.concept.formula .concept-label{color:var(--green)}
+.concept.example .concept-label{color:var(--purple)}
+.concept.tip .concept-label{color:var(--pink)}
+.concept h4{font-family:'Outfit',sans-serif;font-size:.9rem;margin-bottom:.4rem;color:#fff}
+.concept p,.concept li{font-size:.82rem;color:var(--text);line-height:1.7}
+.concept ul{padding-left:1.2rem;margin-top:.3rem}
+.concept code{font-family:'JetBrains Mono',monospace;background:rgba(0,229,255,.08);color:var(--accent);padding:.1rem .3rem;border-radius:3px;font-size:.75rem}
+
+/* ═══ DATA TABLES ═══ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--amber);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem}
+.data-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.data-table th{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--border);letter-spacing:.05em;text-transform:uppercase}
+.data-table td{padding:.45rem .6rem;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+.data-table tr:hover td{background:rgba(0,229,255,.03)}
+.data-table .tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.1rem .4rem;border-radius:4px;background:rgba(0,229,255,.08);color:var(--accent)}
+
+/* ═══ FORMULA BOX ═══ */
+.formula-box{background:#0a1a0a;border:1px solid rgba(34,197,94,.2);border-radius:var(--radius);padding:.8rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--green);text-align:center;margin:.8rem 0;letter-spacing:.02em}
+
+/* ═══ TWO COLUMN ═══ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
+/* ═══ ACCORDION ═══ */
+.accordion-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.5rem;overflow:hidden}
+.accordion-toggle{width:100%;background:none;border:none;color:var(--text);padding:.7rem 1rem;font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s}
+.accordion-toggle:hover{color:var(--accent)}
+.accordion-arrow{transition:transform .2s;font-size:.7rem}
+.accordion-content{display:none;padding:0 1rem .8rem;font-size:.8rem;color:var(--text2);line-height:1.7}
+.accordion-content.open{display:block}
+
+/* ═══ EXERCISE SECTION ═══ */
+.exercise-wrap{margin-bottom:1rem}
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin-bottom:.8rem}
+.ex-meta{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--text2);margin-bottom:.5rem;display:flex;gap:.5rem;align-items:center}
+.ex-type{padding:.1rem .4rem;border-radius:4px;background:rgba(0,229,255,.08);color:var(--accent)}
+.ex-q{font-size:.85rem;margin-bottom:.7rem;line-height:1.6}
+.ex-q code{font-family:'JetBrains Mono',monospace;background:rgba(0,229,255,.08);color:var(--accent);padding:.1rem .3rem;border-radius:3px;font-size:.78rem}
+.ex-opts{display:flex;flex-direction:column;gap:.35rem}
+.ex-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .8rem;cursor:pointer;font-size:.8rem;transition:all .2s;display:flex;align-items:center;gap:.5rem}
+.ex-opt:hover{border-color:var(--accent);background:rgba(0,229,255,.04)}
+.ex-opt.selected{border-color:var(--accent);background:rgba(0,229,255,.08)}
+.ex-opt.correct{border-color:var(--green);background:rgba(34,197,94,.1);color:var(--green)}
+.ex-opt.wrong{border-color:var(--red);background:rgba(239,68,68,.1);color:var(--red)}
+.ex-radio{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:all .2s}
+.ex-opt.selected .ex-radio{border-color:var(--accent);background:var(--accent)}
+.ex-opt.correct .ex-radio{border-color:var(--green);background:var(--green)}
+.ex-opt.wrong .ex-radio{border-color:var(--red);background:var(--red)}
+.ex-tf{display:flex;gap:.5rem}
+.ex-tf button{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--text);transition:all .2s}
+.ex-tf button:hover{border-color:var(--accent)}
+.ex-tf button.selected{border-color:var(--accent);background:rgba(0,229,255,.08)}
+.ex-tf button.correct{border-color:var(--green);background:rgba(34,197,94,.1);color:var(--green)}
+.ex-tf button.wrong{border-color:var(--red);background:rgba(239,68,68,.1);color:var(--red)}
+.ex-input{width:100%;padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;outline:none}
+.ex-input:focus{border-color:var(--accent)}
+.ex-feedback{margin-top:.5rem;padding:.5rem .8rem;border-radius:8px;font-size:.75rem;line-height:1.5;display:none}
+.ex-feedback.show{display:block}
+.ex-feedback.ok{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--green)}
+.ex-feedback.nok{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red)}
+.ex-check-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:.5rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:.5rem}
+.ex-check-btn:hover{opacity:.85}
+.ex-check-btn:disabled{opacity:.4;cursor:default}
+.ex-score{text-align:center;padding:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:1rem}
+.ex-score .big{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)}
+
+/* ═══ MATCH EXERCISE ═══ */
+.ex-match-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.ex-match-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;font-size:.78rem;cursor:pointer;transition:all .2s;text-align:center}
+.ex-match-item:hover{border-color:var(--accent)}
+.ex-match-item.sel{border-color:var(--accent);background:rgba(0,229,255,.1);color:var(--accent)}
+.ex-match-item.matched{border-color:var(--green);background:rgba(34,197,94,.08);color:var(--green);cursor:default}
+.ex-match-item.wrong-flash{border-color:var(--red);background:rgba(239,68,68,.1)}
+
+/* ═══ ORDER EXERCISE ═══ */
+.ex-order-list{display:flex;flex-direction:column;gap:.35rem}
+.ex-order-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .8rem;font-size:.78rem;cursor:grab;transition:all .2s;display:flex;align-items:center;gap:.5rem}
+.ex-order-item:hover{border-color:var(--accent)}
+.ex-order-item .grip{color:var(--muted);font-size:.7rem}
+.ex-order-item.correct{border-color:var(--green);background:rgba(34,197,94,.08)}
+.ex-order-item.wrong{border-color:var(--red);background:rgba(239,68,68,.08)}
+
+/* ═══ SIMULATION CONTAINERS ═══ */
+.sim-container{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;margin-bottom:1rem}
+.sim-title{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.8rem;display:flex;align-items:center;gap:.4rem}
+.sim-controls{display:flex;gap:.4rem;margin-bottom:.8rem;flex-wrap:wrap}
+.sim-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.35rem .7rem;color:var(--text2);font-family:'JetBrains Mono',monospace;font-size:.6rem;cursor:pointer;transition:all .2s}
+.sim-btn:hover{border-color:var(--accent);color:var(--accent)}
+.sim-btn.active{border-color:var(--green);color:var(--green)}
+.sim-area{min-height:120px;position:relative}
+.sim-input{padding:.4rem .6rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.7rem;outline:none;width:200px}
+.sim-input:focus{border-color:var(--accent)}
+.sim-log{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text2);margin-top:.6rem;padding:.5rem;background:var(--surface2);border-radius:6px;max-height:150px;overflow-y:auto;line-height:1.6}
+
+/* ═══ BUBBLE SORT BARS ═══ */
+.bs-bars{display:flex;align-items:flex-end;gap:3px;height:160px;padding:0 .5rem}
+.bs-bar{flex:1;border-radius:4px 4px 0 0;transition:all .4s;position:relative;min-width:16px;display:flex;align-items:flex-start;justify-content:center}
+.bs-bar span{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:#fff;margin-top:2px}
+.bs-bar.comparing{background:var(--amber)!important;box-shadow:0 0 10px rgba(245,197,66,.4)}
+.bs-bar.swapping{background:var(--red)!important;box-shadow:0 0 10px rgba(239,68,68,.4)}
+.bs-bar.sorted{background:var(--green)!important}
+
+/* ═══ HASH TABLE ═══ */
+.ht-slots{display:flex;gap:2px;flex-wrap:wrap;margin:.5rem 0}
+.ht-slot{width:60px;height:50px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;transition:all .3s}
+.ht-slot .idx{font-size:.5rem;color:var(--muted)}
+.ht-slot.filled{border-color:var(--accent);background:rgba(0,229,255,.06)}
+.ht-slot.collision{border-color:var(--amber);background:rgba(245,197,66,.06)}
+.ht-slot.inserting{border-color:var(--green);background:rgba(34,197,94,.1);box-shadow:0 0 8px rgba(34,197,94,.3)}
+
+/* ═══ DFA/NFA SIMULATOR ═══ */
+.auto-svg{width:100%;height:200px;background:var(--surface2);border-radius:8px}
+.auto-state{fill:var(--surface);stroke:var(--border);stroke-width:2;cursor:pointer;transition:all .3s}
+.auto-state.active{fill:rgba(0,229,255,.15);stroke:var(--accent);stroke-width:3}
+.auto-state.accepting{stroke-dasharray:none}
+.auto-label{fill:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;text-anchor:middle;dominant-baseline:central}
+.auto-edge{stroke:var(--text2);stroke-width:1.5;fill:none;marker-end:url(#arrowhead)}
+.auto-edge.active{stroke:var(--accent);stroke-width:2.5}
+.auto-edge-label{fill:var(--amber);font-family:'JetBrains Mono',monospace;font-size:10px;text-anchor:middle}
+.auto-input-char{display:inline-block;padding:2px 6px;margin:0 1px;font-family:'JetBrains Mono',monospace;font-size:.75rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px}
+.auto-input-char.processed{background:rgba(34,197,94,.1);border-color:var(--green);color:var(--green)}
+.auto-input-char.current{background:rgba(0,229,255,.15);border-color:var(--accent);color:var(--accent);box-shadow:0 0 6px rgba(0,229,255,.3)}
+
+/* ═══ OSI ANIMATION ═══ */
+.osi-stack{display:flex;flex-direction:column;gap:2px}
+.osi-layer{padding:.45rem .8rem;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;display:flex;justify-content:space-between;align-items:center;transition:all .4s;border:1px solid transparent}
+.osi-layer.active{border-color:var(--accent);box-shadow:0 0 12px rgba(0,229,255,.15)}
+.osi-header{font-size:.55rem;color:var(--amber);opacity:0;transition:opacity .4s}
+.osi-header.show{opacity:1}
+
+/* ═══ TCP HANDSHAKE ═══ */
+.tcp-wrap{display:flex;justify-content:space-between;align-items:stretch;position:relative;height:220px}
+.tcp-host{width:100px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.5rem;font-family:'JetBrains Mono',monospace;font-size:.6rem}
+.tcp-host .name{color:var(--accent);font-weight:600;margin-bottom:.3rem}
+.tcp-arrows{flex:1;position:relative;margin:0 1rem}
+.tcp-arrow{position:absolute;left:0;right:0;display:flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;opacity:0;transition:all .5s}
+.tcp-arrow.show{opacity:1}
+.tcp-arrow .line{flex:1;height:2px;background:var(--accent)}
+.tcp-arrow .label{padding:0 .4rem;color:var(--amber);white-space:nowrap}
+.tcp-arrow .tip{color:var(--accent)}
+
+/* ═══ SUBNETTING CALC ═══ */
+.sn-form{display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center;margin-bottom:1rem}
+.sn-result{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.sn-result-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem}
+.sn-result-item .label{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.sn-result-item .val{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);margin-top:.2rem}
+.sn-binary{font-family:'JetBrains Mono',monospace;font-size:.65rem;margin-top:.5rem;padding:.5rem;background:var(--surface2);border-radius:6px;line-height:1.8;word-break:break-all}
+.sn-binary .net{color:var(--accent)}
+.sn-binary .host{color:var(--amber)}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:640px){
+  header h1{font-size:1.5rem}
+  .tabs{flex-direction:column;align-items:center}
+  .sub-nav{gap:.25rem}
+  .sub-btn{font-size:.5rem;padding:.25rem .5rem}
+  .two-col{grid-template-columns:1fr}
+  .sn-form{grid-template-columns:1fr}
+  .sn-result{grid-template-columns:1fr}
+  .tcp-wrap{height:260px}
+  .ex-match-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="auth-bar" id="authBar"></div>
+<div class="toast" id="toast"></div>
+
+<a href="index.html" class="back">&larr; Zur&uuml;ck zur Lernplattform</a>
+
+<header>
+  <div class="tag">Deep-Dive Lernen</div>
+  <h1>INTENSIV</h1>
+  <p>Alle pr&uuml;fungsrelevanten Themen im Detail &mdash; Theorie, &Uuml;bungen &amp; interaktive Simulationen.</p>
+</header>
+
+<div class="tabs" id="primaryTabs">
+  <button class="tab-btn active" data-subject="tgi" onclick="switchSubject('tgi')">&#129518; TGI</button>
+  <button class="tab-btn" data-subject="it" onclick="switchSubject('it')">&#127760; IT</button>
+</div>
+
+<div class="sub-nav" id="subNav"></div>
+<div class="section-pills" id="sectionPills"></div>
+<div class="topic-progress" id="topicProgress"></div>
+
+<div class="content" id="contentArea"></div>
+
+<script src="symbole.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════ */
+let currentSubject = 'tgi';
+let currentTopic = 0;
+let currentSection = 'theorie'; // theorie | uebungen | simulation
+let exerciseAnswers = {};       // { topicId: { qIdx: answer } }
+let exerciseChecked = {};       // { topicId: true } after checking
+let progress = JSON.parse(localStorage.getItem('intensiv-progress') || '{}');
+
+/* ═══════════════════════════════════════════════════════
+   TGI CONTENT DATA
+   ═══════════════════════════════════════════════════════ */
+const TOPICS = { tgi: [
+/* ── 1. Mathematische Grundlagen ── */
+{id:'tgi-math',title:'Mathematische Grundlagen',icon:'∑',color:'#06b6d4',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Menge',
+   body:'Eine <b>Menge</b> ist eine Zusammenfassung bestimmter, wohlunterschiedener Objekte unserer Anschauung oder unseres Denkens zu einem Ganzen (Georg Cantor). Notation: <code>M = {1, 2, 3}</code>. Die leere Menge: <code>&empty;</code> oder <code>{}</code>.'},
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Relation',
+   body:'Eine <b>Relation</b> R auf einer Menge A ist eine Teilmenge von A &times; A. Schreibweise: <code>aRb</code> oder <code>(a,b) &isin; R</code>.'},
+  {type:'table',title:'Eigenschaften von Relationen',
+   headers:['Eigenschaft','Formal','Beispiel'],
+   rows:[
+     ['Reflexiv','&forall;a &isin; A: (a,a) &isin; R','= auf &integers; (jede Zahl ist gleich sich selbst)'],
+     ['Symmetrisch','(a,b) &isin; R &rArr; (b,a) &isin; R','&ldquo;ist verheiratet mit&rdquo;'],
+     ['Transitiv','(a,b) &isin; R &and; (b,c) &isin; R &rArr; (a,c) &isin; R','&le; auf &integers;'],
+     ['Antisymmetrisch','(a,b) &isin; R &and; (b,a) &isin; R &rArr; a = b','&le; auf &integers;'],
+   ]},
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Äquivalenzrelation & Ordnungsrelation',
+   body:'<b>&Auml;quivalenzrelation</b>: reflexiv + symmetrisch + transitiv.<br><b>Partielle Ordnung</b>: reflexiv + antisymmetrisch + transitiv.<br><b>Totale Ordnung</b>: partielle Ordnung, in der je zwei Elemente vergleichbar sind.'},
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Funktionen',
+   body:'Eine <b>Funktion</b> f: A &rarr; B ordnet jedem Element aus A genau ein Element aus B zu.<ul><li><b>Injektiv</b> (1-zu-1): f(a₁) = f(a₂) &rArr; a₁ = a₂</li><li><b>Surjektiv</b> (auf): &forall;b &isin; B &exist;a &isin; A: f(a) = b &mdash; <em>Jedes Element der Zielmenge wird getroffen</em></li><li><b>Bijektiv</b>: injektiv UND surjektiv (umkehrbar)</li></ul>'},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Surjektivit&auml;t',
+   body:'Eine Funktion ist <b>surjektiv</b>, wenn die <em>Bildmenge gleich der Zielmenge</em> ist, d.h. <code>f(A) = B</code>. Voraussetzung: <code>|A| &ge; |B|</code> (die Definitionsmenge muss mindestens so gross sein wie die Zielmenge).'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Reflexiv & Transitiv pr&uuml;fen',
+   body:'Gegeben: A = {1,2,3}, R = {(1,1),(2,2),(3,3),(1,2),(2,3),(1,3)}.<br>&bull; <b>Reflexiv?</b> Ja, denn (1,1), (2,2), (3,3) &isin; R.<br>&bull; <b>Transitiv?</b> (1,2) &isin; R und (2,3) &isin; R &rArr; (1,3) muss &isin; R. ✓ Ja!'},
+],
+exercises:[
+  {type:'mc',q:'Welche Eigenschaft hat die Relation &ldquo;&le;&rdquo; auf den nat&uuml;rlichen Zahlen NICHT?',
+   opts:['Reflexiv','Symmetrisch','Transitiv','Antisymmetrisch'],correct:1,
+   exp:'&le; ist nicht symmetrisch: 2 &le; 3, aber nicht 3 &le; 2.'},
+  {type:'tf',q:'Eine surjektive Funktion f: A &rarr; B erfordert, dass |A| &ge; |B| gilt.',correct:true,
+   exp:'Damit jedes Element in B getroffen wird, muss A mindestens so viele Elemente haben.'},
+  {type:'mc',q:'Was ist eine &Auml;quivalenzrelation?',
+   opts:['Reflexiv + symmetrisch + transitiv','Reflexiv + antisymmetrisch + transitiv','Nur reflexiv und symmetrisch','Symmetrisch + transitiv'],correct:0,
+   exp:'Eine &Auml;quivalenzrelation muss reflexiv, symmetrisch UND transitiv sein.'},
+  {type:'fill',q:'Eine Funktion, die sowohl injektiv als auch surjektiv ist, heisst <code>___</code>.',
+   answers:['bijektiv','Bijektiv','BIJEKTIV'],exp:'Bijektiv = injektiv + surjektiv. Solche Funktionen sind umkehrbar.'},
+  {type:'tf',q:'Die leere Menge {} ist eine Teilmenge jeder Menge.',correct:true,
+   exp:'Per Definition ist die leere Menge Teilmenge jeder Menge: &empty; &sube; M f&uuml;r alle M.'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 2. Algorithmen-Eigenschaften ── */
+{id:'tgi-algo',title:'Algorithmen-Eigenschaften',icon:'⚙',color:'#a78bfa',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Algorithmus',
+   body:'Ein <b>Algorithmus</b> ist eine endliche, eindeutige Handlungsvorschrift zur L&ouml;sung eines Problems oder einer Klasse von Problemen.'},
+  {type:'table',title:'Zwingende Kriterien eines Algorithmus',
+   headers:['Kriterium','Bedeutung','Verletzung'],
+   rows:[
+     ['<b>Finitheit</b>','Die Beschreibung des Algorithmus hat eine endliche L&auml;nge','Unendlich langer Quellcode'],
+     ['<b>Terminierung</b>','Der Algorithmus endet nach endlich vielen Schritten','Endlosschleife'],
+     ['<b>Determinismus</b>','Zu jedem Zeitpunkt ist der n&auml;chste Schritt eindeutig bestimmt','Mehrdeutige Anweisung'],
+     ['<b>Determiniertheit</b>','Gleiche Eingabe → immer gleiches Ergebnis','Zufallsgenerator (nicht-determiniert)'],
+     ['<b>Effektivit&auml;t</b>','Jeder Einzelschritt ist ausf&uuml;hrbar','&ldquo;Berechne alle Primzahlen&rdquo; als ein Schritt'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Determinismus vs. Determiniertheit',
+   body:'<b>Determinismus</b> = der <em>Ablauf</em> ist eindeutig (kein Zufall im Weg).<br><b>Determiniertheit</b> = das <em>Ergebnis</em> ist eindeutig (gleiche Eingabe &rarr; gleiches Ergebnis).<br><br>Ein determinierter Algorithmus kann nicht-deterministisch sein (z.B. Quicksort mit zuf&auml;lligem Pivot &mdash; verschiedene Abl&auml;ufe, aber gleiches Ergebnis).'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Pr&uuml;fung der Kriterien',
+   body:'<b>Euklidischer Algorithmus (ggT):</b><ul><li>✓ Finit: Endliche Beschreibung</li><li>✓ Terminiert: Rest wird kleiner, erreicht 0</li><li>✓ Deterministisch: Jeder Schritt eindeutig</li><li>✓ Determiniert: Gleiche Zahlen &rarr; gleicher ggT</li></ul>'},
+],
+exercises:[
+  {type:'mc',q:'Welches Kriterium beschreibt, dass ein Algorithmus bei gleicher Eingabe immer das gleiche Ergebnis liefert?',
+   opts:['Finitheit','Determinismus','Determiniertheit','Terminierung'],correct:2,
+   exp:'Determiniertheit: Gleiche Eingabe → gleiches Ergebnis.'},
+  {type:'tf',q:'Ein deterministischer Algorithmus ist automatisch auch determiniert.',correct:true,
+   exp:'Wenn der Ablauf eindeutig ist (Determinismus), dann ist auch das Ergebnis eindeutig (Determiniertheit). Umgekehrt gilt das nicht!'},
+  {type:'match',q:'Ordne die Kriterien ihren Beschreibungen zu:',
+   pairs:[['Finitheit','Endliche Beschreibung'],['Terminierung','Endet nach endlich vielen Schritten'],['Determinismus','N&auml;chster Schritt eindeutig'],['Determiniertheit','Gleiches Ergebnis bei gleicher Eingabe']],
+   exp:'Die vier Kernkriterien eines Algorithmus.'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 3. Sortieren & Suchen ── */
+{id:'tgi-sort',title:'Sortieren & Suchen',icon:'🔄',color:'#f5c542',
+theory:[
+  {type:'concept',variant:'def',label:'BUBBLE SORT',title:'Funktionsweise',
+   body:'Bubble Sort vergleicht <b>benachbarte Elemente</b> und tauscht sie, wenn sie in falscher Reihenfolge stehen. Nach jedem Durchlauf &ldquo;blubbert&rdquo; das gr&ouml;sste Element an seinen Platz.<ul><li>Vergleiche: i und i+1</li><li>Falls a[i] > a[i+1]: tauschen</li><li>Nach Durchlauf k: die letzten k Elemente sind sortiert</li></ul>'},
+  {type:'concept',variant:'formula',label:'KOMPLEXIT&Auml;T',title:'',
+   body:'<b>Best Case:</b> O(n) &mdash; bereits sortiert, nur ein Durchlauf<br><b>Average/Worst Case:</b> O(n&sup2;) &mdash; n Durchl&auml;ufe mit je n Vergleichen'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Bubble Sort Schritt f&uuml;r Schritt',
+   body:'Array: [5, 3, 8, 1]<br><b>Durchlauf 1:</b> [5,3]→tausch→[3,5,8,1] | [5,8]→ok | [8,1]→tausch→[3,5,1,<span style="color:var(--green)">8</span>]<br><b>Durchlauf 2:</b> [3,5]→ok | [5,1]→tausch→[3,1,<span style="color:var(--green)">5,8</span>]<br><b>Durchlauf 3:</b> [3,1]→tausch→[<span style="color:var(--green)">1,3,5,8</span>] ✓'},
+  {type:'concept',variant:'def',label:'HASHING',title:'Grundprinzip',
+   body:'<b>Hashing</b> bildet Schl&uuml;ssel auf Array-Positionen ab mittels einer <b>Hashfunktion</b>.<br>Typisch: <code>h(k) = k mod m</code> (m = Tabellengr&ouml;sse).'},
+  {type:'table',title:'Kollisionsaufl&ouml;sung',
+   headers:['Verfahren','Beschreibung','Formel'],
+   rows:[
+     ['Lineares Sondieren','N&auml;chsten freien Platz suchen','<code>h(k,i) = (h(k) + i) mod m</code>'],
+     ['Quadratisches Sondieren','Quadratisch weitersuchen','<code>h(k,i) = (h(k) + i&sup2;) mod m</code>'],
+     ['Verkettung (Chaining)','Liste an jedem Slot','Jeder Slot hat eine LinkedList'],
+   ]},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Hashing mit linearem Sondieren',
+   body:'Tabelle m=7. Einf&uuml;gen: 12, 5, 19, 26.<br>&bull; h(12)=12%7=<b>5</b> → Slot 5<br>&bull; h(5)=5%7=<b>5</b> → Kollision! → Slot 6<br>&bull; h(19)=19%7=<b>5</b> → Kollision → 6 belegt → Slot 0<br>&bull; h(26)=26%7=<b>5</b> → Kollision → 6,0 belegt → Slot 1'},
+],
+exercises:[
+  {type:'order',q:'Sortiere die Schritte von Bubble Sort in die richtige Reihenfolge:',
+   items:['Vergleiche benachbarte Elemente','Tausche falls falsche Reihenfolge','Wiederhole bis kein Tausch mehr','Gr&ouml;sstes Element blubbert nach hinten'],
+   exp:'Vergleichen → Tauschen → Gr&ouml;sstes blubbert → Wiederholen bis fertig.'},
+  {type:'calc',q:'Hashing: h(k) = k mod 7. Was ist h(23)?',a:2,tol:0,unit:'',
+   exp:'23 mod 7 = 3*7=21, Rest 2. Also h(23) = 2.'},
+  {type:'mc',q:'Welche Worst-Case-Laufzeit hat Bubble Sort?',
+   opts:['O(n)','O(n log n)','O(n&sup2;)','O(2<sup>n</sup>)'],correct:2,
+   exp:'Worst Case bei Bubble Sort: n Durchl&auml;ufe × n Vergleiche = O(n²).'},
+  {type:'fill',q:'Bei Hashing mit <code>h(k) = k mod m</code> wird die Tabellengr&ouml;sse als <code>___</code> bezeichnet.',
+   answers:['m','M'],exp:'m ist die Tabellengr&ouml;sse (Anzahl der Slots).'},
+],
+simulation:{type:'bubbleSort'}
+},
+
+/* ── 4. Laufzeitanalyse ── */
+{id:'tgi-runtime',title:'Laufzeitanalyse (O-Notation)',icon:'📊',color:'#ef4444',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'O-Notation (Landau-Notation)',
+   body:'Die <b>O-Notation</b> beschreibt die <em>obere Schranke</em> der Wachstumsrate einer Funktion. <code>f(n) &isin; O(g(n))</code> bedeutet: f w&auml;chst h&ouml;chstens so schnell wie g (ab einem gewissen n₀).'},
+  {type:'table',title:'Wichtige Komplexit&auml;tsklassen',
+   headers:['Klasse','Name','Beispiel'],
+   rows:[
+     ['O(1)','Konstant','Array-Zugriff per Index'],
+     ['O(log n)','Logarithmisch','Bin&auml;re Suche'],
+     ['O(n)','Linear','Lineare Suche'],
+     ['O(n log n)','Linearithmisch','Mergesort, Heapsort'],
+     ['O(n&sup2;)','Quadratisch','Bubble Sort, Selection Sort'],
+     ['O(2<sup>n</sup>)','Exponentiell','Alle Teilmengen aufz&auml;hlen'],
+     ['O(n!)','Faktoriell','Alle Permutationen'],
+   ]},
+  {type:'concept',variant:'formula',label:'RECHENREGELN',title:'',
+   body:'<b>Summenregel:</b> O(f) + O(g) = O(max(f,g))<br><b>Produktregel:</b> O(f) &middot; O(g) = O(f &middot; g)<br><b>Konstanten weglassen:</b> O(3n&sup2; + 5n) = O(n&sup2;)'},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Rekursion → Laufzeit',
+   body:'Bei rekursiven Algorithmen: <b>Rekurrenzrelation</b> aufstellen.<br>Beispiel: T(n) = 2·T(n/2) + n → L&ouml;sung: O(n log n) (Master-Theorem).<br><br><b>Master-Theorem:</b> F&uuml;r T(n) = a·T(n/b) + f(n):<ul><li>Fall 1: f(n) &isin; O(n<sup>log_b(a)-&epsilon;</sup>) → T(n) = &Theta;(n<sup>log_b(a)</sup>)</li><li>Fall 2: f(n) &isin; &Theta;(n<sup>log_b(a)</sup>) → T(n) = &Theta;(n<sup>log_b(a)</sup> &middot; log n)</li><li>Fall 3: f(n) &isin; &Omega;(n<sup>log_b(a)+&epsilon;</sup>) → T(n) = &Theta;(f(n))</li></ul>'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Verschachtelte Schleifen',
+   body:'<code>for(i=0; i&lt;n; i++)<br>&nbsp;&nbsp;for(j=0; j&lt;n; j++)<br>&nbsp;&nbsp;&nbsp;&nbsp;print(i,j)</code><br><br>&Auml;ussere Schleife: n Durchl&auml;ufe. Innere Schleife: n Durchl&auml;ufe. → n &times; n = <b>O(n&sup2;)</b>'},
+],
+exercises:[
+  {type:'mc',q:'Welche Laufzeit hat die bin&auml;re Suche?',
+   opts:['O(1)','O(log n)','O(n)','O(n log n)'],correct:1,
+   exp:'Bin&auml;re Suche halbiert den Suchraum in jedem Schritt → O(log n).'},
+  {type:'order',q:'Ordne die Komplexit&auml;tsklassen von schnell nach langsam:',
+   items:['O(1)','O(log n)','O(n)','O(n log n)','O(n&sup2;)','O(2<sup>n</sup>)'],
+   exp:'Konstant < Logarithmisch < Linear < Linearithmisch < Quadratisch < Exponentiell.'},
+  {type:'fill',q:'Die Laufzeit von Mergesort ist <code>___</code>.',
+   answers:['O(n log n)','O(nlogn)','O(n·log n)','O(n*log n)'],exp:'Mergesort hat immer O(n log n), auch im Worst Case.'},
+  {type:'tf',q:'O(3n² + 100n + 999) = O(n²)',correct:true,
+   exp:'Konstante Faktoren und niedrigere Terme werden in der O-Notation weggelassen.'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 5. Berechenbarkeit (Chomsky) ── */
+{id:'tgi-chomp',title:'Berechenbarkeit & Chomsky',icon:'🏗',color:'#22c55e',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Formale Sprache',
+   body:'Eine <b>formale Sprache</b> L ist eine Menge von W&ouml;rtern &uuml;ber einem Alphabet &Sigma;. Beispiel: L = {a<sup>n</sup>b<sup>n</sup> | n &ge; 1} &uuml;ber &Sigma; = {a, b}.'},
+  {type:'table',title:'Chomsky-Hierarchie',
+   headers:['Typ','Name','Grammatik-Regel','Automat','Beispiel'],
+   rows:[
+     ['Typ 0','Rekursiv aufz&auml;hlbar','&alpha; → &beta; (keine Einschr&auml;nkung)','Turingmaschine','Halteproblem-Komplement'],
+     ['Typ 1','Kontextsensitiv','&alpha;A&beta; → &alpha;&gamma;&beta; (|links| &le; |rechts|)','Linear beschr&auml;nkter Automat','a<sup>n</sup>b<sup>n</sup>c<sup>n</sup>'],
+     ['Typ 2','<b>Kontextfrei</b>','A → &gamma; (links nur Variable)','Kellerautomat (PDA)','a<sup>n</sup>b<sup>n</sup>, Klammerausdr&uuml;cke'],
+     ['Typ 3','<b>Regul&auml;r</b>','A → aB oder A → a','Endlicher Automat (DFA/NFA)','a*b, (ab)*'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Hierarchie merken',
+   body:'Typ 3 &sub; Typ 2 &sub; Typ 1 &sub; Typ 0<br>Jede regul&auml;re Sprache ist auch kontextfrei, jede kontextfreie auch kontextsensitiv usw.<br><br><b>Wichtig:</b> a<sup>n</sup>b<sup>n</sup> ist <em>kontextfrei</em> (Typ 2), aber <em>nicht regul&auml;r</em> (Pumping-Lemma!).<br>a<sup>n</sup>b<sup>n</sup>c<sup>n</sup> ist <em>kontextsensitiv</em> (Typ 1), aber <em>nicht kontextfrei</em>.'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Sprache einordnen',
+   body:'<b>L = { w &isin; {0,1}* | w enth&auml;lt gleich viele 0en und 1en }</b><br>→ Kontextfrei (Typ 2), da ein PDA mitz&auml;hlen kann.<br>→ Nicht regul&auml;r, da ein DFA nicht z&auml;hlen kann (kein Speicher).'},
+],
+exercises:[
+  {type:'mc',q:'Welcher Automatentyp erkennt kontextfreie Sprachen?',
+   opts:['DFA','Kellerautomat (PDA)','Turingmaschine','Linear beschr&auml;nkter Automat'],correct:1,
+   exp:'Kontextfreie Sprachen (Typ 2) werden von Kellerautomaten (Pushdown Automata) erkannt.'},
+  {type:'match',q:'Ordne die Sprachtypen ihren Automaten zu:',
+   pairs:[['Typ 3 (Regul&auml;r)','Endlicher Automat'],['Typ 2 (Kontextfrei)','Kellerautomat'],['Typ 1 (Kontextsensitiv)','Linear beschr. Automat'],['Typ 0 (Rek. aufz.)','Turingmaschine']],
+   exp:'Jeder Chomsky-Typ hat seinen zugeordneten Automaten.'},
+  {type:'tf',q:'Die Sprache a<sup>n</sup>b<sup>n</sup> ist regul&auml;r.',correct:false,
+   exp:'a^n b^n ist kontextfrei (Typ 2), aber NICHT regul&auml;r. Ein endlicher Automat kann nicht z&auml;hlen.'},
+  {type:'mc',q:'In welcher Beziehung stehen die Chomsky-Typen?',
+   opts:['Typ 0 &sub; Typ 1 &sub; Typ 2 &sub; Typ 3','Typ 3 &sub; Typ 2 &sub; Typ 1 &sub; Typ 0','Alle gleichwertig','Typ 2 &sub; Typ 3 &sub; Typ 0 &sub; Typ 1'],correct:1,
+   exp:'Typ 3 (regul&auml;r) ist die restriktivste Klasse, Typ 0 die m&auml;chtigste.'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 6. Automaten ── */
+{id:'tgi-auto',title:'Automaten (DFA & NFA)',icon:'🤖',color:'#f472b6',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Deterministic Finite Automaton (DFA)',
+   body:'Ein DFA ist ein 5-Tupel <code>(Q, &Sigma;, &delta;, q₀, F)</code>:<ul><li><b>Q</b> = endliche Zustandsmenge</li><li><b>&Sigma;</b> = Eingabealphabet</li><li><b>&delta;</b>: Q &times; &Sigma; → Q = &Uuml;berf&uuml;hrungsfunktion (deterministisch!)</li><li><b>q₀</b> &isin; Q = Startzustand</li><li><b>F</b> &sube; Q = Menge der Endzust&auml;nde</li></ul>'},
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Non-deterministic Finite Automaton (NFA)',
+   body:'Wie DFA, aber &delta;: Q &times; &Sigma; → <b>P(Q)</b> (Potenzmenge!). Ein NFA kann:<ul><li>Mehrere m&ouml;gliche Folgezust&auml;nde haben</li><li>&epsilon;-&Uuml;berg&auml;nge (ohne Eingabe wechseln)</li></ul><b>Wichtig:</b> DFA und NFA sind gleich m&auml;chtig (Teilmengenkonstruktion).'},
+  {type:'table',title:'DFA vs. NFA Vergleich',
+   headers:['Eigenschaft','DFA','NFA'],
+   rows:[
+     ['&delta;-Funktion','Q &times; &Sigma; → Q (genau 1 Zustand)','Q &times; &Sigma; → P(Q) (Menge)'],
+     ['&epsilon;-&Uuml;berg&auml;nge','Nein','Ja'],
+     ['Anzahl Zust&auml;nde','Kann exponentiell gr&ouml;sser sein','Oft kompakter'],
+     ['Akzeptanz','Endzustand erreicht','Mind. ein Pfad f&uuml;hrt zu Endzustand'],
+     ['M&auml;chtigkeit','Gleich','Gleich (Typ 3)'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Wort akzeptiert?',
+   body:'Ein DFA <b>akzeptiert</b> ein Wort w, wenn nach Verarbeitung aller Zeichen von w der aktuelle Zustand ein <b>Endzustand</b> (q &isin; F) ist.<br><br>Pr&uuml;fung: Starte bei q₀, folge f&uuml;r jedes Zeichen der &delta;-Funktion. Am Ende: Zustand &isin; F? → Akzeptiert!'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'DFA f&uuml;r &ldquo;enth&auml;lt 01&rdquo;',
+   body:'&Sigma; = {0,1}. L = {w | w enth&auml;lt &ldquo;01&rdquo; als Teilwort}.<br>Zust&auml;nde: q₀ (Start), q₁ (0 gesehen), q₂ (01 gesehen = Endzustand)<br>&delta;(q₀,0)=q₁, &delta;(q₀,1)=q₀, &delta;(q₁,0)=q₁, &delta;(q₁,1)=q₂, &delta;(q₂,0)=q₂, &delta;(q₂,1)=q₂<br>Teste &ldquo;1001&rdquo;: q₀→<sup>1</sup>q₀→<sup>0</sup>q₁→<sup>0</sup>q₁→<sup>1</sup>q₂ ✓ Akzeptiert!'},
+],
+exercises:[
+  {type:'mc',q:'Was unterscheidet einen NFA von einem DFA?',
+   opts:['NFA hat mehr Zust&auml;nde','NFA kann mehrere Folgezust&auml;nde haben','NFA ist m&auml;chtiger','NFA hat kein Alphabet'],correct:1,
+   exp:'Ein NFA kann f&uuml;r ein Eingabezeichen mehrere m&ouml;gliche Folgezust&auml;nde haben (&delta; liefert eine Menge).'},
+  {type:'tf',q:'Jeder NFA kann in einen &auml;quivalenten DFA umgewandelt werden.',correct:true,
+   exp:'Durch die Teilmengenkonstruktion (Potenzmengenkonstruktion) kann jeder NFA in einen DFA umgewandelt werden.'},
+  {type:'fill',q:'Ein DFA akzeptiert ein Wort, wenn der Endzustand Element von <code>___</code> ist.',
+   answers:['F','f'],exp:'F ist die Menge der Endzust&auml;nde im 5-Tupel (Q, &Sigma;, &delta;, q₀, F).'},
+  {type:'mc',q:'Welche Sprachen erkennen endliche Automaten?',
+   opts:['Kontextfreie','Kontextsensitive','Regul&auml;re','Alle berechenbaren'],correct:2,
+   exp:'Endliche Automaten (DFA/NFA) erkennen genau die regul&auml;ren Sprachen (Typ 3 der Chomsky-Hierarchie).'},
+],
+simulation:{type:'automaton'}
+},
+
+/* ── 7. Grammatiken & CYK ── */
+{id:'tgi-gram',title:'Grammatiken & CYK',icon:'📝',color:'#fb923c',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Kontextfreie Grammatik (CFG)',
+   body:'Eine CFG ist ein 4-Tupel <code>G = (V, &Sigma;, P, S)</code>:<ul><li><b>V</b> = Variablen (Nichtterminale)</li><li><b>&Sigma;</b> = Terminale (Alphabet)</li><li><b>P</b> = Produktionsregeln (A → &alpha;)</li><li><b>S</b> &isin; V = Startvariable</li></ul>'},
+  {type:'concept',variant:'def',label:'CHOMSKY-NORMALFORM (CNF)',title:'',
+   body:'Eine CFG ist in <b>Chomsky-Normalform</b>, wenn alle Regeln eine dieser Formen haben:<ul><li><code>A → BC</code> (zwei Variablen)</li><li><code>A → a</code> (ein Terminal)</li><li><code>S → &epsilon;</code> (nur f&uuml;r Startvariable, falls &epsilon; &isin; L)</li></ul>'},
+  {type:'table',title:'Umwandlung in CNF — Schritte',
+   headers:['Schritt','Aktion','Beispiel'],
+   rows:[
+     ['1. START','Neue Startvariable S₀ → S','Vermeidet S auf rechter Seite'],
+     ['2. TERM','F&uuml;r jedes Terminal a: neue Variable T_a → a','A → aB wird A → T_aB'],
+     ['3. BIN','Regeln mit >2 Variablen aufspalten','A → BCD wird A → BX, X → CD'],
+     ['4. DEL','&epsilon;-Regeln entfernen','A → &epsilon; eliminieren'],
+     ['5. UNIT','Kettenregeln A → B entfernen','A → B, B → a wird A → a'],
+   ]},
+  {type:'concept',variant:'def',label:'CYK-ALGORITHMUS',title:'Cocke-Younger-Kasami',
+   body:'Der CYK-Algorithmus pr&uuml;ft, ob ein Wort w von einer CFG in CNF erzeugt werden kann. <b>Laufzeit: O(n³ · |P|)</b>.<br><br>Arbeitet mit einer <b>Dreieckstabelle</b>: T[i][j] enth&auml;lt alle Variablen, die den Teilstring w[i..j] ableiten k&ouml;nnen. Wenn S &isin; T[1][n] → Wort ist in der Sprache.'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'CYK-Tabelle',
+   body:'Grammatik: S→AB, A→a, B→b, S→a.<br>Wort: &ldquo;ab&rdquo;<br><br>T[1][1] = {A, S} (a ableitbar durch A→a, S→a)<br>T[2][2] = {B} (b ableitbar durch B→b)<br>T[1][2] = ? Pr&uuml;fe Teilungen: T[1][1] &times; T[2][2] = {A,S} &times; {B}. AB → S! Also T[1][2] = {S}.<br><b>S &isin; T[1][2] → &ldquo;ab&rdquo; &isin; L(G) ✓</b>'},
+],
+exercises:[
+  {type:'mc',q:'Welche Regelform ist in Chomsky-Normalform erlaubt?',
+   opts:['A → BCD','A → BC','A → aB','A → aBc'],correct:1,
+   exp:'In CNF sind nur A → BC (zwei Variablen) und A → a (ein Terminal) erlaubt.'},
+  {type:'order',q:'Bringe die CNF-Umwandlungsschritte in die richtige Reihenfolge:',
+   items:['Neue Startvariable','Terminale ersetzen','Regeln binarisieren','&epsilon;-Regeln entfernen','Kettenregeln entfernen'],
+   exp:'START → TERM → BIN → DEL → UNIT ist die Standardreihenfolge.'},
+  {type:'tf',q:'Der CYK-Algorithmus hat eine Laufzeit von O(n&sup2;).',correct:false,
+   exp:'CYK hat Laufzeit O(n³ · |P|), wobei n die Wortl&auml;nge und |P| die Anzahl der Produktionsregeln ist.'},
+  {type:'fill',q:'Der CYK-Algorithmus ben&ouml;tigt eine Grammatik in <code>___</code>.',
+   answers:['Chomsky-Normalform','CNF','chomsky-normalform','Chomsky Normalform'],exp:'CYK setzt eine Grammatik in Chomsky-Normalform (CNF) voraus.'},
+],
+simulation:{type:'cyk'}
+},
+
+], /* end tgi */
+
+/* ═══════════════════════════════════════════════════════
+   IT CONTENT DATA
+   ═══════════════════════════════════════════════════════ */
+it: [
+/* ── 1. OSI & TCP/IP ── */
+{id:'it-osi',title:'OSI- & TCP/IP-Modell',icon:'🏢',color:'#06b6d4',
+theory:[
+  {type:'concept',variant:'def',label:'OSI-MODELL',title:'7 Schichten',
+   body:'Das <b>OSI-Referenzmodell</b> (Open Systems Interconnection) teilt die Netzwerkkommunikation in 7 Schichten auf &mdash; von der physischen &Uuml;bertragung bis zur Anwendung.'},
+  {type:'table',title:'Die 7 OSI-Schichten',
+   headers:['#','Schicht','PDU','Protokolle','Ger&auml;te'],
+   rows:[
+     ['7','Application','Daten','HTTP, FTP, SMTP, DNS','—'],
+     ['6','Presentation','Daten','SSL/TLS, JPEG, ASCII','—'],
+     ['5','Session','Daten','NetBIOS, RPC','—'],
+     ['4','Transport','<b>Segment</b>','TCP, UDP','—'],
+     ['3','Network','<b>Paket</b>','IP, ICMP, ARP','<b>Router</b>'],
+     ['2','Data Link','<b>Frame</b>','Ethernet, WLAN (802.11)','<b>Switch, Bridge</b>'],
+     ['1','Physical','<b>Bits</b>','Kupfer, Glasfaser, Funk','<b>Hub, Repeater</b>'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'PDUs merken!',
+   body:'<b>Bits → Frames → Pakete → Segmente → Daten</b><br>Merksatz: &ldquo;<b>B</b>itte <b>F</b>rau <b>P</b>etra, <b>S</b>ervieren <b>D</b>anke!&rdquo;<br><br>Beim <b>Senden</b> wird jede Schicht einen Header hinzuf&uuml;gen (<b>Encapsulation</b>).<br>Beim <b>Empfangen</b> wird jede Schicht den Header entfernen (<b>Decapsulation</b>).'},
+  {type:'concept',variant:'def',label:'TCP/IP-MODELL',title:'4 Schichten',
+   body:'Das TCP/IP-Modell ist das in der Praxis verwendete Modell:<ul><li><b>4. Anwendung</b> = OSI 5-7</li><li><b>3. Transport</b> = OSI 4 (TCP, UDP)</li><li><b>2. Internet</b> = OSI 3 (IP)</li><li><b>1. Netzzugang</b> = OSI 1-2 (Ethernet, WLAN)</li></ul>'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'Kapselung (Encapsulation)',
+   body:'HTTP-Anfrage senden:<br>1. <b>Anwendung:</b> HTTP-Daten erstellen<br>2. <b>Transport:</b> TCP-Header hinzuf&uuml;gen → Segment<br>3. <b>Internet:</b> IP-Header hinzuf&uuml;gen → Paket<br>4. <b>Netzzugang:</b> Ethernet-Header + Trailer → Frame<br>5. <b>Physisch:</b> Bits &uuml;ber Kabel/Funk senden'},
+],
+exercises:[
+  {type:'order',q:'Ordne die OSI-Schichten von unten nach oben (1→7):',
+   items:['Physical','Data Link','Network','Transport','Session','Presentation','Application'],
+   exp:'Schicht 1 (Physical) ist unten, Schicht 7 (Application) oben.'},
+  {type:'match',q:'Ordne die PDUs den richtigen Schichten zu:',
+   pairs:[['Schicht 1','Bits'],['Schicht 2','Frames'],['Schicht 3','Pakete'],['Schicht 4','Segmente']],
+   exp:'Bits (Physical) → Frames (Data Link) → Pakete (Network) → Segmente (Transport).'},
+  {type:'mc',q:'Welches Ger&auml;t arbeitet auf OSI-Schicht 3?',
+   opts:['Hub','Switch','Router','Bridge'],correct:2,
+   exp:'Der Router arbeitet auf Schicht 3 (Network) und routet IP-Pakete.'},
+  {type:'tf',q:'Das TCP/IP-Modell hat 7 Schichten wie das OSI-Modell.',correct:false,
+   exp:'Das TCP/IP-Modell hat nur 4 Schichten (Netzzugang, Internet, Transport, Anwendung).'},
+],
+simulation:{type:'osi'}
+},
+
+/* ── 2. Medienzugriff ── */
+{id:'it-media',title:'Medienzugriffsverfahren',icon:'📡',color:'#a78bfa',
+theory:[
+  {type:'concept',variant:'def',label:'CSMA/CD',title:'Carrier Sense Multiple Access / Collision Detection',
+   body:'Verwendet bei <b>Ethernet (Kupferkabel)</b>:<ol><li><b>Carrier Sense:</b> H&ouml;re, ob das Medium frei ist</li><li><b>Multiple Access:</b> Mehrere Stationen teilen das Medium</li><li><b>Collision Detection:</b> Sende und pr&uuml;fe gleichzeitig auf Kollisionen</li></ol>Bei Kollision: <b>Jam-Signal</b> senden, zuf&auml;llige Wartezeit (Binary Exponential Backoff), erneut versuchen.'},
+  {type:'concept',variant:'def',label:'CSMA/CA',title:'Carrier Sense Multiple Access / Collision Avoidance',
+   body:'Verwendet bei <b>WLAN (Funk/802.11)</b>:<ol><li><b>Carrier Sense:</b> Pr&uuml;fe, ob Medium frei</li><li>Warte zus&auml;tzlich <b>DIFS</b> (Distributed Inter-Frame Spacing)</li><li>Zuf&auml;lligen <b>Backoff-Timer</b> abwarten</li><li>Sende Daten</li><li>Warte auf <b>ACK</b> (Best&auml;tigung)</li></ol>Optional: <b>RTS/CTS</b> (Request to Send / Clear to Send) gegen Hidden Station Problem.'},
+  {type:'table',title:'CSMA/CD vs. CSMA/CA',
+   headers:['Aspekt','CSMA/CD','CSMA/CA'],
+   rows:[
+     ['Medium','Kupferkabel (Ethernet)','Funk (WLAN)'],
+     ['Kollision','<b>Erkennung</b> w&auml;hrend Sendung','<b>Vermeidung</b> vor Sendung'],
+     ['Warum?','Kollision h&ouml;rbar auf Kabel','Funk: kann nicht gleichzeitig senden+h&ouml;ren'],
+     ['Jam-Signal','Ja','Nein'],
+     ['ACK','Nein (implizit)','Ja (explizit)'],
+     ['RTS/CTS','Nein','Optional'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Warum CD bei Funk nicht geht',
+   body:'Bei Funk kann eine Station <b>nicht gleichzeitig senden und empfangen</b> (das eigene Signal &uuml;berstrahlt alles). Deshalb muss WLAN Kollisionen <b>vermeiden</b> (CA) statt sie zu erkennen (CD).'},
+],
+exercises:[
+  {type:'mc',q:'Welches Verfahren wird bei Ethernet (Kupfer) verwendet?',
+   opts:['CSMA/CA','CSMA/CD','Token Ring','TDMA'],correct:1,
+   exp:'Ethernet nutzt CSMA/CD (Collision Detection) auf Kupferkabeln.'},
+  {type:'tf',q:'Bei CSMA/CA wartet die Station auf ein ACK nach dem Senden.',correct:true,
+   exp:'CSMA/CA (WLAN) verwendet explizite Acknowledgements (ACKs).'},
+  {type:'match',q:'Ordne die Begriffe dem richtigen Verfahren zu:',
+   pairs:[['Jam-Signal','CSMA/CD'],['RTS/CTS','CSMA/CA'],['Collision Detection','CSMA/CD'],['DIFS-Wartezeit','CSMA/CA']],
+   exp:'Jam-Signal und Collision Detection geh&ouml;ren zu CD; RTS/CTS und DIFS zu CA.'},
+],
+simulation:{type:'csma'}
+},
+
+/* ── 3. Adressierung ── */
+{id:'it-addr',title:'Adressierung (MAC & IP)',icon:'🏷',color:'#22c55e',
+theory:[
+  {type:'concept',variant:'def',label:'MAC-ADRESSE',title:'Schicht 2 — Physikalisch',
+   body:'Die <b>MAC-Adresse</b> (Media Access Control) ist eine <b>48 Bit</b> lange, weltweit eindeutige Hardware-Adresse.<br>Format: <code>AA:BB:CC:DD:EE:FF</code> (6 Bytes, hexadezimal).<ul><li>Erste 3 Bytes: <b>OUI</b> (Hersteller-ID)</li><li>Letzte 3 Bytes: <b>Ger&auml;te-ID</b></li><li><b>Fest</b> auf der Netzwerkkarte (theoretisch unver&auml;nderlich)</li></ul>'},
+  {type:'concept',variant:'def',label:'IP-ADRESSE',title:'Schicht 3 — Logisch',
+   body:'Die <b>IP-Adresse</b> ist eine <b>logische Adresse</b> f&uuml;r die Netzwerkschicht.<ul><li><b>IPv4:</b> 32 Bit, 4 Oktette → <code>192.168.1.100</code></li><li><b>IPv6:</b> 128 Bit, 8 Gruppen → <code>2001:0db8::1</code></li><li><b>&Auml;nderbar</b> (wird per DHCP oder manuell zugewiesen)</li></ul>'},
+  {type:'table',title:'MAC vs. IP im Vergleich',
+   headers:['Eigenschaft','MAC-Adresse','IP-Adresse'],
+   rows:[
+     ['OSI-Schicht','<b>Schicht 2</b> (Data Link)','<b>Schicht 3</b> (Network)'],
+     ['L&auml;nge','48 Bit (6 Bytes)','32 Bit (IPv4) / 128 Bit (IPv6)'],
+     ['Art','Physikalisch (Hardware)','Logisch (Software)'],
+     ['Format','AA:BB:CC:DD:EE:FF','192.168.1.1 / 2001:db8::1'],
+     ['&Auml;nderbar?','Nein (fest auf NIC)','Ja (konfigurierbar)'],
+     ['Reichweite','Lokal (gleiches Netz)','Global (Routing m&ouml;glich)'],
+     ['Zuordnung','Hersteller','Administrator / DHCP'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'ARP verbindet beide Welten',
+   body:'<b>ARP</b> (Address Resolution Protocol) l&ouml;st eine IP-Adresse in die zugeh&ouml;rige MAC-Adresse auf.<br><code>Wer hat 192.168.1.1? Sage es an AA:BB:CC:DD:EE:FF!</code><br>ARP arbeitet auf Schicht 2, nutzt aber Schicht-3-Informationen.'},
+],
+exercises:[
+  {type:'mc',q:'Auf welcher OSI-Schicht arbeitet die MAC-Adresse?',
+   opts:['Schicht 1','Schicht 2','Schicht 3','Schicht 4'],correct:1,
+   exp:'Die MAC-Adresse arbeitet auf Schicht 2 (Data Link Layer).'},
+  {type:'tf',q:'Eine MAC-Adresse kann per Software ge&auml;ndert werden.',correct:false,
+   exp:'Die MAC-Adresse ist fest auf der Netzwerkkarte eingebrannt (theoretisch unver&auml;nderlich, auch wenn Spoofing m&ouml;glich ist).'},
+  {type:'fill',q:'Das Protokoll, das IP-Adressen in MAC-Adressen aufl&ouml;st, heisst <code>___</code>.',
+   answers:['ARP','arp'],exp:'ARP = Address Resolution Protocol. Es verbindet Schicht 3 (IP) mit Schicht 2 (MAC).'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 4. Subnetting ── */
+{id:'it-subnet',title:'Subnetting (IPv4 & IPv6)',icon:'🔢',color:'#fb923c',
+theory:[
+  {type:'concept',variant:'def',label:'CIDR-NOTATION',title:'Classless Inter-Domain Routing',
+   body:'<code>192.168.1.0<b>/24</b></code> bedeutet: Die ersten <b>24 Bit</b> sind die Netzadresse, die restlichen 8 Bit die Hostadresse.<br><br>Subnetzmaske f&uuml;r /24: <code>255.255.255.0</code><br>Bin&auml;r: <code>11111111.11111111.11111111.00000000</code>'},
+  {type:'table',title:'Wichtige Pr&auml;fixl&auml;ngen',
+   headers:['CIDR','Subnetzmaske','Hosts (netto)','Adressen'],
+   rows:[
+     ['/24','255.255.255.0','254','256'],
+     ['/25','255.255.255.128','126','128'],
+     ['/26','255.255.255.192','62','64'],
+     ['/27','255.255.255.224','30','32'],
+     ['/28','255.255.255.240','14','16'],
+     ['/30','255.255.255.252','2','4'],
+   ]},
+  {type:'concept',variant:'formula',label:'FORMELN',title:'',
+   body:'<b>Anzahl Hosts:</b> 2<sup>(32-Pr&auml;fix)</sup> - 2<br><b>Netz-ID:</b> IP AND Subnetzmaske<br><b>Broadcast:</b> Netz-ID OR NOT(Subnetzmaske)<br><b>Erster Host:</b> Netz-ID + 1<br><b>Letzter Host:</b> Broadcast - 1'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'192.168.10.130/26 berechnen',
+   body:'/26 → Subnetzmaske: 255.255.255.192<br>Bin&auml;r letzes Oktett: <code>130 = <span style="color:var(--accent)">10</span><span style="color:var(--amber)">000010</span></code><br>Maske: <code><span style="color:var(--accent)">11</span><span style="color:var(--amber)">000000</span></code><br><br><b>Netz-ID:</b> 192.168.10.<b>128</b> (130 AND 192 = 128)<br><b>Broadcast:</b> 192.168.10.<b>191</b> (128 + 63)<br><b>Hosts:</b> 192.168.10.129 – 192.168.10.190 (62 Hosts)'},
+],
+exercises:[
+  {type:'calc',q:'Wie viele nutzbare Hosts hat ein /27 Subnetz?',a:30,tol:0,unit:'Hosts',
+   exp:'2^(32-27) - 2 = 2^5 - 2 = 32 - 2 = 30 nutzbare Hosts.'},
+  {type:'fill',q:'Die Netz-ID von 10.0.5.200/24 ist <code>___</code>.',
+   answers:['10.0.5.0'],exp:'Bei /24 ist das letzte Oktett komplett Host-Anteil, also Netz-ID = 10.0.5.0.'},
+  {type:'mc',q:'Welche Subnetzmaske geh&ouml;rt zu /26?',
+   opts:['255.255.255.0','255.255.255.128','255.255.255.192','255.255.255.224'],correct:2,
+   exp:'/26 = 26 Einsen: 11111111.11111111.11111111.11000000 = 255.255.255.192'},
+  {type:'calc',q:'Was ist die Broadcast-Adresse von 172.16.0.0/28?',a:'172.16.0.15',tol:0,unit:'',
+   exp:'/28 = 16 Adressen. Netz-ID: 172.16.0.0, Broadcast: 172.16.0.0 + 15 = 172.16.0.15.'},
+],
+simulation:{type:'subnet'}
+},
+
+/* ── 5. Hardware-Komponenten ── */
+{id:'it-hw',title:'Hardware & OSI-Zuordnung',icon:'🖧',color:'#eab308',
+theory:[
+  {type:'table',title:'Netzwerk-Hardware und OSI-Schichten',
+   headers:['Ger&auml;t','OSI-Schicht','Funktion','Adresse'],
+   rows:[
+     ['<b>Hub</b>','Schicht 1','Verteilt Signale an ALLE Ports (Broadcast)','Keine'],
+     ['<b>Repeater</b>','Schicht 1','Verst&auml;rkt/regeneriert Signale','Keine'],
+     ['<b>Bridge</b>','Schicht 2','Verbindet zwei Netzsegmente, lernt MAC-Adressen','MAC'],
+     ['<b>Switch</b>','Schicht 2','Intelligentes Weiterleiten per MAC-Tabelle','MAC'],
+     ['<b>Router</b>','Schicht 3','Verbindet verschiedene Netze, routet IP-Pakete','IP'],
+     ['<b>Gateway</b>','Schicht 7','Protokoll-Umsetzer zwischen verschiedenen Systemen','Alle'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Switch vs. Hub',
+   body:'<b>Hub:</b> Dumm &mdash; sendet an ALLE Ports (Broadcast-Domain, Kollisions-Domain).<br><b>Switch:</b> Intelligent &mdash; lernt MAC-Adressen, sendet nur an den richtigen Port. Jeder Port = eigene Kollisions-Domain.'},
+  {type:'concept',variant:'def',label:'KONZEPT',title:'Kollisions- vs. Broadcast-Domain',
+   body:'<b>Kollisions-Domain:</b> Bereich, in dem Kollisionen auftreten k&ouml;nnen. Ein Switch trennt Kollisions-Domains (jeder Port = eigene Domain).<br><b>Broadcast-Domain:</b> Bereich, in dem Broadcasts empfangen werden. Nur ein <b>Router</b> trennt Broadcast-Domains.'},
+],
+exercises:[
+  {type:'match',q:'Ordne die Ger&auml;te den OSI-Schichten zu:',
+   pairs:[['Hub','Schicht 1'],['Switch','Schicht 2'],['Router','Schicht 3'],['Bridge','Schicht 2']],
+   exp:'Hub=1, Switch/Bridge=2, Router=3.'},
+  {type:'mc',q:'Welches Ger&auml;t trennt Broadcast-Domains?',
+   opts:['Hub','Switch','Router','Bridge'],correct:2,
+   exp:'Nur ein Router trennt Broadcast-Domains. Switches trennen nur Kollisions-Domains.'},
+  {type:'tf',q:'Ein Hub leitet Daten nur an den Zielport weiter.',correct:false,
+   exp:'Ein Hub sendet an ALLE Ports (Broadcast). Nur ein Switch leitet gezielt weiter.'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 6. Routing-Protokolle ── */
+{id:'it-routing',title:'Routing-Protokolle',icon:'🛤',color:'#ef4444',
+theory:[
+  {type:'concept',variant:'def',label:'ROUTING',title:'Grundprinzip',
+   body:'<b>Routing</b> ist der Prozess, den besten Weg f&uuml;r ein IP-Paket durch das Netzwerk zu finden. Router verwenden <b>Routing-Tabellen</b> mit Ziel-Netz, Next-Hop und Metrik.'},
+  {type:'table',title:'IGP vs. EGP',
+   headers:['Aspekt','IGP (Interior)','EGP (Exterior)'],
+   rows:[
+     ['Einsatz','<b>Innerhalb</b> eines AS','<b>Zwischen</b> verschiedenen AS'],
+     ['Beispiele','OSPF, RIP, EIGRP','<b>BGP</b>'],
+     ['Metrik','Kosten, Hop Count, Bandbreite','AS-Pfad, Policy'],
+     ['Fokus','Optimaler Pfad','Erreichbarkeit + Policies'],
+   ]},
+  {type:'concept',variant:'def',label:'OSPF',title:'Open Shortest Path First',
+   body:'<b>OSPF</b> (IGP, Link-State-Protokoll):<ul><li>Verwendet <b>Dijkstra-Algorithmus</b> f&uuml;r k&uuml;rzesten Pfad</li><li>Jeder Router kennt die <b>komplette Topologie</b></li><li>Metrik: <b>Kosten</b> (basierend auf Bandbreite)</li><li>Schnelle Konvergenz, hierarchisch (Areas)</li></ul>'},
+  {type:'concept',variant:'def',label:'BGP',title:'Border Gateway Protocol',
+   body:'<b>BGP</b> (EGP, Path-Vector-Protokoll):<ul><li>Das &ldquo;Routing-Protokoll des Internets&rdquo;</li><li>Verbindet <b>Autonome Systeme (AS)</b></li><li>Entscheidungen basierend auf <b>Policies</b>, nicht nur k&uuml;rzerem Weg</li><li>AS-Pfad-Attribut verhindert Schleifen</li></ul>'},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'OSPF vs. BGP',
+   body:'<b>OSPF</b> = INTERN, berechnet den BESTEN Weg (Kosten).<br><b>BGP</b> = EXTERN, w&auml;hlt Wege nach POLICY (nicht unbedingt der schnellste).'},
+],
+exercises:[
+  {type:'mc',q:'Welches Protokoll wird zwischen Autonomen Systemen verwendet?',
+   opts:['OSPF','RIP','BGP','EIGRP'],correct:2,
+   exp:'BGP (Border Gateway Protocol) ist das EGP f&uuml;r Inter-AS-Routing.'},
+  {type:'tf',q:'OSPF verwendet den Dijkstra-Algorithmus.',correct:true,
+   exp:'OSPF ist ein Link-State-Protokoll und berechnet den k&uuml;rzesten Pfad mit dem Dijkstra-Algorithmus.'},
+  {type:'match',q:'Ordne die Protokoll-Eigenschaften zu:',
+   pairs:[['Link-State','OSPF'],['Path-Vector','BGP'],['IGP','OSPF'],['EGP','BGP']],
+   exp:'OSPF = IGP + Link-State, BGP = EGP + Path-Vector.'},
+],
+simulation:{type:'none'}
+},
+
+/* ── 7. Kern-Protokolle ── */
+{id:'it-proto',title:'Kern-Protokolle (TCP/UDP/DNS...)',icon:'📨',color:'#f472b6',
+theory:[
+  {type:'concept',variant:'def',label:'TCP',title:'Transmission Control Protocol',
+   body:'<b>TCP</b> (Schicht 4) ist <b>verbindungsorientiert</b> und <b>zuverl&auml;ssig</b>:<ul><li><b>3-Way-Handshake:</b> SYN → SYN-ACK → ACK</li><li>Sequenznummern f&uuml;r Reihenfolge</li><li>Acknowledgements + Retransmission</li><li>Flow Control (Sliding Window)</li><li>Verwendung: HTTP, FTP, SMTP, SSH</li></ul>'},
+  {type:'concept',variant:'def',label:'UDP',title:'User Datagram Protocol',
+   body:'<b>UDP</b> (Schicht 4) ist <b>verbindungslos</b> und <b>unzuverl&auml;ssig</b>:<ul><li>Kein Handshake, kein ACK</li><li>Schneller, weniger Overhead</li><li>Keine Garantie f&uuml;r Zustellung/Reihenfolge</li><li>Verwendung: DNS, DHCP, VoIP, Streaming, Gaming</li></ul>'},
+  {type:'table',title:'TCP vs. UDP',
+   headers:['Eigenschaft','TCP','UDP'],
+   rows:[
+     ['Verbindung','Verbindungsorientiert','Verbindungslos'],
+     ['Zuverl&auml;ssigkeit','Zuverl&auml;ssig (ACK, Retransmit)','Best-Effort'],
+     ['Handshake','3-Way-Handshake','Keiner'],
+     ['Reihenfolge','Garantiert (Sequenznummern)','Nicht garantiert'],
+     ['Overhead','H&ouml;her','Niedriger'],
+     ['Geschwindigkeit','Langsamer','Schneller'],
+   ]},
+  {type:'table',title:'Weitere Kern-Protokolle',
+   headers:['Protokoll','Schicht','Aufgabe'],
+   rows:[
+     ['<b>ARP</b>','2-3','IP → MAC Aufl&ouml;sung'],
+     ['<b>DHCP</b>','7 (UDP)','Automatische IP-Zuweisung (DORA: Discover, Offer, Request, Ack)'],
+     ['<b>DNS</b>','7 (UDP/TCP)','Domain → IP Aufl&ouml;sung (z.B. google.com → 142.250.x.x)'],
+     ['<b>NAT</b>','3','Private IPs ↔ &ouml;ffentliche IP &uuml;bersetzen'],
+     ['<b>ICMP</b>','3','Fehlermeldungen und Diagnose (ping, traceroute)'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'3-Way-Handshake',
+   body:'<b>Verbindungsaufbau (TCP):</b><br>1. Client → Server: <b>SYN</b> (Seq=x)<br>2. Server → Client: <b>SYN-ACK</b> (Seq=y, Ack=x+1)<br>3. Client → Server: <b>ACK</b> (Seq=x+1, Ack=y+1)<br><br><b>Verbindungsabbau:</b> FIN → ACK → FIN → ACK (4-Way)'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'DHCP-Ablauf (DORA)',
+   body:'1. <b>D</b>iscover: Client sendet Broadcast &ldquo;Wer kann mir eine IP geben?&rdquo;<br>2. <b>O</b>ffer: DHCP-Server bietet eine IP an<br>3. <b>R</b>equest: Client akzeptiert das Angebot<br>4. <b>A</b>ck: Server best&auml;tigt die Zuweisung'},
+],
+exercises:[
+  {type:'order',q:'Bringe den TCP 3-Way-Handshake in die richtige Reihenfolge:',
+   items:['SYN','SYN-ACK','ACK'],
+   exp:'Client sendet SYN, Server antwortet mit SYN-ACK, Client best&auml;tigt mit ACK.'},
+  {type:'mc',q:'Welches Protokoll verwendet DNS prim&auml;r?',
+   opts:['TCP','UDP','ICMP','ARP'],correct:1,
+   exp:'DNS nutzt prim&auml;r UDP (Port 53) f&uuml;r Anfragen. F&uuml;r Zonentransfers wird TCP verwendet.'},
+  {type:'match',q:'Ordne die Protokolle ihren Aufgaben zu:',
+   pairs:[['ARP','IP → MAC Aufl&ouml;sung'],['DHCP','Automatische IP-Zuweisung'],['DNS','Domain → IP Aufl&ouml;sung'],['NAT','Private ↔ &ouml;ffentliche IP']],
+   exp:'ARP=MAC-Aufl&ouml;sung, DHCP=IP-Zuweisung, DNS=Namensaufl&ouml;sung, NAT=Adress&uuml;bersetzung.'},
+  {type:'fill',q:'Der DHCP-Ablauf heisst <code>___</code> (4 Buchstaben).',
+   answers:['DORA','dora'],exp:'DORA = Discover, Offer, Request, Acknowledge.'},
+],
+simulation:{type:'tcp'}
+},
+
+/* ── 8. VLANs ── */
+{id:'it-vlan',title:'VLANs',icon:'🏘',color:'#22d3ee',
+theory:[
+  {type:'concept',variant:'def',label:'DEFINITION',title:'Virtual Local Area Network',
+   body:'Ein <b>VLAN</b> ist ein logisch getrenntes Netzwerk auf <b>Schicht 2</b>. Es erm&ouml;glicht die <b>Segmentierung</b> eines physischen Switches in mehrere virtuelle Netzwerke.'},
+  {type:'concept',variant:'def',label:'KONZEPT',title:'Warum VLANs?',
+   body:'<ul><li><b>Sicherheit:</b> Abteilungen voneinander isolieren</li><li><b>Broadcast-Reduktion:</b> Broadcasts bleiben im VLAN</li><li><b>Flexibilit&auml;t:</b> Logische Gruppierung unabh&auml;ngig vom Standort</li><li><b>Kosten:</b> Ein Switch statt mehrere</li></ul>'},
+  {type:'table',title:'VLAN-Typen',
+   headers:['Typ','Beschreibung','Port-Modus'],
+   rows:[
+     ['Port-basiert','Jeder Port wird einem VLAN zugeordnet','<b>Access Port</b>'],
+     ['Tagged (802.1Q)','VLAN-Tag im Ethernet-Frame (4 Bytes)','<b>Trunk Port</b>'],
+     ['Native VLAN','Ungetaggte Frames auf Trunk-Port','Default VLAN 1'],
+   ]},
+  {type:'concept',variant:'warn',label:'PR&Uuml;FUNGSFOKUS',title:'Access vs. Trunk',
+   body:'<b>Access Port:</b> Geh&ouml;rt zu genau EINEM VLAN. Endger&auml;te werden hier angeschlossen. Kein VLAN-Tag im Frame.<br><b>Trunk Port:</b> Transportiert Frames von MEHREREN VLANs zwischen Switches. Frames werden mit <b>802.1Q-Tag</b> versehen (VLAN-ID).'},
+  {type:'concept',variant:'example',label:'BEISPIEL',title:'VLAN-Konfiguration',
+   body:'Switch mit 24 Ports:<br>&bull; VLAN 10 (Buchhaltung): Ports 1-8<br>&bull; VLAN 20 (IT): Ports 9-16<br>&bull; VLAN 30 (G&auml;ste): Ports 17-22<br>&bull; Trunk: Ports 23-24 (zu anderen Switches)<br><br>Ein PC an Port 3 (VLAN 10) kann NICHT direkt mit Port 12 (VLAN 20) kommunizieren → braucht einen <b>Router</b> (Inter-VLAN-Routing).'},
+],
+exercises:[
+  {type:'mc',q:'Auf welcher OSI-Schicht arbeiten VLANs?',
+   opts:['Schicht 1','Schicht 2','Schicht 3','Schicht 4'],correct:1,
+   exp:'VLANs arbeiten auf Schicht 2 (Data Link Layer) und segmentieren logisch.'},
+  {type:'tf',q:'Ein Trunk-Port transportiert Frames aus mehreren VLANs.',correct:true,
+   exp:'Trunk Ports verwenden 802.1Q-Tagging um Frames verschiedener VLANs zu transportieren.'},
+  {type:'fill',q:'Das Protokoll f&uuml;r VLAN-Tagging heisst <code>___</code>.',
+   answers:['802.1Q','802.1q','IEEE 802.1Q'],exp:'IEEE 802.1Q ist der Standard f&uuml;r VLAN-Tagging auf Trunk-Ports.'},
+  {type:'mc',q:'Was wird f&uuml;r die Kommunikation zwischen VLANs ben&ouml;tigt?',
+   opts:['Ein Hub','Ein Switch','Ein Router','Ein Repeater'],correct:2,
+   exp:'Inter-VLAN-Routing erfordert einen Router (oder Layer-3-Switch).'},
+],
+simulation:{type:'none'}
+},
+
+] /* end it */
+};
+
+/* ═══════════════════════════════════════════════════════
+   RENDER ENGINE
+   ═══════════════════════════════════════════════════════ */
+function switchSubject(subj){
+  currentSubject = subj;
+  currentTopic = 0;
+  currentSection = 'theorie';
+  document.querySelectorAll('#primaryTabs .tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.subject === subj);
+  });
+  render();
+}
+
+function switchTopic(idx){
+  currentTopic = idx;
+  currentSection = 'theorie';
+  render();
+}
+
+function switchSection(sec){
+  currentSection = sec;
+  renderContent();
+  renderPills();
+}
+
+function render(){
+  renderSubNav();
+  renderPills();
+  renderContent();
+}
+
+function renderSubNav(){
+  const topics = TOPICS[currentSubject];
+  const nav = document.getElementById('subNav');
+  nav.innerHTML = topics.map((t,i) =>
+    `<button class="sub-btn${i===currentTopic?' active':''}" onclick="switchTopic(${i})" style="${i===currentTopic?'border-color:'+t.color+';color:'+t.color+';background:'+t.color+'14':''}">${t.icon} ${t.title}</button>`
+  ).join('');
+}
+
+function renderPills(){
+  const topic = TOPICS[currentSubject][currentTopic];
+  const hasSim = topic.simulation && topic.simulation.type !== 'none';
+  const pills = document.getElementById('sectionPills');
+  pills.innerHTML = `
+    <button class="pill${currentSection==='theorie'?' active':''}" onclick="switchSection('theorie')">📖 Theorie</button>
+    <button class="pill${currentSection==='uebungen'?' active':''}" onclick="switchSection('uebungen')">✏️ &Uuml;bungen</button>
+    ${hasSim ? `<button class="pill${currentSection==='simulation'?' active':''}" onclick="switchSection('simulation')">🎮 Simulation</button>` : ''}
+  `;
+}
+
+function renderContent(){
+  const topic = TOPICS[currentSubject][currentTopic];
+  const area = document.getElementById('contentArea');
+
+  if(currentSection === 'theorie') area.innerHTML = renderTheory(topic);
+  else if(currentSection === 'uebungen') area.innerHTML = renderExercises(topic);
+  else if(currentSection === 'simulation') { area.innerHTML = ''; renderSimulation(topic, area); }
+}
+
+/* ── Theory Renderer ── */
+function renderTheory(topic){
+  return topic.theory.map(block => {
+    if(block.type === 'concept'){
+      return `<div class="concept ${block.variant||''}">
+        <div class="concept-label">${block.label||''}</div>
+        ${block.title ? `<h4>${block.title}</h4>` : ''}
+        <p>${block.body}</p>
+      </div>`;
+    }
+    if(block.type === 'table'){
+      return `<div class="card">
+        <div class="card-title">${block.title}</div>
+        <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr>${block.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>${block.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+        </div>
+      </div>`;
+    }
+    return '';
+  }).join('');
+}
+
+/* ── Exercise Renderer ── */
+function renderExercises(topic){
+  const tid = topic.id;
+  if(!exerciseAnswers[tid]) exerciseAnswers[tid] = {};
+  const checked = exerciseChecked[tid] || false;
+
+  let html = '<div class="exercise-wrap">';
+  topic.exercises.forEach((ex, qi) => {
+    const ans = exerciseAnswers[tid][qi];
+    html += `<div class="ex-card" id="ex-${qi}">
+      <div class="ex-meta"><span class="ex-type">${ex.type.toUpperCase()}</span> Frage ${qi+1}/${topic.exercises.length}</div>
+      <div class="ex-q">${ex.q}</div>`;
+
+    if(ex.type === 'mc'){
+      html += '<div class="ex-opts">';
+      ex.opts.forEach((o,oi) => {
+        let cls = '';
+        if(checked){ cls = oi === ex.correct ? ' correct' : (oi === ans ? ' wrong' : ''); }
+        else if(oi === ans) cls = ' selected';
+        html += `<div class="ex-opt${cls}" onclick="pickMC('${tid}',${qi},${oi})"><div class="ex-radio"></div>${o}</div>`;
+      });
+      html += '</div>';
+    }
+
+    if(ex.type === 'tf'){
+      html += '<div class="ex-tf">';
+      ['Wahr','Falsch'].forEach((label, vi) => {
+        const val = vi === 0;
+        let cls = '';
+        if(checked){
+          if(val === ex.correct) cls = ' correct';
+          else if(ans === val) cls = ' wrong';
+        } else if(ans === val) cls = ' selected';
+        html += `<button class="${cls}" onclick="pickTF('${tid}',${qi},${val})">${label}</button>`;
+      });
+      html += '</div>';
+    }
+
+    if(ex.type === 'fill'){
+      const val = ans || '';
+      html += `<input class="ex-input" id="fill-${qi}" value="${val}" placeholder="Antwort eingeben..." oninput="fillInput('${tid}',${qi})" ${checked?'disabled':''}>`;
+    }
+
+    if(ex.type === 'calc'){
+      const val = ans || '';
+      html += `<div style="display:flex;gap:.5rem;align-items:center"><input class="ex-input" style="width:150px" id="calc-${qi}" value="${val}" placeholder="Ergebnis..." oninput="calcInput('${tid}',${qi})" ${checked?'disabled':''}>${ex.unit?`<span style="font-size:.75rem;color:var(--text2)">${ex.unit}</span>`:''}</div>`;
+    }
+
+    if(ex.type === 'match'){
+      html += renderMatchExercise(ex, qi, tid, checked, ans);
+    }
+
+    if(ex.type === 'order'){
+      html += renderOrderExercise(ex, qi, tid, checked, ans);
+    }
+
+    // Feedback
+    if(checked){
+      const isCorrect = checkAnswer(ex, ans);
+      html += `<div class="ex-feedback show ${isCorrect?'ok':'nok'}">${isCorrect?'✓ Richtig!':'✗ Falsch.'} ${ex.exp}</div>`;
+    }
+
+    html += '</div>';
+  });
+
+  if(!checked){
+    html += `<div style="text-align:center;margin-top:1rem"><button class="ex-check-btn" onclick="checkExercises('${tid}')">✓ Antworten pr&uuml;fen</button></div>`;
+  } else {
+    const score = calcScore(topic);
+    html += `<div class="ex-score"><div class="big">${score.correct}/${score.total}</div><div style="color:var(--text2);font-size:.8rem;margin-top:.3rem">richtige Antworten</div>
+    <div style="margin-top:.8rem"><button class="ex-check-btn" onclick="resetExercises('${tid}')">↻ Nochmal versuchen</button></div></div>`;
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function renderMatchExercise(ex, qi, tid, checked, ans){
+  if(!ans) { exerciseAnswers[tid][qi] = { pairs: [], selected: null }; ans = exerciseAnswers[tid][qi]; }
+  const left = ex.pairs.map(p => p[0]);
+  const right = ex.pairs.map(p => p[1]).sort(() => Math.random() - 0.5);
+  // Store shuffled right if not already
+  if(!ans.shuffledRight) ans.shuffledRight = right;
+
+  let html = '<div class="ex-match-grid">';
+  html += '<div>';
+  left.forEach((l,i) => {
+    const matched = ans.pairs && ans.pairs.find(p => p[0] === i);
+    let cls = matched ? ' matched' : (ans.selected === 'l'+i ? ' sel' : '');
+    if(checked && matched){
+      const correctRight = ex.pairs[i][1];
+      cls = ans.shuffledRight[matched[1]] === correctRight ? ' matched' : ' wrong-flash';
+    }
+    html += `<div class="ex-match-item${cls}" onclick="matchClick('${tid}',${qi},'l',${i})">${l}</div>`;
+  });
+  html += '</div><div>';
+  (ans.shuffledRight||right).forEach((r,i) => {
+    const matched = ans.pairs && ans.pairs.find(p => p[1] === i);
+    let cls = matched ? ' matched' : (ans.selected === 'r'+i ? ' sel' : '');
+    html += `<div class="ex-match-item${cls}" onclick="matchClick('${tid}',${qi},'r',${i})">${r}</div>`;
+  });
+  html += '</div></div>';
+  return html;
+}
+
+function renderOrderExercise(ex, qi, tid, checked, ans){
+  if(!ans) {
+    const shuffled = [...ex.items].sort(() => Math.random() - 0.5);
+    exerciseAnswers[tid][qi] = shuffled;
+    ans = shuffled;
+  }
+  let html = '<div class="ex-order-list">';
+  ans.forEach((item, i) => {
+    let cls = '';
+    if(checked) cls = item === ex.items[i] ? ' correct' : ' wrong';
+    html += `<div class="ex-order-item${cls}"><span class="grip">☰</span> ${item}
+      ${!checked ? `<span style="margin-left:auto;display:flex;gap:.2rem">
+        <button class="sim-btn" onclick="orderMove('${tid}',${qi},${i},-1)" ${i===0?'disabled':''}>▲</button>
+        <button class="sim-btn" onclick="orderMove('${tid}',${qi},${i},1)" ${i===ans.length-1?'disabled':''}>▼</button>
+      </span>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+/* ── Exercise Handlers ── */
+function pickMC(tid, qi, oi){
+  if(exerciseChecked[tid]) return;
+  exerciseAnswers[tid][qi] = oi;
+  renderContent();
+}
+function pickTF(tid, qi, val){
+  if(exerciseChecked[tid]) return;
+  exerciseAnswers[tid][qi] = val;
+  renderContent();
+}
+function fillInput(tid, qi){
+  exerciseAnswers[tid][qi] = document.getElementById('fill-'+qi).value;
+}
+function calcInput(tid, qi){
+  exerciseAnswers[tid][qi] = document.getElementById('calc-'+qi).value;
+}
+function matchClick(tid, qi, side, idx){
+  if(exerciseChecked[tid]) return;
+  const ans = exerciseAnswers[tid][qi];
+  const key = side + idx;
+  if(ans.selected === null || ans.selected === undefined){
+    ans.selected = key;
+  } else {
+    const prev = ans.selected;
+    if(prev[0] !== side[0]){ // different sides = make pair
+      const li = side === 'l' ? idx : parseInt(prev.slice(1));
+      const ri = side === 'r' ? idx : parseInt(prev.slice(1));
+      if(!ans.pairs) ans.pairs = [];
+      // Remove existing pairs for these indices
+      ans.pairs = ans.pairs.filter(p => p[0] !== li && p[1] !== ri);
+      ans.pairs.push([li, ri]);
+    }
+    ans.selected = null;
+  }
+  renderContent();
+}
+function orderMove(tid, qi, idx, dir){
+  if(exerciseChecked[tid]) return;
+  const arr = exerciseAnswers[tid][qi];
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= arr.length) return;
+  [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+  renderContent();
+}
+
+function checkAnswer(ex, ans){
+  if(ex.type === 'mc') return ans === ex.correct;
+  if(ex.type === 'tf') return ans === ex.correct;
+  if(ex.type === 'fill') return ex.answers.some(a => a.toLowerCase() === (ans||'').toLowerCase());
+  if(ex.type === 'calc'){
+    const num = parseFloat((ans||'').replace(',','.'));
+    if(typeof ex.a === 'string') return (ans||'').trim() === ex.a;
+    return Math.abs(num - ex.a) <= (ex.tol || 0.01);
+  }
+  if(ex.type === 'match'){
+    if(!ans || !ans.pairs) return false;
+    return ans.pairs.length === ex.pairs.length && ans.pairs.every(p => {
+      const correctRight = ex.pairs[p[0]][1];
+      return ans.shuffledRight[p[1]] === correctRight;
+    });
+  }
+  if(ex.type === 'order'){
+    return ans && ans.every((item,i) => item === ex.items[i]);
+  }
+  return false;
+}
+
+function calcScore(topic){
+  const tid = topic.id;
+  let correct = 0;
+  topic.exercises.forEach((ex,qi) => {
+    if(checkAnswer(ex, exerciseAnswers[tid][qi])) correct++;
+  });
+  return { correct, total: topic.exercises.length };
+}
+
+function checkExercises(tid){
+  exerciseChecked[tid] = true;
+  // Save progress
+  const topic = TOPICS[currentSubject][currentTopic];
+  const score = calcScore(topic);
+  progress[tid] = progress[tid] || {};
+  progress[tid].exercises = score;
+  localStorage.setItem('intensiv-progress', JSON.stringify(progress));
+  if(typeof debouncedCloudSave === 'function') debouncedCloudSave();
+  renderContent();
+}
+
+function resetExercises(tid){
+  exerciseAnswers[tid] = {};
+  exerciseChecked[tid] = false;
+  renderContent();
+}
+
+/* ═══════════════════════════════════════════════════════
+   SIMULATIONS
+   ═══════════════════════════════════════════════════════ */
+function renderSimulation(topic, container){
+  const sim = topic.simulation;
+  if(!sim || sim.type === 'none'){ container.innerHTML = '<p style="text-align:center;color:var(--text2)">Keine Simulation f&uuml;r dieses Thema.</p>'; return; }
+
+  if(sim.type === 'bubbleSort') initBubbleSort(container);
+  else if(sim.type === 'hashing') initHashing(container);
+  else if(sim.type === 'automaton') initAutomaton(container);
+  else if(sim.type === 'cyk') initCYK(container);
+  else if(sim.type === 'osi') initOSI(container);
+  else if(sim.type === 'csma') initCSMA(container);
+  else if(sim.type === 'subnet') initSubnetCalc(container);
+  else if(sim.type === 'tcp') initTCPHandshake(container);
+}
+
+/* ── Bubble Sort Visualizer ── */
+function initBubbleSort(container){
+  let arr = [38,27,43,3,9,82,10,55,21,67];
+  let step = 0, i = 0, pass = 0, sorted = 0, running = false, timer = null;
+
+  function getColor(idx){
+    if(idx >= arr.length - sorted) return 'var(--green)';
+    return 'var(--accent)';
+  }
+
+  function renderBars(ci, cj, swapping){
+    let bars = '';
+    const mx = Math.max(...arr);
+    arr.forEach((v,idx) => {
+      let cls = idx >= arr.length - sorted ? ' sorted' : '';
+      if(idx === ci || idx === cj) cls = swapping ? ' swapping' : ' comparing';
+      if(idx >= arr.length - sorted) cls = ' sorted';
+      bars += `<div class="bs-bar${cls}" style="height:${(v/mx)*140+10}px;background:${cls?'':getColor(idx)}"><span>${v}</span></div>`;
+    });
+    return bars;
+  }
+
+  container.innerHTML = `<div class="sim-container">
+    <div class="sim-title">🔄 Bubble Sort Visualizer</div>
+    <div class="sim-controls">
+      <button class="sim-btn" id="bs-play" onclick="bsPlay()">▶ Play</button>
+      <button class="sim-btn" onclick="bsStep()">⏭ Schritt</button>
+      <button class="sim-btn" onclick="bsReset()">↻ Reset</button>
+      <input class="sim-input" id="bs-input" value="${arr.join(',')}" placeholder="Zahlen mit Komma..." style="width:250px">
+      <button class="sim-btn" onclick="bsSetArr()">Setzen</button>
+    </div>
+    <div class="bs-bars" id="bsBars">${renderBars(-1,-1,false)}</div>
+    <div class="sim-log" id="bsLog">Bereit. Dr&uuml;cke Play oder Schritt.</div>
+  </div>`;
+
+  window.bsPlay = function(){
+    if(running){ running=false; clearInterval(timer); document.getElementById('bs-play').textContent='▶ Play'; return; }
+    running=true; document.getElementById('bs-play').textContent='⏸ Pause';
+    timer = setInterval(()=>{ if(!bsDoStep()) { running=false; clearInterval(timer); document.getElementById('bs-play').textContent='▶ Play'; }}, 500);
+  };
+  window.bsStep = function(){ bsDoStep(); };
+  window.bsReset = function(){
+    running=false; clearInterval(timer);
+    i=0; pass=0; sorted=0;
+    document.getElementById('bsBars').innerHTML = renderBars(-1,-1,false);
+    document.getElementById('bsLog').textContent = 'Reset. Bereit.';
+    document.getElementById('bs-play').textContent = '▶ Play';
+  };
+  window.bsSetArr = function(){
+    const val = document.getElementById('bs-input').value;
+    arr = val.split(',').map(Number).filter(n=>!isNaN(n)&&n>0);
+    if(arr.length<2) arr=[5,3,8,1,9,2];
+    bsReset();
+  };
+
+  function bsDoStep(){
+    if(sorted >= arr.length - 1) return false;
+    if(i >= arr.length - 1 - pass){
+      pass++; i=0; sorted++;
+      if(sorted >= arr.length - 1){
+        document.getElementById('bsBars').innerHTML = renderBars(-1,-1,false);
+        document.getElementById('bsLog').textContent += '\n✓ Sortiert!';
+        return false;
+      }
+      document.getElementById('bsLog').textContent += `\nDurchlauf ${pass+1}`;
+    }
+    const log = document.getElementById('bsLog');
+    if(arr[i] > arr[i+1]){
+      log.textContent += `\n${arr[i]} > ${arr[i+1]} → tauschen`;
+      document.getElementById('bsBars').innerHTML = renderBars(i,i+1,true);
+      [arr[i], arr[i+1]] = [arr[i+1], arr[i]];
+      setTimeout(()=>{ document.getElementById('bsBars').innerHTML = renderBars(-1,-1,false); }, 250);
+    } else {
+      log.textContent += `\n${arr[i]} ≤ ${arr[i+1]} → ok`;
+      document.getElementById('bsBars').innerHTML = renderBars(i,i+1,false);
+      setTimeout(()=>{ document.getElementById('bsBars').innerHTML = renderBars(-1,-1,false); }, 250);
+    }
+    log.scrollTop = log.scrollHeight;
+    i++;
+    return true;
+  }
+}
+
+/* ── Subnetting Calculator ── */
+function initSubnetCalc(container){
+  container.innerHTML = `<div class="sim-container">
+    <div class="sim-title">🔢 Subnetting-Rechner</div>
+    <div class="sn-form">
+      <input class="sim-input" id="sn-ip" value="192.168.10.130" placeholder="IP-Adresse" style="width:100%">
+      <span style="color:var(--text2);font-size:1.2rem">/</span>
+      <input class="sim-input" id="sn-cidr" value="26" placeholder="CIDR" style="width:60px">
+    </div>
+    <div style="text-align:center;margin-bottom:1rem"><button class="ex-check-btn" onclick="snCalc()">Berechnen</button></div>
+    <div id="sn-results"></div>
+  </div>`;
+
+  window.snCalc = function(){
+    const ip = document.getElementById('sn-ip').value.trim();
+    const cidr = parseInt(document.getElementById('sn-cidr').value);
+    const parts = ip.split('.').map(Number);
+    if(parts.length!==4||parts.some(p=>isNaN(p)||p<0||p>255)||isNaN(cidr)||cidr<0||cidr>32){
+      document.getElementById('sn-results').innerHTML='<p style="color:var(--red)">Ung&uuml;ltige Eingabe!</p>'; return;
+    }
+
+    const ipNum = (parts[0]<<24)|(parts[1]<<16)|(parts[2]<<8)|parts[3];
+    const mask = cidr===0?0:(0xFFFFFFFF<<(32-cidr))>>>0;
+    const net = (ipNum & mask)>>>0;
+    const bc = (net | ~mask)>>>0;
+    const first = (net + 1)>>>0;
+    const last = (bc - 1)>>>0;
+    const hosts = Math.pow(2, 32-cidr) - 2;
+
+    function toIP(n){ return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.'); }
+    function toBin(n){ return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].map(o=>o.toString(2).padStart(8,'0')).join('.'); }
+
+    const maskStr = toIP(mask);
+    const netBin = toBin(net);
+    const maskBin = toBin(mask);
+
+    // Color the binary: network bits in cyan, host bits in amber
+    let colorBin = '';
+    const ipBin = toBin(ipNum).replace(/\./g,'');
+    for(let b=0;b<32;b++){
+      if(b>0&&b%8===0) colorBin+='.';
+      colorBin += b<cidr ? `<span class="net">${ipBin[b]}</span>` : `<span class="host">${ipBin[b]}</span>`;
+    }
+
+    document.getElementById('sn-results').innerHTML = `
+      <div class="sn-result">
+        <div class="sn-result-item"><div class="label">Netz-ID</div><div class="val">${toIP(net)}</div></div>
+        <div class="sn-result-item"><div class="label">Broadcast</div><div class="val">${toIP(bc)}</div></div>
+        <div class="sn-result-item"><div class="label">Erster Host</div><div class="val">${toIP(first)}</div></div>
+        <div class="sn-result-item"><div class="label">Letzter Host</div><div class="val">${toIP(last)}</div></div>
+        <div class="sn-result-item"><div class="label">Subnetzmaske</div><div class="val">${maskStr}</div></div>
+        <div class="sn-result-item"><div class="label">Nutzbare Hosts</div><div class="val">${hosts<0?0:hosts}</div></div>
+      </div>
+      <div class="sn-binary" style="margin-top:.8rem">
+        <b>IP bin&auml;r:</b> ${colorBin}<br>
+        <span style="color:var(--accent)">Netzanteil (${cidr} Bit)</span> | <span style="color:var(--amber)">Hostanteil (${32-cidr} Bit)</span>
+      </div>`;
+  };
+  snCalc();
+}
+
+/* ── TCP 3-Way Handshake ── */
+function initTCPHandshake(container){
+  let step = 0;
+
+  function renderTCP(){
+    const arrows = [
+      {y:60, dir:'right', label:'SYN (Seq=100)', show: step>=1},
+      {y:110, dir:'left', label:'SYN-ACK (Seq=300, Ack=101)', show: step>=2},
+      {y:160, dir:'right', label:'ACK (Seq=101, Ack=301)', show: step>=3},
+    ];
+
+    let arrowsHTML = arrows.map(a => {
+      const isRight = a.dir === 'right';
+      return `<div class="tcp-arrow${a.show?' show':''}" style="top:${a.y}px;flex-direction:${isRight?'row':'row-reverse'}">
+        <span class="tip">${isRight?'':'◄'}</span>
+        <span class="line"></span>
+        <span class="label">${a.label}</span>
+        <span class="line"></span>
+        <span class="tip">${isRight?'►':''}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="sim-container">
+      <div class="sim-title">🤝 TCP 3-Way Handshake</div>
+      <div class="sim-controls">
+        <button class="sim-btn" onclick="tcpStep()">⏭ N&auml;chster Schritt</button>
+        <button class="sim-btn" onclick="tcpReset()">↻ Reset</button>
+        <span style="font-size:.65rem;color:var(--text2)">Schritt ${step}/3</span>
+      </div>
+      <div class="tcp-wrap">
+        <div class="tcp-host"><div class="name">CLIENT</div>
+          <div style="font-size:.5rem;color:var(--text2);margin-top:.3rem">${step>=1?'SYN_SENT':'CLOSED'}</div>
+          <div style="font-size:.5rem;color:var(--text2);margin-top:.2rem">${step>=3?'ESTABLISHED':''}</div>
+        </div>
+        <div class="tcp-arrows">${arrowsHTML}</div>
+        <div class="tcp-host"><div class="name">SERVER</div>
+          <div style="font-size:.5rem;color:var(--text2);margin-top:.3rem">${step>=1?'LISTEN':'CLOSED'}</div>
+          <div style="font-size:.5rem;color:var(--text2);margin-top:.2rem">${step>=2?'SYN_RCVD':''}</div>
+          <div style="font-size:.5rem;color:var(--text2);margin-top:.2rem">${step>=3?'ESTABLISHED':''}</div>
+        </div>
+      </div>
+      <div class="sim-log" id="tcpLog">${step===0?'Dr&uuml;cke "N&auml;chster Schritt" um den Handshake zu starten.':''}${step>=1?'1. Client sendet SYN mit Sequenznummer 100\n':''}${step>=2?'2. Server antwortet mit SYN-ACK (Seq=300, Ack=101)\n':''}${step>=3?'3. Client best&auml;tigt mit ACK (Seq=101, Ack=301)\n✓ Verbindung hergestellt!':''}</div>
+    </div>`;
+  }
+
+  container.innerHTML = renderTCP();
+  window.tcpStep = function(){ if(step<3) step++; container.innerHTML = renderTCP(); };
+  window.tcpReset = function(){ step=0; container.innerHTML = renderTCP(); };
+}
+
+/* ── OSI Encapsulation Animation ── */
+function initOSI(container){
+  const layers = [
+    {name:'7 Application',color:'#ef4444',header:'HTTP-Daten'},
+    {name:'6 Presentation',color:'#fb923c',header:'Formatierung'},
+    {name:'5 Session',color:'#eab308',header:'Session-ID'},
+    {name:'4 Transport',color:'#22c55e',header:'TCP-Header (Port)'},
+    {name:'3 Network',color:'#06b6d4',header:'IP-Header (IP-Adr.)'},
+    {name:'2 Data Link',color:'#a78bfa',header:'ETH-Header (MAC)'},
+    {name:'1 Physical',color:'#f472b6',header:'Bits → Kabel/Funk'},
+  ];
+  let activeLayer = -1, direction = 'down';
+
+  function renderOSI(){
+    let html = `<div class="sim-container">
+      <div class="sim-title">🏢 OSI-Kapselung (Encapsulation)</div>
+      <div class="sim-controls">
+        <button class="sim-btn" onclick="osiStep()">⏭ N&auml;chster Schritt</button>
+        <button class="sim-btn" onclick="osiReset()">↻ Reset</button>
+        <button class="sim-btn" onclick="osiToggleDir()">${direction==='down'?'↓ Senden':'↑ Empfangen'}</button>
+        <span style="font-size:.6rem;color:var(--text2)">${direction==='down'?'Encapsulation (Header hinzuf&uuml;gen)':'Decapsulation (Header entfernen)'}</span>
+      </div>
+      <div class="osi-stack">`;
+
+    const order = direction === 'down' ? layers : [...layers].reverse();
+    order.forEach((l,i) => {
+      const realIdx = direction === 'down' ? i : layers.length-1-i;
+      const isActive = realIdx === activeLayer;
+      const headerVisible = direction === 'down' ? realIdx >= activeLayer && activeLayer >= 0 : realIdx <= activeLayer;
+      html += `<div class="osi-layer${isActive?' active':''}" style="background:${l.color}18;border-color:${isActive?l.color:'transparent'}">
+        <span style="color:${l.color};font-weight:600">${l.name}</span>
+        <span class="osi-header${headerVisible?' show':''}" style="color:${l.color}">+ ${l.header}</span>
+      </div>`;
+    });
+
+    html += '</div></div>';
+    return html;
+  }
+
+  container.innerHTML = renderOSI();
+  window.osiStep = function(){
+    if(direction==='down'){ activeLayer++; if(activeLayer>=layers.length) activeLayer=layers.length-1; }
+    else { if(activeLayer<0) activeLayer=layers.length-1; else activeLayer--; if(activeLayer<0) activeLayer=0; }
+    container.innerHTML = renderOSI();
+  };
+  window.osiReset = function(){ activeLayer=-1; container.innerHTML = renderOSI(); };
+  window.osiToggleDir = function(){ direction = direction==='down'?'up':'down'; activeLayer=-1; container.innerHTML = renderOSI(); };
+}
+
+/* ── DFA/NFA Automaton Simulator ── */
+function initAutomaton(container){
+  // Example DFA: accepts strings containing "01" over {0,1}
+  const states = ['q₀','q₁','q₂'];
+  const accepting = [2];
+  const transitions = { 'q₀,0':'q₁','q₀,1':'q₀','q₁,0':'q₁','q₁,1':'q₂','q₂,0':'q₂','q₂,1':'q₂' };
+  let input = '1001';
+  let currentState = 0;
+  let charIdx = -1;
+  let running = false;
+  let autoTimer = null;
+  let result = null;
+
+  function stateX(i){ return 80 + i * 140; }
+  const stateY = 100;
+
+  function renderAuto(){
+    // SVG for states
+    let svg = `<svg class="auto-svg" viewBox="0 0 500 200">
+      <defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--text2)"/></marker>
+      <marker id="arrowActive" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="var(--accent)"/></marker></defs>`;
+
+    // Start arrow
+    svg += `<line x1="20" y1="${stateY}" x2="50" y2="${stateY}" stroke="var(--text2)" stroke-width="1.5" marker-end="url(#arrowhead)"/>`;
+
+    // Edges
+    const edges = [
+      {from:0,to:1,label:'0',curve:0},
+      {from:0,to:0,label:'1',loop:true},
+      {from:1,to:1,label:'0',loop:true},
+      {from:1,to:2,label:'1',curve:0},
+      {from:2,to:2,label:'0,1',loop:true},
+    ];
+
+    edges.forEach(e => {
+      const activeKey1 = charIdx >= 0 && charIdx < input.length ? `${states[currentState]},${input[charIdx]}` : '';
+      if(e.loop){
+        const cx = stateX(e.from), cy = stateY;
+        const isActive = transitions[activeKey1] === states[e.from] && currentState === e.from;
+        svg += `<path d="M${cx-15},${cy-30} C${cx-30},${cy-70} ${cx+30},${cy-70} ${cx+15},${cy-30}" class="auto-edge${isActive?' active':''}" ${isActive?'marker-end="url(#arrowActive)"':'marker-end="url(#arrowhead)"'}/>`;
+        svg += `<text x="${cx}" y="${cy-55}" class="auto-edge-label">${e.label}</text>`;
+      } else {
+        const x1=stateX(e.from)+30, y1=stateY, x2=stateX(e.to)-30, y2=stateY;
+        const isActive = activeKey1 && transitions[activeKey1] === states[e.to] && currentState === e.from;
+        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="auto-edge${isActive?' active':''}" ${isActive?'marker-end="url(#arrowActive)"':'marker-end="url(#arrowhead)"'}/>`;
+        svg += `<text x="${(x1+x2)/2}" y="${y1-10}" class="auto-edge-label">${e.label}</text>`;
+      }
+    });
+
+    // States
+    states.forEach((s,i) => {
+      const isAccepting = accepting.includes(i);
+      const isActive = i === currentState;
+      svg += `<circle cx="${stateX(i)}" cy="${stateY}" r="28" class="auto-state${isActive?' active':''}"/>`;
+      if(isAccepting) svg += `<circle cx="${stateX(i)}" cy="${stateY}" r="23" fill="none" stroke="${isActive?'var(--accent)':'var(--border)'}" stroke-width="1.5"/>`;
+      svg += `<text x="${stateX(i)}" y="${stateY}" class="auto-label" ${isActive?'fill="var(--accent)"':''}>${s}</text>`;
+    });
+
+    svg += '</svg>';
+
+    // Input display
+    let inputDisp = '';
+    for(let c=0;c<input.length;c++){
+      let cls = c < charIdx ? 'processed' : (c === charIdx ? 'current' : '');
+      inputDisp += `<span class="auto-input-char ${cls}">${input[c]}</span>`;
+    }
+
+    let resultText = '';
+    if(result !== null) resultText = result ? '<span style="color:var(--green)">✓ Akzeptiert!</span>' : '<span style="color:var(--red)">✗ Abgelehnt!</span>';
+
+    container.innerHTML = `<div class="sim-container">
+      <div class="sim-title">🤖 DFA-Simulator — Akzeptiert Strings mit "01"</div>
+      <div class="sim-controls">
+        <input class="sim-input" id="auto-input" value="${input}" placeholder="Eingabe..." style="width:150px">
+        <button class="sim-btn" onclick="autoSet()">Setzen</button>
+        <button class="sim-btn" onclick="autoStep()">⏭ Schritt</button>
+        <button class="sim-btn" id="auto-play" onclick="autoPlay()">▶ Play</button>
+        <button class="sim-btn" onclick="autoReset()">↻ Reset</button>
+      </div>
+      ${svg}
+      <div style="text-align:center;margin:.6rem 0">${inputDisp} ${resultText}</div>
+      <div class="sim-log" id="autoLog">Zustand: ${states[currentState]} ${charIdx>=0?'| Zeichen: '+input[charIdx]:''}</div>
+    </div>`;
+  }
+
+  renderAuto();
+
+  window.autoSet = function(){ input = document.getElementById('auto-input').value || '01'; autoReset(); };
+  window.autoReset = function(){ currentState=0; charIdx=-1; result=null; running=false; clearInterval(autoTimer); renderAuto(); };
+  window.autoStep = function(){
+    if(result !== null) return;
+    charIdx++;
+    if(charIdx >= input.length){
+      result = accepting.includes(currentState);
+      renderAuto();
+      return;
+    }
+    const key = `${states[currentState]},${input[charIdx]}`;
+    const next = transitions[key];
+    if(next){
+      const nextIdx = states.indexOf(next);
+      const log = document.getElementById('autoLog');
+      currentState = nextIdx;
+    }
+    renderAuto();
+    if(charIdx === input.length - 1){
+      setTimeout(()=>{ charIdx++; result = accepting.includes(currentState); renderAuto(); }, 600);
+    }
+  };
+  window.autoPlay = function(){
+    if(running){ running=false; clearInterval(autoTimer); return; }
+    running=true;
+    autoTimer = setInterval(()=>{
+      if(result!==null){ running=false; clearInterval(autoTimer); return; }
+      autoStep();
+    }, 700);
+  };
+}
+
+/* ── CSMA/CD vs CA Timeline ── */
+function initCSMA(container){
+  container.innerHTML = `<div class="sim-container">
+    <div class="sim-title">📡 CSMA/CD vs CSMA/CA — Vergleich</div>
+    <div class="two-col">
+      <div class="card" style="border-left:3px solid var(--teal)">
+        <div class="card-title" style="color:var(--teal)">CSMA/CD (Ethernet/Kupfer)</div>
+        <div id="csma-cd-timeline" style="font-size:.7rem;line-height:2"></div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--purple)">
+        <div class="card-title" style="color:var(--purple)">CSMA/CA (WLAN/Funk)</div>
+        <div id="csma-ca-timeline" style="font-size:.7rem;line-height:2"></div>
+      </div>
+    </div>
+    <div class="sim-controls" style="justify-content:center">
+      <button class="sim-btn" onclick="csmaRun()">▶ Animation starten</button>
+      <button class="sim-btn" onclick="csmaReset()">↻ Reset</button>
+    </div>
+  </div>`;
+
+  window.csmaReset = function(){
+    document.getElementById('csma-cd-timeline').innerHTML = '';
+    document.getElementById('csma-ca-timeline').innerHTML = '';
+  };
+
+  window.csmaRun = function(){
+    csmaReset();
+    const cd = document.getElementById('csma-cd-timeline');
+    const ca = document.getElementById('csma-ca-timeline');
+    const cdSteps = [
+      {t:300,text:'1. <span style="color:var(--accent)">Listen</span> — Medium frei?',icon:'👂'},
+      {t:800,text:'2. <span style="color:var(--green)">Senden</span> + gleichzeitig h&ouml;ren',icon:'📤'},
+      {t:1300,text:'3. <span style="color:var(--red)">Kollision erkannt!</span>',icon:'💥'},
+      {t:1800,text:'4. <span style="color:var(--amber)">Jam-Signal</span> senden',icon:'🚨'},
+      {t:2300,text:'5. <span style="color:var(--purple)">Backoff</span> — zuf&auml;llig warten',icon:'⏳'},
+      {t:2800,text:'6. <span style="color:var(--green)">Erneut senden</span> — Erfolg!',icon:'✅'},
+    ];
+    const caSteps = [
+      {t:300,text:'1. <span style="color:var(--accent)">Listen</span> — Medium frei?',icon:'👂'},
+      {t:800,text:'2. <span style="color:var(--amber)">DIFS</span> abwarten',icon:'⏱'},
+      {t:1300,text:'3. <span style="color:var(--purple)">Backoff-Timer</span> l&auml;uft',icon:'⏳'},
+      {t:1800,text:'4. Optional: <span style="color:var(--teal)">RTS</span> senden',icon:'📡'},
+      {t:2300,text:'5. Optional: <span style="color:var(--teal)">CTS</span> empfangen',icon:'📡'},
+      {t:2800,text:'6. <span style="color:var(--green)">Senden</span> (kein Mith&ouml;ren!)',icon:'📤'},
+      {t:3300,text:'7. Warte auf <span style="color:var(--green)">ACK</span>',icon:'✅'},
+    ];
+
+    cdSteps.forEach(s => { setTimeout(()=>{ cd.innerHTML += `<div>${s.icon} ${s.text}</div>`; }, s.t); });
+    caSteps.forEach(s => { setTimeout(()=>{ ca.innerHTML += `<div>${s.icon} ${s.text}</div>`; }, s.t); });
+  };
+}
+
+/* ── CYK Stepper ── */
+function initCYK(container){
+  container.innerHTML = `<div class="sim-container">
+    <div class="sim-title">📝 CYK-Algorithmus (Demo)</div>
+    <div class="concept tip" style="margin-bottom:.8rem">
+      <div class="concept-label">GRAMMATIK (CNF)</div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.75rem">
+        S → AB | a<br>A → a<br>B → b<br>
+      </p>
+    </div>
+    <div class="sim-controls">
+      <span style="font-size:.7rem;color:var(--text2)">Wort:</span>
+      <input class="sim-input" id="cyk-word" value="ab" placeholder="Wort eingeben" style="width:100px">
+      <button class="sim-btn" onclick="cykRun()">▶ Berechnen</button>
+    </div>
+    <div id="cyk-result" style="margin-top:.8rem"></div>
+  </div>`;
+
+  window.cykRun = function(){
+    const word = document.getElementById('cyk-word').value.trim();
+    if(!word || !/^[ab]+$/.test(word)){ document.getElementById('cyk-result').innerHTML='<p style="color:var(--red)">Nur a und b erlaubt!</p>'; return; }
+
+    const n = word.length;
+    const table = Array.from({length:n}, ()=> Array.from({length:n}, ()=> new Set()));
+
+    // Fill diagonal (length 1)
+    for(let i=0;i<n;i++){
+      if(word[i]==='a'){ table[i][i].add('A'); table[i][i].add('S'); }
+      if(word[i]==='b'){ table[i][i].add('B'); }
+    }
+
+    // Fill upper triangle
+    for(let len=2;len<=n;len++){
+      for(let i=0;i<=n-len;i++){
+        const j=i+len-1;
+        for(let k=i;k<j;k++){
+          // Check S → AB
+          if(table[i][k].has('A') && table[k+1][j].has('B')) table[i][j].add('S');
+        }
+      }
+    }
+
+    // Render table
+    let html = '<div style="overflow-x:auto"><table class="data-table" style="text-align:center">';
+    html += '<thead><tr><th></th>';
+    for(let j=0;j<n;j++) html += `<th>${word[j]}</th>`;
+    html += '</tr></thead><tbody>';
+    for(let len=1;len<=n;len++){
+      html += `<tr><td style="color:var(--text2);font-size:.6rem">Len ${len}</td>`;
+      for(let i=0;i<n;i++){
+        const j = i+len-1;
+        if(j<n){
+          const vals = [...table[i][j]].join(',');
+          const hasS = table[i][j].has('S') && len===n;
+          html += `<td style="${hasS?'color:var(--green);font-weight:700':'color:var(--accent)'}">{${vals||'∅'}}</td>`;
+        } else {
+          html += '<td></td>';
+        }
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table></div>';
+
+    const accepted = table[0][n-1].has('S');
+    html += `<div style="text-align:center;margin-top:.5rem;font-weight:600;color:${accepted?'var(--green)':'var(--red)'}">${accepted?'✓ S ∈ T[1][n] → Wort akzeptiert!':'✗ S ∉ T[1][n] → Wort nicht in L(G)'}</div>`;
+
+    document.getElementById('cyk-result').innerHTML = html;
+  };
+}
+
+/* ═══════════════════════════════════════════════════════
+   SUPABASE AUTH & CLOUD SYNC
+   ═══════════════════════════════════════════════════════ */
+const SB_URL  = 'https://dtfaypnkxnfprfrhbvkb.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0ZmF5cG5reG5mcHJmcmhidmtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4MjA2ODYsImV4cCI6MjA1ODM5NjY4Nn0.YOXhJGTeuS-VH0MhSvOCLfMXHkj6kVd3FUQV7vqi3rA';
+let sb, currentUser = null;
+try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(e){ console.warn('Supabase init failed'); }
+
+function renderAuthBar(){
+  const bar = document.getElementById('authBar');
+  if(!bar) return;
+  if(currentUser){
+    bar.innerHTML = `<span class="user-name">👤 ${currentUser.email.split('@')[0]}</span>
+      <button onclick="forceCloudLoad()">☁ Cloud laden</button>
+      <button onclick="doLogout()">Logout</button>`;
+  } else {
+    bar.innerHTML = `<button onclick="showAuthModal()">🔐 Anmelden f&uuml;r Cloud-Sync</button>`;
+  }
+}
+
+function showAuthModal(){
+  let overlay = document.getElementById('authOverlay');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'authOverlay';
+    overlay.className = 'auth-overlay';
+    overlay.innerHTML = `<div class="auth-modal">
+      <h3>Anmelden / Registrieren</h3>
+      <input id="authEmail" type="email" placeholder="E-Mail">
+      <input id="authPass" type="password" placeholder="Passwort">
+      <div class="auth-btns">
+        <button onclick="doLogin()">Login</button>
+        <button onclick="doSignup()">Registrieren</button>
+      </div>
+      <button onclick="this.closest('.auth-overlay').classList.remove('show')" style="margin-top:.5rem;background:none;border:none;color:var(--text2);cursor:pointer;font-size:.7rem;width:100%;text-align:center">Abbrechen</button>
+    </div>`;
+    document.body.appendChild(overlay);
+  }
+  overlay.classList.add('show');
+}
+
+async function doLogin(){
+  const email = document.getElementById('authEmail').value;
+  const pass = document.getElementById('authPass').value;
+  const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
+  if(error){ showToast('Login fehlgeschlagen: '+error.message); return; }
+  currentUser = data.user;
+  document.getElementById('authOverlay').classList.remove('show');
+  renderAuthBar();
+  loadFromCloud();
+  showToast('Angemeldet!');
+}
+
+async function doSignup(){
+  const email = document.getElementById('authEmail').value;
+  const pass = document.getElementById('authPass').value;
+  const {data,error} = await sb.auth.signUp({email,password:pass});
+  if(error){ showToast('Registrierung fehlgeschlagen: '+error.message); return; }
+  currentUser = data.user;
+  document.getElementById('authOverlay').classList.remove('show');
+  renderAuthBar();
+  showToast('Registriert und angemeldet!');
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  currentUser = null;
+  renderAuthBar();
+  showToast('Abgemeldet.');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2500);
+}
+
+async function saveToCloud(){
+  if(!currentUser || !sb) return;
+  try{
+    await sb.from('intensiv_progress').upsert({
+      user_id: currentUser.id,
+      progress: JSON.stringify(progress),
+      updated_at: new Date().toISOString()
+    }, {onConflict:'user_id'});
+  } catch(e){ console.warn('Cloud save error', e); }
+}
+
+let _cloudSaveTimer = null;
+function debouncedCloudSave(){
+  clearTimeout(_cloudSaveTimer);
+  _cloudSaveTimer = setTimeout(saveToCloud, 1500);
+}
+
+async function loadFromCloud(){
+  if(!currentUser || !sb) return;
+  try{
+    const {data} = await sb.from('intensiv_progress').select('progress').eq('user_id', currentUser.id).maybeSingle();
+    if(data && data.progress){
+      const cloud = JSON.parse(data.progress);
+      // Smart merge: keep better scores
+      Object.keys(cloud).forEach(k => {
+        if(!progress[k]) { progress[k] = cloud[k]; return; }
+        if(cloud[k].exercises && (!progress[k].exercises || cloud[k].exercises.correct > progress[k].exercises.correct)){
+          progress[k].exercises = cloud[k].exercises;
+        }
+      });
+      localStorage.setItem('intensiv-progress', JSON.stringify(progress));
+      showToast('Cloud-Daten geladen!');
+    }
+  } catch(e){ console.warn('Cloud load error', e); }
+}
+
+async function forceCloudLoad(){
+  if(!currentUser || !sb) return;
+  try{
+    const {data} = await sb.from('intensiv_progress').select('progress').eq('user_id', currentUser.id).maybeSingle();
+    if(data && data.progress){
+      progress = JSON.parse(data.progress);
+      localStorage.setItem('intensiv-progress', JSON.stringify(progress));
+      showToast('Cloud-Daten &uuml;bernommen!');
+    }
+  } catch(e){ showToast('Fehler beim Laden.'); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════ */
+async function initAuth(){
+  if(!sb) return;
+  const {data} = await sb.auth.getSession();
+  if(data.session){ currentUser = data.session.user; loadFromCloud(); }
+  renderAuthBar();
+}
+
+initAuth();
+render();
+</script>
+</body>
+</html>
